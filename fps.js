@@ -300,8 +300,8 @@ var scene = new THREE.Scene();
 scene.add( camera );
 // scene.fog = new THREE.Fog( 0xf2f7ff, 1, 25000 );
 
-var listener = new THREE.AudioListener();
-camera.add( listener );
+// var listener = new THREE.AudioListener();
+// camera.add( listener );
 
 
 
