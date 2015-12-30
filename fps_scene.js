@@ -129,11 +129,11 @@ scene.add(skybox)
 
 
 
-var sound1 = new THREE.Audio( listener );
-sound1.load( 'sounds/tracks/wind_and_chimes.mp3' );
-sound1.setRefDistance( 200 );
-sound1.autoplay = true;
-skybox.add( sound1 );
+// var sound1 = new THREE.Audio( listener );
+// sound1.load( 'sounds/tracks/wind_and_chimes.mp3' );
+// sound1.setRefDistance( 200 );
+// sound1.autoplay = true;
+// skybox.add( sound1 );
 
 
 
