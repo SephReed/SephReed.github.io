@@ -123,6 +123,74 @@ scene.add(skybox)
 
 
 
+// var lastChild;
+// var loader = new  THREE.ColladaLoader();
+// loader.options.convertUpAxis = true;
+// loader.load('https://cdn.rawgit.com/wpdildine/wpdildine.github.com/master/models/monkey.dae', function (collada){
+// 	dae = collada.scene;
+// 	dae.scale.x = dae.scale.y = dae.scale.z = 3;
+// 	dae.traverse(function (child){
+// 		if (child.colladaId == "Suzanne"){
+// 			child.traverse(function(e){
+// 				e.castShadow = true;
+// 				e.receiveShadow = true;
+// 				if (e.material instanceof THREE.MeshPhongMaterial){
+// 					e.material.needsUpdate = true;
+// 				}	
+			
+// 			});
+// 		}
+// 		else if (child.colladaId == "Plane"){
+// 			child.traverse(function(e){
+// 				e.castShadow = true;
+// 				e.receiveShadow = true;
+// 			});
+// 		}	
+// 		lastChild = child;
+// 	});
+// 	dae.updateMatrix();
+// 	scene.add(dae);
+// });	
+
+
+var loader = new  THREE.ColladaLoader();
+loader.options.convertUpAxis = true;
+loader.load('models/SimpleHouse.dae', function (collada){
+	dae = collada.scene;
+	dae.scale.x = dae.scale.y = dae.scale.z = 10;
+	dae.traverse(function (child){
+		if (child.colladaId == "Suzanne"){
+			child.traverse(function(e){
+				e.castShadow = true;
+				e.receiveShadow = true;
+				if (e.material instanceof THREE.MeshPhongMaterial){
+					e.material.needsUpdate = true;
+				}	
+			
+			});
+		}
+		else if (child.colladaId == "Plane"){
+			child.traverse(function(e){
+				e.castShadow = true;
+				e.receiveShadow = true;
+			});
+		}	
+		
+	});
+	dae.updateMatrix();
+	dae.position.y = -415;
+	dae.position.x = 200;
+	dae.position.z = 805;
+	scene.add(dae);
+	world.solids.push(dae.children[0].children[0]);
+});	
+
+		
+
+
+
+
+
 
 
 
@@ -336,8 +404,8 @@ var color, size = 100, particles, materials = [];
 
 
 var parameters = {
-	width: 2000,
-	height: 2000,
+	width: 8000,
+	height: 8000,
 	widthSegments: 250,
 	heightSegments: 250,
 	depth: 1500,
@@ -363,13 +431,13 @@ water = new THREE.Water( renderer, camera, scene, {
 
 
 mirrorMesh = new THREE.Mesh(
-	new THREE.PlaneBufferGeometry( parameters.width * 500, parameters.height * 500 ),
+	new THREE.PlaneBufferGeometry( parameters.width, parameters.height),
 	water.material
 );
 
 mirrorMesh.add( water );
 mirrorMesh.rotation.x = - Math.PI * 0.5;
-// mirrorMesh.position.y = 2;
+mirrorMesh.position.y = -550.5;
 scene.add( mirrorMesh );
 
 

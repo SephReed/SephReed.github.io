@@ -26,6 +26,7 @@ var player = {
 	heightNormal : 3.0,
 	heightCrouch : 2.0,
 	isCrouched : false,
+	stepHeight : 0.333,   ///the point at which things become obstacles
 
 	currentGravity : world.gravity,
 

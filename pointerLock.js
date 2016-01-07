@@ -23,7 +23,7 @@ if ( havePointerLock ) {
 
 			controls.enabled = false;
 			emulation.pause = true;
-			sound1.pause();
+			// sound1.pause();
 
 			blocker.style.display = '-webkit-box';
 			blocker.style.display = '-moz-box';
@@ -49,6 +49,8 @@ if ( havePointerLock ) {
 	document.addEventListener( 'pointerlockerror', pointerlockerror, false );
 	document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
 	document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
+
+	console.log("pointer lock init");
 
 	instructions.addEventListener( 'click', function ( event ) {
 

@@ -29323,13 +29323,13 @@ THREE.Audio.prototype.load = function ( file ) {
 	request.responseType = 'arraybuffer';
 	request.onload = function ( e ) {
 
-		// scope.context.decodeAudioData( this.response, function ( buffer ) {
+		scope.context.decodeAudioData( this.response, function ( buffer ) {
 
-		// 	scope.source.buffer = buffer;
+			scope.source.buffer = buffer;
 
-		// 	if ( scope.autoplay ) scope.play();
+			if ( scope.autoplay ) scope.play();
 
-		// } );
+		} );
 
 	};
 	request.send();
