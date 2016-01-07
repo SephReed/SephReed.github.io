@@ -5,7 +5,7 @@ var applyPhysics = (function() {
 	var timeLeft = timeStep + 1;
 
 	var birdsEye = 3.0;
-	var kneeDeep = 0.4;
+	var kneeDeep = 0.8;
 
 	var raycaster = new THREE.Raycaster();
 	raycaster.ray.direction.set( 0, -1, 0 );
@@ -29,40 +29,42 @@ var applyPhysics = (function() {
 
 
 
-				// if(!player.motion.flymode) {
-				//	vel_raycast.ray.direction.copy( player.motion.velocity );
-				// 	vel_raycast.ray.origin.copy( player.motion.position );
-				// 	vel_raycast.ray.origin.y += player.stepHeight;
-				// 	//TODO: MOVE THE RAYCAST BACKWARDS FROM THE DIRECTION IT HAS
+				if(!player.motion.flymode) {
+					vel_raycast.ray.direction.copy( player.motion.velocity );
+					vel_raycast.ray.direction.normalize();
+					vel_raycast.ray.origin.copy( player.motion.position );
+					vel_raycast.ray.origin.y += player.currentEyeHeight;
+					//TODO: MOVE THE RAYCAST BACKWARDS FROM THE DIRECTION IT HAS
 
-				// 	var vel_hits = raycaster.intersectObjects( world.solids );
+					// var vel_hits = raycaster.intersectObjects( world.solids );
+					var vel_hits = vel_raycast.intersectObjects( world.solids, true );
 
-				// 	//Find the nearest hit
-				// 	var vel_top_hit = vel_hits[0];
-				// 	for(var i = 1; i < vel_hits.length; i++) {
-				// 		if(vel_hits[i].distance < vel_top_hit.distance) {
-				// 			vel_top_hit = vel_hits[i];
-				// 		}
-				// 	}
+					//Find the nearest hit
+					var vel_top_hit = vel_hits[0];
+					for(var i = 1; i < vel_hits.length; i++) {
+						if(vel_hits[i].distance < vel_top_hit.distance) {
+							vel_top_hit = vel_hits[i];
+						}
+					}
 
-				// 	// are we above, or at most knee deep in, the platform?
-				// 	if(vel_top_hit != null) {
-				// 		// var actualHeight = vel_top_hit.distance - birdsEye;
+					// are we above, or at most knee deep in, the platform?
+					if(vel_top_hit != null) {
+						// var actualHeight = vel_top_hit.distance - birdsEye;
 
-				// 		// collision: stick to the surface if landing on it
+						// collision: stick to the surface if landing on it
 
-				// 		if(vel_top_hit.distance < 1) {
-				// 			player.motion.velocity.set(0, 0, 0);
-				// 			console.log("collision");
+						if(vel_top_hit.distance < 1) {
+							player.motion.velocity.set(0, 0, 0);
+							// console.log("collision");
 
 
-				// 			// player.motion.position.y -= actualHeight;
-				// 			// // player.motion.velocity.y = 0;
-				// 			// player.motion.airborne = false;
-				// 			// player.motion.flymode = false;
-				// 		}
-				// 	}
-				// }
+							// player.motion.position.y -= actualHeight;
+							// // player.motion.velocity.y = 0;
+							// player.motion.airborne = false;
+							// player.motion.flymode = false;
+						}
+					}
+				}
 
 
 
@@ -80,6 +82,7 @@ var applyPhysics = (function() {
 				raycaster.ray.origin.copy( player.motion.position );
 				raycaster.ray.origin.y += birdsEye;
 
+				// var hits = raycaster.intersectObjects( world.solids, true );
 				var hits = raycaster.intersectObjects( world.solids, true );
 
 				player.motion.airborne = true;
@@ -93,7 +96,8 @@ var applyPhysics = (function() {
 				}
 
 				// are we above, or at most knee deep in, the platform?
-				if( ( top_hit != null ) && ( top_hit.face.normal.y > 0 ) ) {
+				// if( ( top_hit != null ) && ( top_hit.face.normal.y > 0 ) ) {
+				if( ( top_hit != null ) ) {
 					var actualHeight = top_hit.distance - birdsEye;
 
 					// collision: stick to the surface if landing on it

@@ -11,6 +11,7 @@ var controls;
 
 var world = {
 	solids : [],
+	interactives : [],
 	gravity : 0.01
 };
 
@@ -29,6 +30,7 @@ var player = {
 	stepHeight : 0.333,   ///the point at which things become obstacles
 
 	currentGravity : world.gravity,
+	currentEyeHeight : 0.0,
 
 	preferences : {
 		buttonTapSpeed : 200
@@ -43,6 +45,7 @@ var player = {
 };
 
 player.motion.position.y = -2000;
+player.currentEyeHeight = player.heightNormal;
 
 
 var emulation = {

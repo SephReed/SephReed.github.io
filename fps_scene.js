@@ -35,6 +35,8 @@ function makePlatform( jsonUrl, textureUrl, textureQuality ) {
 
 		placeholder.add( platform );
 		world.solids.push(platform);
+		platform.castShadow = true;
+		platform.receiveShadow = true;
 	});
 
 	return placeholder;
@@ -157,7 +159,7 @@ var loader = new  THREE.ColladaLoader();
 loader.options.convertUpAxis = true;
 loader.load('models/SimpleHouse.dae', function (collada){
 	dae = collada.scene;
-	dae.scale.x = dae.scale.y = dae.scale.z = 10;
+	dae.scale.x = dae.scale.y = dae.scale.z = 3.2;
 	dae.traverse(function (child){
 		if (child.colladaId == "Suzanne"){
 			child.traverse(function(e){
@@ -178,11 +180,15 @@ loader.load('models/SimpleHouse.dae', function (collada){
 		
 	});
 	dae.updateMatrix();
-	dae.position.y = -415;
+	dae.position.y = -414;
 	dae.position.x = 200;
 	dae.position.z = 805;
+
+	dae.children[0].children[0].castShadow = true;
+	dae.children[0].children[0].receiveShadow = true;
+
 	scene.add(dae);
-	world.solids.push(dae.children[0].children[0]);
+	world.solids.push(dae);
 });	
 
 		
@@ -218,6 +224,12 @@ var geometry = new THREE.SphereGeometry( 5, 16, 16 );
 var material = new THREE.MeshNormalMaterial( );
 material.wireframe = true;
 var sphere = new THREE.Mesh( geometry, material );
+sphere.name = "sphere";
+sphere.interaction = function() {
+	console.log("yo");
+	sphere.rotation.y += 0.1;
+}
+world.interactives.push(sphere);
 scene.add( sphere );
 
 
@@ -225,13 +237,40 @@ scene.add( sphere );
 
 
 
- geometry = new THREE.BoxGeometry( 100, 1, 10 );
- material = new THREE.MeshNormalMaterial(  );
-var cube = new THREE.Mesh( geometry, material );
-cube.name = "test";
-cube.translateY(-10.0);
-scene.add( cube );
-world.solids.push(cube);
+
+
+geometry = new THREE.BoxGeometry( 0.3, 6, 3 );
+material = new THREE.MeshNormalMaterial(  );
+var door = new THREE.Mesh( geometry, material );
+door.name = "door";
+door.position.x = 215.3;
+door.position.y = -410.6;
+door.position.z = 801.2;
+scene.add( door );
+world.solids.push(door);
+
+
+door.interaction = function() {
+	if(door.rotation.y != 1.5) {
+		door.rotation.y = 1.5;
+		door.position.x = 216.8;
+		door.position.z = 802.6;
+	}
+	else {
+		door.rotation.y = 0.0;
+		door.position.x = 215.3;
+		door.position.z = 801.2;
+	}
+}
+world.interactives.push(door);
+
+
+// var door_intr = {
+// 	mesh : door,
+// 	action : 
+// }
+// world.interactives.push(door_intr);
+
 
 
 
@@ -259,7 +298,8 @@ world.solids.push(cube);
 var hills = generateTerrain();
 hills.name = "hills";
 hills.translateY(-800.0);
-// hills.receiveShadow = true;
+hills.castShadow = true;
+hills.receiveShadow = true;
 scene.add( hills );
 world.solids.push(hills);
 
@@ -271,8 +311,14 @@ world.solids.push(hills);
 
 
 
+
+
+
+
+
+
 geometry = new THREE.Geometry();
-var sprite = THREE.ImageUtils.loadTexture( "image_assets/sprites/tree.png" );
+var sprite = THREE.ImageUtils.loadTexture( "image_assets/sprites/pinetree.png" );
 for ( i = 0; i < 100; i ++ ) {
 
 	var vertex = new THREE.Vector3();
@@ -315,7 +361,7 @@ var color, size = 100, particles, materials = [];
 	// sprite = parameters[i][1];
 	// size   = parameters[i][2];
 
-	material = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: true, transparent : true, opacity: 1.0 } );
+	material = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: true, transparent : true, opacity: 2.0 } );
 	// materials[i].color.setHSL( color[0], color[1], color[2] );
 
 	particles = new THREE.Points( geometry, material );
@@ -347,57 +393,26 @@ var color, size = 100, particles, materials = [];
 
 
 //LIGHTS
-// LIGHTS
 
-				var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.3 );
-				hemiLight.color.setHSL( 0.6, 1, 0.6 );
-				hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-				// hemiLight.position.set( 0, 500, 0 );
-				hemiLight.position.set( -10, 6, 10 );
-				hemiLight.position.multiplyScalar( 100 );
-				scene.add( hemiLight );
+var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.3 );
+hemiLight.color.setHSL( 0.6, 1, 0.6 );
+hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+// hemiLight.position.set( 0, 500, 0 );
+hemiLight.position.set( -10, 6, 10 );
+hemiLight.position.multiplyScalar( 100 );
+scene.add( hemiLight );
 
-				//
+//
 
-				var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
-				dirLight.color.setHSL( 0.1, 1, 0.95 );
-				// dirLight.position.set( -1, 1.75, 1 );
-				dirLight.position.set( -10, 6, 10 );
-				dirLight.position.multiplyScalar( 100 );
-				scene.add( dirLight );
+var dirLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
+dirLight.color.setHSL( 0.1, 1, 0.95 );
+// dirLight.position.set( -1, 1.75, 1 );
+dirLight.position.set( -10, 6, 10 );
+// dirLight.position.multiplyScalar( 100 );
+dirLight.castShadow = true;
+scene.add( dirLight );
 
-				dirLight.castShadow = true;
-
-				dirLight.shadowMapWidth = 2048;
-				dirLight.shadowMapHeight = 2048;
-
-				var d = 5000;
-
-				dirLight.shadowCameraLeft = -d;
-				dirLight.shadowCameraRight = d;
-				dirLight.shadowCameraTop = d;
-				dirLight.shadowCameraBottom = -d;
-
-				dirLight.shadowCameraFar = 3500;
-				dirLight.shadowBias = -0.0001;
-				dirLight.shadowCameraVisible = true;
-
-
-				// var pointLight = new THREE.pointLight( 0xffffff, 1 );
-				// pointLight.position.set( -10, 4, 10 );
-				// pointLight.position.multiplyScalar( 100 );
-				// scene.add(pointLight);
-
-
-
-// renderer.shadowMap.enabled = true;
-// renderer.shadowMap.type = THREE.PCFShadowMap;
-
-// var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
-// directionalLight.position.set( -1000, 1000, 1000 );
-// directionalLight.rotation.set(1, -1, -1);
-// scene.add( directionalLight );
-
+				
 
 
 

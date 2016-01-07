@@ -27,7 +27,8 @@ var keyboardControls = (function() {
 		DN : 40, 
 		RT : 39, 
 		ESC : 27, 
-		I : 85
+		ACT : 76,
+		I : 85,
 	};
 
 	var keysPressed = {};
@@ -60,12 +61,14 @@ var keyboardControls = (function() {
 		}
 
 	})([
-		keys.CTRL, keys.SHFT, keys.SP, keys.FWD, keys.SIDE_L, keys.BACK, keys.SIDE_R, keys.ROLL_L, keys.ROLL_R, keys.UP, keys.LT, keys.DN, keys.RT, keys.ESC, keys.I
+		keys.CTRL, keys.SHFT, keys.SP, keys.FWD, keys.SIDE_L, keys.BACK, keys.SIDE_R, keys.ROLL_L, keys.ROLL_R, keys.UP, keys.LT, keys.DN, keys.RT, keys.ESC, keys.I, keys.ACT
 	]);
 
 
 	var forward = new THREE.Vector3();
 	var sideways = new THREE.Vector3();
+
+	var act_hits;
 
 	return function() {
 
@@ -125,6 +128,23 @@ var keyboardControls = (function() {
 					keyTimes[keys.SP] = emulation.lastTimeStamp;
 				}
 			}
+
+
+
+			if(keysUpdated[keys.ACT]) {
+				keysUpdated[keys.ACT] = false;
+
+				if(keysPressed[keys.ACT]) {
+					var act_raycast = new THREE.Raycaster();
+					act_raycast.ray.origin.setFromMatrixPosition( camera.matrixWorld );
+					act_raycast.ray.direction.copy(camera.getWorldDirection());
+					act_hits = act_raycast.intersectObjects( world.interactives, true );
+					if(act_hits.length > 0) {
+						act_hits[0].object.interaction();
+					}
+				}
+			}
+
 
 			if(player.motion.flymode) {
 			 	if(keysPressed[keys.SP] != keysPressed[keys.CTRL]) { 
@@ -244,6 +264,15 @@ controls = new THREE.PointerLockControls( camera );
 var scene = new THREE.Scene();
 
 scene.add( camera );
+
+
+
+
+
+
+
+
+
 // scene.fog = new THREE.Fog( 0xf2f7ff, 1, 25000 );
 
 // var listener = new THREE.AudioListener();
