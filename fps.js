@@ -12,16 +12,37 @@ var keyboardControls = (function() {
 
 	// var keys = { SP : 32, W : 87, A : 65, S : 83, D : 68, UP : 38, LT : 37, DN : 40, RT : 39 };
 
-	
+
+	// var keys = { 
+	// 	CTRL : 17, 
+	// 	SHFT : 16, 
+	// 	SP : 32, 
+	// 	RT : 39, 
+	// 	FWD : 71, 
+	// 	BACK : 83, 
+	// 	SIDE_L : 68, 
+	// 	SIDE_R : 84,
+	// 	ROLL_L : 81,
+	// 	ROLL_R : 77,
+	// 	UP : 38, 
+	// 	LT : 37, 
+	// 	DN : 40, 
+	// 	RT : 39, 
+	// 	ESC : 27, 
+	// 	ACT : 76,
+	// 	I : 85,
+	// };
+
+
 	var keys = { 
 		CTRL : 17, 
 		SHFT : 16, 
 		SP : 32, 
 		RT : 39, 
-		FWD : 71, 
+		FWD : 87, 
 		BACK : 83, 
-		SIDE_L : 68, 
-		SIDE_R : 84,
+		SIDE_L : 65, 
+		SIDE_R : 68,
 		ROLL_L : 81,
 		ROLL_R : 77,
 		UP : 38, 
@@ -30,8 +51,13 @@ var keyboardControls = (function() {
 		RT : 39, 
 		ESC : 27, 
 		ACT : 76,
-		// I : 85,
+		I : 85,
 	};
+
+
+
+
+
 
 	var keysPressed = {};
 	var keysUpdated = {};
