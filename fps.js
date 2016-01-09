@@ -11,6 +11,8 @@ var resetPlayer = function() {
 var keyboardControls = (function() {
 
 	// var keys = { SP : 32, W : 87, A : 65, S : 83, D : 68, UP : 38, LT : 37, DN : 40, RT : 39 };
+
+	
 	var keys = { 
 		CTRL : 17, 
 		SHFT : 16, 
@@ -28,7 +30,7 @@ var keyboardControls = (function() {
 		RT : 39, 
 		ESC : 27, 
 		ACT : 76,
-		I : 85,
+		// I : 85,
 	};
 
 	var keysPressed = {};
@@ -256,6 +258,8 @@ var keyboardControls = (function() {
 
 var renderer = new THREE.WebGLRenderer({ antialias : true });
 renderer.setPixelRatio( window.devicePixelRatio );
+renderer.shadowMap.enabled = true;
+// renderer.shadowMapType = THREE.BasicShadowMap;
 
 var camera = new THREE.PerspectiveCamera( 60, 1, 0.1, 9000 );
 
@@ -305,6 +309,7 @@ var start = function( gameLoop, gameViewportSize ) {
 
 		renderer.render( scene, camera );
 		requestAnimationFrame( render );
+		// dirLightShadowMapViewer.render( renderer );
 	};
 
 	requestAnimationFrame( render );
@@ -313,6 +318,8 @@ var start = function( gameLoop, gameViewportSize ) {
 
 var gameLoop = function( dt ) {
 	keyboardControls();
+
+
 
 	if(emulation.pause == false) {
 

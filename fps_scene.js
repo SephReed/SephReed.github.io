@@ -246,6 +246,8 @@ door.name = "door";
 door.position.x = 215.3;
 door.position.y = -410.6;
 door.position.z = 801.2;
+door.castShadow = true;
+door.receiveShadow = true;
 scene.add( door );
 world.solids.push(door);
 
@@ -263,6 +265,46 @@ door.interaction = function() {
 	}
 }
 world.interactives.push(door);
+
+
+
+
+
+geometry = new THREE.BoxGeometry( 5, 5, 5 );
+material =  new THREE.MeshPhongMaterial({ color: 0x999900 });
+var box = new THREE.Mesh( geometry, material );
+box.name = "box";
+// door.position.x = 215.3;
+// door.position.y = -410.6;
+// door.position.z = 801.2;
+box.castShadow = true;
+box.receiveShadow = true;
+scene.add( box );
+world.solids.push(box);
+
+
+box.interaction = function() {
+	box.position.z += 0.1;
+}
+world.interactives.push(box);
+
+
+
+geometry = new THREE.BoxGeometry( 10, 1, 10 );
+material =  new THREE.MeshPhongMaterial({ color: 0x990099 });
+var box = new THREE.Mesh( geometry, material );
+box.name = "box";
+// door.position.x = 215.3;
+// door.position.y = -410.6;
+// door.position.z = 801.2;
+box.castShadow = true;
+box.receiveShadow = true;
+scene.add( box );
+world.solids.push(box);
+
+
+
+
 
 
 // var door_intr = {
@@ -314,11 +356,50 @@ world.solids.push(hills);
 
 
 
+// var treeGroup = new THREE.Group();
+// var treeSprite = new THREE.ImageUtils.loadTexture( "image_assets/sprites/pinetree.png" );
+// var treeMaterial = new THREE.SpriteMaterial( { map: treeSprite, color: 0xffffff, fog: true } );
+// // var treeMaterial = new THREE.MeshLambertMaterial( { map: treeSprite, color: 0xffffff, fog: true } );
+// // var treeMaterial = new THREE.SpriteMaterial( { map: treeSprite, color: 0xffffff, fog: true } );
+
+// for ( var a = 0; a < 100; a ++ ) {
+
+// 	var vertex = new THREE.Vector3();
+// 	vertex.x = Math.random() * 200 - 100;
+// 	vertex.z = Math.random() * 200 - 100;
+// 	// vertex.y = 1000;
+
+
+
+// 	var t_raycast = new THREE.Raycaster();
+// 	t_raycast.ray.direction.set( 0, -1, 0 );
+// 	t_raycast.ray.origin.copy(vertex);
+
+// 	// var hits = t_raycast.intersectObject( hills );
+// 	// console.log(hits.length);
+
+// 	// if( hits.length != 0 ) {
+// 	// 	vertex.y -= hits[0].distance;
+// 	// 	console.log(hits[0].distance);
+// 	// 	// vertex.y -= 780;
+// 	// }
+
+
+// 	var sprite = new THREE.Sprite( treeMaterial );
+
+// 	sprite.position.copy(vertex);
+
+// 	treeGroup.add( sprite );
+
+// }
+// scene.add( treeGroup );
+
+
 
 
 
 geometry = new THREE.Geometry();
-var sprite = THREE.ImageUtils.loadTexture( "image_assets/sprites/pinetree.png" );
+var sprite = THREE.ImageUtils.loadTexture( "image_assets/sprites/pinetree.png"  );
 for ( i = 0; i < 100; i ++ ) {
 
 	var vertex = new THREE.Vector3();
@@ -345,34 +426,15 @@ for ( i = 0; i < 100; i ++ ) {
 	geometry.vertices.push( vertex );
 
 }
-// var parameters = [
-// 	// [ [1.0, 0.2, 0.5], sprite2, 20 ],
-// 	// [ [0.95, 0.1, 0.5], sprite3, 15 ],
-// 	[ [0.90, 0.9, 0.5], sprite, 100 ]
-// 	// [ [0.85, 0, 0.5], sprite5, 8 ],
-// 	// [ [0.80, 0, 0.5], sprite4, 5 ]
-// ];
-
+var parameters = [ [ [0.90, 0.9, 0.5], sprite, 100 ] ];
 
 var color, size = 100, particles, materials = [];
-// for ( i = 0; i < parameters.length; i ++ ) {
+// material = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: true, transparent : true, opacity: 2.0 } );
+material = new THREE.PointsMaterial( { size: size, map: sprite, transparent : true } );
+particles = new THREE.Points( geometry, material );
+scene.add( particles );
 
-	// color  = parameters[i][0];
-	// sprite = parameters[i][1];
-	// size   = parameters[i][2];
 
-	material = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: true, transparent : true, opacity: 2.0 } );
-	// materials[i].color.setHSL( color[0], color[1], color[2] );
-
-	particles = new THREE.Points( geometry, material );
-
-	// particles.rotation.x = Math.random() * 6;
-	// particles.rotation.y = Math.random() * 6;
-	// particles.rotation.z = Math.random() * 6;
-
-	scene.add( particles );
-
-// }
 
 
 
@@ -404,13 +466,79 @@ scene.add( hemiLight );
 
 //
 
-var dirLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
+var dirLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
 dirLight.color.setHSL( 0.1, 1, 0.95 );
 // dirLight.position.set( -1, 1.75, 1 );
-dirLight.position.set( -10, 6, 10 );
-// dirLight.position.multiplyScalar( 100 );
-dirLight.castShadow = true;
-scene.add( dirLight );
+dirLight.position.set( -1, 1, 1 );
+dirLight.position.multiplyScalar( 3000 );
+
+var width = 5000;
+
+
+// dirLight.castShadow = true;
+dirLight.name = 'Dir. Light';
+// dirLight.shadowCameraNear = 1;
+// dirLight.shadowCameraFar = 10000;
+// dirLight.shadowCameraRight = width;
+// dirLight.shadowCameraLeft = -width;
+// dirLight.shadowCameraTop	= width;
+// dirLight.shadowCameraBottom = -width;
+// dirLight.shadowMapWidth = 512;
+// dirLight.shadowMapHeight = 512;
+
+// scene.add( dirLight );
+
+
+
+
+
+width = 50;
+
+var playerShadows = new THREE.DirectionalLight( 0xffffff, 0.5 );
+playerShadows.target = camera;
+// playerShadows.position.set( -1, 1, 1 );
+playerShadows.castShadow = true;
+playerShadows.shadowCameraNear = 1;
+playerShadows.shadowCameraFar = 100;
+playerShadows.shadowCameraRight = width;
+playerShadows.shadowCameraLeft = -width;
+playerShadows.shadowCameraTop	= width;
+playerShadows.shadowCameraBottom = -width;
+playerShadows.shadowMapWidth = 1024;
+playerShadows.shadowMapHeight = 1024;
+
+scene.add( playerShadows );
+
+
+
+
+
+
+
+// scene.add( new THREE.CameraHelper( dirLight.shadow.camera ) );
+
+
+//  var dirLightHelper = new THREE.DirectionalLightHelper(dirLight);
+//     scene.add(dirLightHelper);
+
+
+
+
+
+
+
+
+
+// dirLightShadowMapViewer = new THREE.ShadowMapViewer( dirLight );
+// dirLightShadowMapViewer.position.x = 10;
+// dirLightShadowMapViewer.position.y = 10;
+// dirLightShadowMapViewer.size.width = 256;
+// dirLightShadowMapViewer.size.height = 256;
+// dirLightShadowMapViewer.update(); 
+
+
+
+
 
 				
 

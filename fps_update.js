@@ -137,6 +137,8 @@ var applyPhysics = (function() {
 
 var updateCamera = (function() {
 	var euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
+	var translate = new THREE.Vector3( -1, 1, 1 );
+	translate.multiplyScalar(20);
 
 	return function() {
 		euler.x = player.motion.rotation.x;
@@ -149,6 +151,10 @@ var updateCamera = (function() {
 		
 		// var height = 3.0;
 		camera.position.y += player.isCrouched ? player.heightCrouch : player.heightNormal;
+
+		// playerShadows.target.copy(camera.position);
+		playerShadows.position.copy(camera.position);
+		playerShadows.position.add(translate);
 	};
 })();
 
