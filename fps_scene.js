@@ -400,12 +400,17 @@ world.solids.push(hills);
 
 geometry = new THREE.Geometry();
 var sprite = THREE.ImageUtils.loadTexture( "image_assets/sprites/pinetree.png"  );
-for ( i = 0; i < 100; i ++ ) {
+
+
+
+
+for ( i = 0; i < 1000; i ++ ) {
 
 	var vertex = new THREE.Vector3();
 	vertex.x = Math.random() * 2000 - 1000;
-	// vertex.y = Math.random() * 2000 - 1000;
 	vertex.z = Math.random() * 2000 - 1000;
+	// vertex.x = (i * 20) - 1000;
+	// vertex.z = (i * 20) - 1000;
 	vertex.y = 1000;
 
 
@@ -426,12 +431,25 @@ for ( i = 0; i < 100; i ++ ) {
 	geometry.vertices.push( vertex );
 
 }
-var parameters = [ [ [0.90, 0.9, 0.5], sprite, 100 ] ];
 
-var color, size = 100, particles, materials = [];
+
+// var texture = loadTexture( "image_assets/sprites/pinetree.png" );
+// var sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+//   map: texture,
+//   blending: THREE.AdditiveBlending,
+//   useScreenCoordinates: false,
+//   color: 0xffffff
+// }));
+
+// scene.add( particles );
+
+
+
 // material = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: true, transparent : true, opacity: 2.0 } );
-material = new THREE.PointsMaterial( { size: size, map: sprite, transparent : true } );
-particles = new THREE.Points( geometry, material );
+// material = new THREE.PointsMaterial( { size: 100, map: sprite, transparent : true } );
+material = new THREE.PointsMaterial( { size: 100, map: sprite, alphaTest: 0.5, transparent: true } );
+// material = new THREE.MeshNormalMaterial( { wireframe: true } );
+var particles = new THREE.Points( geometry, material );
 scene.add( particles );
 
 

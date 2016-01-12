@@ -5,7 +5,71 @@
 		[
 			[
 				"wi",
-				"wireframe"
+				"width"
+			],
+			[
+				"dir",
+				"dirLight"
+			],
+			[
+				"re",
+				"receiveShadow"
+			],
+			[
+				"ac",
+				"act_raycast"
+			],
+			[
+				"i",
+				"interactives"
+			],
+			[
+				"l",
+				"length"
+			],
+			[
+				"act",
+				"act_hits"
+			],
+			[
+				"do",
+				"door_int"
+			],
+			[
+				"ve",
+				"velocity"
+			],
+			[
+				"hei",
+				"heightNormal"
+			],
+			[
+				"vel",
+				"vel_raycast"
+			],
+			[
+				"di",
+				"direction"
+			],
+			[
+				"ima",
+				"image_assets"
+			],
+			[
+				"d",
+				"data"
+			],
+			[
+				"ce",
+				"centerX"
+			],
+			[
+				"off",
+				"offY"
+			],
+			[
+				"p",
+				"pause"
 			],
 			[
 				"Th",
@@ -14,10 +78,6 @@
 			[
 				"sc",
 				"scene	(?)"
-			],
-			[
-				"re",
-				"recStatus	(?)"
 			],
 			[
 				"create",
@@ -80,10 +140,6 @@
 				"numSteps	(?)"
 			],
 			[
-				"d",
-				"data1	(?)"
-			],
-			[
 				"N",
 				"NUM_BTNS	(?)"
 			],
@@ -98,10 +154,6 @@
 			[
 				"s",
 				"status	(num)"
-			],
-			[
-				"i",
-				"i_onPageChange	(?)"
 			],
 			[
 				"u",
@@ -284,10 +336,6 @@
 				"SWCol"
 			],
 			[
-				"p",
-				"padNumFromNW"
-			],
-			[
 				"n",
 				"noteNum"
 			],
@@ -322,10 +370,6 @@
 			[
 				"bl",
 				"black_list"
-			],
-			[
-				"l",
-				"link"
 			],
 			[
 				"up",
@@ -370,10 +414,6 @@
 			[
 				"con",
 				"console"
-			],
-			[
-				"ac",
-				"activeTab"
 			],
 			[
 				"new",
@@ -423,6 +463,54 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "fps_scene.js",
+			"settings":
+			{
+				"buffer_size": 13199,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "fps.js",
+			"settings":
+			{
+				"buffer_size": 8624,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Version Goals.txt",
+			"settings":
+			{
+				"buffer_size": 248,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 1128,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "fps_update.js",
+			"settings":
+			{
+				"buffer_size": 4389,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "fps.css",
+			"settings":
+			{
+				"buffer_size": 784,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -456,6 +544,20 @@
 	},
 	"file_history":
 	[
+		"/Users/seph/Code/Web/SephReed.github.io/fps_variables.js",
+		"/Users/seph/Code/Web/SephReed.github.io/three.js",
+		"/Users/seph/Code/Web/SephReed.github.io/fps_update.js",
+		"/Users/seph/Code/Web/SephReed.github.io/fps.js",
+		"/Users/seph/Code/Web/SephReed.github.io/terrain.js",
+		"/Users/seph/Code/Web/SephReed.github.io/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/pointerLock.js",
+		"/Users/seph/Code/Web/SephReed.github.io/fps_scene.js",
+		"/Users/seph/Code/Web/3d Walkscape/pointerLock.js",
+		"/Users/seph/Code/Web/3d Walkscape/terrain.js",
+		"/Users/seph/Code/Web/3d Walkscape/fps_update.js",
+		"/Users/seph/Code/Web/3d Walkscape/fps.js",
+		"/Users/seph/Code/Web/3d Walkscape/fps_scene.js",
+		"/Users/seph/Code/Web/3d Walkscape/fps.html",
 		"/Users/seph/Code/golang/src/github.com/SephReed/ThumbzArt/thumbzart.go",
 		"/Users/seph/Code/golang/src/github.com/SephReed/ThumbzArt/templates/3d.html",
 		"/Users/sjaromin/Projects/Code/Web/Firefox/Black_Lister/package.json",
@@ -569,21 +671,7 @@
 		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/views/App/base.html",
 		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/views/App/blog_parser.html",
 		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/public/css/base.css",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/init.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/views/App/navbar.html",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/views/App/theming.html",
-		"/Users/sjaromin/Projects/Code/GoLang/src/thumbzart/app/views/App/Index.html",
-		"/Users/sjaromin/Projects/Code/Web/ThumbzArt/portfolio/thumbzart/views.py",
-		"/Users/sjaromin/Projects/Code/Web/ThumbzArt/portfolio/thumbzart/themer.py",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/views/App/lorem_ipsum.html",
-		"/Users/sjaromin/Projects/Code/GoLang/src/thumbzart/app/views/App/base.html",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/revel/revel/samples/booking/app/controllers/hotels.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/controllers/themer.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/thumbzart/app/controllers/app.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/thumbzart/app/views/header.html",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/revel/revel/template.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/thumbzart/app/views/App/welcome.html",
-		"/Users/sjaromin/Projects/Code/GoLang/src/thumbzart/conf/routes"
+		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/init.go"
 	],
 	"find":
 	{
@@ -602,6 +690,16 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"Phong",
+			"diffu",
+			"normal",
+			"load",
+			"decode",
+			"decodeAu",
+			"audio",
+			"sou",
+			"soun",
+			"image",
 			"armSi",
 			"MAX_SCENES",
 			"createRecordin",
@@ -690,8 +788,170 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "fps_scene.js",
+					"settings":
+					{
+						"buffer_size": 13199,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10237,
+								10237
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 6112.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "fps.js",
+					"settings":
+					{
+						"buffer_size": 8624,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								515,
+								515
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5031.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "Version Goals.txt",
+					"settings":
+					{
+						"buffer_size": 248,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								14,
+								14
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "index.html",
+					"settings":
+					{
+						"buffer_size": 1128,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								477,
+								477
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "fps_update.js",
+					"settings":
+					{
+						"buffer_size": 4389,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3891,
+								3891
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "fps.css",
+					"settings":
+					{
+						"buffer_size": 784,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								379,
+								379
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
