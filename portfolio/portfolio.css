@@ -1,0 +1,22 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  	box-sizing: inherit;
+  	margin: 0px;
+	padding: 0px;
+}
+
+
+body {
+	/*background-color: #222;*/
+	/*color: #EEE;*/
+	height: 100%;
+	width: 100%;
+}
+
+
+.standard_porfolio_block {
+	width: 100%
+}

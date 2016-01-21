@@ -3,7 +3,7 @@
 
 var resetPlayer = function() {
 	if( player.motion.position.y < -1000 ) {
-		player.motion.position.set( -2, 7.7, 25 );
+		player.motion.position.set( 247, -416, 800 );
 		player.motion.velocity.multiplyScalar( 0 );
 	}
 };

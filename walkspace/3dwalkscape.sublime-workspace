@@ -467,7 +467,7 @@
 			"file": "fps_scene.js",
 			"settings":
 			{
-				"buffer_size": 13199,
+				"buffer_size": 13197,
 				"line_ending": "Unix"
 			}
 		},
@@ -475,7 +475,7 @@
 			"file": "fps.js",
 			"settings":
 			{
-				"buffer_size": 8624,
+				"buffer_size": 8627,
 				"line_ending": "Unix"
 			}
 		},
@@ -483,8 +483,20 @@
 			"file": "Version Goals.txt",
 			"settings":
 			{
-				"buffer_size": 248,
+				"buffer_size": 366,
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "sl I figure, as I had been born unto with life owing the government nothing, owing the goverment money wis what must have come before that which was a life not worth living\n\nsay we bothe had to take turs throwing pawns in one at a time.  am I scared because on your turn I think you'll catch up\n\nwhy am I thinking about work?  I hate work.\n\n(this ones' for you) it's bebe\n\nI wonder what kind of numbers a massive online multi galactic forum/reddit thing get.\n\nbebe.  her name was monster and she is part of the equation.  she must be.  sometimes I almost call you monster\n\nwhy am I thinking about work?  I hate work.\n\n",
+			"file": "he'rdbuagn",
+			"file_size": 375,
+			"file_write_time": 1453171977000000,
+			"settings":
+			{
+				"buffer_size": 618,
+				"line_ending": "Unix",
+				"name": "sl I figure, as I had been born unto with life owi"
 			}
 		},
 		{
@@ -544,6 +556,7 @@
 	},
 	"file_history":
 	[
+		"/Users/seph/Code/Web/SephReed.github.io/models/SimpleHouse.dae",
 		"/Users/seph/Code/Web/SephReed.github.io/fps_variables.js",
 		"/Users/seph/Code/Web/SephReed.github.io/three.js",
 		"/Users/seph/Code/Web/SephReed.github.io/fps_update.js",
@@ -670,8 +683,7 @@
 		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/conf/routes",
 		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/views/App/base.html",
 		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/views/App/blog_parser.html",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/public/css/base.css",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/init.go"
+		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/public/css/base.css"
 	],
 	"find":
 	{
@@ -690,6 +702,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"texture",
 			"Phong",
 			"diffu",
 			"normal",
@@ -788,7 +801,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -796,15 +809,15 @@
 					"file": "fps_scene.js",
 					"settings":
 					{
-						"buffer_size": 13199,
+						"buffer_size": 13197,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10237,
-								10237
+								4763,
+								4763
 							]
 						],
 						"settings":
@@ -813,7 +826,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 6112.0,
+						"translation.y": 2403.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -823,15 +836,15 @@
 					"file": "fps.js",
 					"settings":
 					{
-						"buffer_size": 8624,
+						"buffer_size": 8627,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								515,
-								515
+								140,
+								140
 							]
 						],
 						"settings":
@@ -840,7 +853,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 5031.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -850,15 +863,15 @@
 					"file": "Version Goals.txt",
 					"settings":
 					{
-						"buffer_size": 248,
+						"buffer_size": 366,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								14,
-								14
+								200,
+								207
 							]
 						],
 						"settings":
@@ -873,6 +886,33 @@
 				},
 				{
 					"buffer": 3,
+					"file": "he'rdbuagn",
+					"settings":
+					{
+						"buffer_size": 618,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								618,
+								618
+							]
+						],
+						"settings":
+						{
+							"auto_name": "sl I figure, as I had been born unto with life owi",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
 					"file": "index.html",
 					"settings":
 					{
@@ -899,7 +939,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "fps_update.js",
 					"settings":
 					{
@@ -926,7 +966,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 6,
 					"file": "fps.css",
 					"settings":
 					{

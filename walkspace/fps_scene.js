@@ -159,7 +159,7 @@ var loader = new  THREE.ColladaLoader();
 loader.options.convertUpAxis = true;
 loader.load('models/SimpleHouse.dae', function (collada){
 	dae = collada.scene;
-	dae.scale.x = dae.scale.y = dae.scale.z = 3.2;
+	dae.scale.x = dae.scale.y = dae.scale.z = 6;
 	dae.traverse(function (child){
 		if (child.colladaId == "Suzanne"){
 			child.traverse(function(e){
@@ -180,7 +180,7 @@ loader.load('models/SimpleHouse.dae', function (collada){
 		
 	});
 	dae.updateMatrix();
-	dae.position.y = -414;
+	dae.position.y = -411;
 	dae.position.x = 200;
 	dae.position.z = 805;
 
@@ -243,9 +243,9 @@ geometry = new THREE.BoxGeometry( 0.3, 6, 3 );
 material = new THREE.MeshNormalMaterial(  );
 var door = new THREE.Mesh( geometry, material );
 door.name = "door";
-door.position.x = 215.3;
-door.position.y = -410.6;
-door.position.z = 801.2;
+door.position.x = 211.3;
+door.position.y = -409.3;
+door.position.z = 801.8;
 door.castShadow = true;
 door.receiveShadow = true;
 scene.add( door );
@@ -255,13 +255,13 @@ world.solids.push(door);
 door.interaction = function() {
 	if(door.rotation.y != 1.5) {
 		door.rotation.y = 1.5;
-		door.position.x = 216.8;
-		door.position.z = 802.6;
+		door.position.x = 212.8;
+		door.position.z = 803.2;
 	}
 	else {
 		door.rotation.y = 0.0;
-		door.position.x = 215.3;
-		door.position.z = 801.2;
+		door.position.x = 211.3;
+		door.position.z = 801.8;
 	}
 }
 world.interactives.push(door);
