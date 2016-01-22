@@ -20,7 +20,7 @@ function init() {
   container.style.top = 0;
   document.getElementById('header').appendChild(container);
 
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 2000);
+  camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 2000);
   camera.position.z = 1000;
 
   scene = new THREE.Scene();
@@ -30,7 +30,7 @@ function init() {
   
   //geometry = THREE.SphereGeometry( 1, 2, 2 );
 
-  for (i = 0; i < 100; i++) {
+  for (i = 0; i < 200; i++) {
 
     var vertex = new THREE.Vector3();
     vertex.x = Math.random() * 2000 - 1000;
@@ -83,7 +83,9 @@ function init() {
     size = parameters[i][1];
 
     materials[i] = new THREE.PointsMaterial({
-      size: size
+      size: size,
+      transparency: true,
+      opacity: 0.5
     });
 
     particles = new THREE.Points(geometry, materials[i]);
@@ -176,8 +178,8 @@ function render() {
 
   var time = Date.now() * 0.00005;
 
-  camera.position.x += (mouseX - camera.position.x) * 0.05;
-  camera.position.y += (-mouseY - camera.position.y) * 0.05;
+  camera.position.x += (-mouseX - camera.position.x) * 0.05;
+  camera.position.y += (mouseY - camera.position.y) * 0.05;
 
   camera.lookAt(scene.position);
 

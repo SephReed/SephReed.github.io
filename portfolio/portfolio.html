@@ -1,11 +1,17 @@
 <html>
 <head>
 	
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
 	
 	<script src="http://threejs.org/build/three.min.js"></script>
 	<script src="ColladaLoader.js"></script>
 	<script src="http://threejs.org/examples/js/Detector.js"></script>
 	<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+	<script src="http://threejs.org/examples/js/libs/tween.min.js"></script>
+	<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
+	
+	
 
 
 	
@@ -32,7 +38,10 @@
 			padding-bottom: 50px;
 			/*background-color: #222;*/
 			background-color: rgba(0,0,0,0);
-			background-image: linear-gradient(#031B29, #201105);
+
+			/*background-image: linear-gradient(#031B29, #201105);*/
+			background-image: linear-gradient(#250329, #192A38);
+			/*background-image: url("http://www.nasa.gov/images/content/611571main_2012_darkrift-orig_full.jpg");*/
 			color: #EEE;
 			text-align: center;
 			overflow: hidden;
@@ -77,8 +86,15 @@
 
 
 		#thumbz_box {
-			width: 100px;
-			height: 100px;
+			/*left: 50%;
+			right: 50%;
+			position: absolute;
+			z-index: 5;*/
+			width: 300px;
+			height: 300px;
+			/*width: 50%;*/
+    /* Set the margin-left and margin-right automatically set */
+    margin: 0 auto; 
 		}
 
 	</style>
@@ -86,22 +102,24 @@
 </head>
 <body>
 
-<div id="redshift"> </div>
+<!-- <div id="redshift"> </div> -->
 
 
 
 
 <div id="header" class="standard_portfolio_block"> 
-	<div id="thumbz_box"> </div>
+	
 	<span class="big_text">Seph Reed </span><br>
 	<span class="undertitle">I'll work the first month for minimum wage.<br>
-		I seriously live on less.</span> <br>
+		I live off less.</span> <br>
+		<div id="thumbz_box"> </div>
 </div>
 
 <div id="skillsets" class="standard_portfolio_block">
 	<center>
 		<span class="big_text">My Skillset </span><br>
-		<span class="undertitle">It could be called expansive. It could also be called the whimsical meanderings of an eccentric intellectual.</span> <br>
+		<span class="undertitle">It could be called expansive. It could also be called the whimsical wanderings of an eclectic eccentric.</span> <br>
+		<span class="undertitle">It could be called expansive. It could also be called the whimsical meanderings of an eclectic some guy.</span> <br>
 	</center> 
 
 	<div class="odd_row">
