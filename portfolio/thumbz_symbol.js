@@ -156,12 +156,12 @@ function init() {
 				lastSide = newSide;
 				var side = good_sides[newSide];
 
-				waitTime = newSide == 0 ? 200 : 50;
+				waitTime = newSide == 0 ? 150 : 50;
 
 				new TWEEN.Tween( dae.rotation ).to( {
 				x: side.x,
 				y: side.y} , 4000 )
-				.easing( TWEEN.Easing.Quadratic.InOut).onComplete(
+				.easing( TWEEN.Easing.Sinusoidal.InOut).onComplete(
 					function() {
 						pause = true;
 						console.log(lastSide);

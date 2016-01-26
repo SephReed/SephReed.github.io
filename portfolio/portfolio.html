@@ -1,8 +1,9 @@
 <html>
 <head>
 	
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	<!-- <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> -->
 	<link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
 	
 	<script src="http://threejs.org/build/three.min.js"></script>
 	<script src="ColladaLoader.js"></script>
@@ -10,6 +11,12 @@
 	<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
 	<script src="http://threejs.org/examples/js/libs/tween.min.js"></script>
 	<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
+	<script src="zepto.js"></script>
+	<!-- // <script src="jquip.js"></script>
+	// <script src="jquip.css.js"></script>
+	// <script src="jquip.docready.js"></script>
+	// <script src="jquip.events.js"></script> -->
+	<script src="portfolio.js"></script>
 	
 	
 
@@ -35,13 +42,15 @@
 		#header {
 			position: relative;
 			padding-top: 50px;
-			padding-bottom: 50px;
+			padding-bottom: 20px;
 			/*background-color: #222;*/
 			background-color: rgba(0,0,0,0);
 
 			/*background-image: linear-gradient(#031B29, #201105);*/
-			background-image: linear-gradient(#250329, #192A38);
-			/*background-image: url("http://www.nasa.gov/images/content/611571main_2012_darkrift-orig_full.jpg");*/
+			/*background-image: url("http://www.nbsbaptistchurch.org/images/Trees%20Black.png");*/
+			background: linear-gradient(#250329, #192A38);
+			
+			background-repeat: no-repeat;
 			color: #EEE;
 			text-align: center;
 			overflow: hidden;
@@ -57,9 +66,16 @@
 
 
 		#skillsets {
-
+			padding-top: 20px;
 			background-color: #422;
 			color: #EEE;
+
+			background: linear-gradient(#572125, #481A24 6px);
+			background: linear-gradient(#441C1F, #39161E 6px);
+			
+			/*background: linear-gradient(rgb(60, 37, 38), rgb(53, 27, 33) 6px);*/
+			/*color: #CC905C;*/
+
 		}
 
 
@@ -79,8 +95,8 @@
 		}
 
 		.odd_row {
-			background-color: rgba(250,250,250, 0.1);
-			background-color: rgba(0,0,0, 0.1);
+			/*background-color: rgba(250,250,250, 0.1);*/
+			background-color: rgba(0,0,0, 0.2);
 		}
 
 
@@ -93,10 +109,241 @@
 			width: 300px;
 			height: 300px;
 			/*width: 50%;*/
-    /* Set the margin-left and margin-right automatically set */
-    margin: 0 auto; 
+		    /* Set the margin-left and margin-right automatically set */
+		    margin: 0 auto; 
 		}
 
+
+
+		#coding_btn {
+			background-image: url('http://3.bp.blogspot.com/-wH7UWb8xh1A/Uxv-ZXDAtkI/AAAAAAAAAeQ/1V6AHzOCLiA/s1600/View%2B2.png');
+		}
+
+
+		#artisan_btn {
+			background-image: url('https://pfollansbee.files.wordpress.com/2008/11/autumn-2008.jpg');
+		}
+
+		
+
+		.worktype {
+			height: 200px;
+			width: 200px;
+			display: inline-block;
+			margin: 10px;
+			background-color: #333;
+			border-radius: 20px;
+			border: 1px #222 solid;
+			box-shadow: 1px 0px 4px rgba(0,0,0,0.3);
+			cursor: pointer;
+		}
+
+
+		.background {
+			position: absolute;
+			height: 100%;
+			width: 100%;
+			top: 0px;
+			left: 0px;
+			pointer-events: none;
+			/*background-color: #222;*/
+		}
+
+		#treeline {
+			background-image: url("http://www.clker.com/cliparts/S/R/7/l/C/A/green-treeline-over-white-background-hi.png");
+			background-repeat: repeat-x;
+			background-position: bottom;
+			opacity: 0.1;
+		}
+
+		.standard_portfolio_block {
+			padding-top: 20px;
+			padding-bottom: 40px;
+			border-bottom: solid 1px #222;
+			box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
+		}
+
+		.terminal {
+
+			background: #181713;
+			color: #5DCFA7;
+		}
+
+		.tabletop {
+			/*background: url("public/images/WoodRough0089_1_S.jpg");*/
+			background: url("public/images/PlywoodNew0050_1_S.jpg");
+			box-shadow: inset 0px 10px 3px rgba(0,0,0,0.2);
+			border-top: 3px solid #222;
+		}
+
+		.regal {
+			border-top: 10px solid #222;
+			background: linear-gradient(rgb(60, 37, 38), rgb(53, 27, 33) 6px);
+			color: #CC905C;
+		}
+
+		.terminal hr {
+			border-color: rgba(255,255,255,0.2);
+		}
+
+		
+
+		.detail_block_group {
+			-moz-column-count: 2;
+			-moz-column-gap: 0px;
+			-webkit-column-count: 2;
+			-webkit-column-gap: 0px;
+			column-count: 2;
+			column-gap: 0px;
+			width: 100%;
+		}
+
+		.detail_block_group > div {
+			display: inline-block;
+			/*background-color: #122;*/
+			width: 100%;
+			
+			overflow: hidden;
+			/*box-shadow: 1px 1px 5px rgba(0,0,0,0.3);*/
+			
+		}
+
+		.terminal .detail_block_group > div {
+			border-color: rgba(256,256,256,0.1);
+			box-shadow: 1px 1px 5px rgba(105, 20, 53, 0.2);
+			border: 3px #112 none;
+			border-bottom: solid;
+			border-right: solid;
+			
+			border-bottom-right-radius: 10px;
+		}
+
+		.tabletop .detail_block_group {
+			text-align: center;
+		}
+
+		.tabletop .detail_block_group > div {
+			width: 93%;
+			/*transform: rotate(0.5deg);*/
+			border-color: rgba(256,256,256,0.1);
+			background-color: #EEE;
+			box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+		}
+	
+
+
+		.terminal .undertitle {
+			font-family: 'Orbitron', monospace;
+		}
+
+		.terminal .big_text {
+			font-weight: bold;
+			font-family: 'Orbitron', monospace;
+		}
+
+		.right_al {
+			text-align: right;
+		}
+		
+		.left_fl {
+			float: left;
+		}
+
+		.inline_parent > div{
+			display: inline;
+		}
+
+	/*	.flex_parent {
+			display: flex;
+		}
+
+		.flex_item{
+		    flex-grow: 1;
+		}
+*/
+
+		.inline {
+			display: inline;
+		}
+
+		.inline_block {
+			display: inline-block;
+		}
+
+		.group_items h1 {
+			
+			text-align: center;
+			font-size: 22px;
+			padding: 10px;
+			/*background: linear-gradient(transparent, rgba(66, 37, 44, 0.19));*/
+		}
+
+		.terminal .group_items h1 {
+			font-family: 'Orbitron', monospace;
+			color: #6B232F;
+		}
+
+		.group_items h2 {
+			font-size: 22px;
+			color: #EEE;
+		}	
+
+		.group_items > div{
+			font-size: 14px;
+			padding: 15px;
+			background-image: url("http://c300221.r21.cf1.rackcdn.com/flower-of-life-1362129627_b.jpg");
+			min-height: 100px;
+			background-size: 120px auto;
+			background-repeat: no-repeat;
+			text-align: justify;
+			padding-left: 130px;
+			background-position: left center;
+		}
+
+
+		#coding, #artisan {
+			/*display: none;*/
+		}
+
+
+
+
+		@media all and (max-width: 900px) {
+		  	.detail_block_group{
+		    	-moz-column-count: 1;
+				-webkit-column-count: 1;
+				column-count: 1;
+			
+		  	}
+
+		  	.group_items > div {
+		  		text-align: left;
+		  		/*padding-left: 15px;*/
+		  		/*background-size: 55px auto;*/
+		  		/*background-position: left top;*/
+
+		  	}
+
+		  	./*group_items h2 {
+		  		text-align: center;
+		  	}*/
+		}
+
+		@media all and (max-width: 400px) {
+			.group_items > div {
+		  		/*text-align: left;*/
+		  		padding-left: 15px;
+		  		background-size: 55px auto;
+		  		background-position: 10px 2px;
+
+		  	}
+
+		  	.group_items h2 {
+		  		/*text-align: center;*/
+		  		padding-left: 60px;
+		  		padding-bottom: 10px;
+		  	}
+		}
 	</style>
 
 </head>
@@ -108,21 +355,204 @@
 
 
 <div id="header" class="standard_portfolio_block"> 
+	<div id="treeline" class="background"></div>
 	
 	<span class="big_text">Seph Reed </span><br>
-	<span class="undertitle">I'll work the first month for minimum wage.<br>
-		I live off less.</span> <br>
+	<span class="undertitle">I'll work the first month for minimum wage.</span> <br>
 		<div id="thumbz_box"> </div>
 </div>
 
 <div id="skillsets" class="standard_portfolio_block">
 	<center>
-		<span class="big_text">My Skillset </span><br>
-		<span class="undertitle">It could be called expansive. It could also be called the whimsical wanderings of an eclectic eccentric.</span> <br>
-		<span class="undertitle">It could be called expansive. It could also be called the whimsical meanderings of an eclectic some guy.</span> <br>
-	</center> 
+		<span class="big_text">My Skillsets</span><br>
+		<span class="undertitle">They could be called expansive. They could also be called the whimsical meanderings of an eccentric young male. <br>
+		 In any case, choose one of the below for details.</span> <br>
+	
 
-	<div class="odd_row">
+		<div class="show_item_group" showing="">
+			<div id="coding_btn" class="worktype" show="#coding">Coding</div>
+			<div id="digital_art_btn" class="worktype" show="#digital_art">Digital Artist</div>
+			<div id="artisan_btn" class="worktype" show="#artisan">Artisan</div>
+			
+			<!-- <div id="artist" class="worktype">Adventurer</div> -->
+		</div>
+	</center>
+</div>
+
+
+<div id="coding" class="terminal standard_portfolio_block" style="display:none"> 
+	<center>
+		<span class="big_text">Coding</span><br>
+		<span class="undertitle">insert tagline</span><br>
+	</center>
+	<br>
+	<hr>
+
+	<!-- My favorite project<br> -->
+	<div class="detail_block_group">
+		<div class="group_items">
+			<h1>Code Ethics</h1>
+
+			<div class="odd_row" style="background-image: url('public/images/LoveOpenSource.png')">
+				<h2>Open Source</h2>
+				<!-- I always prefer working on something open source. It is a welcoming and empathetic way of treating the community, and is one of the few places where I see humans truly working together. Also, I really value having access to the tools I normally could not afford. -->
+				<!-- "Beware of he who would deny you access to information, for in his heart he dreams himself your master."<br>
+				* Sid Meier's Alpha Centauri - 1999<br> -->
+				I just flat out don't like beurocracy, so working on open source software is my way to share and hone my skills without having to feel compromised.  Besides, there is nothing in the world that's better at getting between a good idea and its implementation than closed source code and a "busy" manager.
+
+
+			</div>
+
+			<div style="background-image: url('public/images/NoBloat.png')">
+				<h2 class="">No Bloat</h2>
+				It's just a matter of cleanliness.  There are a lot of users and businesses that either refuse to use or don't understand updates and working around them often creates bloat.  These aren't the kind of people I care to support.
+			</div>
+			
+
+			<div class="odd_row">
+				<h2>Bleeding Edge</h2>
+				It's not exactly an ethic, but I'm much more enthused about the future than I am the past.  Certainly, many great things have been done, but rather than learning to recreate or emulate them, I prefer to get my hands dirty trying to explore the unexplored.  Pioneering, in a modern sense.
+			</div>
+
+			<div>
+				<h2>Humane</h2>
+				The world is as boned as it ever needed to be and some.  But more importantly, the best things in my life could never have been paid for, they came from a certain type of chaos.  It's a strange mixture of goodwill, resources, and freedom that creates the greatest stories, and I really like a good story.
+				
+			</div>
+			
+			
+
+		</div><div class="group_items">
+			<h1>My Toolset</h1>
+
+			<div class="odd_row" style="background-image: url('public/images/html5-css3-js.png')">
+				<h2>HTML 5, CSS 3, Javascript</h2>
+				I've been working with HTML since age 12, CSS the past 6 years, and Javascript the past four years. Javascript is one of my newest languages, but it is also one of my favorites, mostly due to its portability and transparency.
+
+			</div>
+
+			<div>
+				<h2>Three.js</h2>
+				Currently, this is my favorite new tool.  It's what I used to make the moving 3d logo at the top of the page, and it is without any doubt the future of the web.
+			</div>
+			
+
+			<div class="odd_row">
+				<h2>Javascript</h2>
+			</div>
+
+			<div>
+				<h2>Javascript</h2>
+				
+			</div>
+
+		</div><div>
+		My past tool set
+			JQuery, PHP
+		</div><div>
+		My other favorite projects</div>
+	</div>
+
+</div>
+
+
+<div id="artisan" class="standard_portfolio_block tabletop" style="display:none"> 
+	<center>
+		<span class="big_text">Artisan</span><br>
+		<span class="undertitle">Earth, wind, fire, water</span><br>
+	</center>
+	<br>
+	<hr>
+
+	<div class="detail_block_group">
+		<div class="group_items rand_turn">
+			<h1>My Projects</h1>
+
+			<div class="" style="background-image: url('public/images/LoveOpenSource.png')">
+				<h2>Test</h2>
+				dtshnoeadshtnoeanhoeads
+
+			</div>
+
+			<div class="" style="background-image: url('public/images/WoodRough0089.png')">
+				<h2>Test</h2>
+				dtshnoeadshtnoeanhoeads
+
+			</div>
+		
+
+	
+		</div><div class="group_items rand_turn">
+			<h1>My Projects</h1>
+
+			<div class="" style="background-image: url('public/images/LoveOpenSource.png')">
+				<h2>Test</h2>
+				dtshnoeadshtnoeanhoeads
+
+			</div>
+
+			<div class="" style="background-image: url('public/images/WoodRough0089.png')">
+				<h2>Test</h2>
+				dtshnoeadshtnoeanhoeads
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div id="digital_art" class="standard_portfolio_block regal" style="display:none"> 
+	<center>
+		<span class="big_text">Digital Artist</span><br>
+		<span class="undertitle">This red is my favorite color</span><br>
+	</center>
+	<br>
+	<hr>
+
+	<div class="detail_block_group">
+		<div class="group_items">
+			<h1>My Projects</h1>
+
+			<div class="odd_row" style="background-image: url('public/images/LoveOpenSource.png')">
+				<h2>Test</h2>
+				dtshnoeadshtnoeanhoeads
+
+			</div>
+
+			<div class="odd_row" style="background-image: url('public/images/WoodRough0089.png')">
+				<h2>Test</h2>
+				dtshnoeadshtnoeanhoeads
+
+			</div>
+		
+
+	
+		</div><div class="group_items">
+			<h1>My Projects</h1>
+
+			<div class="odd_row" style="background-image: url('public/images/LoveOpenSource.png')">
+				<h2>Test</h2>
+				dtshnoeadshtnoeanhoeads
+
+			</div>
+
+			<div class="odd_row" style="background-image: url('public/images/WoodRough0089.png')">
+				<h2>Test</h2>
+				dtshnoeadshtnoeanhoeads
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	<!-- <div class="odd_row">
 		<span class="big_text">I can make you a phone app</span><br>
 		<span class="undertitle">Using Apache Cordova (PhoneGap)</span> <br>
 	</div>
@@ -173,15 +603,21 @@
 
 </div>
 
+
+
+
+
+
+
 <div id="challanges" class="standard_portfolio_block"> 
 	<span class="big_text">Fast Learner<span><br>
-	<!-- <span class="undertitle">I learn fast</span><br> -->
+	<span class="undertitle">I learn fast</span><br>
 </div>
 
 <div id="timeline" class="standard_portfolio_block"> 
 	<span class="big_text">Run's Deep<span><br>
 	<span class="undertitle">My father would rather teach a toddler DOS than do the same thing twice.</span><br>
-</div>
+</div> -->
 
 
 

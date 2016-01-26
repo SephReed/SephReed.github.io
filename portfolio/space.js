@@ -106,6 +106,7 @@ function init() {
   stats = new Stats();
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.top = '0px';
+  stats.domElement.style.opacity = '0.8';
   container.appendChild(stats.domElement);
 
   document.addEventListener('mousemove', onDocumentMouseMove, false);
