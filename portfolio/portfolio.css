@@ -1,3 +1,7 @@
+/*******************************************
+*               INIT BITS                  *
+*******************************************/
+
 html {
   box-sizing: border-box;
 
@@ -11,15 +15,243 @@ html {
 
 
 body {
-	/*font-family: 'Open Sans', sans-serif;*/
 	font-family: 'Titillium Web', sans-serif;
-	/*background-color: #222;*/
-	/*color: #EEE;*/
 	height: 100%;
 	width: 100%;
 }
 
 
-.standard_porfolio_block {
+
+
+
+
+
+/*******************************************
+*               BASIC BITS                 *
+*******************************************/
+
+.standard_portfolio_block {
 	width: 100%
+	padding-top: 20px;
+	padding-bottom: 40px;
+	border-bottom: solid 1px #222;
+	box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
 }
+
+
+.big_text {
+	font-size: 20px;
+}
+
+.undertitle {
+	font-size: 15px;
+}
+
+.odd_row {
+	background-color: rgba(0,0,0, 0.2);
+}
+
+
+.background {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	pointer-events: none;
+}
+
+
+
+
+
+
+
+/*******************************************
+*               HEADER                     *
+*******************************************/
+
+#header {
+	position: relative;
+	padding-top: 50px;
+	padding-bottom: 20px;
+	background-color: rgba(0,0,0,0);
+	background: linear-gradient(#250329, #192A38);
+	
+	background-repeat: no-repeat;
+	color: #EEE;
+	text-align: center;
+	overflow: hidden;
+}
+
+
+#header .big_text {
+	font-size: 70px;
+}
+
+
+
+#thumbz_box {
+	width: 300px;
+	height: 300px;
+    margin: 0 auto; 
+}
+
+#treeline {
+	background-image: url("http://www.clker.com/cliparts/S/R/7/l/C/A/green-treeline-over-white-background-hi.png");
+	background-repeat: repeat-x;
+	background-position: bottom;
+	opacity: 0.1;
+}
+
+
+
+
+
+
+
+/*******************************************
+*               SKILLSETS                  *
+*******************************************/
+
+#skillsets {
+	padding-top: 20px;
+	background-color: #422;
+	color: #EEE;
+
+	background: linear-gradient(#572125, #481A24 6px);
+	background: linear-gradient(#441C1F, #39161E 6px);
+}
+
+#coding_btn {
+	background-image: url('http://3.bp.blogspot.com/-wH7UWb8xh1A/Uxv-ZXDAtkI/AAAAAAAAAeQ/1V6AHzOCLiA/s1600/View%2B2.png');
+}
+
+
+#artisan_btn {
+	background-image: url('https://pfollansbee.files.wordpress.com/2008/11/autumn-2008.jpg');
+}
+
+
+
+.worktype {
+	height: 200px;
+	width: 200px;
+	display: inline-block;
+	margin: 10px;
+	background-color: #333;
+	border-radius: 20px;
+	border: 1px #222 solid;
+	box-shadow: 1px 0px 4px rgba(0,0,0,0.3);
+	cursor: pointer;
+}
+
+
+
+
+
+
+
+
+/*******************************************
+*          PORTFOLIO DETAILS BITS          *
+*******************************************/
+
+.detail_block_group {
+	-moz-column-count: 2;
+	-moz-column-gap: 0px;
+	-webkit-column-count: 2;
+	-webkit-column-gap: 0px;
+	column-count: 2;
+	column-gap: 0px;
+	width: 100%;
+}
+
+.detail_block_group > div {
+	display: inline-block;
+	width: 100%;
+	overflow: hidden;	
+}
+
+
+.group_items h1 {
+	text-align: center;
+	font-size: 22px;
+	padding: 10px;
+}
+
+.group_items h2 {
+	font-size: 22px;
+	color: #EEE;
+}	
+
+.group_items > div{
+	font-size: 14px;
+	padding: 15px;
+	background-image: url("http://c300221.r21.cf1.rackcdn.com/flower-of-life-1362129627_b.jpg");
+	min-height: 100px;
+	background-size: 120px auto;
+	background-repeat: no-repeat;
+	text-align: justify;
+	padding-left: 130px;
+	background-position: left center;
+}
+
+
+
+
+
+
+/*******************************************
+*          SCREEN SIZE CASE BITS           *
+*******************************************/
+
+@media all and (max-width: 900px) {
+  	.detail_block_group{
+    	-moz-column-count: 1;
+		-webkit-column-count: 1;
+		column-count: 1;
+	
+  	}
+
+  	.group_items > div {
+  		text-align: left;
+  		/*padding-left: 15px;*/
+  		/*background-size: 55px auto;*/
+  		/*background-position: left top;*/
+
+  	}
+
+  	./*group_items h2 {
+  		text-align: center;
+  	}*/
+}
+
+@media all and (max-width: 400px) {
+	.group_items > div {
+  		/*text-align: left;*/
+  		padding-left: 15px;
+  		background-size: 55px auto;
+  		background-position: 10px 2px;
+
+  	}
+
+  	.group_items h2 {
+  		/*text-align: center;*/
+  		padding-left: 60px;
+  		padding-bottom: 10px;
+  	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

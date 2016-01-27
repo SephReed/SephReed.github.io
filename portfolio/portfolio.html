@@ -1,5 +1,8 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
+<meta charset="utf-8"/>
 	
 	<!-- <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> -->
 	<link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
@@ -21,6 +24,10 @@
 	
 
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenLite.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/CSSPlugin.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/ScrollToPlugin.min.js"></script>
+
 	
 
 
@@ -29,139 +36,16 @@
 
 
 	<link rel="stylesheet" type="text/css" href="portfolio.css" />
+	<link rel="stylesheet" type="text/css" href="terminal.css" />
 
 	<style>
-		#redshift {
-			position: fixed;
-			height: 100%;
-			width: 100%;
-			pointer-events: none;
-			background-color: rgba(250, 0, 0, 0.2);
-		}
-
-		#header {
-			position: relative;
-			padding-top: 50px;
-			padding-bottom: 20px;
-			/*background-color: #222;*/
-			background-color: rgba(0,0,0,0);
-
-			/*background-image: linear-gradient(#031B29, #201105);*/
-			/*background-image: url("http://www.nbsbaptistchurch.org/images/Trees%20Black.png");*/
-			background: linear-gradient(#250329, #192A38);
-			
-			background-repeat: no-repeat;
-			color: #EEE;
-			text-align: center;
-			overflow: hidden;
-		}
-
-		.big_text {
-			font-size: 20px;
-		}
-
-		.undertitle {
-			font-size: 15px;
-		}
-
-
-		#skillsets {
-			padding-top: 20px;
-			background-color: #422;
-			color: #EEE;
-
-			background: linear-gradient(#572125, #481A24 6px);
-			background: linear-gradient(#441C1F, #39161E 6px);
-			
-			/*background: linear-gradient(rgb(60, 37, 38), rgb(53, 27, 33) 6px);*/
-			/*color: #CC905C;*/
-
-		}
-
-
-		#challanges {
-			background-color: #EEE;
-			color: #222;
-		}
-
-		#timeline {
-			background-color: #311;
-			color: #EEE;
-		}
-
-		ul {
-			padding-left: 20px;
-			list-style-type: circle;
-		}
-
-		.odd_row {
-			/*background-color: rgba(250,250,250, 0.1);*/
-			background-color: rgba(0,0,0, 0.2);
-		}
-
-
-
-		#thumbz_box {
-			/*left: 50%;
-			right: 50%;
-			position: absolute;
-			z-index: 5;*/
-			width: 300px;
-			height: 300px;
-			/*width: 50%;*/
-		    /* Set the margin-left and margin-right automatically set */
-		    margin: 0 auto; 
-		}
-
-
-
-		#coding_btn {
-			background-image: url('http://3.bp.blogspot.com/-wH7UWb8xh1A/Uxv-ZXDAtkI/AAAAAAAAAeQ/1V6AHzOCLiA/s1600/View%2B2.png');
-		}
-
-
-		#artisan_btn {
-			background-image: url('https://pfollansbee.files.wordpress.com/2008/11/autumn-2008.jpg');
-		}
+		
 
 		
 
-		.worktype {
-			height: 200px;
-			width: 200px;
-			display: inline-block;
-			margin: 10px;
-			background-color: #333;
-			border-radius: 20px;
-			border: 1px #222 solid;
-			box-shadow: 1px 0px 4px rgba(0,0,0,0.3);
-			cursor: pointer;
-		}
+		
 
-
-		.background {
-			position: absolute;
-			height: 100%;
-			width: 100%;
-			top: 0px;
-			left: 0px;
-			pointer-events: none;
-			/*background-color: #222;*/
-		}
-
-		#treeline {
-			background-image: url("http://www.clker.com/cliparts/S/R/7/l/C/A/green-treeline-over-white-background-hi.png");
-			background-repeat: repeat-x;
-			background-position: bottom;
-			opacity: 0.1;
-		}
-
-		.standard_portfolio_block {
-			padding-top: 20px;
-			padding-bottom: 40px;
-			border-bottom: solid 1px #222;
-			box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
-		}
+		
 
 		.terminal {
 			background: #181713;
@@ -185,27 +69,6 @@
 			border-color: rgba(255,255,255,0.2);
 		}
 
-		
-
-		.detail_block_group {
-			-moz-column-count: 2;
-			-moz-column-gap: 0px;
-			-webkit-column-count: 2;
-			-webkit-column-gap: 0px;
-			column-count: 2;
-			column-gap: 0px;
-			width: 100%;
-		}
-
-		.detail_block_group > div {
-			display: inline-block;
-			/*background-color: #122;*/
-			width: 100%;
-			
-			overflow: hidden;
-			/*box-shadow: 1px 1px 5px rgba(0,0,0,0.3);*/
-			
-		}
 
 		.terminal .detail_block_group > div {
 			
@@ -241,64 +104,16 @@
 			font-family: 'Orbitron', monospace;
 		}
 
-		.right_al {
-			text-align: right;
-		}
+	
+
 		
-		.left_fl {
-			float: left;
-		}
-
-		.inline_parent > div{
-			display: inline;
-		}
-
-	/*	.flex_parent {
-			display: flex;
-		}
-
-		.flex_item{
-		    flex-grow: 1;
-		}
-*/
-
-		.inline {
-			display: inline;
-		}
-
-		.inline_block {
-			display: inline-block;
-		}
-
-		.group_items h1 {
-			
-			text-align: center;
-			font-size: 22px;
-			padding: 10px;
-			/*background: linear-gradient(transparent, rgba(66, 37, 44, 0.19));*/
-		}
 
 		.terminal .group_items h1 {
 			font-family: 'Orbitron', monospace;
 			color: #6B232F;
 		}
 
-		.group_items h2 {
-			font-size: 22px;
-			color: #EEE;
-		}	
-
-		.group_items > div{
-			font-size: 14px;
-			padding: 15px;
-			background-image: url("http://c300221.r21.cf1.rackcdn.com/flower-of-life-1362129627_b.jpg");
-			min-height: 100px;
-			background-size: 120px auto;
-			background-repeat: no-repeat;
-			text-align: justify;
-			padding-left: 130px;
-			background-position: left center;
-		}
+		
 
 
 		#coding, #artisan {
@@ -308,42 +123,56 @@
 
 
 
-		@media all and (max-width: 900px) {
-		  	.detail_block_group{
-		    	-moz-column-count: 1;
-				-webkit-column-count: 1;
-				column-count: 1;
-			
-		  	}
+		#popin {
+			position: fixed;
+			background: #122;
+			color: white;
+			/*bottom: -20px;*/
+			bottom: 0px;
+			left:50%;
+			transform: translateX(-50%);
+			padding: 10px;
+			border: 3px solid rgba(39, 95, 85, 0.62);
+			border-bottom-width: 0px;
+			border-radius: 10px;
+			border-bottom-left-radius: 0px;
+			border-bottom-right-radius: 0px
 
-		  	.group_items > div {
-		  		text-align: left;
-		  		/*padding-left: 15px;*/
-		  		/*background-size: 55px auto;*/
-		  		/*background-position: left top;*/
-
-		  	}
-
-		  	./*group_items h2 {
-		  		text-align: center;
-		  	}*/
 		}
 
-		@media all and (max-width: 400px) {
-			.group_items > div {
-		  		/*text-align: left;*/
-		  		padding-left: 15px;
-		  		background-size: 55px auto;
-		  		background-position: 10px 2px;
 
-		  	}
 
-		  	.group_items h2 {
-		  		/*text-align: center;*/
-		  		padding-left: 60px;
-		  		padding-bottom: 10px;
-		  	}
+		#contact_stuff {
+			padding: 20px;
+			position: absolute;
+			top: 0px;
+			right: 0px;
+
 		}
+
+
+		#contact_stuff a {
+			display: inline-block;
+			height: 40px;
+			width: 40px;
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: center center;
+			filter: invert(50%) blur(1px);
+			opacity: 0.6;
+			transition: all 0.4s ease;
+			/*animation: flickerAnimation 1s infinite;*/
+		}
+
+		#contact_stuff a:hover {
+			filter: invert(100%) blur(0px);
+			opacity: 1.0;
+		}
+
+
+		
+
+		
 	</style>
 
 </head>
@@ -357,10 +186,30 @@
 <div id="header" class="standard_portfolio_block"> 
 	<div id="treeline" class="background"></div>
 	
-	<span class="big_text">Seph Reed </span><br>
+	<span class="big_text">Seph Reed</span><br>
 	<span class="undertitle">I'll work the first month for minimum wage.</span> <br>
 		<div id="thumbz_box"> </div>
 </div>
+
+
+<div id="contact_stuff">
+	<a href="#bottom"
+		style="background-image: url('public/images/email_icon.png')"></a>
+	<a href="https://twitter.com/SephReed"
+		style="background-image: url('public/images/twitter_icon.png')"></a>
+	<a href="https://www.youtube.com/channel/UCo3sHpiACNnuw_32EZ8jMgQ"
+		style="background-image: url('public/images/Youtube_icon.png')"></a>
+	<a href="https://www.instagram.com/seph_reed/"
+		style="background-image: url('public/images/instagram_icon.png')"></a>
+	<a href="http://thumbz.bandcamp.com/"
+		style="background-image: url('public/images/icon_bandcamp.png')"></a>
+	<!-- <a href=""
+		style="background-image: url('public/images/')"></a> -->
+
+	
+</div>
+
+
 
 <div id="skillsets" class="standard_portfolio_block">
 	<center>
@@ -370,9 +219,9 @@
 	
 
 		<div class="show_item_group" showing="">
-			<div id="coding_btn" class="worktype" show="#coding">Coding</div>
-			<div id="digital_art_btn" class="worktype" show="#digital_art">Digital Artist</div>
-			<div id="artisan_btn" class="worktype" show="#artisan">Artisan</div>
+			<a href="#coding" id="coding_btn" class="worktype">Coding</a>
+			<a href="#digital_art" id="digital_art_btn" class="worktype">Digital Artist</a>
+			<a href="#artisan" id="artisan_btn" class="worktype">Artisan</a>
 			
 			<!-- <div id="artist" class="worktype">Adventurer</div> -->
 		</div>
@@ -380,7 +229,14 @@
 </div>
 
 
+
+<div id="popin">
+	<a id="back_to_top" href="#skillsets" time="1">Back to skillsets</a> 
+</div>
+
+
 <div id="coding" class="terminal standard_portfolio_block" style="display:none"> 
+	<br>
 	<center>
 		<span class="big_text">Coding</span><br>
 		<span class="undertitle">insert tagline</span><br>
@@ -548,76 +404,6 @@
 
 
 
-
-
-
-
-	<!-- <div class="odd_row">
-		<span class="big_text">I can make you a phone app</span><br>
-		<span class="undertitle">Using Apache Cordova (PhoneGap)</span> <br>
-	</div>
-	<br>
-
-	<div class="odd_row">
-		<span class="big_text">Coding</span><br>
-		<span class="undertitle">I friggin love coding.</span> <br>
-		<span class="big_text">I usually go for open source web stuff<span><br>
-	</div>
-	<br>
-
-	<div class="odd_row">
-		<span class="big_text">HTML, CSS, JavaScript - These are pretty default</span><br>
-	</div>
-
-	<ul>
-		<li>Coding<ul>
-			<li>JS<ul>
-				<li>Three.js</li>
-				<li>Green Sock</li>
-				<li>Angular</li>
-				<li>PhoneGap (Apache Conical)</li>
-				<li>JQuery (Depreciated)</li>
-				<li></li>
-				<li></li>
-			</ul></li>
-			<li>Java</li>
-			<li></li>
-		</ul></li>
-
-		<li>Artisan<ul>
-			<li>Wood<ul>
-				<li>Van</li>
-				<li>Furniture</li>
-				<li>Volunteering</li>
-				<li>Construction</li>
-			</ul></li>
-			<li>Metal<ul>
-				<li>Pieces</li>
-			</ul></li>
-		</ul></li>
-		
-		<li>Artist<ul>
-		</ul></li>
-	</ul>
-
-
-</div>
-
-
-
-
-
-
-
-<div id="challanges" class="standard_portfolio_block"> 
-	<span class="big_text">Fast Learner<span><br>
-	<span class="undertitle">I learn fast</span><br>
-</div>
-
-<div id="timeline" class="standard_portfolio_block"> 
-	<span class="big_text">Run's Deep<span><br>
-	<span class="undertitle">My father would rather teach a toddler DOS than do the same thing twice.</span><br>
-</div> -->
 
 
 

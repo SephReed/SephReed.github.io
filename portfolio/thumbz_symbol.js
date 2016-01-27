@@ -24,7 +24,7 @@ function init() {
 	windowHalfY = height / 2;
 
 
-	console.log(width +" "+height);
+	console.log("ThumbzSymbol container dimensions: "+width +"x"+height);
 
 	var scene = new THREE.Scene();
 	// var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -42,9 +42,9 @@ function init() {
 	domBox.appendChild( renderer.domElement );
 
 	// var geometry = new THREE.SphereGeometry( 100, 100, 100 );
-	var geometry = new THREE.DodecahedronGeometry(100, 3);
-	var material = new THREE.MeshNormalMaterial( { wireframe: true } );
-	var cube = new THREE.Mesh( geometry, material );
+	// var geometry = new THREE.DodecahedronGeometry(100, 3);
+	// var material = new THREE.MeshNormalMaterial( { wireframe: true } );
+	// var cube = new THREE.Mesh( geometry, material );
 	// scene.add( cube );
 
 	camera.position.z = 5;
@@ -62,7 +62,7 @@ function init() {
 		dae = collada.scene;
 		// dae.children[0].children[0].material = new THREE.MeshNormalMaterial( {wireframe : true} );
 		dae.children[0].children[0].material = new THREE.MeshNormalMaterial( { 
-			color: 0xeeffee, 
+			// color: 0xeeffee, 
 			wireframe: false, 
 			transparent: true, 
 			opacity: 0.5, 
@@ -164,7 +164,7 @@ function init() {
 				.easing( TWEEN.Easing.Sinusoidal.InOut).onComplete(
 					function() {
 						pause = true;
-						console.log(lastSide);
+						console.log("Rotated symbol to rotation #"+lastSide);
 					}
 				).start(); 
 				// current_choice = choices[~~(Math.random() * choices.length)];

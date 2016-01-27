@@ -84,7 +84,6 @@ function init() {
 
     materials[i] = new THREE.PointsMaterial({
       size: size,
-      transparency: true,
       opacity: 0.5
     });
 
@@ -106,7 +105,7 @@ function init() {
   stats = new Stats();
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.top = '0px';
-  stats.domElement.style.opacity = '0.8';
+  stats.domElement.style.opacity = '0.5';
   container.appendChild(stats.domElement);
 
   document.addEventListener('mousemove', onDocumentMouseMove, false);
