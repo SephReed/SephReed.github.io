@@ -124,7 +124,10 @@ body {
 }
 
 #coding_btn {
-	background-image: url('http://3.bp.blogspot.com/-wH7UWb8xh1A/Uxv-ZXDAtkI/AAAAAAAAAeQ/1V6AHzOCLiA/s1600/View%2B2.png');
+	/*background-image: url('http://3.bp.blogspot.com/-wH7UWb8xh1A/Uxv-ZXDAtkI/AAAAAAAAAeQ/1V6AHzOCLiA/s1600/View%2B2.png');*/
+	background-image: url('public/images/Code_Workspace.png');
+	background-size: cover;
+	background-position: center center
 }
 
 

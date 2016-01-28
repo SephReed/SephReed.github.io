@@ -47,7 +47,7 @@ $(document).ready(function(){
 	/*** Set up Pop In ***/
 
 	var showing_popin = false;
-	var $popin = $("#popin");
+	var $popin = $("#popin_wrapper");
 
 	TweenLite.set($popin, { 
 		bottom: -$popin.height(), 
@@ -57,16 +57,22 @@ $(document).ready(function(){
 	
 	$(window).scroll( function() {
 		// console.log('e');
-		if(showing_popin == false && currentlyShown != null && window.scrollY > currentlyShown.offset().top) {
+		if(showing_popin == false 
+			&& currentlyShown != null 
+			&& window.scrollY > currentlyShown.offset().top) {
+			// && $(document).height() <= ($(window).height() + $(window).scrollTop())) {
 			// alert('ey!');
 			console.log("e");
 			showing_popin = true;
 			TweenLite.to($popin, 1, { 
-				bottom: 0, 
+				bottom: -10, 
 				ease: Power2.easeOut 
 			});
 		}
-		else if (showing_popin == true && currentlyShown != null && window.scrollY < currentlyShown.offset().top) {
+		else if (showing_popin == true 
+			&& currentlyShown != null 
+			&& window.scrollY < currentlyShown.offset().top) {
+			// && $(document).height() > ($(window).height() + $(window).scrollTop())) {
 			console.log("a");	
 
 			showing_popin = false;
@@ -102,6 +108,19 @@ $(document).ready(function(){
 				});
 			});
 		}
+	});
+
+
+	var mail_used = false;
+	$("#mail_me").click( function() {
+		var email = "Scott"+".";
+		email += "Jaromin";
+		email += "@gmail.com";
+
+		if(mail_used == false) {
+			$("#hidden_mail").append(email);  }
+		$("#hidden_mail").show();
+		mail_used = true;
 	});
 
 

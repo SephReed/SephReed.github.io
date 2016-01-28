@@ -122,24 +122,32 @@
 
 
 
+		#popin_wrapper {
+			position: fixed;
+			text-align: center;
+			width: 100%;
+			bottom: -10px;
+			/*pointer-events: none;*/
+		}
+
 
 		#popin {
-			position: fixed;
-			background: #122;
+			display: inline-block;
+			/*background: #122;*/
 			color: white;
+			position: relative;
 			/*bottom: -20px;*/
-			bottom: 0px;
-			left:50%;
-			transform: translateX(-50%);
-			padding: 10px;
-			border: 3px solid rgba(39, 95, 85, 0.62);
+			
+			/*left:50%;*/
+			/*transform: translateX(-50%);*/
+			/*padding: 10px;*/
+			/*border: 3px solid rgba(39, 95, 85, 0.62);
 			border-bottom-width: 0px;
 			border-radius: 10px;
 			border-bottom-left-radius: 0px;
-			border-bottom-right-radius: 0px
+			border-bottom-right-radius: 0px*/
 
 		}
-
 
 
 		#contact_stuff {
@@ -155,19 +163,32 @@
 			display: inline-block;
 			height: 40px;
 			width: 40px;
-			background-size: contain;
+			background-size: 90% 90%;
 			background-repeat: no-repeat;
 			background-position: center center;
 			filter: invert(50%) blur(1px);
 			opacity: 0.6;
 			transition: all 0.4s ease;
-			/*animation: flickerAnimation 1s infinite;*/
+			
+			/*target-new: tab;*/
 		}
 
 		#contact_stuff a:hover {
+			background-size: 100% 100%;
 			filter: invert(100%) blur(0px);
 			opacity: 1.0;
 		}
+
+
+		#hidden_mail {
+			text-align: center;
+			color: #68262D;
+			background-color: rgba(237, 231, 203, 0.95);
+			border: 2px outset rgba(119, 63, 44, 0.2);
+			box-shadow: 1px 3px 4px  rgba(0, 0, 0, 0.92);
+			border-radius: 8px;
+		}
+
 
 
 		
@@ -193,16 +214,27 @@
 
 
 <div id="contact_stuff">
-	<a href="#bottom"
+	<a id="mail_me" href="#bottom"
 		style="background-image: url('public/images/email_icon.png')"></a>
+
 	<a href="https://twitter.com/SephReed"
-		style="background-image: url('public/images/twitter_icon.png')"></a>
+		style="background-image: url('public/images/twitter_icon.png')"
+		target="_newtab"></a>
+
 	<a href="https://www.youtube.com/channel/UCo3sHpiACNnuw_32EZ8jMgQ"
-		style="background-image: url('public/images/Youtube_icon.png')"></a>
+		style="background-image: url('public/images/Youtube_icon.png')"
+		target="_newtab"></a>
+
 	<a href="https://www.instagram.com/seph_reed/"
-		style="background-image: url('public/images/instagram_icon.png')"></a>
+		style="background-image: url('public/images/instagram_icon.png')"
+		target="_newtab"></a>
+
 	<a href="http://thumbz.bandcamp.com/"
-		style="background-image: url('public/images/icon_bandcamp.png')"></a>
+		style="background-image: url('public/images/icon_bandcamp.png')"
+		target="_newtab"></a><br>
+	<div id="hidden_mail" style="display:none">
+		Bot Test Passed!<br>
+	</div>
 	<!-- <a href=""
 		style="background-image: url('public/images/')"></a> -->
 
@@ -230,8 +262,131 @@
 
 
 
-<div id="popin">
-	<a id="back_to_top" href="#skillsets" time="1">Back to skillsets</a> 
+<style>
+
+#bottom_tab {
+	
+  	/*height: 50;*/
+  	/*width: 200;*/
+  	stroke-width: 2px;
+  	/*fill: #43623E;*/
+	stroke: rgba(39, 38, 38, 0.92);
+	stroke: #5DCFA7;
+}
+
+#popin_overlay {
+	position: absolute;
+	/*top: -20px;*/
+	top: 5px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	text-align: center;
+}
+
+
+#popin_overlay a {
+	position: relative;
+	/*margin-top: 20px;*/
+	top: 0px;
+	display: inline-block;
+	height: 50px;
+	width: 50px;
+	background-size: 90% 90%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	filter: invert(80%);
+	/*opacity: 0.6;*/
+	transition: all 0.3s ease;
+	
+	/*target-new: tab;*/
+}
+
+#popin_overlay a:hover {
+	top: -3px;
+	background-size: 100% 100%;
+}
+
+#popin_wrapper {
+	/*padding-top: 20px;*/
+}
+
+
+.tooltip_group > a span {
+	pointer-events: none;
+      position: absolute;
+      width: 100px;
+      height: 30px;
+      top: -35px;
+      /*left: -20px;*/
+      /*line-height: 30px;*/
+      /*padding: 10px;*/
+      opacity: 0.0;
+      font-size: 14px;
+      text-align: center;
+      color: rgb(113, 157, 171);
+      background: rgb(255, 255, 255);
+      border: 4px solid rgb(255, 255, 255);
+      border-radius: 5px;
+      text-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px;
+      box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 0px;
+
+      transform: translateX(-50%);
+      transition: all 0.3s ease 0.2s;
+}
+
+.tooltip_group > a:hover span {
+	opacity: 0.9;
+}
+
+
+
+
+
+</style>
+
+<div id="popin_wrapper">
+
+	<div id="popin">
+		<svg id="bottom_tab" height="60" width="280" viewBox="0 0 100 100" preserveAspectRatio = "none">
+			<defs>
+		    	<linearGradient id="copper_grad" x1="0%" y1="0%" x2="0%" y2="100%">
+		      		<stop offset="0%" style="stop-color:rgb(38, 37, 35);stop-opacity:1" />
+		      		<stop offset="100%" style="stop-color:rgb(17, 17, 17);stop-opacity:1" />
+		    	</linearGradient>
+		  	</defs>
+	
+		  <!-- <ellipse cx="0" cy="0" rx="85" ry="55" fill="url(#grad1)" /> -->
+
+		  <!-- <polygon points="0,100 25,0 75,0 100,100" /> -->
+		  	<polyline points="0,100 15,0 85,0 100,100" fill="url(#copper_grad)"/>
+
+		</svg>
+	
+		<div id="popin_overlay" class="tooltip_group">
+			<a 	href="#header"
+				style="background-image: url('public/images/Thumbz_icon.png')">
+				<span>Back to Top</span>
+			</a>
+
+			<a 	href="#skillsets"
+				style="background-image: url('public/images/skillsets_icon.png')">
+				<span>Other Skillsets</span>
+			</a>
+
+			<a 	href="#bottom"
+				style="background-image: url('public/images/email_icon.png')">
+				<span>Email</span>
+			</a>
+			
+			<a 	href="https://www.instagram.com/seph_reed/"
+				style="background-image: url('public/images/instagram_icon.png')"
+				target="_newtab">
+				<span>My Photos</span>
+			</a>
+		</div>
+	</div>
+	
 </div>
 
 
