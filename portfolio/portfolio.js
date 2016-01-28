@@ -21,7 +21,7 @@ var currentlyShown = null;
 $(document).ready(function(){
 	
 	
-	$( ".show_item_group > a" ).click(function(event) {
+	$( ".show_item_group > a" ).vclick(function(event) {
 		event.preventDefault();
 
 		if(currentlyShown != null) { currentlyShown.hide(); }
@@ -93,7 +93,7 @@ $(document).ready(function(){
 
 			console.log("Changing <a href='"+href+"'> behavior to use GSAP scrolling");
 
-			$(this).click( function(event) {
+			$(this).vclick( function(event) {
 				var time = $(this).attr("time");
 				time =  time == null ? 2 : time;
 
@@ -112,7 +112,8 @@ $(document).ready(function(){
 
 
 	var mail_used = false;
-	$("#mail_me").click( function() {
+	$("#mail_me").vclick( function(event) {
+		event.preventDefault();
 		var email = "Scott"+".";
 		email += "Jaromin";
 		email += "@gmail.com";
@@ -123,6 +124,17 @@ $(document).ready(function(){
 		mail_used = true;
 	});
 
-
 });
+
+
+
+
+$.fn["vclick"] = function(callback) {  
+	$(this).click(callback);
+	$(this).tap( function() {
+		$(this).click();
+	});
+};
+
+
 
