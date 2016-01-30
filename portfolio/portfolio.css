@@ -197,7 +197,7 @@ a:hover {  color: #FFA;  }
 	/*max-width: 1000px;*/
 	margin-left: 6%;
 	margin-right: 6%;
-	
+	transition: all 1.0s ease;
 }
 
 .terminal .wide_block_group {
@@ -320,6 +320,11 @@ a:hover {  color: #FFA;  }
 
   	}
 
+  	.wide_block_group {
+  		margin-left: 2%;
+  		margin-right: 2%;
+  	}
+
   	./*group_items h2 {
   		text-align: center;
   	}*/
@@ -340,6 +345,9 @@ a:hover {  color: #FFA;  }
   		padding-bottom: 10px;
   	}
 
+  	/*.single_column_image > div {
+  		margin-left: 
+  	}*/
   	./*worktype {
   		margin: 4px;
   		width: 140px;
