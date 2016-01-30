@@ -14,14 +14,43 @@ animate();
 
 function init() {
 
-  container = document.createElement('div');
-  container.style.position = "absolute";
-  // container.style.zIndex = -1;
-  container.style.top = 0;
-  document.getElementById('header').appendChild(container);
+  var domBox = document.getElementById("space_box");
 
-  camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 2000);
+  if(domBox == null) {  
+    console.log("No div element with the ID of 'space_box' exists.  Proceeding to fail.")
+    return;  
+  }
+
+  var width = domBox.offsetWidth;
+  var height = domBox.offsetHeight;
+
+  console.log("Space container dimensions: "+width +"x"+height);
+
+  renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+  renderer.setSize( width, height );
+  domBox.appendChild( renderer.domElement );
+
+  camera = new THREE.PerspectiveCamera(100, width / height, 1, 2000);
   camera.position.z = 1000;
+
+
+
+  // container = document.createElement('div');
+  // container.style.position = "absolute";
+  // container.style.top = 0;
+  // document.getElementById('header').appendChild(container);
+
+
+  // renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  // renderer.setPixelRatio(window.devicePixelRatio);
+  // renderer.setSize(window.innerWidth, window.innerHeight);
+  // container.appendChild(renderer.domElement);
+
+  // camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 2000);
+  // camera.position.z = 1000;
+
+
+
 
   scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x000000, 0.0007);
@@ -97,10 +126,7 @@ function init() {
 
   }
 
-  renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  container.appendChild(renderer.domElement);
+  
 
   // stats = new Stats();
   // stats.domElement.style.position = 'absolute';
@@ -170,7 +196,7 @@ function animate() {
   requestAnimationFrame(animate);
 
   render();
-  stats.update();
+  // stats.update();
 
 }
 

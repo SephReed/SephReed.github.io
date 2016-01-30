@@ -16,8 +16,6 @@ html {
 
 body {
 	font-family: 'Titillium Web', sans-serif;
-	/*height: 100%;*/
-	/*width: 100%;*/
 }
 
 a {
@@ -106,11 +104,23 @@ a:hover {  color: #FFA;  }
     margin: 0 auto; 
 }
 
+#space_box {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+}
+
 #treeline {
+	pointer-events: none;
+	position: absolute;
 	background-image: url("http://www.clker.com/cliparts/S/R/7/l/C/A/green-treeline-over-white-background-hi.png");
 	background-repeat: repeat-x;
 	background-position: bottom;
 	opacity: 0.1;
+	height: 100%;
+	width: 100%;
+	bottom: -8px;
 }
 
 

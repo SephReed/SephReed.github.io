@@ -12,7 +12,10 @@ function init() {
 
 	domBox = document.getElementById("thumbz_box");
 
-	if(domBox == null) {  return;  }
+	if(domBox == null) {  
+		console.log("No div element with the ID of 'thumbz_box' exists.  Proceeding to fail.")
+		return;  
+	}
 
 	var width = domBox.offsetWidth;
 	var height = domBox.offsetHeight;
@@ -32,7 +35,6 @@ function init() {
 	domBox.appendChild( renderer.domElement );
 
 	camera.position.z = 5;
-
 
 
 
@@ -78,14 +80,12 @@ function init() {
 	]
 
 
-
+	var choices = ["X", "Y", "Both"];
 	var lastSide = 0;
 	var current_choice = choices[1];
 	var counter = 0;
-	// var rotation_count = 0;
 	var qpi = Math.PI/2.0;
 	var pause = true;
-	var choices = ["X", "Y", "Both"];
 	var waitTime = 100;
 
 	var render = function () {
