@@ -16,9 +16,18 @@ html {
 
 body {
 	font-family: 'Titillium Web', sans-serif;
-	height: 100%;
-	width: 100%;
+	/*height: 100%;*/
+	/*width: 100%;*/
 }
+
+a {
+	text-decoration: none;
+	color: #AAF;
+}
+
+
+a:visited {  color: #BBB; }
+a:hover {  color: #FFA;  }
 
 
 
@@ -120,14 +129,15 @@ body {
 	color: #EEE;
 
 	background: linear-gradient(#572125, #481A24 6px);
-	background: linear-gradient(#441C1F, #39161E 6px);
+	/*background: linear-gradient(#441C1F, #481C26 6px);*/
 }
 
 #coding_btn {
-	/*background-image: url('http://3.bp.blogspot.com/-wH7UWb8xh1A/Uxv-ZXDAtkI/AAAAAAAAAeQ/1V6AHzOCLiA/s1600/View%2B2.png');*/
 	background-image: url('public/images/Code_Workspace.png');
 	background-size: cover;
-	background-position: center center
+	background-position: center center;
+	font-family: 'Orbitron', monospace;
+	color: #5DCFA7;
 }
 
 
@@ -137,7 +147,11 @@ body {
 
 
 
-.worktype {
+#skillsets a {
+	/*color: #EEE;*/
+	font-size: 20px;
+	line-height: 40px;
+	text-align: center;
 	height: 200px;
 	width: 200px;
 	display: inline-block;
@@ -146,12 +160,18 @@ body {
 	border-radius: 20px;
 	border: 1px #222 solid;
 	box-shadow: 1px 0px 4px rgba(0,0,0,0.3);
-	cursor: pointer;
+	/*cursor: pointer;*/
+	/*text-shadow:
+	    -1px -1px 0 rgba(0,0,0,0.5),
+	    1px -1px 0 rgba(0,0,0,0.5),
+	    -1px 1px 0 rgba(0,0,0,0.5),
+	    1px 1px 0 rgba(0,0,0,0.5);  */
+	overflow: hidden;
 }
 
-
-
-
+#skillsets a > div{ 
+	background-color: rgba(0,0,0,0.3);
+}
 
 
 
@@ -159,6 +179,31 @@ body {
 /*******************************************
 *          PORTFOLIO DETAILS BITS          *
 *******************************************/
+
+.title_block {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.title_block h1 {
+	font-size: 25px;
+}
+
+.title_block h2 {
+	font-size: 18px;
+}
+
+.wide_block_group {
+	/*max-width: 1000px;*/
+	margin-left: 6%;
+	margin-right: 6%;
+	
+}
+
+.terminal .wide_block_group {
+	border-radius: 10px;
+	box-shadow: 0px 0px 5px rgba(255,255,255,0.2);
+}
 
 .detail_block_group {
 	-moz-column-count: 2;
@@ -176,6 +221,12 @@ body {
 	overflow: hidden;	
 }
 
+.group_items > div {
+	font-size: 14px;
+	padding: 15px;
+	text-align: justify;
+}
+
 
 .group_items h1 {
 	text-align: center;
@@ -185,20 +236,64 @@ body {
 
 .group_items h2 {
 	font-size: 22px;
-	color: #EEE;
 }	
 
-.group_items > div{
-	font-size: 14px;
-	padding: 15px;
+.image_blurb_group > div{
 	background-image: url("http://c300221.r21.cf1.rackcdn.com/flower-of-life-1362129627_b.jpg");
 	min-height: 100px;
 	background-size: 120px auto;
 	background-repeat: no-repeat;
-	text-align: justify;
 	padding-left: 130px;
 	background-position: left center;
 }
+
+.single_column_image img {
+	width: 100%;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.single_column_image > div {
+	border-bottom: 1px solid rgba(128,128,128, 0.2);
+}
+
+
+
+
+
+
+
+
+
+
+
+/*******************************************
+*                 YouTube Stuff            *
+*******************************************/
+
+.auto-resizable-iframe {
+  /*max-width: 420px;*/
+  margin: 0px auto;
+}
+
+.auto-resizable-iframe > div {
+  position: relative;
+  padding-bottom: 75%;
+  height: 0px;
+}
+
+.auto-resizable-iframe iframe {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+
 
 
 
@@ -231,7 +326,7 @@ body {
 }
 
 @media all and (max-width: 400px) {
-	.group_items > div {
+	.image_blurb_group > div {
   		/*text-align: left;*/
   		padding-left: 15px;
   		background-size: 55px auto;
@@ -239,7 +334,7 @@ body {
 
   	}
 
-  	.group_items h2 {
+  	.image_blurb_group h2 {
   		/*text-align: center;*/
   		padding-left: 60px;
   		padding-bottom: 10px;
@@ -251,6 +346,12 @@ body {
   		height: 140px;
   	}*/
 }
+
+
+
+
+
+
 
 
 
