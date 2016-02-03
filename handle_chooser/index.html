@@ -1,0 +1,238 @@
+<html>
+<head>
+
+	<script src="../public/js/zepto.js"></script>
+	<script src="handle_chooser.js"></script>
+
+</head>
+
+
+<style>
+	madeUp {
+		display: block;
+		color: #0FF;
+		height: 100px;
+		width: 100px;
+		background-color: #222;
+	}
+
+	.hello {
+		display: block;
+		text-align: center;
+		font-size: 40px;
+		padding-top: 100px;
+	}
+
+	html {
+		background-color: #FEFEFE;
+		color: #333;
+		font-family: arial;
+	}
+</style>
+
+
+<script>
+	var primaryList = [
+		"Awkward",
+		"Buttery",
+		"Capitalist",
+		"Chatty",
+		"Despicable",
+		"Deadly",
+		"Eclectic",
+		"Existentialist",
+		"Flying",
+		"Graceful",
+		"Gullible",
+		"Hunky",
+		"Humanitarian",
+		"Innocent",
+		"Looney",
+		"Mopey",
+		"Sneaky",
+		"Smiling",
+		"Scrupulous",
+		"Sanitary",
+		"Sly",
+		"Troublesome"
+	]
+
+
+	var secondaryList = [
+		"Aardvark",
+		"Alot",
+		"Hippo",
+		"Potato Bug",
+		"Pig",
+		"Kitten",
+		"Rhino",
+		"Giraffe",
+		"Beetle",
+		"Ant",
+		"Mushroom",
+		"Sunflower",
+		"Whale",
+		"Cheeta",
+		"Virus",
+		"Waterbear",
+		"Polar Bear",
+		"Oryx",
+		"Crake",
+		"Goat"
+	]
+
+</script>
+
+
+<body>
+
+	<!-- <div id="handle_chooser"></div>
+	<madeUp id="test">this is here</madeUp> -->
+
+
+
+	<handleChooser define>
+		<select id="primaryChoice" >
+		  	<option value="Name">Name</option>
+		</select> 
+
+		<select id="secondaryChoice">
+		  	<option value="Name">Name</option>
+		</select> 
+
+		<button id="randomize">Randomize</button><br>
+		<span class="hello">Hello, <span class="preview"></span></span>
+	</handleChooser>
+
+
+
+	<handleChooser />
+
+
+
+</body>
+
+
+<script>
+
+function assertSingleton(array) {
+	if(array.length != 1) {
+		console.log("ASSERT FAIL: not a singleton");
+	}
+	else return $(array[0]);
+}
+
+
+
+
+var handleChooserHtml;
+var primaryChoiceHtml;
+var secondaryChoiceHtml;
+
+Zepto(function($){
+  
+	$("handleChooser").each(function() {
+		var doesDefine = $(this).attr("define");
+
+		if (doesDefine == null) {
+			$(this).html(handleChooserHtml);
+		}
+
+
+		
+		var $primaryRepeat = $(this).children("#primaryChoice");
+		var $secondaryRepeat = $(this).children("#secondaryChoice");
+		var $randomize = $(this).children("#randomize");
+		var $preview = assertSingleton($(this).find(".preview"));
+
+		if(doesDefine != null) {
+			
+			
+			primaryChoiceHtml = $primaryRepeat.html();
+			$primaryRepeat.html("");
+
+
+			
+			secondaryChoiceHtml = $secondaryRepeat.html();
+			$secondaryRepeat.html("");
+
+
+			handleChooserHtml = $(this).html();
+			// console.log(doesDefine);
+			// console.log($(this).html())
+			$(this).remove();
+		}
+		else {
+			var appendMe;
+			for(var i = 0; i < primaryList.length; i++) {
+				appendMe = primaryChoiceHtml.replace(/Name/g, primaryList[i]);
+				$primaryRepeat.append(appendMe);
+			}
+
+			for(var i = 0; i < secondaryList.length; i++) {
+				appendMe = secondaryChoiceHtml.replace(/Name/g, secondaryList[i]);
+				$secondaryRepeat.append(appendMe);
+			}
+
+
+			$primaryRepeat.change(function() {
+				$preview.html($primaryRepeat.val()+" "+$secondaryRepeat.val());
+			});
+
+			$secondaryRepeat.change(function() {
+				$preview.html($primaryRepeat.val()+" "+$secondaryRepeat.val());
+			});
+
+			
+			
+
+			$randomize.click( function() {
+				var children = $primaryRepeat.children();
+				var randIndex = Math.random() * children.length;
+				randIndex += Math.random() * 1000;
+				randIndex = ~~(randIndex % children.length);
+				$(children[randIndex]).prop('selected', true);
+
+
+				children = $secondaryRepeat.children();
+				randIndex = Math.random() * children.length;
+				randIndex += Math.random() * 1000;
+				console.log(randIndex);
+				randIndex = ~~(randIndex % children.length);
+				$(children[randIndex]).prop('selected', true);
+
+				$primaryRepeat.change();
+				$secondaryRepeat.change();
+
+
+				
+			});
+
+			$primaryRepeat.change();
+		}
+		
+
+	});
+
+
+	console.log($("handleChooser"));
+
+	console.log($("#test"));
+
+
+
+});
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+</html>

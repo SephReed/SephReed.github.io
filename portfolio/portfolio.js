@@ -124,6 +124,147 @@ $(document).ready(function(){
 		mail_used = true;
 	});
 
+
+
+
+	// var step_to_step = [0, 0];
+
+
+	$(".slideshow").each( function() {
+		var $viewing_area = $(this).children(".viewing_area");
+		var time = 0.4;
+		var in_trasition = false;
+		var prevent_scroll = false;
+
+		
+		function move_slide(leftNotRight) {
+
+			
+			// in_trasition = true;
+			var slide_stops = [];
+			$viewing_area.children("div").each(function () {
+				var addMe = $(this)[0].offsetLeft;
+				slide_stops.push(addMe);
+			});
+
+
+			var pos = $viewing_area.scrollLeft();
+
+
+			var target = -1;
+			var i;
+			if(leftNotRight) {
+				i = slide_stops.length - 1;
+				while(i >= 0 && slide_stops[i] >= pos) { i--; }
+				target = i;
+			}
+			else {
+				i = 0;
+				while(i < slide_stops.length && slide_stops[i] <= pos) { i++; }
+				if(i != slide_stops.length) { target = i; }
+			}
+
+
+			if(target != -1) {
+				// console.log("moving to target "+target);
+
+				TweenLite.to($viewing_area, time, { 
+					scrollTo: { x: slide_stops[target], autoKill:false }, 
+					ease: Power4.easeInOut,
+					onStart: function() {
+						in_trasition = true;
+					},
+					onUpdate: function() {
+						// step_to_step[1]++;
+						// console.log("update "+step_to_step);
+						
+					},
+					onComplete: function() {
+						// console.log('hey');
+						in_trasition = false;
+						console.log(in_trasition);
+						// last_pos = $viewing_area.scrollLeft();
+						prevent_scroll = true;
+						setTimeout(function() {
+							prevent_scroll = false;
+							console.log("no timeout");
+						}, 500);
+					}
+				});
+			}
+
+		}
+
+		$(this).children(".left_arrow").click(function() {
+			move_slide(true);
+		});
+
+		$(this).children(".right_arrow").click(function() {
+			move_slide(false);
+		});
+
+
+		$viewing_area.keydown(function(event) {
+			if(event.which == 37) {
+				move_slide(true);  }
+			if(event.which == 39) {
+				move_slide(false);  }
+		});
+
+
+
+
+		var last_pos = $viewing_area.scrollLeft();
+		$viewing_area.scroll( function(event) {
+			
+			var current_pos = $viewing_area.scrollLeft();
+
+			// console.log(in_trasition+" "+last_pos+" "+current_pos);
+
+			if(prevent_scroll) {
+				$viewing_area.scrollLeft(last_pos);
+				return;
+			}
+			
+			// if(prevent_scroll == true) {
+			// 	var dScroll = Math.abs(current_pos - last_pos);
+			// 	if(dScroll > 1 || dScroll == 0) {
+			// 		$viewing_area.scrollLeft(last_pos);
+			// 		return;
+			// 	}
+			// 	else {
+			// 		prevent_scroll = false;
+			// 	}
+			// }
+
+			if(in_trasition == false && prevent_scroll == false) {
+				if(current_pos - last_pos > 8) {
+					move_slide(false);
+				}
+				else if(current_pos - last_pos < -8) {
+					move_slide(true);
+				}	
+				else {
+					$viewing_area.scrollLeft(last_pos);
+					return;
+				}			
+			}
+
+			// if(prevent_scroll) {
+			// 	prevent_scroll = false;
+			// }
+
+			last_pos = current_pos;
+		});
+
+
+
+		
+	});
+
+
+
+
 });
 
 

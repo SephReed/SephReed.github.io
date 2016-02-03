@@ -257,7 +257,7 @@ a:hover {  color: #FFA;  }
 	background-position: left center;
 }
 
-.single_column_image img {
+.single_column_image > img {
 	width: 100%;
 	padding-left: 15px;
 	padding-right: 15px;
