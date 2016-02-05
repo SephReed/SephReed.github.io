@@ -3,19 +3,30 @@
 var PINE = {};
 PINE.needles = {};
 
-PINE.showErr = true;
+PINE.logErr = true;
+PINE.alertErr = true;
+
+PINE.createMutateLogger = false;
+PINE.avoidReferenceIssues = true;
 
 PINE.err = function(whatevers_the_problem) { //?
-	if(PINE.showErr)  {
+	if(PINE.logErr)  {
 		console.log("PINE error: "+whatevers_the_problem);
 	}
+	if(PINE.alertErr)  {
+		alert("PINE error: "+whatevers_the_problem);
+	}
+}
+
+PINE.logMutations = function(boolean) {
+	PINE.createMutateLogger = true;
 }
 
 
 PINE.get = function(tagName) {
+	if(tagName === undefined) return null;
 	return PINE.needles[tagName.toLowerCase()];
 }
-
 
 
 
@@ -23,11 +34,17 @@ PINE.registerNeedle = function(tagName, init_function) {
 	tagName = tagName.toLowerCase();
 	if(PINE.needles[tagName] == null)  {
 		PINE.needles[tagName] = {};
-		PINE.needles[tagName].init = init_function;
+		// PINE.needles[tagName].init = init_function;
 	}
 	else {
-		PINE.err("needle already registered.  Perhaps try looking into 'PINE.needles[tagName].init' ");
+
+		console.log(PINE.needles.clones);
+
+
+		PINE.err("needle already registered.  OVERWRITING init.  Perhaps try looking into 'PINE.needles[tagName].init' ");
 	}
+
+	PINE.needles[tagName].init = init_function;
 	return PINE.needles[tagName];
 }
 
@@ -36,16 +53,43 @@ PINE.init = function(initMe) {
 	var doesDefine = $(initMe).attr("define");
 
 	if(doesDefine != null)  {
-		PINE.err("Trying to initialize a 'define' element");
+		PINE.err("Trying to initialize a 'define' element ");
+		console.log(initMe);
 	}
 
 	else {
 		var catchId = $(initMe).attr("catchId") == "false" ? false : true;
 
-		var m_tagName = $(initMe)[0].tagName.toLowerCase();
+		// var m_tagName = $(initMe)[0].tagName.toLowerCase();
+		var m_tagName = initMe.tagName.toLowerCase();
 		var my_data = initMe;
-		var masterCopy = PINE.get(m_tagName);
+		var needle = PINE.get(m_tagName);
 
+		
+
+		$(initMe).find("[spawner]").each(function() {
+			var my_spawn = assertSingleton($(this).children("[spawn]"));
+			my_spawn.remove();
+
+			var spawnArray = $(this).attr("spawner");
+
+			var list = needle[spawnArray];
+
+			if(list == null)  {
+				PINE.err("no array called "+spawnArray+" exists under "+needle);
+				return;
+			}
+
+			for (var i = 0; i < list.length; i++) {
+				var appendMe = my_spawn[0].outerHTML.replace(/{{here}}/g, list[i]);
+				$(this).append(appendMe);
+			};
+		});
+
+
+
+
+		//Used by both [setsVal] and [watch] to make sure only one inits a var
 		function ASSERT_VAR_INIT(checkMe) {
 			if(my_data[checkMe] == null) {
 				PINE.err(checkMe +" does not exist, creating");
@@ -56,23 +100,6 @@ PINE.init = function(initMe) {
 			}
 			else return true;
 		}
-
-		$(initMe).find("[spawner]").each(function() {
-			var my_spawn = assertSingleton($(this).children("[spawn]"));
-			my_spawn.remove();
-
-			var spawnArray = $(this).attr("spawner");
-
-			var list = masterCopy[spawnArray];
-
-			if(list)
-
-			for (var i = 0; i < list.length; i++) {
-				var appendMe = my_spawn[0].outerHTML.replace(/{{here}}/g, list[i]);
-				$(this).append(appendMe);
-			};
-		});
-
 
 
 		$(initMe).find("[setsVal]").each(function() {
@@ -96,6 +123,7 @@ PINE.init = function(initMe) {
 
 
 		//TODO: if no parent has watch!!!!
+		//TODO: make watch not repeat old html, just insert new;
 		$(initMe).find("[watch]").each(function() {
 			var $m_watch = $(this);
 			var m_html = $m_watch[0].innerHTML;
@@ -166,6 +194,63 @@ function assertSingleton(array) {
 
 Zepto(function($){
 
+
+	//THIS SOLVES THE PROBLEM BADLY
+	//TODO: call init functions without observing all changes.
+	//know when a static page will call for inits to work
+	if(PINE.avoidReferenceIssues) {
+		// select the target node
+		var target = document.querySelector('body');
+		 
+		// create an observer instance
+		var observer = new MutationObserver(function(mutations) {
+		  	mutations.forEach(function(mutation) {
+		  		var newBits = mutation.addedNodes;
+		  		// console.log(newBits);
+		  		for(var i = 0; i < newBits.length; i++) {
+
+		  			var justAdded = newBits[i];
+		  			var needle = PINE.get(justAdded.tagName);
+
+		    		if(needle != null) {
+		    			PINE.init(justAdded);
+		    			needle.init(justAdded);
+		    		}
+		    	}
+		  	});    
+		});
+		 
+		// configuration of the observer:
+		var config = { childList: true, subtree: true };
+		 
+		// pass in the target node, as well as the observer options
+		observer.observe(target, config);
+	}
+
+
+
+
+	if(PINE.createMutateLogger == true) {
+		// select the target node
+		var target = document.querySelector('body');
+		 
+		// create an observer instance
+		var observer = new MutationObserver(function(mutations) {
+		  mutations.forEach(function(mutation) {
+		    console.log(mutation);
+		  });    
+		});
+		 
+		// configuration of the observer:
+		var config = { attributes: true, childList: true, characterData: true, subtree: true };
+		 
+		// pass in the target node, as well as the observer options
+		observer.observe(target, config);
+ 	}
+
+
+
+
 	$("[define]").each(function() {
 		var m_handle = $(this)[0].tagName.toLowerCase();
 
@@ -201,9 +286,24 @@ Zepto(function($){
 			needle.clones.push(addMe);
 
 			PINE.init(this);
+			if(needle.init != null) {
+				needle.init(this); }
 		});
 	});
+
+
+
+
+
+
+
 });
+
+
+
+
+
+
 
 
 

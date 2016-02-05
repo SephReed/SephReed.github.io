@@ -30,6 +30,8 @@
 <script>
 
 
+// PINE.logMutations();
+
 var handleChooser = PINE.registerNeedle("handleChooser", null);
 
 handleChooser.primaryList =  [
@@ -104,10 +106,10 @@ handleChooser.secondaryList = [
 
 
 	<!--targets="#id .class div"-->
-	<formRandomizerButton define>
-		<button>Randomize</button>
-	</formRandomizerButton>
 
+	
+
+	
 
 	<handleChooser define corral>
 		<select spawner="primaryList" id="prim">
@@ -123,6 +125,9 @@ handleChooser.secondaryList = [
 		<span watch class="hello">Hello, {{@#prim}} {{@#sec}}</span>		
 	</handleChooser>
 
+	<formRandomizerButton define>
+		<button>Randomize</button>
+	</formRandomizerButton>
 
 
 
@@ -146,55 +151,46 @@ handleChooser.secondaryList = [
 
 
 
-Zepto(function($){
 
-	$("formRandomizerButton").each(function() {
 
-		var doesDefine = $(this).attr("definey");
+PINE.registerNeedle("formRandomizerButton", function(initMe) {
 
-		if(doesDefine == null) {
+	var targetsString = $(initMe).attr("targets");
+	var targets = targetsString.split(' ');
 
-			var targetsString = $(this).attr("targets");
-			var targets = targetsString.split(' ');
+	var closest_corral = $(initMe).closest('[corral]');
+	initMe.corralTo = closest_corral.length > 0 ? closest_corral : document.body;
 
-			var closest_corral = $(this).closest('[corral]');
-			this.corralTo = closest_corral.length > 0 ? closest_corral : document.body;
+	$(initMe).click(function() {
+		
+		for(var i = 0; i < targets.length; i++) {
+				//
+			var $changeUs = $(this.corralTo).find(targets[i]);
+			if($changeUs.length == 0) {
+				PINE.err("formRandomizerButton target \""+targets[i]+"\" does not exist within corral");
+				return;
+			}
 
-			$(this).click(function() {
-				
-				for(var i = 0; i < targets.length; i++) {
-						//
-					var $changeUs = $(this.corralTo).find(targets[i]);
-					if($changeUs.length == 0) {
-						console.log("formRandomizerButton target \""+targets[i]+"\" does not exist within corral");
-						return;
-					}
+			$changeUs.each(function() {
+				var elementType = $(this)[0].tagName.toLowerCase();
 
-					$changeUs.each(function() {
-						var elementType = $(this)[0].tagName.toLowerCase();
+				if(elementType === "select") {
+					var choices = $(this).children();
 
-						if(elementType === "select") {
-							var choices = $(this).children();
+					var randIndex = Math.random() * choices.length;
+					randIndex += Math.random() * 1000;
+					randIndex = ~~(randIndex % choices.length);
 
-							var randIndex = Math.random() * choices.length;
-							randIndex += Math.random() * 1000;
-							randIndex = ~~(randIndex % choices.length);
-
-							var $updateMe = $(choices[randIndex]);
-							$updateMe.prop('selected', true);
-							$updateMe.change();
-						}
-					});
+					var $updateMe = $(choices[randIndex]);
+					$updateMe.prop('selected', true);
+					$updateMe.change();
 				}
 			});
 		}
-
 	});
+
+
 });
-
-
-
-
 
 
 

@@ -1,26 +1,292 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+<meta charset="utf-8"/>
+
+
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=html&amp;lang=js"></script>
+<link rel="stylesheet" type="text/css" href="thumbz.pine.pretify.css" />
+
+<script src="../public/js/zepto.js"></script>
+<!-- <script src="PINE.js"></script> -->
+
 <style>
 
 	html {
-		background-color: #FEFEFE;
-		color: #333;
+	  box-sizing: border-box;
+
+	}
+
+	*, *:before, *:after {
+	  	box-sizing: inherit;
+	  	margin: 0px;
+		padding: 0px;
+	}
+
+	html {
+		/*background-color: #FEFEFE;*/
+		/*background-color: #46593E;*/
+		background-color: #354E2C;
+		
+		
+		color: #FEFEFE;
+		color: #222;
+		/*background: linear-gradient(#589496, #54FF87);*/
+		/*background: linear-gradient(#FEFEFE, #BFFAFC);*/
+		background: linear-gradient(#839984, #335434);
 		font-family: arial;
+
+	}
+
+	/*body {
+
+	}*/
+
+	#content {
+		margin-left: 5%;
+		margin-right: 5%;
+		padding: 30px;
+		/*background-color: rgba(0,0,0,0.2);*/
+		/*background-color: rgba(27, 29, 18, 0.56);*/
+		/*background-color: rgba(225, 220, 169, 0.8);*/
+		background-color: rgba(234, 232, 206, 0.8);
+		/*margin-bottom: 300px;*/
+	}
+
+	showHtml {
+		tab-size:4;
+	    -moz-tab-size: 4;
+	    -o-tab-size:  4;
+		/*display: block;
+		width: 90%;
+		margin: auto;
+		border: solid 1px #222;
+		font-size: 14px;
+		background-color: #333;
+		border-radius: 4px;
+		color: #FEFEFE;
+		padding: 20px;*/
+		/*font-family: monospace;*/
+	}
+
+	.prettyprint {
+		padding: 20px;
+		margin-left:  30px;
+
+		white-space: pre-wrap;       /* css-3 */
+		 white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+		 white-space: -pre-wrap;      /* Opera 4-6 */
+		 white-space: -o-pre-wrap;    /* Opera 7 */
+		 word-wrap: break-word; 
+
+		margin-bottom: 10px;
+
+		border-radius: 4px;
+		box-shadow: inset -1px -1px 10px rgba(0,0,0,0.2);
+	}
+
+	#forestBackground {
+		position: fixed;
+		height: 100%;
+		width: 100%;
+		opacity: 0.5;
+		z-index: -1;
+	}
+
+	#tree_and_hill, #forest {
+		position: absolute;
+		/*top: 0px;*/
+		height: 100%;
+		width: 100%;
+		background-size: 1000px auto;
+		background-position: bottom left;
+		transition: all 0.01s ease;
+	}
+
+	#tree_and_hill {
+		background-image: url('../public/images/Pine_hill.png');
+		background-repeat: no-repeat;	
+		bottom: 20px;
+	}
+
+	#forest {
+		background-image: url('../public/images/treeline.png');
+		background-repeat: repeat-x;	
+		bottom: 20px;
+	}
+
+	#header {
+		padding: 20px;
+		text-align: center;
+	}
+
+	#pine {
+		display: inline-block;
+		font-size: 40px;
+		background-image: url('../public/images/Pine_tree.png');
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-color: #64864F;
+		line-height: 100px;
+		/*height: 100px;*/
+		/*width: 100px;*/
+		padding: 10px;
+		border-radius: 100px;
+		color: #FEFEFE;
+		text-shadow: 1px 1px #4E590A;
+		border: 2px outset rgba(0,0,0,0.2);
+	}
+
+
+	#footer {
+		text-align: center;
+		padding-top: 300px;
+		padding-bottom: 300px;
+	}
+
+	hr {
+		margin-bottom: 10px;
 	}
 
 </style>
 </head>
-
 <body>
 
-define: <br><br>
+<div id="forestBackground">
+	<div id="tree_and_hill"></div>
+	<div id="forest"></div>
+</div>
+
+<!-- <body>
+<div id="header"> -->
+	
+</div>
+
+
+<div id="content">
+<div id="pine">PINE</div>
+
+What is it and why might one use it?
+
+
+<br>
+<br>
+
+<h1>Core</h1>
+<h2>Special Attributes</h2>
+
+<showHtml> myTag define : nothing </showHtml>: <br>
+init : null<br>
+desc : Registers itself as the master copy for following tags to fill in. <br>
+ex :<br>
+
+<p data-height="268" data-theme-id="0" data-slug-hash="mVzwOe" data-default-tab="result" data-user="SephReed" class='codepen'>See the Pen <a href='http://codepen.io/SephReed/pen/mVzwOe/'>mVzwOe</a> by Seph Reed (<a href='http://codepen.io/SephReed'>@SephReed</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
+<pre class="prettyprint lang-html">
+	<showHtml>
+		//streak define initializes what is means to be a streak
+		<streak define>
+			WOooOO!
+		</streak>
+
+		//following streaks get their definition from above
+		<streak></streak>
+		<streak></streak>
+		<streak></streak>
+
+		//output will be
+		WOooOO! WOooOO! WOooOO!
+
+	</showHtml>
+</pre>
+
+<hr>
+
+myTag catchId = "true"|"false" <br>
+init = "true"<br>
+desc : initdecides whether {{#id}} searches within this catch, or goes outside<br>
+caviat : id's are supposed to only refer to one thing, but sometimes they don't.  They're starting to become the same thing as classes, but a little bit less broad.  This was not the intention, but a more specific naming convention than classes can be nice, so this is what's likely to happen.
+ex :
+<pre class="prettyprint lang-html">
+	<showHtml>
+		<div id="someId" value="outside">
+
+		<catchTester define catchId="false">
+			<div id="someId" value="inside">
+			I'm getting my #id's from {{#someId}} the catchTester
+		</catchTester>
+
+		<catchTester></catchTester>
+
+		//output will be
+		I'm getting my #id's from outside the catchTester
+	</showHtml>
+</pre>
+
+<hr>
+
+<h2>Javascript</h2>
+
+PINE.avoidReferenceIssues = (true|false) <br>
+init : false <br>
+desc : Set to true if you can't figure out how to define things in the order they appear. <br>
+ex : <br>
+This will work for all functionlity:<br>
+<!-- <sourceCode define><span>test</span></sourceCode> -->
+
+<pre class="prettyprint lang-html">
+	<showHtml>
+		//foo define initializes all foos, including one at bottom
+		<foo define>
+			<bar></bar>
+		</foo>
+
+		//bar define initializes all bars, including the one created below by the foo definition
+		<bar define></bar>
+
+		<foo></foo>
+	</showHtml>
+</pre>
+
+
+This will only work for text:<br>
+<pre class="prettyprint lang-html">
+	<showHtml>
+		//bar define initializes all bars, the only one is in foo define
+		<bar define></bar>
+		
+		//foo define initializes all foos, but does not take the functionality of bar with it.
+		<foo define>
+			<bar></bar>
+		</foo>
+
+		<foo></foo>
+	</showHtml>
+</pre>
+
+This line of text will fix the above if placed at the head:<br>
+<pre class="prettyprint lang-html">
+	<showHtml>
+		<script> PINE.avoidReferenceIssues = true </script>
+	</showHtml>
+</pre>
+<hr>
+
+
+
+
+
+
+<br>
 
 setsVal: <br><br>
 
 catchAlias: all data in {{these}} refers to the nearest parent catchAlias<br><br>
 
-catchId: decides whether {{#id}} searches within this catch, or goes outside<br><br>
+
 
 {{var}}: equates to catchAlias.var <br><br>
 
@@ -30,12 +296,93 @@ watch: search dom element for {{@var}}<br><br>
 
 {{@var}}, {{@#id}}: if surrounded by watch commander, thes values will change with the variable<br><br>
 
-spawner="array": iterates through array, set's the scope to itself for anything with NOT DONE: {{[i]}}<br><br>
 
 
 
+
+<h1>Spawner</h1>
+<h2>Special Attributes</h2>
+<h3>myTag spawner="nameOfArray"</h3>
+init : null
+def : iterates through array, set's the scope to itself for anything with NOT DONE: {{[i]}}<br>
+ex :<br>
+
+
+
+</div>
+
+
+<div id="footer">
+	<div id="pine">PINE</div>
+</div>
 
 
 </body>
+
+
+<script>
+
+$("showHtml").each(function() {
+	var decompileMe = this.innerHTML;
+	decompileMe = decompileMe.replace(/&/g, '&amp;');
+	decompileMe = decompileMe.replace(/</g, '&lt;');
+	decompileMe = decompileMe.replace(/>/g, '&gt;');
+	decompileMe = decompileMe.replace(/\n/g, '<br>');
+
+	var tabs = decompileMe.match(/\t+/g);
+
+
+	if(tabs){
+		var likelyTabAmount = tabs[tabs.length - 1].length + 1;
+		var minAmount = -1;
+		for(var i = 0; i < tabs.length; i++) {
+			var numTabs = tabs[i].length;
+			if(numTabs < minAmount || i == 0) {
+				minAmount = numTabs;
+			}
+			
+		}
+
+		console.log(likelyTabAmount+" likely: min"+minAmount);
+
+		var willRemove = Math.max(likelyTabAmount, minAmount);
+		var regex = new RegExp("\t{"+willRemove+"}", "g");
+
+		console.log(regex);
+
+
+
+
+		decompileMe = decompileMe.replace(regex, '');
+	}
+
+	// console.log(tabs);
+	
+	// decompileMe = decompileMe.replace(/\t/g, 'TAB');
+	
+
+	// console.log(decompileMe);
+	// console.log(this.innerHTML);
+
+	this.innerHTML = decompileMe;
+
+});
+
+$(window).scroll(function(){
+   var scroll = $(window).scrollTop();
+
+   var ratio = scroll / ($(document).height()-window.innerHeight);
+   ratio = Math.pow(ratio, 2);
+   ratio = 1 - ratio;
+   
+  
+   var value = -20*ratio +"px";
+   $("#forest").css("bottom", value);
+
+   var value = -60*ratio +"px";
+   $("#tree_and_hill").css("bottom", value);
+
+}); 
+</script>
 
 </html>
