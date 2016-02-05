@@ -1,0 +1,41 @@
+<html>
+
+<head>
+<style>
+
+	html {
+		background-color: #FEFEFE;
+		color: #333;
+		font-family: arial;
+	}
+
+</style>
+</head>
+
+<body>
+
+define: <br><br>
+
+setsVal: <br><br>
+
+catchAlias: all data in {{these}} refers to the nearest parent catchAlias<br><br>
+
+catchId: decides whether {{#id}} searches within this catch, or goes outside<br><br>
+
+{{var}}: equates to catchAlias.var <br><br>
+
+{{#id}}: equates to $(catch).find('#id').val() if catchId is unset or true, otherwise $('#id').val()<br><br>
+
+watch: search dom element for {{@var}}<br><br>
+
+{{@var}}, {{@#id}}: if surrounded by watch commander, thes values will change with the variable<br><br>
+
+spawner="array": iterates through array, set's the scope to itself for anything with NOT DONE: {{[i]}}<br><br>
+
+
+
+
+
+</body>
+
+</html>
