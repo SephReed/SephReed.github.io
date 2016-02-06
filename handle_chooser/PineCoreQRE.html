@@ -1,0 +1,43 @@
+<script src="../public/js/zepto.js"></script>
+<script src="PINE.js"></script>
+
+<script>
+	PINE.logMutations();  //show all mutations
+	PINE.alertErr = true;  //really get bothered
+
+	var streak = PINE.registerNeedle("streak", null);  //register your custom tagname
+	streak.repetoir = ["WOooOO!", "AHHHHH!", "PAAARTAY!"];  //set some global data for it
+</script>
+
+<streak define corral>
+	Bob:
+	<select spawner="repetoir" id="streaker_bob" setsVal="lastThingSaid">
+	  	<option spawn value="{{here}}">{{here}}</option>
+	</select><br>
+
+	Sally:
+	<select spawner="repetoir" id="streaker_sally" setsVal="lastThingSaid">
+	  	<option spawn value="{{here}}">{{here}}</option>
+	</select><br>
+	<br>
+	
+	<span watch>
+		I just saw two streakers.<br>
+		Really?<br>
+		Yeah.  The guy was yelling "{{@#streaker_bob}}" and the girl was yelling "{{@#streaker_sally}}"  You can still hear the last one.<br>
+		Somewhere in the distance: "{{@lastThingSaid}}"<br>
+	</span>		
+	<hr>
+</streak>
+
+<streak></streak>
+<streak></streak>
+
+<style>
+	/*have a little style*/
+	body {
+		background: #FAFAFA;
+		color: #333;
+		font-family: arial;
+	}
+</style>

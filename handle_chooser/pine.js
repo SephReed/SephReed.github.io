@@ -92,7 +92,6 @@ PINE.init = function(initMe) {
 		//Used by both [setsVal] and [watch] to make sure only one inits a var
 		function ASSERT_VAR_INIT(checkMe) {
 			if(my_data[checkMe] == null) {
-				PINE.err(checkMe +" does not exist, creating");
 				my_data[checkMe] = {};
 				my_data[checkMe].value = null;
 				my_data[checkMe].onChange = [];

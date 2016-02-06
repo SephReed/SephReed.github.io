@@ -7,6 +7,7 @@
 
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=html&amp;lang=js"></script>
 <link rel="stylesheet" type="text/css" href="thumbz.pine.pretify.css" />
+<link rel="stylesheet" type="text/css" href="pine.docs.codepen.css" />
 
 <script src="../public/js/zepto.js"></script>
 <!-- <script src="PINE.js"></script> -->
@@ -168,22 +169,71 @@
 <div id="content">
 <div id="pine">PINE</div>
 
-What is it and why might one use it?
+<a href="#quicksell">What is it and why might one use it?</a>
 
 
 <br>
 <br>
-
 <h1>Core</h1>
+<h2>Quick Reference Example</h2>
+<pre class="prettyprint lang-html">
+	<showHtml>
+		<script src="../public/js/zepto.js"></script>
+		<script src="PINE.js"></script>
+
+		<script>
+			PINE.logMutations();  //show all mutations
+			PINE.alertErr = true;  //really get bothered
+
+			var streak = PINE.registerNeedle("streak", null);  //register your custom tagname
+			streak.repetoir = ["WOooOO!", "AHHHHH!", "PAAARTAY!"];  //set some global data for it
+		</script>
+
+		<streak define corral>
+			Bob:
+			<select spawner="repetoir" id="streaker_bob" setsVal="lastThingSaid">
+			  	<option spawn value="{{here}}">{{here}}</option>
+			</select><br>
+
+			Sally:
+			<select spawner="repetoir" id="streaker_sally" setsVal="lastThingSaid">
+			  	<option spawn value="{{here}}">{{here}}</option>
+			</select><br>
+			<br>
+			
+			<span watch>
+				I just saw two streakers.<br>
+				Really?<br>
+				Yeah.  The guy was yelling "{{@#streaker_bob}}" and the girl was yelling "{{@#streaker_sally}}"  You can still hear the last one.<br>
+				Somewhere in the distance: "{{@lastThingSaid}}"<br>
+			</span>		
+			<hr>
+		</streak>
+
+		<streak></streak>
+		<streak></streak>
+
+		<style>
+			/*have a little style*/
+			body {
+				background: #FAFAFA;
+				color: #333;
+				font-family: arial;
+			}
+		</style>
+
+	</showHtml>
+</pre>
+
+
+
+
 <h2>Special Attributes</h2>
 
 <showHtml> myTag define : nothing </showHtml>: <br>
 init : null<br>
 desc : Registers itself as the master copy for following tags to fill in. <br>
 ex :<br>
-
-<p data-height="268" data-theme-id="0" data-slug-hash="mVzwOe" data-default-tab="result" data-user="SephReed" class='codepen'>See the Pen <a href='http://codepen.io/SephReed/pen/mVzwOe/'>mVzwOe</a> by Seph Reed (<a href='http://codepen.io/SephReed'>@SephReed</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
-<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <pre class="prettyprint lang-html">
 	<showHtml>
@@ -306,10 +356,19 @@ watch: search dom element for {{@var}}<br><br>
 init : null
 def : iterates through array, set's the scope to itself for anything with NOT DONE: {{[i]}}<br>
 ex :<br>
+<hr>
+
+<div id="quicksell">
+	<h1>Overview</h1>
+	<h2>What PINE is:</h2>
+	PINE is an html/javascript bridge.  It makes html more functional by allowing you to design templates which use variables stored in the dom element.<br>
+</div>
 
 
 
 </div>
+
+
 
 
 <div id="footer">
@@ -372,14 +431,14 @@ $(window).scroll(function(){
    var scroll = $(window).scrollTop();
 
    var ratio = scroll / ($(document).height()-window.innerHeight);
-   ratio = Math.pow(ratio, 2);
+   ratio = Math.pow(ratio, 3);
    ratio = 1 - ratio;
    
   
    var value = -20*ratio +"px";
    $("#forest").css("bottom", value);
 
-   var value = -60*ratio +"px";
+   var value = -80*ratio +"px";
    $("#tree_and_hill").css("bottom", value);
 
 }); 
