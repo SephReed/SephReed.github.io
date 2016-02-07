@@ -1,0 +1,32 @@
+<script src="../public/js/zepto.js"></script>
+<script src="PINE.js"></script>
+
+<script>
+	PINE.logMutations();  //show all mutations
+	PINE.alertErr = true;  //really get bothered
+
+	var streak = PINE.registerNeedle("streak", null);  //register your custom tagname
+	streak.repetoir = ["WOooOO!", "AHHHHH!", "PAAARTAY!"];  //set some global data for it
+</script>
+
+<streak define>
+	
+	<select spawner="repetoir" id="streaker">
+	  	<option spawn value="{{here}}">{{here}}</option>
+	</select><br>
+
+	<span watch> Streaker says "{{@#streaker}}" </span>		
+	<hr>
+</streak>
+
+<streak></streak>
+<streak></streak>
+
+<style>
+	/*have a little style*/
+	body {
+		background: #FAFAFA;
+		color: #333;
+		font-family: arial;
+	}
+</style>

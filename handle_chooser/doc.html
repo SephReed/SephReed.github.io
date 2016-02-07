@@ -4,13 +4,27 @@
 <head>
 <meta charset="utf-8"/>
 
+<!-- Zepto (is Jquery but better) -->
+<script src="../public/js/zepto.js"></script>
 
+<!-- PINE -->
+<script src="pine.js"></script>
+
+<!-- Green Sock Animations -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenLite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/CSSPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/ScrollToPlugin.min.js"></script>
+<script src="../public/js/on_page_link.tween.js"></script>
+
+
+<!-- Pretify -->
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=html&amp;lang=js"></script>
 <link rel="stylesheet" type="text/css" href="thumbz.pine.pretify.css" />
-<link rel="stylesheet" type="text/css" href="pine.docs.codepen.css" />
 
-<script src="../public/js/zepto.js"></script>
-<!-- <script src="PINE.js"></script> -->
+
+
+
+
 
 <style>
 
@@ -26,54 +40,31 @@
 	}
 
 	html {
-		/*background-color: #FEFEFE;*/
-		/*background-color: #46593E;*/
 		background-color: #354E2C;
-		
 		
 		color: #FEFEFE;
 		color: #222;
-		/*background: linear-gradient(#589496, #54FF87);*/
-		/*background: linear-gradient(#FEFEFE, #BFFAFC);*/
 		background: linear-gradient(#839984, #335434);
 		font-family: arial;
 
 	}
 
-	/*body {
-
-	}*/
-
 	#content {
 		margin-left: 5%;
 		margin-right: 5%;
 		padding: 30px;
-		/*background-color: rgba(0,0,0,0.2);*/
-		/*background-color: rgba(27, 29, 18, 0.56);*/
-		/*background-color: rgba(225, 220, 169, 0.8);*/
 		background-color: rgba(234, 232, 206, 0.8);
-		/*margin-bottom: 300px;*/
 	}
 
 	showHtml {
 		tab-size:4;
 	    -moz-tab-size: 4;
 	    -o-tab-size:  4;
-		/*display: block;
-		width: 90%;
-		margin: auto;
-		border: solid 1px #222;
-		font-size: 14px;
-		background-color: #333;
-		border-radius: 4px;
-		color: #FEFEFE;
-		padding: 20px;*/
-		/*font-family: monospace;*/
 	}
 
 	.prettyprint {
 		padding: 20px;
-		margin-left:  30px;
+		margin-left:  3%;
 
 		white-space: pre-wrap;       /* css-3 */
 		 white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
@@ -100,7 +91,8 @@
 		/*top: 0px;*/
 		height: 100%;
 		width: 100%;
-		background-size: 1000px auto;
+		/*background-size: 1000px auto;*/
+		/*background-size: auto 80%;*/
 		background-position: bottom left;
 		transition: all 0.01s ease;
 	}
@@ -109,12 +101,14 @@
 		background-image: url('../public/images/Pine_hill.png');
 		background-repeat: no-repeat;	
 		bottom: 20px;
+		background-size: auto 80%;
 	}
 
 	#forest {
 		background-image: url('../public/images/treeline.png');
 		background-repeat: repeat-x;	
 		bottom: 20px;
+		background-size: auto 14%;
 	}
 
 	#header {
@@ -151,6 +145,19 @@
 		margin-bottom: 10px;
 	}
 
+
+	/*******************************************
+	*          SCREEN SIZE CASE BITS           *
+	*******************************************/
+
+	@media all and (max-width: 900px) {
+	  	/*.prettyprint {  margin-left: 15px;  }*/
+	}
+
+	@media all and (max-width: 400px) {
+	
+	}
+
 </style>
 </head>
 <body>
@@ -177,12 +184,13 @@
 <h1>Core</h1>
 <h2>Quick Reference Example</h2>
 <pre class="prettyprint lang-html">
-	<showHtml>
+	<showHtml><!--
+		<pine>
 		<script src="../public/js/zepto.js"></script>
 		<script src="PINE.js"></script>
 
 		<script>
-			PINE.logMutations();  //show all mutations
+			PINE.logMutations();  //show all mutations in console
 			PINE.alertErr = true;  //really get bothered
 
 			var streak = PINE.registerNeedle("streak", null);  //register your custom tagname
@@ -221,8 +229,8 @@
 				font-family: arial;
 			}
 		</style>
-
-	</showHtml>
+		</pine>
+	--></showHtml>
 </pre>
 
 
@@ -237,7 +245,7 @@ ex :<br>
 
 <pre class="prettyprint lang-html">
 	<showHtml>
-		//streak define initializes what is means to be a streak
+		<!-- //streak define initializes what is means to be a streak
 		<streak define>
 			WOooOO!
 		</streak>
@@ -249,7 +257,7 @@ ex :<br>
 
 		//output will be
 		WOooOO! WOooOO! WOooOO!
-
+ -->
 	</showHtml>
 </pre>
 
@@ -262,7 +270,7 @@ caviat : id's are supposed to only refer to one thing, but sometimes they don't.
 ex :
 <pre class="prettyprint lang-html">
 	<showHtml>
-		<div id="someId" value="outside">
+		<!-- <div id="someId" value="outside">
 
 		<catchTester define catchId="false">
 			<div id="someId" value="inside">
@@ -272,7 +280,7 @@ ex :
 		<catchTester></catchTester>
 
 		//output will be
-		I'm getting my #id's from outside the catchTester
+		I'm getting my #id's from outside the catchTester -->
 	</showHtml>
 </pre>
 
@@ -289,7 +297,7 @@ This will work for all functionlity:<br>
 
 <pre class="prettyprint lang-html">
 	<showHtml>
-		//foo define initializes all foos, including one at bottom
+	<!-- 	//foo define initializes all foos, including one at bottom
 		<foo define>
 			<bar></bar>
 		</foo>
@@ -297,7 +305,7 @@ This will work for all functionlity:<br>
 		//bar define initializes all bars, including the one created below by the foo definition
 		<bar define></bar>
 
-		<foo></foo>
+		<foo></foo> -->
 	</showHtml>
 </pre>
 
@@ -305,7 +313,7 @@ This will work for all functionlity:<br>
 This will only work for text:<br>
 <pre class="prettyprint lang-html">
 	<showHtml>
-		//bar define initializes all bars, the only one is in foo define
+	<!-- 	//bar define initializes all bars, the only one is in foo define
 		<bar define></bar>
 		
 		//foo define initializes all foos, but does not take the functionality of bar with it.
@@ -313,14 +321,14 @@ This will only work for text:<br>
 			<bar></bar>
 		</foo>
 
-		<foo></foo>
+		<foo></foo> -->
 	</showHtml>
 </pre>
 
 This line of text will fix the above if placed at the head:<br>
 <pre class="prettyprint lang-html">
 	<showHtml>
-		<script> PINE.avoidReferenceIssues = true </script>
+		<!-- <script> PINE.avoidReferenceIssues = true </script> -->
 	</showHtml>
 </pre>
 <hr>
@@ -351,17 +359,73 @@ watch: search dom element for {{@var}}<br><br>
 
 
 <h1>Spawner</h1>
+<h2>Quick Reference Example</h2>
+<pre class="prettyprint lang-html">
+	<showHtml><!--
+		<script src="../public/js/zepto.js"></script>
+		<script src="PINE.js"></script>
+
+		<script>
+			PINE.logMutations();  //show all mutations
+			PINE.alertErr = true;  //really get bothered
+
+			var streak = PINE.registerNeedle("streak", null);  //register your custom tagname
+			streak.repetoir = ["WOooOO!", "AHHHHH!", "PAAARTAY!"];  //set some global data for it
+		</script>
+
+		<streak define>
+			
+			<select spawner="repetoir" id="streaker">
+			  	<option spawn value="{{here}}">{{here}}</option>
+			</select><br>
+
+			<span watch> Streaker says "{{@#streaker}}" </span>		
+			<hr>
+		</streak>
+
+		<streak></streak>
+		<streak></streak>
+
+		<style>
+			/*have a little style*/
+			body {
+				background: #FAFAFA;
+				color: #333;
+				font-family: arial;
+			}
+		</style>
+		-->
+	</showHtml>
+</pre>
+
 <h2>Special Attributes</h2>
-<h3>myTag spawner="nameOfArray"</h3>
+<h3>myTag spawner : "nameOfArray"</h3>
 init : null
 def : iterates through array, set's the scope to itself for anything with NOT DONE: {{[i]}}<br>
 ex :<br>
+<pre class="prettyprint lang-html">
+	<showHtml>
+		<!-- //bar define initializes all bars, the only one is in foo define
+		<bar define></bar>
+		
+		//foo define initializes all foos, but does not take the functionality of bar with it.
+		<foo define>
+			<bar></bar>
+		</foo>
+
+		<foo></foo> -->
+	</showHtml>
+</pre>
+
 <hr>
 
 <div id="quicksell">
 	<h1>Overview</h1>
 	<h2>What PINE is:</h2>
-	PINE is an html/javascript bridge.  It makes html more functional by allowing you to design templates which use variables stored in the dom element.<br>
+	PINE is a type of html/javascript bridge.  It mostly focuses on using html to define variables, templates, and functionality.  This makes it much easier to figure out what is being displayed without putting html into javascript.  It is similar to AngularJS and React.<br>
+
+	<h2>Why use PINE:</h2>
+	Because you like modular, open source code that doesn't give you eye sores by trying to support crappy or old browsers.<br>
 </div>
 
 
@@ -382,48 +446,48 @@ ex :<br>
 <script>
 
 $("showHtml").each(function() {
-	var decompileMe = this.innerHTML;
-	decompileMe = decompileMe.replace(/&/g, '&amp;');
-	decompileMe = decompileMe.replace(/</g, '&lt;');
-	decompileMe = decompileMe.replace(/>/g, '&gt;');
-	decompileMe = decompileMe.replace(/\n/g, '<br>');
 
-	var tabs = decompileMe.match(/\t+/g);
+	this.innerHTML = exitHtml(this.innerHTML);
+
+	// var decompileMe = this.innerHTML;
+
+	// decompileMe = decompileMe.replace("<!--", '');
+
+	// decompileMe = decompileMe.replace(/&/g, '&amp;');
+	// decompileMe = decompileMe.replace(/</g, '&lt;');
+	// decompileMe = decompileMe.replace(/>/g, '&gt;');
+	
+
+	// var tabs = decompileMe.match(/\t+/g);
 
 
-	if(tabs){
-		var likelyTabAmount = tabs[tabs.length - 1].length + 1;
-		var minAmount = -1;
-		for(var i = 0; i < tabs.length; i++) {
-			var numTabs = tabs[i].length;
-			if(numTabs < minAmount || i == 0) {
-				minAmount = numTabs;
-			}
+	// if(tabs){
+	// 	var likelyTabAmount = tabs[tabs.length - 1].length + 1;
+	// 	var minAmount = -1;
+	// 	for(var i = 0; i < tabs.length; i++) {
+	// 		var numTabs = tabs[i].length;
+	// 		if(numTabs < minAmount || i == 0) {
+	// 			minAmount = numTabs;
+	// 		}
 			
-		}
+	// 	}
 
-		console.log(likelyTabAmount+" likely: min"+minAmount);
+	// 	console.log(likelyTabAmount+" likely: min"+minAmount);
 
-		var willRemove = Math.max(likelyTabAmount, minAmount);
-		var regex = new RegExp("\t{"+willRemove+"}", "g");
+	// 	var willRemove = Math.max(likelyTabAmount, minAmount);
+	// 	var regex = new RegExp("\n\t{"+willRemove+"}", "g");
 
-		console.log(regex);
-
-
+	// 	console.log(regex);
 
 
-		decompileMe = decompileMe.replace(regex, '');
-	}
 
-	// console.log(tabs);
-	
-	// decompileMe = decompileMe.replace(/\t/g, 'TAB');
-	
 
-	// console.log(decompileMe);
-	// console.log(this.innerHTML);
+	// 	decompileMe = decompileMe.replace(regex, '\n');
+	// }
 
-	this.innerHTML = decompileMe;
+	// decompileMe = decompileMe.replace(/\n/g, '<br>');
+
+	// this.innerHTML = decompileMe;
 
 });
 

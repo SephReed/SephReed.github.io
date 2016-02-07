@@ -1,0 +1,14 @@
+<html>
+<head>
+	<script src="../public/js/zepto.js"></script>
+</head>
+<body>
+</body>
+
+<script>
+	$.get('helloworld.html', function(response){
+		console.log(response);
+	  	$(document.body).append(response.documentElement);
+	})
+</script>
+</html>

@@ -1,0 +1,43 @@
+<html>
+
+<head>
+<style>
+	/*have a little style*/
+	body {
+		background: #FAFAFA;
+		color: #333;
+		font-family: arial;
+	}
+</style>
+
+<script src="../public/js/zepto.js"></script>
+<script src="PINE.js"></script>
+
+<script>
+	PINE.alertErr = true;  //really get bothered
+</script>
+
+</head>
+
+<body>
+<pine>
+
+	<b> hello </b>
+
+	<includer define>
+		Included below is stuff:
+		<include src="helloworld.html"></include>
+		<include src="helloworld.html" showText></include>
+	</includer>
+
+	<includer></includer><br><br>
+	<includer></includer><br><br>
+	<includer></includer><br><br>
+	
+
+
+</pine>
+
+
+</body>
+</html>

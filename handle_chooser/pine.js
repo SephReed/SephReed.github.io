@@ -30,6 +30,8 @@ PINE.get = function(tagName) {
 
 
 
+
+
 PINE.registerNeedle = function(tagName, init_function) {
 	tagName = tagName.toLowerCase();
 	if(PINE.needles[tagName] == null)  {
@@ -47,6 +49,8 @@ PINE.registerNeedle = function(tagName, init_function) {
 	PINE.needles[tagName].init = init_function;
 	return PINE.needles[tagName];
 }
+
+PINE.register = PINE.registerNeedle;
 
 
 PINE.init = function(initMe) {
@@ -250,7 +254,7 @@ Zepto(function($){
 
 
 
-	$("[define]").each(function() {
+	$("pine [define]").each(function() {
 		var m_handle = $(this)[0].tagName.toLowerCase();
 
 		var needle = PINE.get(m_handle);
@@ -265,7 +269,7 @@ Zepto(function($){
 
 		var masterCopy = this;
 
-		$(m_handle).each(function(index) {
+		$("pine "+m_handle).each(function(index) {
 			this.masterCopy = masterCopy;
 			var attributes = masterCopy.attributes;
 
@@ -286,17 +290,133 @@ Zepto(function($){
 
 			PINE.init(this);
 			if(needle.init != null) {
-				needle.init(this); }
+				needle.init(initMe); }
 		});
 	});
 
 
-
-
-
-
-
 });
+
+
+
+
+
+
+
+
+
+
+PINE.registerNeedle("include", function(initMe) {
+
+	var showText = $(initMe).attr("showText");
+	showText = (showText != "false" && showText != null);
+
+	var needle = this;
+
+	if(needle.includeBank == null) {
+		needle.includeBank = {};
+	}
+
+	var src = initMe.attributes.src;
+	
+	if(src != null)  {
+		var target = src.value;
+
+		if(needle.includeBank[target] == null)  {
+			needle.includeBank[target] = {};
+
+			$.get(target, 
+				function(response){
+					console.log(response);
+					if(response == null) {
+						PINE.err("include src '"+target+"' does not exist")
+					}
+					else {
+						needle.includeBank[target].element = response.documentElement;
+						doInclude();
+					}
+				}
+			);
+
+
+		}			
+		else doInclude();
+	}
+	else {
+		PINE.err("include src for "+initMe+" in not set");
+	}
+
+
+	function doInclude()  {
+		if(needle.includeBank[target].element == null)  {
+			setTimeout(doInclude, 10);
+		}
+		else {
+			if(showText == false) {
+				// $(initMe).html($(needle.includeBank[target].element).clone());
+				$(initMe).html(needle.includeBank[target].element.outerHTML);
+			}
+			else {
+				var decompileMe = needle.includeBank[target].element.innerHTML;
+				$(initMe).html(exitHtml(decompileMe));
+			}
+		}
+	}
+});
+
+
+function exitHtml(exitMe)  {
+	exitMe = exitMe.replace("<!--", '');
+	exitMe = exitMe.replace(/&/g, '&amp;');
+	exitMe = exitMe.replace(/</g, '&lt;');
+	exitMe = exitMe.replace(/>/g, '&gt;');
+	
+	var tabs = exitMe.match(/\t+/g);
+
+	if(tabs){
+		var likelyTabAmount = tabs[tabs.length - 1].length + 1;
+		var minAmount = -1;
+		for(var i = 0; i < tabs.length; i++) {
+			var numTabs = tabs[i].length;
+			if(numTabs < minAmount || i == 0) {
+				minAmount = numTabs;
+			}			
+		}
+
+		var willRemove = Math.max(likelyTabAmount, minAmount);
+		var regex = new RegExp("\n\t{"+willRemove+"}", "g");
+
+		exitMe = exitMe.replace(regex, '\n');
+	}
+
+	exitMe = exitMe.replace(/\n/g, '<br>');
+
+	return exitMe;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
