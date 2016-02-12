@@ -68,115 +68,6 @@ PINE.createNeedle = function(key)  {
 };
 
 
-
-PINE.registerFunction = function(args)  {
-	var key = args.key.toUpperCase();
-	var step_type = args.step_type ? args.step_type : PINE.STATIC;
-	var addMe = args.fn;
-	var continuous = args.continuous ? args.continuous : false;
-
-
-	var step_fns = PINE.functions[step_type];
-
-	if(step_fns == null)  {
-		PINE.err("function group of type: "+step_type+" does not exist");
-		return;
-	}
-
-	var needle = PINE.get(key);
-	if(needle == null)  {
-		PINE.err("needle of keyname:"+key+" does not exist.  Use PINE.createNeedle(key, addMe) first");
-	}
-	else {
-		if(step_fns[key] == null)  {
-			// step_fns.all[key] = {};
-			step_fns.all[key] = [];
-			step_fns.new[key] = [];
-
-			if(needle.functions[step_type] == null)
-				needle.functions[step_type] = [];
-
-			else 
-				PINE.err("function type"+step_type+"registered for needle "+key+" but not for PINE");
-		}
-
-
-		//TODO:  make this work for things which do not trigger the mutation observers
-		//eg: remove skipOne for those cases
-		var funcWithObserve = addMe;
-		if(continuous)  {
-			funcWithObserve = function(initMe, needle)  {
-				addMe(initMe, needle);
-
-
-				var observers = initMe._pine_.observers = {};
-				var parentSee = observers.parentSee = {};
-				parentSee.skipOne = false;
-
-				var config = { childList: true, subtree: true };
-
-				//observer for the parent only acts on the sibling which looks like this
-				parentSee.observer = new MutationObserver(function(mutations) {
-					console.log(mutations);
-
-					mutations.forEach(function(mutation) {
-				  		if(PINE.keyApplies(key, mutation.target)){
-				  			if(parentSee.skipOne == false) {
-					  			parentSee.skipOne = true;
-					  			addMe(initMe, needle);
-
-					  			console.log("applying watch");
-					  		}
-					  		else {
-					  			console.log("skipping watch");
-					  			console.log(mutation);
-					  			parentSee.skipOne = false;
-					  		}
-							// else parentSee.skipOne = false;
-				  		}
-				  	});    
-				});
-				// observers.parentSee.observer.observe(initMe.parentNode, config);
-				observers.parentSee.observer.observe(initMe, config);
-
-
-				// var deepObserver = new MutationObserver(function(mutations) {
-				//   	mutations.forEach(function(mutation) {
-				//   		console.log(mutation);
-				//   		// applyFuncArray(initMe, needle, addMe);
-				//   		addMe(initMe, needle);
-				//   	});    
-				// });
-				// deepObserver.observe(initMe, config);
-
-
-				// console.log("addingObserver");
-				// console.log(observer);
-			}
-		}
-
-		step_fns.all[key].push(funcWithObserve);
-		step_fns.new[key].push(funcWithObserve);
-		needle.functions[step_type].push(funcWithObserve);
-
-		
-	}
-}
-
-
-PINE.keyApplies = function(keyName, domNode)  {
-	if(keyName && domNode)  {
-		keyName = keyName.toUpperCase();
-		if(keyName.charAt(0) == '[')  {
-			var att = keyName.replace(/\[|\]/g, '');
-			return domNode.attributes[att] != null;
-		}
-		else return domNode.tagName == keyName;
-	}
-	return false;
-}
-
-
 PINE.addFunctionForNeedle = function(key, step_type, addMe)  {
 	key = key.toUpperCase();
 
@@ -215,35 +106,9 @@ PINE.addFunctionForNeedle = function(key, step_type, addMe)  {
 
 
 
-PINE.initDebug = function()  {
-
-	if(PINE.createMutateLogger == true) {
-		// select the target node
-		var target = document.querySelector('body');
-		 
-		// create an observer instance
-		var observer = new MutationObserver(function(mutations) {
-		  mutations.forEach(function(mutation) {
-		    console.log(mutation);
-		  });    
-		});
-		 
-		// configuration of the observer:
-		var config = { attributes: true, childList: true, characterData: true, subtree: true };
-		 
-		// pass in the target node, as well as the observer options
-		observer.observe(target, config);
-
-		console.log(observer);
- 	}
-
-}
-
-
 
 
 Zepto(function($){
-	PINE.initDebug();
 	PINE.run();
 });
 
@@ -275,11 +140,9 @@ PINE.run = function()  {
 			
 			PINE.fillTree(Pine_Forest, keyName, applyUs);
 
-			console.log(keyName)
-			step = -1;
+			step = 0;
 			break;
 		}
-		console.log(step)
 	}
 }
 
@@ -294,7 +157,7 @@ function applyFuncArray(root, needle, func_array)  {
 PINE.fillTree = function(root, keyName, applyUs)  {
 	if(root._pine_ == null) {
 		root._pine_ = {};
-		// root._pine_.holds = {};
+		// rootNode._pine_.appliedNeedles = {};
 	}
 
 	// console.log(root);
@@ -302,9 +165,21 @@ PINE.fillTree = function(root, keyName, applyUs)  {
 	// console.log(root.tagName);
 
 
-	if(PINE.keyApplies(keyName, root)){
+	if(keyName.charAt(0) == '[')  {
+		var att = keyName.replace(/\[|\]/g, '');
+		if(root.attributes[att] != null)  {
+			applyFuncArray(root, PINE.get(keyName), applyUs);
+
+			// applyUs(root, PINE.get(keyName));
+		}
+	}
+	else if(root.tagName == keyName)  {
+		// console.log(keyName+" found");
+		// applyMe(root, PINE.get(keyName));
 		applyFuncArray(root, PINE.get(keyName), applyUs);
 	}
+	
+
 
 	var branches = root.childNodes;
 
@@ -335,19 +210,186 @@ PINE.fillTree = function(root, keyName, applyUs)  {
 
 
 
+// function applyNeedleFunctions(keyName, domNode, func_map)  {
+// 	var needleFuncs = func_map.all[keyName];
+// 	if(needleFuncs != null)  {
+// 		var needle = PINE.get(keyName);
+
+// 		var pinelog = domNode._pine_.appliedNeedles[keyName];
+// 		if(pinelog == null)  {
+// 			pinelog = domNode._pine_.appliedNeedles[keyName] = {};
+// 			pinelog.needle = needle;
+// 			// pinelog.appliedFuncs = [];
+
+// 			// while(needleFuncs.length)  {
+// 			// 	needleFuncs.pop()(domNode, needle);
+// 			// }
+
+// 			for(i_func in needleFuncs) {
+// 				needleFuncs[i_func](domNode, needle);
+// 				// pinelog.appliedFuncs.push(needleFuncs[i_func]);
+// 			}
+// 		}
+// 		else  {
+// 			PINE.err("Needle for "+keyName+" already applied to dom element (check console)");
+// 			console.log(domNode);
+// 		}			
+// 	}
+// }
+
+
+
+// PINE.solveTree = function(rootNode, func_type)  {
+	
+
+// 	if(rootNode._pine_ == null) {
+// 		rootNode._pine_ = {};
+// 		rootNode._pine_.appliedNeedles = {};
+// 	}
+
+	
+// 	var needleFuncMap = PINE.functions[func_type];
+
+
+// 	//attribute needles
+// 	var atts = rootNode.attributes;
+// 	for(i_att = 0; i_att < atts.length; i_att++) {
+// 		var attKey = "["+atts[i_att].name+"]";
+// 		applyNeedleFunctions(attKey, rootNode, needleFuncMap);
+// 	}
+
+// 	//tag needles
+// 	var rootNodeName = rootNode.nodeName.toLowerCase();
+// 	applyNeedleFunctions(rootNodeName, rootNode, needleFuncMap);
+
+
+// 	var branches = rootNode.childNodes;
+
+// 	for(var i = 0; i < branches.length; i++)  {
+// 		var branch = branches[i];
+// 		var nodeName = branch.nodeName.toLowerCase();
+
+// 		switch(nodeName)  {
+// 			case "#text":
+// 				break;
+
+// 			case "#comment":
+// 				break;
+
+// 			default: {
+				
+
+// 				PINE.solveTree(branch, func_type);
+// 			}
+
+// 		}
+// 	}
+// }
+
+
+
+
+
+
+
+
+
+
+// PINE.run = function()  {
+// 	$("pine").each(function() {
+// 		for(index in PINE.OrderOfOperations)  {
+// 			var func_type = PINE.OrderOfOperations[index];
+// 			PINE.solveTree(this, func_type);
+// 		}		
+// 	});
+// }
+
+
+
+// function applyNeedleFunctions(keyName, domNode, func_map)  {
+// 	var needleFuncs = func_map.new[keyName];
+// 	if(needleFuncs != null)  {
+// 		var needle = PINE.get(keyName);
+
+// 		var pinelog = domNode._pine_.appliedNeedles[keyName];
+// 		if(pinelog == null)  {
+// 			pinelog = domNode._pine_.appliedNeedles[keyName] = {};
+// 			pinelog.needle = needle;
+// 			// pinelog.appliedFuncs = [];
+
+// 			// while(needleFuncs.length)  {
+// 			// 	needleFuncs.pop()(domNode, needle);
+// 			// }
+
+// 			for(i_func in needleFuncs) {
+// 				needleFuncs[i_func](domNode, needle);
+// 				// pinelog.appliedFuncs.push(needleFuncs[i_func]);
+// 			}
+// 		}
+// 		else  {
+// 			PINE.err("Needle for "+keyName+" already applied to dom element (check console)");
+// 			console.log(domNode);
+// 		}			
+// 	}
+// }
+
+
+
+// PINE.solveTree = function(rootNode, func_type)  {
+	
+
+// 	if(rootNode._pine_ == null) {
+// 		rootNode._pine_ = {};
+// 		rootNode._pine_.appliedNeedles = {};
+// 	}
+
+	
+// 	var needleFuncMap = PINE.functions[func_type];
+
+
+// 	//attribute needles
+// 	var atts = rootNode.attributes;
+// 	for(i_att = 0; i_att < atts.length; i_att++) {
+// 		var attKey = "["+atts[i_att].name+"]";
+// 		applyNeedleFunctions(attKey, rootNode, needleFuncMap);
+// 	}
+
+// 	//tag needles
+// 	var rootNodeName = rootNode.nodeName.toLowerCase();
+// 	applyNeedleFunctions(rootNodeName, rootNode, needleFuncMap);
+
+
+// 	var branches = rootNode.childNodes;
+
+// 	for(var i = 0; i < branches.length; i++)  {
+// 		var branch = branches[i];
+// 		var nodeName = branch.nodeName.toLowerCase();
+
+// 		switch(nodeName)  {
+// 			case "#text":
+// 				break;
+
+// 			case "#comment":
+// 				break;
+
+// 			default: {
+				
+
+// 				PINE.solveTree(branch, func_type);
+// 			}
+
+// 		}
+// 	}
+// }
+
+
+
+
 
 PINE.createNeedle("sayHey");
-PINE.registerFunction({
-	key : "sayHey",
-	step_type : PINE.STATIC,
-	continuous : false,
-	fn : function(initMe, needle) {
-		initMe.innerHTML = "<b>Hey</b>";
-	}
+PINE.addFunctionForNeedle("sayHey", PINE.STATIC, function(initMe, needle) {
+	initMe.innerHTML = "Hey";
 });
-// PINE.addFunctionForNeedle("sayHey", PINE.STATIC, function(initMe, needle) {
-// 	initMe.innerHTML = "<b>Hey</b>";
-// });
 
 
 
@@ -360,17 +402,9 @@ PINE.addFunctionForNeedle("showHtml", PINE.PREPROCESS, function(initMe, needle) 
 });
 
 PINE.createNeedle("[showHtml]");
-PINE.registerFunction({
-	key : "[showHtml]",
-	step_type : PINE.PREPROCESS,
-	continuous : true,
-	fn : function(initMe, needle) {
-		initMe.innerHTML = exitHtml(initMe.innerHTML);
-	}
+PINE.addFunctionForNeedle("[showHtml]", PINE.PREPROCESS, function(initMe, needle) {
+	initMe.innerHTML = exitHtml(initMe.innerHTML);
 });
-// PINE.addFunctionForNeedle("[showHtml]", PINE.PREPROCESS, function(initMe, needle) {
-// 	initMe.innerHTML = exitHtml(initMe.innerHTML);
-// });
 
 
 
@@ -710,7 +744,8 @@ PINE.addFunctionForNeedle("[template]", PINE.DEFINER, function(initMe, needle) {
 PINE.createNeedle("include");
 PINE.addFunctionForNeedle("include", PINE.STATIC, function(initMe, needle) {
 
-	console.log("include");
+	var showText = $(initMe).attr("showText");
+	showText = (showText != "false" && showText != null);
 
 	if(needle.includeBank == null) {
 		needle.includeBank = {};
@@ -724,23 +759,18 @@ PINE.addFunctionForNeedle("include", PINE.STATIC, function(initMe, needle) {
 		if(needle.includeBank[target] == null)  {
 			needle.includeBank[target] = {};
 
-
-			$.ajax({
-				type: 'GET',
-				url: target,
-			  	// type of data we are expecting in return:
-			  	dataType: 'html',
-			  	success: function(response){
-			  		console.log(response);
-			  		needle.includeBank[target].outerHTML = response;
-					doInclude();
-			    	// needle.includeBank[target].element = response.documentElement;
-					// doInclude();
-			  	},
-			  	error: function(xhr, type){
-			    	PINE.err("include src '"+target+"' does not exist")
-			  	}
-			});
+			$.get(target, 
+				function(response){
+					console.log(response);
+					if(response == null) {
+						PINE.err("include src '"+target+"' does not exist")
+					}
+					else {
+						needle.includeBank[target].element = response.documentElement;
+						doInclude();
+					}
+				}
+			);
 
 
 		}			
@@ -752,56 +782,24 @@ PINE.addFunctionForNeedle("include", PINE.STATIC, function(initMe, needle) {
 
 
 	function doInclude()  {
-		if(needle.includeBank[target].outerHTML == null)  {
+		if(needle.includeBank[target].element == null)  {
 			setTimeout(doInclude, 10);
 		}
-		else  {
+		else {
+			if(showText == false) {
+				// $(initMe).html($(needle.includeBank[target].element).clone());
+				$(initMe).html(needle.includeBank[target].element.outerHTML);
 
-			initMe.innerHTML = needle.includeBank[target].outerHTML;
+				for(index in PINE.OrderOfOperations)  {
+					var func_type = PINE.OrderOfOperations[index];
+					PINE.solveTree(initMe, func_type);
+				}	
 
-			// var div = document.createElement('div');
-			// div.innerHTML = needle.includeBank[target].outerHTML;
-			// var elements = div.childNodes;
-
-			// console.log(div);
-			// console.log(initMe);
-			// // initMe.appendChild( div);
-
-			// initMe.innerHTML = div.innerHTML;
-
-
-
-			// $(initMe).html(needle.includeBank[target].outerHTML);
-
-			var step_maps = [];
-			for(index in PINE.OrderOfOperations)  {
-				var step_type = PINE.OrderOfOperations[index];
-				step_maps.push(PINE.functions[step_type].all);
 			}
-
-
-			var fakeGroup = {};
-			fakeGroup.childNodes = initMe.childNodes;
-			fakeGroup.attributes = {};
-			fakeGroup.tagName = {};
-
-			for(var step = 0; step < step_maps.length; step++)  {
-
-				for(keyName in step_maps[step]) {
-					var applyUs = step_maps[step][keyName];
-					delete step_maps[step][keyName];
-					
-					PINE.fillTree(fakeGroup, keyName, applyUs);
-
-					console.log(keyName)
-					step = -1;
-					break;
-				}
-
-				console.log(step)
+			else {
+				var decompileMe = needle.includeBank[target].element.outerHTML;
+				$(initMe).html(exitHtml(decompileMe));
 			}
-		
-			PINE.run();
 		}
 	}
 });

@@ -1,0 +1,88 @@
+<html>
+
+<head>
+<style>
+	/*have a little style*/
+	body {
+		background: #FAFAFA;
+		color: #333;
+		font-family: arial;
+	}
+</style>
+
+<script src="../public/js/zepto.js"></script>
+<script src="PINE.js"></script>
+
+<script>
+	PINE.alertErr = true;  //really get bothered
+	// PINE.createMutateLogger = true;
+</script>
+
+</head>
+
+<body>
+<pine>
+
+	<!-- <showHtml>
+		<include src="helloworld.html"></include>
+	</showHtml>
+ -->
+	<!-- <br>
+
+	<div showHtml><b>test</b></div>
+
+	<include src="helloworld.html"></include> -->
+
+	<!-- <include src="helloworld.html"></include>
+
+
+
+	<load src="helloworld.html" alias="hw">
+		<showHtml>{{hw}}</showHtml>
+		{{hw}}
+	</load> -->
+
+	<!-- <br>
+
+	<foo template>
+		hola
+		<sayHey></sayHey>
+	</foo>
+
+	<foo></foo>
+	<foo></foo>
+ 	<foo></foo> -->
+
+
+ 	<!-- <foo></foo>
+ 	<foo template>
+		<sayHey></sayHey>
+		<include src="helloworld.html"></include>
+	</foo> -->
+
+
+ 	<sayHey></sayHey><br>
+ 	<sayHey showHtml></sayHey>
+ 	<include src="helloworld.html" showHtml></include>
+
+ 	<include src="foo.html" showHtml></include>
+
+
+ 	<!-- <bar></bar>
+
+ 	<bar template>
+ 		I am bar
+ 		<foo></foo>
+ 	</bar>
+
+	<include src="foo.html"></include> -->
+	
+
+
+</pine>
+
+
+</body>
+
+
+</html>
