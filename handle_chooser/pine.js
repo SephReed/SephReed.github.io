@@ -1,16 +1,161 @@
 
 
-var PINE = {};
-PINE.needles = {};
 
+
+
+
+
+
+
+
+
+
+var PINE = {};
+PINE.createMutateLogger = false;
+
+
+PINE.evals = [];
+
+
+
+/**********************************
+*	 	PINE UTILITIES
+*	shall some day be replaced by 
+*  native functions I hope
+**********************************/
+
+
+
+var U = PINE.UTILITIES = {};
+
+U.get = function(start, keyString)  {
+	
+	// var keyArray = keyString.match(/([\w\d]+|\[.+\])/g);
+	var keyArray = keyString.match(/[\w\d]+/g);
+	var pos = start;
+
+	for(i in keyArray)  {
+		if(pos === null || pos === undefined) 
+			return undefined;
+		
+		var key = keyArray[i];
+		// if(key.charAt(0) == '[') {
+		// 	key = U.get(pos, key);
+		// }
+		// else pos = pos[key];
+
+		// var num = parseInt(key);
+		// if(num != NaN)  key = num;
+
+		pos = pos[key];
+		
+	}
+	return pos;
+}
+
+
+
+U.assertVar = function(start, keyString, keyNotArray)  {
+	var keyArray = keyString.match(/[\w\d]+/g)
+	var pos = start;
+
+	var noNeed = true;
+
+	if(start) {
+		for(i in keyArray)  {
+			var key = keyArray[i];
+			if(pos[key] == null) {
+				pos[key] = {};
+				noNeed = false;
+			}
+			pos = pos[key];
+		}
+	}
+	else noNeed = false;
+
+	if(keyNotArray == false && noNeed == false){
+		pos = [];
+	}
+
+	return noNeed;
+}
+
+
+U.assertKey = function(start, keyString)  {
+	U.assertVar(start, keyString, true);
+}
+
+U.assertArray = function(start, keyString)  {
+	U.assertVar(start, keyString, false);
+}
+
+
+U.clone = function(obj) {
+    if (null == obj)  return obj;
+
+    // console.log(typeof obj + "::");
+    // console.log(obj);
+
+    if("object" == typeof obj)  {
+    	var copy;
+    	try { copy = obj.constructor(); }
+    	catch(e) {
+    		PINE.err("Trynig to copy an object which references itself");
+    		PINE.err(e);
+
+    		return;
+    	}
+
+    	// console.log("should not be last");
+
+	    for (var attr in obj) {
+	        if (obj.hasOwnProperty(attr)) {
+	        	copy[attr] = U.clone(obj[attr]);
+	        }
+    	}
+    }
+    else if("array" == typeof obj)  {
+    	// console.log("IN ARRAY");
+    	PINE.err("U.clone array case unfinished");
+    }
+    else return obj;
+    
+    return copy;
+}
+
+
+U.initArray = function(val, size)  {
+	var out = [];
+	for(var i = 0; i < size; i++) {
+		out[i] = val;
+	}
+	return out;
+}
+
+
+
+PINE.deepCloneNode = function(cloneMe)  {
+	console.log("cloning:");
+	console.log(cloneMe);
+
+	var out = cloneMe.cloneNode(true);
+	out._pine_ = U.clone(cloneMe._pine_);
+
+	return out;
+}
+
+
+/**********************************
+*	 	ORDER OF OPERATIONS
+**********************************/
+
+PINE.PREPROCESS = "preprocess";
 PINE.STATIC = "static";
 PINE.DEFINER = "definer";
 PINE.POPULATER = "populater";
 
-PINE.OrderOfOperations = [PINE.STATIC, PINE.DEFINER, PINE.POPULATER];
-
-PINE.PREPROCESS = "preprocess";
-PINE.OrderOfOperations.unshift(PINE.PREPROCESS);
+// PINE.OrderOfOperations = [PINE.PREPROCESS, PINE.STATIC, PINE.DEFINER, PINE.POPULATER];
+PINE.OrderOfOperations = [PINE.PREPROCESS, PINE.STATIC, PINE.POPULATER, PINE.DEFINER];
 
 PINE.functions = {};
 
@@ -24,11 +169,11 @@ for(index in PINE.OrderOfOperations)  {
 
 
 
+/**********************************
+*	 	ERROR HANDLING
+**********************************/
 PINE.logErr = true;
-PINE.alertErr = true;
-
-PINE.createMutateLogger = false;
-PINE.avoidReferenceIssues = true;
+PINE.alertErr = false;
 
 PINE.err = function(whatevers_the_problem) { //?
 	if(PINE.logErr)  {
@@ -39,12 +184,14 @@ PINE.err = function(whatevers_the_problem) { //?
 	}
 }
 
-PINE.logMutations = function(boolean) {
-	PINE.createMutateLogger = true;
-}
 
 
-//Depreciated
+/**********************************
+*	 	NEEDLE STUFF
+**********************************/
+PINE.needles = {};
+
+
 PINE.get = function(key) {
 	if(key === undefined) return null;
 	return PINE.needles[key.toUpperCase()];
@@ -56,6 +203,7 @@ PINE.createNeedle = function(key)  {
 	var needles = PINE.needles;
 	if(needles[key] == null)  {
 		needles[key] = {};
+		needles[key].keyName = key;
 		needles[key].functions = {};
 	}
 	else {
@@ -67,6 +215,7 @@ PINE.createNeedle = function(key)  {
 	return needles[key];
 };
 
+PINE.createNeedle("PINE");
 
 
 PINE.registerFunction = function(args)  {
@@ -74,6 +223,12 @@ PINE.registerFunction = function(args)  {
 	var step_type = args.step_type ? args.step_type : PINE.STATIC;
 	var addMe = args.fn;
 	var continuous = args.continuous ? args.continuous : false;
+	var topToBottom = args.topToBottom === true;
+	var layersOnSelf = !(args.layersOnSelf === false);
+
+
+	//TODO: add oneOff option
+	// var oneOff = args.oneOff ? args.oneOff : false;
 
 
 	var step_fns = PINE.functions[step_type];
@@ -97,8 +252,15 @@ PINE.registerFunction = function(args)  {
 				needle.functions[step_type] = [];
 
 			else 
-				PINE.err("function type"+step_type+"registered for needle "+key+" but not for PINE");
+				PINE.err("function type: '"+step_type+"' registered for needle '"+key+"'' but not in PINE.functions");
 		}
+
+
+		//KLUDGE: make classes
+		var pineFunc = {};
+		pineFunc.key = key;
+		pineFunc.step = step_type;
+		pineFunc.topToBottom = topToBottom;
 
 
 		//TODO:  make this work for things which do not trigger the mutation observers
@@ -117,47 +279,25 @@ PINE.registerFunction = function(args)  {
 
 				//observer for the parent only acts on the sibling which looks like this
 				parentSee.observer = new MutationObserver(function(mutations) {
-					console.log(mutations);
-
 					mutations.forEach(function(mutation) {
 				  		if(PINE.keyApplies(key, mutation.target)){
 				  			if(parentSee.skipOne == false) {
 					  			parentSee.skipOne = true;
 					  			addMe(initMe, needle);
-
-					  			console.log("applying watch");
 					  		}
-					  		else {
-					  			console.log("skipping watch");
-					  			console.log(mutation);
-					  			parentSee.skipOne = false;
-					  		}
-							// else parentSee.skipOne = false;
+					  		else parentSee.skipOne = false;
 				  		}
 				  	});    
 				});
-				// observers.parentSee.observer.observe(initMe.parentNode, config);
 				observers.parentSee.observer.observe(initMe, config);
-
-
-				// var deepObserver = new MutationObserver(function(mutations) {
-				//   	mutations.forEach(function(mutation) {
-				//   		console.log(mutation);
-				//   		// applyFuncArray(initMe, needle, addMe);
-				//   		addMe(initMe, needle);
-				//   	});    
-				// });
-				// deepObserver.observe(initMe, config);
-
-
-				// console.log("addingObserver");
-				// console.log(observer);
 			}
 		}
 
-		step_fns.all[key].push(funcWithObserve);
-		step_fns.new[key].push(funcWithObserve);
-		needle.functions[step_type].push(funcWithObserve);
+		pineFunc.fn = funcWithObserve;
+
+		step_fns.all[key].push(pineFunc);
+		step_fns.new[key].push(pineFunc);
+		needle.functions[step_type].push(pineFunc);
 
 		
 	}
@@ -177,40 +317,60 @@ PINE.keyApplies = function(keyName, domNode)  {
 }
 
 
-PINE.addFunctionForNeedle = function(key, step_type, addMe)  {
-	key = key.toUpperCase();
 
-	var step_fns = PINE.functions[step_type];
 
-	if(step_fns == null)  {
-		PINE.err("function of type: "+step_type+" does not exist");
-		return;
+
+
+PINE.addHold = function(step_type, holdId, domNode)  {
+
+	console.log("adding hold"+holdId)
+
+	if(domNode._pine_.holds == null) {
+		domNode._pine_.holds = {};
 	}
 
-	var needle = PINE.get(key);
-	if(needle == null)  {
-		PINE.err("needle "+key+" does not exist.  Use PINE.createNeedle(key, addMe) first");
+	var holds = domNode._pine_.holds;
+	if(holds[step_type] == null)  {
+		holds[step_type] = [];
 	}
-	else {
-		if(step_fns[key] == null)  {
-			// step_fns.all[key] = {};
-			step_fns.all[key] = [];
-			step_fns.new[key] = [];
 
-			if(needle.functions[step_type] == null)
-				needle.functions[step_type] = [];
+	holds[step_type].push(holdId);
 
-			else 
-				PINE.err("function type"+step_type+"registered for needle "+key+" but not for PINE");
+	if(domNode.tagName != "PINE" && domNode.tagName != "PINEFOREST") {
+		var parent = domNode.parentNode;
+		if(parent != null) {
+			PINE.addHold(step_type, holdId, parent);		
 		}
+	}
+}
 
-		step_fns.all[key].push(addMe);
-		step_fns.new[key].push(addMe);
-		needle.functions[step_type].push(addMe);
+
+
+
+
+
+PINE.removeHold = function(step_type, holdId, domNode)  {
+
+	console.log("removing hold"+holdId)
+	// console.log(domNode);
+
+	var holds = domNode._pine_.holds;
+	if(holds && holds[step_type]) {
+		var index = holds[step_type].indexOf(holdId);
+		if (index > -1) {
+			holds[step_type].splice(index, 1);
+		}	
 	}
 
-	// return needles[key];
-};
+	if(domNode.tagName != "PINE" && domNode.tagName != "PINEFOREST") {
+		var parent = domNode.parentNode;
+		if(parent != null) {
+			PINE.removeHold(step_type, holdId, parent);		
+		}
+	}
+}
+
+
 
 
 
@@ -242,23 +402,94 @@ PINE.initDebug = function()  {
 
 
 
-Zepto(function($){
-	PINE.initDebug();
+
+document.addEventListener("DOMContentLoaded", function(event) { 
+  	PINE.initDebug();
 	PINE.run();
 });
 
 
 
+
+
+PINE.applyStepMapsTo = function(domNode, step_maps) {
+
+	for(var step = 0; step < step_maps.length; step++)  {
+
+		for(keyName in step_maps[step]) {
+			var applyUs = step_maps[step][keyName];
+			delete step_maps[step][keyName];
+
+
+			var downwards = [];
+			var upwards = [];
+			for(i_f in applyUs)  {
+				var func = applyUs[i_f];
+				// console.log(func);
+				if(applyUs[i_f].topToBottom) 
+					downwards.push(applyUs[i_f]);
+				else
+					upwards.push(applyUs[i_f]);
+			}
+
+			if(downwards.length)
+				PINE.fillTree(domNode, downwards);
+
+			if(upwards.length)
+				PINE.fillTree(domNode, upwards);
+
+
+			// console.log(keyName)
+			step = -1;
+			break;
+		}
+		// console.log(step)
+	}
+}
+
+
+PINE.permeateChildren = function(rootNode)  {
+	var fakeGroup = {};
+	fakeGroup.childNodes = rootNode.childNodes;
+	fakeGroup.attributes = {};
+	fakeGroup.tagName = {};
+
+	PINE.permeate(fakeGroup);
+}
+
+
+PINE.permeate = function(rootNode)  {
+	var step_maps = [];
+	for(index in PINE.OrderOfOperations)  {
+		var step_type = PINE.OrderOfOperations[index];
+		step_maps.push(PINE.functions[step_type].all);
+	}
+
+	step_maps = U.clone(step_maps);
+
+	PINE.applyStepMapsTo(rootNode, step_maps);
+}
+
+
+
+
+
+PINE.isRunning = false;
+
 PINE.run = function()  {
+
+	console.log("run");
+
+	if(PINE.isRunning == true) return;
+	PINE.isRunning = true;
 
 	var Pine_Forest = {};
 	Pine_Forest.attributes = {};
 	Pine_Forest.tagName = {};
-	Pine_Forest.childNodes = $("pine, pineforest");
+	// Pine_Forest.childNodes = $("pine, pineforest");
 
+	Pine_Forest.childNodes = document.getElementsByTagName("pine");  //, pineforest
 
-
-	// for(var i_pine = 0; i < )
 
 	var step_maps = [];
 	for(index in PINE.OrderOfOperations)  {
@@ -266,188 +497,200 @@ PINE.run = function()  {
 		step_maps.push(PINE.functions[step_type].new);
 	}
 
+	PINE.applyStepMapsTo(Pine_Forest, step_maps);
 
-	for(var step = 0; step < step_maps.length; step++)  {
-
-		for(keyName in step_maps[step]) {
-			var applyUs = step_maps[step][keyName];
-			delete step_maps[step][keyName];
-			
-			PINE.fillTree(Pine_Forest, keyName, applyUs);
-
-			console.log(keyName)
-			step = -1;
-			break;
-		}
-		console.log(step)
-	}
+	PINE.isRunning = false;
 }
+
+
 
 
 function applyFuncArray(root, needle, func_array)  {
 	for(index in func_array)  {
-		func_array[index](root, needle);
+		func_array[index].fn(root, needle);
 	}
 }
 
 
-PINE.fillTree = function(root, keyName, applyUs)  {
-	if(root._pine_ == null) {
-		root._pine_ = {};
-		// root._pine_.holds = {};
-	}
-
-	// console.log(root);
-	// console.log("checking for "+keyName);
-	// console.log(root.tagName);
-
-
+//KLUDGE: using step when it's in func_array
+function tryFuncKey(keyName, step, root, func_array)  {
 	if(PINE.keyApplies(keyName, root)){
-		applyFuncArray(root, PINE.get(keyName), applyUs);
-	}
+		//check all steps before current step for holds on domNode
+		for(var i = 0; i < PINE.OrderOfOperations.length; i++){
+			var check_step = PINE.OrderOfOperations[i];
 
+			// console.log("checking step "+check_step+" to "+step+" in "+root.tagName);
+			if(step == check_step) break;
+			else if(U.get(root, "_pine_.holds["+check_step+"].length")) 
+			{
+				console.log("should wait");
+				
+				return false;
+			}			
+		}
+
+		applyFuncArray(root, PINE.get(keyName), func_array);
+	}
+	return true;
+}
+
+
+
+function applyFuncToChildren(root, step, keyName, applyUs)  {
 	var branches = root.childNodes;
 
 	for(var i = 0; i < branches.length; i++)  {
 		var branch = branches[i];
 		var nodeName = branch.nodeName;
 
-		switch(nodeName)  {
-			case "#text":
-				break;
-
-			case "#comment":
-				break;
-
-			default: {
-				PINE.fillTree(branch, keyName, applyUs);
-			}
-
+		if(nodeName!="#text" && nodeName!="#comment")  {
+			// PINE.fillTree(branch, step, keyName, applyUs);
+			PINE.fillTree(branch, applyUs);
 		}
 	}
+
+}
+
+
+PINE.fillTree = function(root, pinefuncs, isRetry)  {
+	// console.log(pinefuncs);
+
+	if(root.tagName == "DEPINE") 
+		return;
+
+
+	if(root._pine_ == null) { root._pine_ = {}; }
+	var topToBottom = pinefuncs[0].topToBottom;
+	var key = pinefuncs[0].key;
+	var step = pinefuncs[0].step;
+
+
+	//KLUDGE: don't use isRetry
+	// if(topToBottom == false) {
+	// 	if(isRetry != true)
+	// 		applyFuncToChildren(root, step, key, pinefuncs);
+
+	// 	if(tryFuncKey(key, step, root, pinefuncs) == false)  {
+	// 		setTimeout(function() { 
+	// 				if(PINE.fillTree(root, pinefuncs, true)) 
+	// 					PINE.run();
+	// 			}, 
+	// 			10
+	// 		);
+	// 		return false;
+	// 	}
+	// }
+	// else {
+		// applyFuncToChildren(root, step, key, pinefuncs);
+		if(tryFuncKey(key, step, root, pinefuncs) == false)  {
+			setTimeout(function() { 
+					if(PINE.fillTree(root, pinefuncs)) 
+						PINE.run();
+				}, 
+				10
+			);
+			return false;
+		}
+		applyFuncToChildren(root, step, key, pinefuncs);
+	// }
+	
+	
+
+	// if(topToBottom == true) 
+		
+
+	
+
+
+	// }
+
+
+
+
+	return true;
 }
 
 
 
 
+// PINE.fillTree = function(root, step, keyName, applyUs)  {
+// 	if(root._pine_ == null) { root._pine_ = {}; }
+
+
+// 	// if(applyUs.topToBottom)  {
+// 		if(tryFuncKey(keyName, step, root, applyUs) == false)  {
+// 			setTimeout(function() { 
+// 					if(PINE.fillTree(root, step, keyName, applyUs)) 
+// 						PINE.run();
+// 				}, 
+// 				10
+// 			);
+// 			return false;
+// 		}
+
+// 		applyFuncToChildren(root, step, keyName, applyUs);
+
+
+// 	// }
 
 
 
 
+// 	return true;
+// }	
 
-
-PINE.createNeedle("sayHey");
-PINE.registerFunction({
-	key : "sayHey",
-	step_type : PINE.STATIC,
-	continuous : false,
-	fn : function(initMe, needle) {
-		initMe.innerHTML = "<b>Hey</b>";
-	}
-});
-// PINE.addFunctionForNeedle("sayHey", PINE.STATIC, function(initMe, needle) {
-// 	initMe.innerHTML = "<b>Hey</b>";
-// });
-
-
-
-
-
-
-PINE.createNeedle("showHtml");
-PINE.addFunctionForNeedle("showHtml", PINE.PREPROCESS, function(initMe, needle) {
-	initMe.innerHTML = exitHtml(initMe.innerHTML);
-});
-
-PINE.createNeedle("[showHtml]");
-PINE.registerFunction({
-	key : "[showHtml]",
-	step_type : PINE.PREPROCESS,
-	continuous : true,
-	fn : function(initMe, needle) {
-		initMe.innerHTML = exitHtml(initMe.innerHTML);
-	}
-});
-// PINE.addFunctionForNeedle("[showHtml]", PINE.PREPROCESS, function(initMe, needle) {
-// 	initMe.innerHTML = exitHtml(initMe.innerHTML);
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var templateAttNeedle = PINE.createNeedle("[template]");
-PINE.addFunctionForNeedle("[template]", PINE.DEFINER, function(initMe, needle) {
-
-	console.log("running template");
-
-	var tagName = initMe.tagName;
-
-	console.log(needle);
-	console.log(initMe);
-
-
-	var templatedNeedle = PINE.get(tagName);
-	if(templatedNeedle == null) {
-		templatedNeedle = PINE.createNeedle(tagName, null);	
-	}
-
-	if (templatedNeedle.template == null) {
-		templatedNeedle.template = {}
-		templatedNeedle.template.clones = [];
-		templatedNeedle.template.masterCopy = initMe;
-	}
-	else {
-		PINE.err("template for "+tagName+" already exists!  Overwriting in case that's what you want... if not, just remove template attribute");	
-	}
 
 	
-	
 
-	$(initMe).remove();
+	// if(PINE.keyApplies(keyName, root)){
+	// 	//check all steps before current step for holds on domNode
+	// 	for(var i = 0; i < PINE.OrderOfOperations.length; i++){
+	// 		var check_step = PINE.OrderOfOperations[i];
+
+	// 		// console.log("checking step "+check_step+" to "+step+" in "+root.tagName);
+	// 		if(step == check_step) break;
+	// 		// else if(root._pine_.holds 
+	// 		// 	&& 	root._pine_.holds[check_step]
+	// 		// 	&& 	root._pine_.holds[check_step].length) 
+	// 		// {
+	// 		else if(U.get(root, "_pine_.holds["+check_step+"].length")) 
+	// 		{
+	// 			console.log("should wait");
+	// 			setTimeout(function() { 
+	// 					if(PINE.fillTree(root, step, keyName, applyUs)) 
+	// 						PINE.run();
+	// 				}, 
+	// 				10
+	// 			);
+	// 			return false;
+	// 		}			
+	// 	}
+
+	// 	applyFuncArray(root, PINE.get(keyName), applyUs);
+	// }
+
+	// console.log("checking children");
+
+	// var branches = root.childNodes;
+
+	// for(var i = 0; i < branches.length; i++)  {
+	// 	var branch = branches[i];
+	// 	var nodeName = branch.nodeName;
+
+	// 	if(nodeName!="#text" && nodeName!="#comment")  {
+	// 		PINE.fillTree(branch, step, keyName, applyUs);
+	// 	}
+	// }
+
+	// return true;
+// }
 
 
 
 
-	PINE.addFunctionForNeedle(tagName, PINE.POPULATER, function(tagElement, tagNeedle) {
-		console.log(tagElement);
-		console.log(tagNeedle);
 
-		var template = tagNeedle.template;
 
-		$elem = $(tagElement);
-
-		// tagNeedle.masterCopy = masterCopy;
-		var attributes = template.masterCopy.attributes;
-
-		for(var i = 0; i < attributes.length; i++) {
-			var att_name = attributes[i].name;
-
-			if(att_name != "template")  {
-				var att_value = attributes[i].value;
-				if($elem.attr(att_name) == null) {
-					$elem.attr(att_name, att_value);
-				}
-			}
-		}
-
-		$elem.html(template.masterCopy.innerHTML);
-		template.clones.push(tagElement);
-	});
-
-});
-
+// "style = font: {{hey}}; text: hey :+: thing = what"
 
 
 
@@ -582,16 +825,6 @@ PINE.addFunctionForNeedle("[template]", PINE.DEFINER, function(initMe, needle) {
 
 
 
-// function assertSingleton(array) {
-// 	if(array.length != 1) {
-// 		PINE.err("ASSERT FAIL: "+array+" not a singleton");
-// 		return null;
-// 	}
-// 	else return $(array[0]);
-// }
-
-
-
 
 
 
@@ -631,70 +864,6 @@ PINE.addFunctionForNeedle("[template]", PINE.DEFINER, function(initMe, needle) {
 // 	}
 
 
-
-
-// 	if(PINE.createMutateLogger == true) {
-// 		// select the target node
-// 		var target = document.querySelector('body');
-		 
-// 		// create an observer instance
-// 		var observer = new MutationObserver(function(mutations) {
-// 		  mutations.forEach(function(mutation) {
-// 		    console.log(mutation);
-// 		  });    
-// 		});
-		 
-// 		// configuration of the observer:
-// 		var config = { attributes: true, childList: true, characterData: true, subtree: true };
-		 
-// 		// pass in the target node, as well as the observer options
-// 		observer.observe(target, config);
-//  	}
-
-
-
-
-// 	$("pine [define]").each(function() {
-// 		var m_handle = $(this)[0].tagName.toLowerCase();
-
-// 		var needle = PINE.get(m_handle);
-
-// 		if(needle == null) {
-// 			needle = {};
-// 		}
-// 		needle.html = $(this)[0].innerHTML;
-// 		needle.clones = [];
-		
-// 		$(this).remove();
-
-// 		var masterCopy = this;
-
-// 		$("pine "+m_handle).each(function(index) {
-// 			this.masterCopy = masterCopy;
-// 			var attributes = masterCopy.attributes;
-
-// 			for(var i = 0; i < attributes.length; i++) {
-// 				var att_name = attributes[i].name;
-
-// 				if(att_name != "define")  {
-// 					var att_value = attributes[i].value;
-// 					if($(this).attr(att_name) == null) {
-// 						$(this).attr(att_name, att_value);
-// 					}
-// 				}
-// 			}
-
-// 			$(this).html(needle.html);
-// 			var addMe = { $ : $(this) }
-// 			needle.clones.push(addMe);
-
-// 			PINE.init(this);
-// 			if(needle.init != null) {
-// 				needle.init(initMe); }
-// 		});
-// 	});
-
-
 // });
 
 
@@ -706,105 +875,6 @@ PINE.addFunctionForNeedle("[template]", PINE.DEFINER, function(initMe, needle) {
 
 
 
-
-PINE.createNeedle("include");
-PINE.addFunctionForNeedle("include", PINE.STATIC, function(initMe, needle) {
-
-	console.log("include");
-
-	if(needle.includeBank == null) {
-		needle.includeBank = {};
-	}
-
-	var src = initMe.attributes.src;
-	
-	if(src != null)  {
-		var target = src.value;
-
-		if(needle.includeBank[target] == null)  {
-			needle.includeBank[target] = {};
-
-
-			$.ajax({
-				type: 'GET',
-				url: target,
-			  	// type of data we are expecting in return:
-			  	dataType: 'html',
-			  	success: function(response){
-			  		console.log(response);
-			  		needle.includeBank[target].outerHTML = response;
-					doInclude();
-			    	// needle.includeBank[target].element = response.documentElement;
-					// doInclude();
-			  	},
-			  	error: function(xhr, type){
-			    	PINE.err("include src '"+target+"' does not exist")
-			  	}
-			});
-
-
-		}			
-		else doInclude();
-	}
-	else {
-		PINE.err("include src for "+initMe+" in not set");
-	}
-
-
-	function doInclude()  {
-		if(needle.includeBank[target].outerHTML == null)  {
-			setTimeout(doInclude, 10);
-		}
-		else  {
-
-			initMe.innerHTML = needle.includeBank[target].outerHTML;
-
-			// var div = document.createElement('div');
-			// div.innerHTML = needle.includeBank[target].outerHTML;
-			// var elements = div.childNodes;
-
-			// console.log(div);
-			// console.log(initMe);
-			// // initMe.appendChild( div);
-
-			// initMe.innerHTML = div.innerHTML;
-
-
-
-			// $(initMe).html(needle.includeBank[target].outerHTML);
-
-			var step_maps = [];
-			for(index in PINE.OrderOfOperations)  {
-				var step_type = PINE.OrderOfOperations[index];
-				step_maps.push(PINE.functions[step_type].all);
-			}
-
-
-			var fakeGroup = {};
-			fakeGroup.childNodes = initMe.childNodes;
-			fakeGroup.attributes = {};
-			fakeGroup.tagName = {};
-
-			for(var step = 0; step < step_maps.length; step++)  {
-
-				for(keyName in step_maps[step]) {
-					var applyUs = step_maps[step][keyName];
-					delete step_maps[step][keyName];
-					
-					PINE.fillTree(fakeGroup, keyName, applyUs);
-
-					console.log(keyName)
-					step = -1;
-					break;
-				}
-
-				console.log(step)
-			}
-		
-			PINE.run();
-		}
-	}
-});
 
 
 function exitHtml(exitMe)  {
@@ -835,14 +905,6 @@ function exitHtml(exitMe)  {
 
 	return exitMe;
 }
-
-
-
-
-
-
-
-
 
 
 

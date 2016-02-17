@@ -8,7 +8,9 @@
 <script src="../public/js/zepto.js"></script>
 
 <!-- PINE -->
-<script src="pine.js"></script>
+<script src="PINE.js"></script>
+<script src="PINE.pnv.js"></script>
+<script src="PINE.needles.js"></script>
 
 <!-- Green Sock Animations -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenLite.min.js"></script>
@@ -100,14 +102,14 @@
 	#tree_and_hill {
 		background-image: url('../public/images/Pine_hill.png');
 		background-repeat: no-repeat;	
-		bottom: 20px;
+		bottom: -80px;
 		background-size: auto 80%;
 	}
 
 	#forest {
 		background-image: url('../public/images/treeline.png');
 		background-repeat: repeat-x;	
-		bottom: 20px;
+		bottom: -20px;
 		background-size: auto 14%;
 	}
 
@@ -183,6 +185,17 @@
 <br>
 <h1>Core</h1>
 <h2>Quick Reference Example</h2>
+
+<pine>
+	<pre class="prettyprint lang-html">
+		<include src="PineCoreQRE.html" showHtml></include>
+	</pre>
+	<div>
+		<include src="PineCoreQRE.html"></include>
+	</div>
+</pine>
+
+
 <pre class="prettyprint lang-html">
 	<showHtml><!--
 		<pine>
@@ -233,9 +246,9 @@
 	--></showHtml>
 </pre>
 
-<pre class="prettyprint lang-html">
-	<include src="helloworld.html"></include>
-</pre>
+<pine>
+	<include src="helloplace.html"></include>
+</pine>
 
 
 
