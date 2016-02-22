@@ -1,0 +1,51 @@
+<script src="PINE_Core.js"></script>
+<script src="PINE_template.js"></script>
+
+<script>
+
+
+var hatter = function(hat) {
+	var lastHatType = hat;
+	return function(hatType) {
+		console.log("first hat:"+hat+", last hat :"+lastHatType+", new hat :"+hatType);
+		lastHatType = hatType;
+	}
+}
+
+var test = hatter("fez");
+
+
+
+
+
+var sayHey = PINE.createNeedle("sayHey");
+sayHey.registerFunction({
+	step_type : PINE.STATIC, 
+	fn : function(initMe, needle)  {
+		// console.log("SETTING innerHtml");
+		// console.log(initMe);
+		// console.log(this);
+		initMe.innerHTML = "hey";
+	}
+});
+
+
+
+
+
+</script>
+
+
+<pine>
+	<sayHey></sayHey>
+
+	<foo template>
+		I am foo
+	</foo>
+
+	<foo></foo>
+	<foo></foo>
+	<foo></foo>
+
+
+</pine>	

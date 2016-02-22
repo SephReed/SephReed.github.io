@@ -18,10 +18,12 @@
 	}
 </style>
 
-<script src="../public/js/zepto.js"></script>
-<script src="PINE.js"></script>
+<!-- <script src="../public/js/zepto.js"></script> -->
+<!-- <script src="PINE.js"></script> -->
+<script src="PINE_Core.js"></script>
 <script src="PINE.pnv.js"></script>
 <script src="PINE.needles.js"></script>
+<script src="PINE_template.js"></script>
 
 <script>
 	// PINE.alertErr = true;  //really get bothered
@@ -52,9 +54,7 @@
 
 
 
-	PINE.createNeedle("sayHey");
-	PINE.registerFunction({
-		key : "sayHey",
+	PINE.createNeedle("sayHey").registerFunction({
 		step_type : PINE.STATIC,
 		continuous : false,
 		fn : function(initMe, needle) {
@@ -128,9 +128,9 @@
 
 
 
-<ul spawner="nested.array">
+<!-- <ul spawner="nested.array">
 	<li style="font-size:{{i}}" spawn>{{nest.loat}} {{i}} : {{nested.array[i]}}</li>
-</ul>
+</ul> -->
 
 
 <!-- <div spawner="includeArray">
@@ -158,9 +158,9 @@
 
 
 
-<hr>
+<!-- <hr>
 <h1>Test 6:</h1>
-<include src="helloplace.html"></include>
+<include src="helloplace.html"></include> -->
 
 
 

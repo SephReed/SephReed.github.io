@@ -87,8 +87,7 @@ PINE.pnv.getVarFrom = function(var_name, branch, output)  {
 }
 
 
-PINE.registerFunction({
-	key : "pine",
+PINE.get("pine").registerFunction({
 	step_type : PINE.STATIC,
 	fn : function(initMe, needle) {
 		PINE.pnv.parseText(initMe);
@@ -146,9 +145,7 @@ PINE.pnv.parseText = function(root, addToMe)  {
 
 }
 
-PINE.createNeedle("pnv");
-PINE.registerFunction({
-	key : "pnv",
+PINE.createNeedle("pnv").registerFunction({
 	step_type : PINE.STATIC,
 	fn : function(initMe, needle) {
 		var get = initMe.attributes["var"];
@@ -234,11 +231,10 @@ PINE.pnv.parseAtts = function(root, addToMe)  {
 
 
 
-PINE.createNeedle("[pnvatt]");
-PINE.registerFunction({
-	key : "[pnvatt]",
+PINE.createNeedle("[pnvatt]").registerFunction({
 	step_type : PINE.STATIC,
 	fn : function(initMe, needle) {
+		console.log(initMe);
 		var rules = initMe.attributes["pnvatt"].value;
 
 		//KLUDGE: fix me if you can

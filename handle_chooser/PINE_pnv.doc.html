@@ -1,0 +1,29 @@
+<div id="pnv">
+	<h1>PNV (pinevar)</h1>
+	<h2>Quick Reference Example</h2>
+	<pine>
+		Source:
+		<pre><include src="PINE_pnv.QRE.html" pretifyCode="html"></include></pre>
+		Output:
+		<div class="output">
+			<include src="PINE_pnv.QRE.html"></include>
+		</div>
+	</pine>
+
+	<h2>Index</h2>
+	<ul>
+		<li><a href="#pnvdefault">{{someVar}}</a></li>
+	</ul>
+
+	<h2>Methods</h2>
+	<funcDoc id="pnvdefault">
+		<h1>{{somevar}}</h1>
+		<br>
+		Replaces the var with the value of `somevar` from the scope of this domNode.<br>
+		<br>
+		<pre pretifyCode="js">
+			var myNeedle = PINE.createNeedle("someTagName");
+			var myNeedle = PINE.createNeedle("[someAttribute]");
+		</pre>
+	</funcDoc>
+</div>

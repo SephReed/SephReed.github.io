@@ -1,0 +1,223 @@
+
+
+<div id="core">
+	<h1>Core</h1>
+	<h2>Quick Reference Example</h2>
+	<pine>
+		Source:
+		<pre><include src="Pine.Core.QRE.html" pretifyCode="html"></include></pre>
+		Output:
+		<div class="output">
+			<include src="Pine.Core.QRE.html"></include>
+		</div>
+	</pine>
+
+	<div interLink="">
+		<h2>Methods</h2>
+		<funcDoc id="corePine">
+			<ul>
+				<li>PINE<ul>
+					<li>.createNeedle()</li>
+					<li>.get()</li>
+					<li>.class<ul>
+						<li>.Needle<ul>
+							<li>.addFunction()</li>	
+						</ul></li>
+						<li>.PineFunc</li>
+					</ul></li>
+					<li>.ops<ul>
+						<li>.order</li>
+						<li>.PREPROCESS</li>
+						<li>.STATIC</li>
+						<li>.POPULATER</li>
+						<li>.DEFINER</li>
+						<li>.POSTPROCESS</li>
+					</ul></li>
+					<li>.addHold()</li>
+					<li>.removeHold()</li>
+					<li>.permeate()</li>
+					<li>.permeateChildren()</li>
+					<li>.run()</li>
+				</ul></li>
+			</ul>
+		</funcDoc>
+
+
+		<funcDoc id="coreCreateNeedle">
+			<h1>PINE.createNeedle</h1>
+			PINE.createNeedle(string keyname) => Needle<br>
+			<br>
+			Creates and returns a new needle.  If the needle already exists, an error is thrown, but the needle is still returned.<br>
+			Keynames can be attributes or tagnames, and they are specified the same way as JQuery or Zepto does.  They are not case sensitive.<br>
+			<br>
+			<pre pretifyCode="js">
+				var myNeedle = PINE.createNeedle("someTagName");
+				var myNeedle = PINE.createNeedle("[someAttribute]");
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="coreGet">
+			<h1>PINE.get</h1>
+			PINE.get(string keyname) => Needle<br>
+			<br>
+			Returns the needle for the keyname<br>
+			<br>
+			<pre pretifyCode="js">
+				var gottenEarly = PINE.get("someTagName");  //undefined
+
+				var created = PINE.createNeedle("someTagName");
+				var gotten = PINE.get("someTagName");
+
+				var concept = created == gotten;  //always true 
+			</pre>
+		</funcDoc>
+
+
+		<funcDoc id="coreNeedle">
+			<h1>class Needle</h1>
+			PINE.class.Needle<br>
+			<br>
+			Needles are the thematic name for the the things that inject functionality into your html.  Needles have a css selector for either tags or attributes and a list of functions which they will apply to dom nodes that fit that css selector.  It would be very easy to make PINE allow needles to select id's and classes, but tags and attributes already are meant to show functionality.  ID's and classes, on the other hand, are likely to have stlying mixed into them, and it can be very difficult to tell whether a class exists to trigger functionality (the JQuery way) or to style an element.
+
+			<pre pretifyCode="js">
+				var badNeedle = PINE.class.Needle("bob");  //don't do this
+				var goodNeedle = PINE.createNeedle("burger");
+
+				var bob = PINE.get("bob"); //undefined
+				var burger = PINE.get("burger");
+
+				var concept = goodNeedle == burger;  //always true
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="coreNeedleAddFunc">
+			<h1>Needle.addFunction()</h1>
+			Needle.addFunction({ operation, fn, []}) => Needle<br>
+			- operation = PINE.ops<br>
+			- fn = function(DOM Node, Needle)<br>
+			<br>
+			Adds a function to the needle to be called on all DOM Nodes during the operation phase.  Choosing the right operation phase can be imperative but it's not hard.  The function you add to the needle should take a DOM Node and do something to enhance it.
+			<pre pretifyCode="js">
+				var test = PINE.createNeedle("test");
+				test.favoriteHat = "fez";
+
+				test.addFunction(PINE.ops.STATIC, function(initMe, needle) {
+					initMe.innerHtml = needle.favoriteHat;
+					var concept = (test == needle);  //true
+				});
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="corePinefunc">
+			<h1>class PineFunc</h1>
+			PINE.class.PineFunc<br>
+			<br>
+			The PineFunc is a class that holds data about how a function acts.  The most important parts about a PineFunc is at what operation phase it is to occur and what it should do at when it finds a target, but there are many other things which can define a PineFunc.  Some PineFuncs stop at the first target, some move from the tips of the DOM tree to the root, and some automatically add an observer to their target so they can reapply with every change.
+		</funcDoc>
+
+		<funcDoc id="coreOpsOrder">
+			<h1>Operations order</h1>
+			PINE.ops.order<br>
+			The order of operations in PINE is akin to PEMDAS in math.  For some things it won't make a difference but, most of the time, it is important to specify the right operation for a function.  Similar to the difference in 2*1-1 = 1 and 2*(1-1) = 0, things might solve a bit strange if you mix up the order of a few things.  Processes are just strings, so you can create your own, or rearrange them if you like.  So far, these categories have suited my purposes, but it is very possible that some types of functions do not fit into one of these categories.
+			<pre pretifyCode="js">
+				console.log(PINE.ops.STATIC); //output: "static"
+				console.log(PINE.ops.order); //by default: Array [ "preprocess", "static", "populater", "definer" ]
+				
+				var madeUpOp = "undos";
+				PINE.ops.order.splice(1,0, madeUpOp);
+
+				console.log(PINE.ops.order); //now: Array [ "preprocess", "undos", "static", "populater", "definer" ]
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="coreOpsPreprocess">
+			<h1>Operations PREPROCESS</h1>
+			PINE.ops.PREPROCESS<br>
+			<br>
+			Preprocess is a stage for things which should happen before any sort of functionality.
+			<pre pretifyCode="js">
+				var exitHtml = PINE.createNeedle("exitHtml")
+				exitHtml.addFunction(PINE.ops.PREPROCESS, function(initMe, needle) {
+					var out = initMe.innerHtml;
+					out = out.replace('&', '&amp;');
+					out = out.replace('<', '&lt;');
+					out = out.replace('>', '&gt;');
+					out = out.replace('\n', '<br>');
+					initMe.innerHtml = out;
+				});
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="coreOpsStatic">
+			<h1>Operations STATIC</h1>
+			PINE.ops.STATIC<br>
+			<br>
+			Static is a stage for changing elements in a way which will be the same no matter where they are, and is not effected by changes around it.
+			<pre pretifyCode="js">
+				var sayHey = PINE.createNeedle("sayHey")
+				sayHey.addFunction(PINE.ops.STATIC, function(initMe, needle) {
+					initMe.innerHtml = "hey!";
+				});
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="coreOpsPopulater">
+			<h1>Operations POPULATER</h1>
+			PINE.ops.POPULATER<br>
+			<br>
+			Populater is a stage similar to static, but more dependent on changes around it.  For the most part, mixing up the two will do nothing, but it is still nice to think of them as separate entities.
+			<pre pretifyCode="js">
+				var lister = PINE.createNeedle("lister");
+				lister.list = ["Ant", "Bee", "Cat", "Dog", "Elk"];
+
+				lister.addFunction(PINE.ops.POPULATER, function(initMe, needle) {
+					initMe.innerHtml = '';
+
+					//if i!=0 add a comma first, then append the next item
+					for(i in needle.list)
+						initMe.innerHtml += (i ? ', ' : '') + needle.list[i];  
+				});
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="coreOpsDefiner">
+			<h1>Operations DEFINER</h1>
+			PINE.ops.DEFINER<br>
+			<br>
+			Definer is a stage for creating new Needles.
+			<pre pretifyCode="js">
+				var define = PINE.createNeedle("[define]")
+				define.addFunction(PINE.ops.DEFINER, function(initMe, needle) {
+					//huh
+				});
+			</pre>
+		</funcDoc>
+
+
+		<funcDoc id="coreOpsPostprocess">
+			<h1>Operations POSTPROCESS</h1>
+			PINE.ops.POSTPROCESS<br>
+			<br>
+			Postprocess is a stage for doing the things people are used to doing with JQuery/Zepto.  For the most part, it is a stage for adding event listeners to elements.
+			<pre pretifyCode="js">
+				var alertHey = PINE.createNeedle("[alertHey]")
+				alertHey.addFunction(PINE.ops.POSTPROCESS, function(initMe, needle) {
+					initMe.onclick = function(){  alert("hey")  };
+				});
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="coreAddHold">
+			<h1>Pine.run()</h1>
+			PINE.run() => undefined<br>
+			<br>
+			Postprocess is a stage for doing the things people are used to doing with JQuery/Zepto.  For the most part, it is a stage for adding event listeners to elements.
+			<pre pretifyCode="js">
+				var alertHey = PINE.createNeedle("[alertHey]")
+				alertHey.addFunction(PINE.ops.POSTPROCESS, function(initMe, needle) {
+					initMe.onclick = function(){  alert("hey")  };
+				});
+			</pre>
+		</funcDoc>
+	</div>
+</div>

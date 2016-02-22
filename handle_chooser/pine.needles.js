@@ -4,28 +4,15 @@
 
 
 
-PINE.holdVar = function(scopeDom, var_name)  {
-	console.log('!!holding var '+var_name);
-
-	U.assertKey(scopeDom, "_pine_.pnv.holds");
-	scopeDom._pine_.pnv.holds[var_name] = true;
-}
-
-PINE.unholdVar = function(scopeDom, var_name)  {
-	console.log('!!unholding var '+var_name);
-
-	U.assertKey(scopeDom, "_pine_.pnv.holds");
-	scopeDom._pine_.pnv.holds[var_name] = false;
-}
 
 
 
 
 
 
-PINE.createNeedle("[spawner]");
-PINE.registerFunction({
-	key : "[spawner]",
+
+var spawner = PINE.createNeedle("[spawner]");
+spawner.registerFunction({
 	step_type : PINE.PREPROCESS,
 	topToBottog : true,
 	fn : function(initMe, needle) {
@@ -88,8 +75,7 @@ PINE.registerFunction({
 });
 
 
-PINE.registerFunction({
-	key : "[spawner]",
+spawner.registerFunction({
 	step_type : PINE.POPULATER,
 	fn : function(initMe, needle) {
 		// console.log("for found");
@@ -178,29 +164,25 @@ PINE.registerFunction({
 
 
 
-PINE.createNeedle("showHtml");
-PINE.registerFunction({
-	key : "showHtml",
-	step_type : PINE.PREPROCESS,
-	// continuous : true,
-	fn : function(initMe, needle) {
+// PINE.createNeedle("showHtml").registerFunction({
+// 	step_type : PINE.PREPROCESS,
+// 	// continuous : true,
+// 	fn : function(initMe, needle) {
 
 
-		initMe.innerHTML = exitHtml(initMe.innerHTML);
-	}
-});
+// 		initMe.innerHTML = exitHtml(initMe.innerHTML);
+// 	}
+// });
 
-PINE.createNeedle("[showHtml]");
-PINE.registerFunction({
-	key : "[showHtml]",
-	step_type : PINE.PREPROCESS,
-	// continuous : true,
-	fn : function(initMe, needle) {
+// PINE.createNeedle("[showHtml]").registerFunction({
+// 	step_type : PINE.PREPROCESS,
+// 	// continuous : true,
+// 	fn : function(initMe, needle) {
 
-		console.log("showingHtml");
-		initMe.innerHTML = exitHtml(initMe.innerHTML);
-	}
-});
+// 		console.log("showingHtml");
+// 		initMe.innerHTML = exitHtml(initMe.innerHTML);
+// 	}
+// });
 
 
 
@@ -217,78 +199,74 @@ PINE.registerFunction({
 
 
 
-var templateAttNeedle = PINE.createNeedle("[template]");
-PINE.registerFunction({
-	key : "[template]",
-	step_type : PINE.DEFINER,
-	fn: function(initMe, needle) {
+// var templateAttNeedle = PINE.createNeedle("[template]");
+// PINE.registerFunction({
+// 	key : "[template]",
+// 	step_type : PINE.DEFINER,
+// 	fn: function(initMe, needle) {
 
-		// console.log("running template");
+// 		// console.log("running template");
 
-		var tagName = initMe.tagName;
+// 		var tagName = initMe.tagName;
 
-		// console.log(needle);
-		// console.log(initMe);
+// 		// console.log(needle);
+// 		// console.log(initMe);
 
 
-		var templatedNeedle = PINE.get(tagName);
-		if(templatedNeedle == null) {
-			templatedNeedle = PINE.createNeedle(tagName, null);	
-		}
+// 		var templatedNeedle = PINE.get(tagName);
+// 		if(templatedNeedle == null) {
+// 			templatedNeedle = PINE.createNeedle(tagName, null);	
+// 		}
 
-		if (templatedNeedle.template == null) {
-			templatedNeedle.template = {}
-			templatedNeedle.template.clones = [];
-			templatedNeedle.template.masterCopy = initMe;
-		}
-		else {
-			PINE.err("template for "+tagName+" already exists!  Overwriting in case that's what you want... if not, just remove template attribute");	
-		}
+// 		if (templatedNeedle.template == null) {
+// 			templatedNeedle.template = {}
+// 			templatedNeedle.template.clones = [];
+// 			templatedNeedle.template.masterCopy = initMe;
+// 		}
+// 		else {
+// 			PINE.err("template for "+tagName+" already exists!  Overwriting in case that's what you want... if not, just remove template attribute");	
+// 		}
 
 		
 		
 
-		$(initMe).remove();
+// 		$(initMe).remove();
 
 
 
-		PINE.registerFunction({
-			key : tagName,
-			step_type : PINE.POPULATER,
-			fn: function(tagElement, tagNeedle) {
-				// console.log(tagElement);
-				// console.log(tagNeedle);
+// 		PINE.registerFunction({
+// 			key : tagName,
+// 			step_type : PINE.POPULATER,
+// 			fn: function(tagElement, tagNeedle) {
+// 				// console.log(tagElement);
+// 				// console.log(tagNeedle);
 
-				var template = tagNeedle.template;
+// 				var template = tagNeedle.template;
 
-				$elem = $(tagElement);
+// 				$elem = $(tagElement);
 
-				// tagNeedle.masterCopy = masterCopy;
-				var attributes = template.masterCopy.attributes;
+// 				// tagNeedle.masterCopy = masterCopy;
+// 				var attributes = template.masterCopy.attributes;
 
-				for(var i = 0; i < attributes.length; i++) {
-					var att_name = attributes[i].name;
+// 				for(var i = 0; i < attributes.length; i++) {
+// 					var att_name = attributes[i].name;
 
-					if(att_name != "template")  {
-						var att_value = attributes[i].value;
-						if($elem.attr(att_name) == null) {
-							$elem.attr(att_name, att_value);
-						}
-					}
-				}
+// 					if(att_name != "template")  {
+// 						var att_value = attributes[i].value;
+// 						if($elem.attr(att_name) == null) {
+// 							$elem.attr(att_name, att_value);
+// 						}
+// 					}
+// 				}
 
-				$elem.html(template.masterCopy.innerHTML);
-				template.clones.push(tagElement);
+// 				$elem.html(template.masterCopy.innerHTML);
+// 				template.clones.push(tagElement);
 
-				// PINE.permeate(tagElement);
-			}
-		});
-	}
-});
-
-
-
-
+// 				// PINE.permeate(tagElement);
+// 			}
+// 		});
+// 	}
+// });
 
 
 
@@ -301,9 +279,11 @@ PINE.registerFunction({
 
 
 
-PINE.createNeedle("include");
-PINE.registerFunction({
-	key : "include",
+
+
+
+
+PINE.createNeedle("include").registerFunction({
 	step_type : PINE.STATIC,
 	fn: function(initMe, needle) {
 
@@ -388,18 +368,13 @@ PINE.registerFunction({
 			else  {
 				initMe._pine_.include.included = true;
 
-				console.log(needle.includeBank[target].outerHTML);
+				// console.log(needle.includeBank[target].outerHTML);
 
 				initMe.innerHTML = needle.includeBank[target].outerHTML;
 
 				var evalIndex = PINE.evals.length;
 				PINE.evals[evalIndex] = {};
 				var evalPrefix = "PINE.evals["+evalIndex+"].";
-				// var evalPrefix = "TEST.";
-
-// 
-
-			// [^\.]place
 
 				var localVars = [];
 
@@ -412,51 +387,17 @@ PINE.registerFunction({
 
 					for(i in localVarRex)  {
 						var match = localVarRex[i];
-						// console.log(localVarRex[i]);
 						if(match.charAt(0) != '{') {
-							// console.log('match::'+match);
 							var var_name = match.replace(/(var +|( ?)+=.+\n?)/g, '');
 							
 							var_name = var_name.replace(/[\n\r;]/g, '');
-							// console.log("var_name::'"+var_name+"'");
 							localVars.push(var_name);
-							// var store = evalPrefix+var_name+" = "+var_name;
-							// var store = match.replace(/var +/g, evalPrefix);
-							// out = match+'\n'+store+';\n';
-							// console.log("out::"+out);
 						}
 					}
-
-
-					// console.log(scripts[s].innerHTML);
-
-					// var rex = /(var.+(;|\n)|(\{(.|\n)+?\}))/g;
-
-					// var textToEval = scripts[s].innerHTML.replace(rex, function(match) {
-					// 	var out = match;
-					// 	if(match.charAt(0) != '{') {
-					// 		console.log('match::'+match);
-					// 		var var_name = match.replace(/(var +|( ?)+=.+)\n?/g, '');
-					// 		var store = evalPrefix+var_name+" = "+var_name;
-					// 		// var store = match.replace(/var +/g, evalPrefix);
-					// 		out = match+'\n'+store+';\n';
-					// 		console.log("out::"+out);
-					// 	}
-					// 	return out;
-					// });
-					// // var varsToPrefix = 
-
-					// // while (m = re.exec(text)) {
-					// //    print(m.index);
-					// // } 
-
-					// // eval(scripts[s].innerHTML);
-					// console.log(textToEval);
-					// eval(textToEval);
 				}
 
 
-				console.log(localVars);
+				// console.log(localVars);
 
 
 				for(var s = 0; s < scripts.length; s++) {
@@ -466,7 +407,7 @@ PINE.registerFunction({
 						var replace = evalPrefix+match;
 
 						var rex = new RegExp("(var)?[^\.]"+match, "g");
-						console.log(rex);
+						// console.log(rex);
 
 						textToEval = textToEval.replace(rex, function(replaceMe) {
 							var out = replaceMe;
@@ -490,7 +431,7 @@ PINE.registerFunction({
 
 					}
 
-					console.log(textToEval);
+					// console.log(textToEval);
 
 					eval(textToEval);
 				}

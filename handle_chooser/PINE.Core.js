@@ -1,8 +1,6 @@
 
 
-
-
-
+use PINE_core.js
 
 
 
@@ -11,7 +9,8 @@
 
 
 var PINE = {};
-PINE.createMutateLogger = false;
+PINE.class = {};
+// PINE.createMutateLogger = false;
 
 
 PINE.evals = [];
@@ -146,8 +145,17 @@ PINE.deepCloneNode = function(cloneMe)  {
 
 
 /**********************************
-*	 	ORDER OF OPERATIONS
+*	 	ORDER OF OPERATIONS 
 **********************************/
+
+PINE.OPS = {};
+PINE.OPS.PREPROCESS = "preprocess";
+PINE.OPS.STATIC = "static";
+PINE.OPS.DEFINER = "definer";
+PINE.OPS.POPULATER = "populater";
+PINE.OPS.Order = [PINE.PREPROCESS, PINE.STATIC, PINE.POPULATER, PINE.DEFINER];
+
+
 
 PINE.PREPROCESS = "preprocess";
 PINE.STATIC = "static";
@@ -189,12 +197,24 @@ PINE.err = function(whatevers_the_problem) { //?
 /**********************************
 *	 	NEEDLE STUFF
 **********************************/
+PINE.class.Needle = function(keyName) {
+	this.keyName = keyName;
+	this.functions = {};
+}
+
+PINE.class.Needle.prototype.registerFunction = function(args) {
+	args.key = this.keyName;
+	PINE.registerFunction(args);
+}
+
+
+
 PINE.needles = {};
 
 
-PINE.get = function(key) {
-	if(key === undefined) return null;
-	return PINE.needles[key.toUpperCase()];
+PINE.get = function(keyName) {
+	if(keyName === undefined) return null;
+	return PINE.needles[keyName.toUpperCase()];
 }
 
 
@@ -202,9 +222,10 @@ PINE.createNeedle = function(key)  {
 	key = key.toUpperCase();
 	var needles = PINE.needles;
 	if(needles[key] == null)  {
-		needles[key] = {};
-		needles[key].keyName = key;
-		needles[key].functions = {};
+		needles[key] = new PINE.class.Needle(key);
+		// needles[key] = {};
+		// needles[key].keyName = key;
+		// needles[key].functions = {};
 	}
 	else {
 		PINE.err("needle "+key+" already exists.  Using PINE.addFunctionForNeedle(key, init_function) instead");
@@ -318,6 +339,21 @@ PINE.keyApplies = function(keyName, domNode)  {
 
 
 
+PINE.holdVar = function(scopeDom, var_name)  {
+	console.log('!!holding var '+var_name);
+
+	U.assertKey(scopeDom, "_pine_.pnv.holds");
+	scopeDom._pine_.pnv.holds[var_name] = true;
+}
+
+
+
+PINE.unholdVar = function(scopeDom, var_name)  {
+	console.log('!!unholding var '+var_name);
+
+	U.assertKey(scopeDom, "_pine_.pnv.holds");
+	scopeDom._pine_.pnv.holds[var_name] = false;
+}
 
 
 
@@ -478,7 +514,7 @@ PINE.isRunning = false;
 
 PINE.run = function()  {
 
-	console.log("run");
+	// console.log("run");
 
 	if(PINE.isRunning == true) return;
 	PINE.isRunning = true;
@@ -877,34 +913,34 @@ PINE.fillTree = function(root, pinefuncs, isRetry)  {
 
 
 
-function exitHtml(exitMe)  {
-	// exitMe = exitMe.replace("<!--", '');
-	exitMe = exitMe.replace(/&/g, '&amp;');
-	exitMe = exitMe.replace(/</g, '&lt;');
-	exitMe = exitMe.replace(/>/g, '&gt;');
+// function exitHtml(exitMe)  {
+// 	// exitMe = exitMe.replace("<!--", '');
+// 	exitMe = exitMe.replace(/&/g, '&amp;');
+// 	exitMe = exitMe.replace(/</g, '&lt;');
+// 	exitMe = exitMe.replace(/>/g, '&gt;');
 	
-	var tabs = exitMe.match(/\t+/g);
+// 	var tabs = exitMe.match(/\t+/g);
 
-	if(tabs){
-		var likelyTabAmount = tabs[tabs.length - 1].length + 1;
-		var minAmount = -1;
-		for(var i = 0; i < tabs.length; i++) {
-			var numTabs = tabs[i].length;
-			if(numTabs < minAmount || i == 0) {
-				minAmount = numTabs;
-			}			
-		}
+// 	if(tabs){
+// 		var likelyTabAmount = tabs[tabs.length - 1].length + 1;
+// 		var minAmount = -1;
+// 		for(var i = 0; i < tabs.length; i++) {
+// 			var numTabs = tabs[i].length;
+// 			if(numTabs < minAmount || i == 0) {
+// 				minAmount = numTabs;
+// 			}			
+// 		}
 
-		var willRemove = Math.max(likelyTabAmount, minAmount);
-		var regex = new RegExp("\n\t{"+willRemove+"}", "g");
+// 		var willRemove = Math.max(likelyTabAmount, minAmount);
+// 		var regex = new RegExp("\n\t{"+willRemove+"}", "g");
 
-		exitMe = exitMe.replace(regex, '\n');
-	}
+// 		exitMe = exitMe.replace(regex, '\n');
+// 	}
 
-	exitMe = exitMe.replace(/\n/g, '<br>');
+// 	exitMe = exitMe.replace(/\n/g, '<br>');
 
-	return exitMe;
-}
+// 	return exitMe;
+// }
 
 
 
