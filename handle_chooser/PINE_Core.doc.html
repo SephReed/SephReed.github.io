@@ -134,7 +134,7 @@
 			<h1>Operations PREPROCESS</h1>
 			PINE.ops.PREPROCESS<br>
 			<br>
-			Preprocess is a stage for things which should happen before any sort of functionality.
+			Preprocess is a stage for things which should happen before any sort of functionality.  It was mostly created for the function below, as exiting html is a very special case.  For the most part, PINE.ops.INITIALIZER is the proper place for any pre functional stuff.
 			<pre pretifyCode="js">
 				var exitHtml = PINE.createNeedle("exitHtml")
 				exitHtml.addFunction(PINE.ops.PREPROCESS, function(initMe, needle) {
@@ -152,7 +152,7 @@
 			<h1>Operations STATIC</h1>
 			PINE.ops.STATIC<br>
 			<br>
-			Static is a stage for changing elements in a way which will be the same no matter where they are, and is not effected by changes around it.
+			Static is a stage for injecting elements which take no argruments and are going to be the same every time.  This stage is first because the work done during it can always be copied.
 			<pre pretifyCode="js">
 				var sayHey = PINE.createNeedle("sayHey")
 				sayHey.addFunction(PINE.ops.STATIC, function(initMe, needle) {

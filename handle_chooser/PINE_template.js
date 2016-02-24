@@ -5,10 +5,10 @@
 
 var templateAttNeedle = PINE.createNeedle("[template]");
 templateAttNeedle.registerFunction({
-	step_type : PINE.DEFINER,
+	step_type : PINE.ops.DEFINER,
 	fn: function(initMe, needle) {
 
-		console.log(initMe);
+		// console.log(initMe);
 		// console.log("running template");
 
 		var tagName = initMe.tagName;
@@ -40,7 +40,7 @@ templateAttNeedle.registerFunction({
 
 
 		templatedNeedle.registerFunction({
-			step_type : PINE.POPULATER,
+			step_type : PINE.ops.STATIC,
 			fn: function(tagElement, tagNeedle) {
 				// console.log(tagElement);
 				// console.log(tagNeedle);

@@ -3,7 +3,7 @@ Zepto(function($){
 		var href = $(this).attr("href");
 		if(href.charAt(0) == "#")  {
 
-			console.log("Changing <a href='"+href+"'> behavior to use GSAP scrolling");
+			// console.log("Changing <a href='"+href+"'> behavior to use GSAP scrolling");
 
 			$(this).vclick( function(event) {
 				var time = $(this).attr("time");

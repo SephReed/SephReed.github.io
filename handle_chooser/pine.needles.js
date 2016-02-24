@@ -13,13 +13,13 @@
 
 var spawner = PINE.createNeedle("[spawner]");
 spawner.registerFunction({
-	step_type : PINE.PREPROCESS,
+	step_type : PINE.ops.PREPROCESS,
 	topToBottog : true,
 	fn : function(initMe, needle) {
 		console.log("spawner PREPROCESS");
 		console.log(initMe);
 
-		initMe._pine_["[spawner]"] = {};
+		// initMe._pine_["[spawner]"] = {};
 
 
 
@@ -37,6 +37,10 @@ spawner.registerFunction({
 
 		U.assertKey(initMe, "_pine_.spawner");
 		initMe._pine_.spawner.indexer = indexer;
+
+		console.log(this);
+
+		// this.pvar(spawner).indexer = indexer;
 
 		
 		var branches = initMe.childNodes;
@@ -76,15 +80,15 @@ spawner.registerFunction({
 
 
 spawner.registerFunction({
-	step_type : PINE.POPULATER,
+	step_type : PINE.ops.POPULATER,
 	fn : function(initMe, needle) {
 		// console.log("for found");
 
 
-		if(initMe._pine_["[spawner]"].complete == true) {
-			console.log("spawner already spawned");
-			return;
-		}
+		// if(initMe._pine_["[spawner]"].complete == true) {
+		// 	console.log("spawner already spawned");
+		// 	return;
+		// }
 
 		console.log("spawner POPULATER");
 		console.log(initMe);
@@ -92,7 +96,9 @@ spawner.registerFunction({
 		var keyString = initMe.attributes.spawner.value;
 		// var array = U.get(window, keyString);
 
-		var array = PINE.pnv.getVarFrom(keyString, initMe).value;
+
+		var array = window[keyString];
+		// var array = PINE.pnv.getVarFrom(keyString, initMe).value;
 
 		// U.assertKey(initMe, "_pine_.for");
 		// initMe._pine_.for.array = array;
@@ -147,10 +153,10 @@ spawner.registerFunction({
 
 				initMe.appendChild(addMe);
 
-				PINE.permeate(addMe);
+				// PINE.permeate(addMe);
 			}
 
-			initMe._pine_["[spawner]"].complete = true;
+			// initMe._pine_["[spawner]"].complete = true;
 		}
 
 		
@@ -284,19 +290,23 @@ spawner.registerFunction({
 
 
 PINE.createNeedle("include").registerFunction({
-	step_type : PINE.STATIC,
+	step_type : PINE.ops.STATIC,
+	autoComplete : false,
 	fn: function(initMe, needle) {
+
+		var pineFunc = this;
+		// console.log(this);
 
 		// console.log("INCLUDING" );
 
 
-		U.assertKey(initMe, "_pine_.include.included");
-		if(initMe._pine_.include.included == true) {
-			console.log('already included');
-			return;
-		}
-			//
-		else initMe._pine_.include.included = false;
+		// U.assertKey(initMe, "_pine_.include.included");
+		// if(initMe._pine_.include.included == true) {
+		// 	console.log('already included');
+		// 	return;
+		// }
+		// 	//
+		// else initMe._pine_.include.included = false;
 
 			
 
@@ -324,11 +334,10 @@ PINE.createNeedle("include").registerFunction({
 		
 		if(src != null) {
 			
-			//KLUDGE: fix me if you can
 			if(src.value == '') return;
 
 			var id = needle.keyName;
-			PINE.addHold(PINE.STATIC, id, initMe);
+			// PINE.addHold(PINE.STATIC, id, initMe);
 
 			var target = src.value;
 
@@ -339,14 +348,10 @@ PINE.createNeedle("include").registerFunction({
 				$.ajax({
 					type: 'GET',
 					url: target,
-				  	// type of data we are expecting in return:
 				  	dataType: 'html',
 				  	success: function(response){
-				  		// console.log(response);
 				  		needle.includeBank[target].outerHTML = response;
 						doInclude();
-				    	// needle.includeBank[target].element = response.documentElement;
-						// doInclude();
 				  	},
 				  	error: function(xhr, type){
 				    	PINE.err("include src '"+target+"' does not exist")
@@ -366,7 +371,7 @@ PINE.createNeedle("include").registerFunction({
 				setTimeout(doInclude, 10);
 			}
 			else  {
-				initMe._pine_.include.included = true;
+				// initMe._pine_.include.included = true;
 
 				// console.log(needle.includeBank[target].outerHTML);
 
@@ -379,7 +384,7 @@ PINE.createNeedle("include").registerFunction({
 				var localVars = [];
 
 				var scripts = initMe.getElementsByTagName("script");
-				console.log(scripts);
+				// console.log(scripts);
 				for(var s = 0; s < scripts.length; s++)  {
 
 					var rex = /(var.+(;|\n)|(\{(.|\n)+?\}))/g;
@@ -474,7 +479,7 @@ PINE.createNeedle("include").registerFunction({
 
 
 
-				PINE.removeHold(PINE.STATIC, id, initMe);
+				// PINE.removeHold(PINE.STATIC, id, initMe);
 
 				// initMe.setAttribute("included", '');
 
@@ -516,9 +521,10 @@ PINE.createNeedle("include").registerFunction({
 				// 	// console.log(step)
 				// }
 			
-
-				PINE.permeate(initMe);
-				PINE.run();
+				// console.log(pineFunc);
+				pineFunc.complete();
+				// PINE.permeate(initMe);
+				// PINE.run();
 			}
 		}
 	}

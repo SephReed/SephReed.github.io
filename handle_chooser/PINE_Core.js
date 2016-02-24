@@ -1,5 +1,18 @@
 
 
+LOG = function(logMe, logType)  {
+	logType = logType || "all";
+	if (LOG.showLog[logType] !== false)
+		console.log(logMe);
+}
+LOG.showLog = [];
+LOG.showLog["all"] = false;
+LOG.showLog["pnv"] = false;
+LOG.showLog["run"] = false;
+LOG.showLog["sprout"] = false;
+LOG.showLog["pinefunc"] = false;
+LOG.showLog["async"] = false;
+
 
 
 
@@ -176,35 +189,78 @@ PINE.deepCloneNode = function(cloneMe)  {
 }
 
 
+
+
+U.ajax = function(url, callback){
+    var xmlhttp;
+    // compatible with IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function(){
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
+            callback(xmlhttp.responseText);
+        }
+        else {
+        	console.log("error in U.ajax");
+        }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+}
+
+
+
+
+U.log = function(msg, color) {
+    color = color || "black";
+    bgc = "White";
+    switch (color) {
+        case "success":  color = "Green";      bgc = "LimeGreen";       break;
+        case "info":     color = "DodgerBlue"; bgc = "Turquoise";       break;
+        case "error":    color = "Red";        bgc = "Black";           break;
+        case "start":    color = "OliveDrab";  bgc = "PaleGreen";       break;
+        case "warning":  color = "Tomato";     bgc = "Black";           break;
+        case "end":      color = "Orchid";     bgc = "MediumVioletRed"; break;
+        default: color = color;
+    }
+
+    if (typeof msg == "object") {
+        console.log(msg);
+    } else if (typeof color == "object") {
+        console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
+        console.log(color);
+    } else {
+        console.log("%c" + msg, "color:" + color + ";font-weight:bold; background-color: " + bgc + ";");
+    }
+}
+
+
+
+
+
+
+
+
 /**********************************
 *	 	ORDER OF OPERATIONS 
 **********************************/
 
 PINE.ops = {};
 PINE.ops.PREPROCESS = "preprocess";
+PINE.ops.INITIALIZER = "initializers";
 PINE.ops.STATIC = "static";
-PINE.ops.DEFINER = "definer";
 PINE.ops.POPULATER = "populater";
-PINE.ops.order = [PINE.ops.PREPROCESS, PINE.ops.STATIC, PINE.ops.POPULATER, PINE.ops.DEFINER];
+PINE.ops.DEFINER = "definer";
+
+PINE.ops.order = [PINE.ops.PREPROCESS, 
+	PINE.ops.INITIALIZER, 
+	PINE.ops.STATIC, 
+	PINE.ops.SEMISTATIC, 
+	PINE.ops.POPULATER, 
+	PINE.ops.DEFINER
+];
 
 
-
-PINE.PREPROCESS = "preprocess";
-PINE.STATIC = "static";
-PINE.DEFINER = "definer";
-PINE.POPULATER = "populater";
-
-// PINE.OrderOfOperations = [PINE.PREPROCESS, PINE.STATIC, PINE.DEFINER, PINE.POPULATER];
-PINE.OrderOfOperations = [PINE.PREPROCESS, PINE.STATIC, PINE.POPULATER, PINE.DEFINER];
-
-PINE.functions = {};
-
-for(index in PINE.OrderOfOperations)  {
-	var key = PINE.OrderOfOperations[index];
-	PINE.functions[key] = {};
-	PINE.functions[key].all = {};
-	PINE.functions[key].new = {};
-}
+//resources, inits, static, common, captures, antistatic, polish
 
 
 
@@ -217,8 +273,9 @@ PINE.alertErr = false;
 
 PINE.err = function(whatevers_the_problem) { //?
 	if(PINE.logErr)  {
-		console.log("PINE error: "+whatevers_the_problem);
-		console.log(new Error().stack);
+		U.log("PINE error: "+whatevers_the_problem, "error")
+		
+		// console.log(new Error());
 	}
 	if(PINE.alertErr)  {
 		alert("PINE error: "+whatevers_the_problem);
@@ -248,6 +305,12 @@ PINE.class.Needle = function(keyword) {
 }
 
 
+PINE.class.Needle.prototype.addFunction = function(args) {
+	args.keyword = this.keyword;
+	// PINE.registerFunction(args);
+	PINE.registerFunction2(args);
+}
+
 PINE.class.Needle.prototype.registerFunction = function(args) {
 	args.keyword = this.keyword;
 	// PINE.registerFunction(args);
@@ -260,12 +323,9 @@ PINE.createNeedle = function(key)  {
 	var needles = PINE.needles;
 	if(needles[key] == null)  {
 		needles[key] = new PINE.class.Needle(key);
-		// needles[key] = {};
-		// needles[key].keyName = key;
-		// needles[key].functions = {};
 	}
 	else {
-		PINE.err("needle "+key+" already exists.  Using PINE.addFunctionForNeedle(key, init_function) instead");
+		PINE.err("needle "+key+" already exists!");
 	}
 
 	//TODO: add typeof check
@@ -309,134 +369,54 @@ for(i in PINE.ops.order)  {
 
 
 
-
+//TODO: make complete a per use function
 PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 	this.keyword = needle.keyword;
 	this.needle = needle;
 	this.opType = opType;
 
+	//TODO!!!!: make complete a per use function
 	this.fn = function(domNode, callbackPermeate)  {
-		this.complete = function() { 
-			console.log(domNode);
-			console.log(this.keyword);
+		var helpers = {};
+		var pinefunc = this;
 
-			domNode._pine_.needles[this.keyword].completed = true;
-			callbackPermeate(this);
+		helpers.complete = function() { 
+			// console.log("complete");
+			// console.log(domNode);
+			// console.log(pinefunc.keyword);
+
+			domNode._pine_.needles[pinefunc.keyword].completed = true;
+			callbackPermeate(pinefunc);
 		}
+
 
 		var completed = U.getnit(domNode, "_pine_.needles.['"+this.keyword+"'].completed", false);
+		LOG(this.keyword+" completed = "+completed, "pinefunc");
 
 		if(!completed || !oneOff) {
-			console.log("calling function");
-			console.log(userFn);
-			console.log(domNode);
 
-			userFn.call(this, domNode, this.needle);
+			LOG("running needle "+this.keyword+" at", "needle");
+			LOG(domNode, "needle");
+			userFn.call(helpers, domNode, this.needle);
 
-			if(autoComplete)
-				this.complete();
-		}
-	}
-}
-
-
-PINE.registerFunction = function(args)  {
-	var key = args.key.toUpperCase();
-	var step_type = args.step_type ? args.step_type : PINE.STATIC;
-	var addMe = args.fn;
-	var continuous = args.continuous ? args.continuous : false;
-	var topToBottom = args.topToBottom === true;
-	var layersOnSelf = !(args.layersOnSelf === false);
-
-
-	//TODO: add oneOff option
-	// var oneOff = args.oneOff ? args.oneOff : false;
-
-
-	var step_fns = PINE.functions[step_type];
-
-	if(step_fns == null)  {
-		PINE.err("function group of type: "+step_type+" does not exist");
-		return;
-	}
-
-	var needle = PINE.get(key);
-	if(needle == null)  {
-		PINE.err("needle of keyname:"+key+" does not exist.  Use PINE.createNeedle(key, addMe) first");
-	}
-	else {
-		if(step_fns[key] == null)  {
-			// step_fns.all[key] = {};
-			step_fns.all[key] = [];
-			step_fns.new[key] = [];
-
-			if(needle.functions[step_type] == null)
-				needle.functions[step_type] = [];
-
-			else 
-				PINE.err("function type: '"+step_type+"' registered for needle '"+key+"'' but not in PINE.functions");
-		}
-
-
-		//KLUDGE: make classes
-		var pineFunc = {};
-		pineFunc.key = key;
-		pineFunc.step = step_type;
-		pineFunc.topToBottom = topToBottom;
-
-
-		//TODO:  make this work for things which do not trigger the mutation observers
-		//eg: remove skipOne for those cases
-		var funcWithObserve = addMe;
-		if(continuous)  {
-			funcWithObserve = function(initMe, needle)  {
-				addMe(initMe, needle);
-
-
-				var observers = initMe._pine_.observers = {};
-				var parentSee = observers.parentSee = {};
-				parentSee.skipOne = false;
-
-				var config = { childList: true, subtree: true };
-
-				//observer for the parent only acts on the sibling which looks like this
-				parentSee.observer = new MutationObserver(function(mutations) {
-					mutations.forEach(function(mutation) {
-				  		if(PINE.keyApplies(key, mutation.target)){
-				  			if(parentSee.skipOne == false) {
-					  			parentSee.skipOne = true;
-					  			addMe(initMe, needle);
-					  		}
-					  		else parentSee.skipOne = false;
-				  		}
-				  	});    
-				});
-				observers.parentSee.observer.observe(initMe, config);
+			if(autoComplete) {
+				LOG("calling autoComplete for "+this.keyword, "pinefunc");
+				helpers.complete();
 			}
 		}
-
-
-
-		//create a fuction which takes a domNode and a callback
-		//make it have a function called complete()
-
-		pineFunc.fn = funcWithObserve;
-
-		step_fns.all[key].push(pineFunc);
-		step_fns.new[key].push(pineFunc);
-		needle.functions[step_type].push(pineFunc);
-
-		
 	}
 }
+
+
 
 
 PINE.registerFunction2 = function(args)  {
 	var keyword = args.keyword.toUpperCase();
-	var opType = args.step_type || PINE.STATIC;
+	var opType = args.step_type;
 	var userFn = args.fn;
-	var autoComplete = args.autoComplete || true;
+	var autoComplete = !(args.autoComplete == false);
 	var oneOff = args.oneOff || false;
+	var asyncContent = args.asyncContent || false;
 
 
 	var needle = PINE.get(keyword);
@@ -445,11 +425,20 @@ PINE.registerFunction2 = function(args)  {
 
 	if(needle == null)  
 		PINE.err("needle of keyword:"+keyword+" does not exist.  Use PINE.createNeedle(keyword) first");
+
+	else if(opType == null)
+		PINE.err("opType specified by needle '"+keyword+"' is undefined");
+
 	
 	else {
-
 		var addMe = new PINE.class.PineFunc(needle, opType, userFn, autoComplete, oneOff);
 		
+		if(pinefuncs.all[opType] == null) {
+			PINE.err("operation of type '"+opType+"' specified by needle '"+keyword+"' did not exist in the original OrderOfOperations (PINE.ops.order).  If not explicitly added to the order, it will never be called.");
+			pinefuncs.all[opType] = pinefuncs.all[opType] | [];
+			pinefuncs.queued[opType] = pinefuncs.queued[opType] | [];
+			pinefuncs.completed[opType] = pinefuncs.completed[opType] | [];
+		}
 
 		pinefuncs.all[opType].push(addMe);
 		pinefuncs.queued[opType].push(addMe);
@@ -466,6 +455,34 @@ PINE.registerFunction2 = function(args)  {
 
 
 
+/**********************************
+*	 	RUN HELPERS
+**********************************/
+
+
+
+PINE.atFirstHtml = function(domNode, callback)  {
+
+	if(domNode.innerHTML.match(/.+/g))
+		callback(domNode);
+
+	else {
+		// create an observer instance
+		var observer = new MutationObserver(function(mutations) {
+			if(domNode.innerHTML.match(/.+/g)) {
+				observer.disconnect();
+				callback(domNode);
+			}
+		});
+		 
+		var config = { childList: true, subtree: true }; 
+		observer.observe(domNode, config);
+	}
+}
+
+
+
+
 PINE.getFirstsOf = function(root, keyword)  {
 	if(PINE.keyApplies(keyword, root)) {
 		return root;
@@ -474,7 +491,7 @@ PINE.getFirstsOf = function(root, keyword)  {
 	var out = [];
 
 	var branches = root.childNodes;
-	for(var i = 0; i < branches.length; i++)  {
+	for(var i = 0; branches && i < branches.length; i++)  {
 		var matches = PINE.getFirstsOf(branches[i], keyword);
 		
 		if(matches != null)
@@ -599,117 +616,6 @@ PINE.initDebug = function()  {
 
 
 
-document.addEventListener("DOMContentLoaded", function(event) { 
-  	PINE.initDebug();
-	// PINE.run();
-	PINE.run2();
-});
-
-
-
-
-
-// PINE.applyStepMapsTo = function(domNode, step_maps) {
-
-// 	for(var step = 0; step < step_maps.length; step++)  {
-
-// 		for(keyName in step_maps[step]) {
-// 			var applyUs = step_maps[step][keyName];
-// 			delete step_maps[step][keyName];
-
-
-// 			var downwards = [];
-// 			var upwards = [];
-// 			for(i_f in applyUs)  {
-// 				var func = applyUs[i_f];
-// 				// console.log(func);
-// 				if(applyUs[i_f].topToBottom) 
-// 					downwards.push(applyUs[i_f]);
-// 				else
-// 					upwards.push(applyUs[i_f]);
-// 			}
-
-// 			if(downwards.length)
-// 				PINE.fillTree(domNode, downwards);
-
-// 			if(upwards.length)
-// 				PINE.fillTree(domNode, upwards);
-
-
-// 			// console.log(keyName)
-// 			step = -1;
-// 			break;
-// 		}
-// 		// console.log(step)
-// 	}
-// }
-
-
-// PINE.permeateChildren = function(rootNode)  {
-// 	var fakeGroup = {};
-// 	fakeGroup.childNodes = rootNode.childNodes;
-// 	fakeGroup.attributes = {};
-// 	fakeGroup.tagName = {};
-
-// 	PINE.permeate(fakeGroup);
-// }
-
-
-// PINE.permeate = function(rootNode)  {
-// 	var step_maps = [];
-// 	for(index in PINE.OrderOfOperations)  {
-// 		var step_type = PINE.OrderOfOperations[index];
-// 		step_maps.push(PINE.functions[step_type].all);
-// 	}
-
-// 	step_maps = U.clone(step_maps);
-
-// 	PINE.applyStepMapsTo(rootNode, step_maps);
-// }
-
-
-
-
-
-// PINE.isRunning = false;
-
-// PINE.run = function()  {
-
-// 	// console.log("run");
-
-// 	if(PINE.isRunning == true) return;
-// 	PINE.isRunning = true;
-
-// 	var Pine_Forest = {};
-// 	Pine_Forest.attributes = {};
-// 	Pine_Forest.tagName = {};
-// 	// Pine_Forest.childNodes = $("pine, pineforest");
-
-// 	Pine_Forest.childNodes = document.getElementsByTagName("pine");  //, pineforest
-
-
-// 	var step_maps = [];
-// 	for(index in PINE.OrderOfOperations)  {
-// 		var step_type = PINE.OrderOfOperations[index];
-// 		step_maps.push(PINE.functions[step_type].new);
-// 	}
-
-// 	PINE.applyStepMapsTo(Pine_Forest, step_maps);
-
-// 	PINE.isRunning = false;
-// }
-
-
-
-
-
-LOG = function(logMe, logType)  {
-	logType = logType || "all";
-	if (LOG.showLog[logType] !== false)
-		console.log(logMe);
-}
-LOG.showLog = [];
-// LOG.showLog["all"] = false;
 
 
 
@@ -723,7 +629,30 @@ LOG.showLog = [];
 
 
 
+
+/******************************************
+*   ___   ___   __    ___
+*  |_ _| |   | |  \  |   |
+*   | |  | | | | | | | | |
+*   |_|  |___| |__/  |___|
+*
+*	Make holds and current step separate
+*
+********************************************/
+
+
+
+
+
+//TODO: make sure hold and steps are separated
+
+
+
+//the major function for PINE.  it creates the super root (PINE.forest), initiates it, and runs
+//sprout on it using the queued pine funcs array (which all new pine funcs are added to)
 PINE.run2 = function() {
+	LOG("running", "needle");
+
 	if(PINE.forest == null) {
 		PINE.forest = {};
 		PINE.forest.attributes = {};
@@ -735,14 +664,22 @@ PINE.run2 = function() {
 
 	PINE.initiate(Pine_Forest);
 	PINE.sprout(Pine_Forest, PINE.pinefuncs.queued, PINE.pinefuncs.completed, function() {
-		alert("run complete");
+		U.log("Run complete", "success");
+		// alert("RUN: run complete");
 	});
-
-	//this one permeates with new funcs
-	//others permeate wit old funcs
-
 }
 
+
+
+
+
+
+
+
+
+
+
+//initiate traverses the entire dom tree from root adding a variable for pine (_pine_)
 PINE.initiate = function(root) {
 	LOG("initiate", "run");
 	LOG(root, "run");
@@ -767,109 +704,182 @@ PINE.initiate = function(root) {
 
 	//move on to children, regardless of personal init state
 	var branches = root.childNodes;
-	for(var i = 0; i < branches.length; i++)  
+	for(var i = 0; branches && i < branches.length; i++)  
 		PINE.initiate(branches[i]);
 }
 
 
+
+
+
+
+
+
+
+
+
+
+//Sprout it a major function.  it applies all fuctions in queued ops to root
+//and it's children, moving them to completedOps when they are complete, and then
+//callsback when all queued functions have been applied.  If a function is added
+//mid process to queued ops, it will be sent as well
 PINE.sprout = function(root, queuedOps, completedOps, callback)  {
 		//
-	LOG("sprout", "run");
-	LOG(root, "run");
+	LOG("sprouting at; with; ", "needle");
+	LOG(root, "needle");
+	LOG(queuedOps, "needle");
 
-	//if sprout is run from Pine.forest
-	//whenever something is added to new
-	//tell everything to hold whatever is supposed to come after it
-	
-
-	//remove everything from queue and place into personal list
-	//add it to complete when done
-
-	var myOps = {};
+	//active ops is where all the ops which have been noticed by sprout are held
+	var incompleteOps = {};
+	var unsentOps = {};
+	completedOps = completedOps || {};
+		
+	//initializing
 	for(key in queuedOps) {
-		myOps[key] = queuedOps[key];
-		queuedOps[key] = [];
+		incompleteOps[key] = [];
+		unsentOps[key] = [];
+		completedOps[key] = completedOps[key] || [];
 	}
 
+	//this is the callback that happens after each successful permeate
+	//the fuction is what is called back when all permeates have occured
+	//because some permeates might be asynchronous, sprout is called again to ensure
+	//nothing was added in while waiting
+	var permeateCallback = PINE.createPermeateCallBack(queuedOps, incompleteOps, completedOps, function() {
+		PINE.sprout(root, queuedOps, completedOps, callback);
+	});
+	
 
-	var permeateCallback = PINE.createPermeateCallBack(myOps, completedOps, callback);
-	completedOps = completedOps || {};
-
+	//permeateCalled is a boolean which checks whether on not this occurence of sprout was needed
 	var permeateCalled = false;
-	var furthestStep = 0;
+
+	//in order of operations, multi use loop for checking for new
+	//operations functions, and sending them off
+	var checkNotPerm = true;
 	for(var i = 0; i < PINE.ops.order.length; i++)  {
 
-		for(key in queuedOps) {
-			if(queuedOps[key].length) {
-				//take anything after furthest step and merge is in
-				//create a new myOps out of everything else to be done
-				//before
-			}
-		}
-
-		furthestStep = Math.max(furthestStep, i);
-		
+		//get the operation type
 		var opType = PINE.ops.order[i];
-		completedOps[opType] = completedOps[opType] || [];
-
-		var opFuncs = myOps[opType];
-		if(opFuncs && opFuncs.length) {
-			if(i < furthestStep) {
-				alert("stepping backwards");
+		
+		//checking mode, checks for new functions in the queue
+		if(checkNotPerm)  {
+			//if anything is queued for this operation type
+			//copy the queue over to unsent and incomplete arrays
+			//the unsent keeps track of what hasn't been sent (so no double sends occur)
+			//while the incomplete array makes sure everything gets a callback
+			if(queuedOps[opType].length) {
+				unsentOps[opType] = unsentOps[opType].concat(queuedOps[opType]);
+				incompleteOps[opType] = incompleteOps[opType].concat(queuedOps[opType]);
+				queuedOps[opType] = [];		
 			}
 
-			LOG(opType, "run");
-			PINE.permeate2(root, opFuncs, permeateCallback)//add callback
-			permeateCalled = true;
-			i = -1;
+			//if everything has been moved from the queue to the unsent pile,
+			//start sending things off
+			var atTheEnd = (i == PINE.ops.order.length - 1);
+			if(atTheEnd) {
+				i = -1;
+				checkNotPerm = false;
+			}
 		}
+
+		//sending mode checks for things to send
+		else {
+			//get the unsent functions for this operation type
+			//if there are any send them to be permeated and remove them from unsent
+			var opFuncs = unsentOps[opType];
+			if(opFuncs && opFuncs.length) {
+					//
+				unsentOps[opType] = [];
+
+				PINE.permeate2(root, opFuncs, permeateCallback);
+
+				//after they have been sent, restart the check to make sure no new operations
+				//have entered the queue, and mark permeate called as true
+				permeateCalled = true;
+				i = -1;
+				checkNotPerm = true;
+			}
+		}	
 	}
 
-	if(permeateCalled == false) 
-		callback();
 
-	//send ops, with callback to remove themselves from queue at completion
-	
+	//if permeate is never called, then the callback was never sent out as dependent on some other stuff
+	//so just call it now.
+	if(permeateCalled == false) {
+		LOG("sprout uneeded", "needle");
+		callback();
+	}
 }
 
+
+
+
+
+
+
+
+
+
+
 //no opType
-PINE.createPermeateCallBack = function(myOps, completedOps, sproutCallback)  {
-	var myOps = myOps;
+PINE.createPermeateCallBack = function(queuedOps, incompleteOps, completedOps, sproutCallback)  {
+	var queuedOps = queuedOps;
+	var incompleteOps = incompleteOps;
 	var completedOps = completedOps;
 	// var opType = opType;
 	var checklist = [];
-	for(opType in myOps)
-		checklist.push(opType);
+	// for(opType in incompleteOps)
+		// checklist.push(opType);
 	
 
-	return function(domNode, completedOpFuncs) {
+	return function(domNode, callbackOpFuncs) {
 			//
-		var opType = completedOpFuncs[0].opType;
-		var t_opType = checklist.indexOf(opType);
-		if(t_opType == -1)
-			PINE.err(t_opType+" does not exist in "+checklist);
+		LOG("ops left", "sprout");
+		LOG(incompleteOps);
+		LOG("callback completed ops", "sprout");
+		LOG(callbackOpFuncs);
+		
+
+		var opType = callbackOpFuncs[0].opType;
+		// var t_opType = checklist.indexOf(opType);
+		if(incompleteOps[opType] == null)
+			PINE.err("opType :"+opType+" does not exist in "+incompleteOps);
 
 		else {
-			for(i in completedOpFuncs)  {
+			for(var i = 0; i < callbackOpFuncs.length; i++)  {
+				LOG("removing", "sprout");
+				LOG(callbackOpFuncs[i], "sprout");
 
-				var target = myOps[opType].indexOf(completedOpFuncs[i]);
+				var target = incompleteOps[opType].indexOf(callbackOpFuncs[i]);
 				if(target == -1)
-					PINE.err(target+" does not exist in "+myOps[opType]);
+					PINE.err(callbackOpFuncs[i]+" (callbackOpFuncs[i] does not exist in "+incompleteOps[opType]);
 				else  {
 						//remove the op from the queue
 						//returns an array of length 1
 						//then pushes the first element into the completedOps section
-					var justCompleted = myOps[opType].splice(target, 1);
+					var justCompleted = incompleteOps[opType].splice(target, 1);
 					completedOps[opType].push(justCompleted[0]);
-
 				}
 			}
 		}
 		
+
+		//if there are still any operations left in incompleteOps, this is not yet the end
+		//return
+		// for(key in queuedOps) {
+		// 	if(queuedOps[key].length) return false;
+		// }
+
+		for(key in incompleteOps) {
+			if(incompleteOps[key].length) return false;
+		}
+
+		// LOG("all ops complete", "sprout");
+		// LOG(queuedOps);
+
 		//when all opTypes have come back completed, call sprouts (sprout being the
 		//only thing that calls this function) callback
-		if(checklist.length == 0)
-			sproutCallback();
+		sproutCallback();
 	};
 }
 
@@ -883,12 +893,21 @@ PINE.permeate2 = function(root, opFuncs, callbackParent)  {
 	LOG(opFuncs, "run");
 
 
-	if(root.nodeName == "#text" || root.nodeName == "#comment"){
-		LOG("text or comment found", "run");
+	if(root.tagName == "DEPINE" || root.tagName == "SCRIPT" || root.nodeName == "#text" || root.nodeName == "#comment"){
+		LOG("depine, text, or comment found", "run");
 		callbackParent(root, opFuncs);
 		return;
 	}
-		
+	
+
+	var runNextInQueue = function() {
+		var nextOpFuncs = root._pine_.ops.queue.pop();
+
+		if(nextOpFuncs)
+			nextOpFuncs();
+	}
+
+
 
 	//node has a
 	//current step
@@ -896,10 +915,102 @@ PINE.permeate2 = function(root, opFuncs, callbackParent)  {
 	//queue
 
 
+	
+	if(root._pine_ !== undefined) {
+		//TODO: fix queing issues.
+		//holds should only work if placed by an operation that is supposed to happen
+		//before this operation
+		if(root._pine_.ops.hold){
+			LOG("queueing for hold on", "run");
+			LOG(root, "run");
+			root._pine_.ops.queue.push(function () {
+				LOG("queued function called", "run");
+				PINE.permeate2(root, opFuncs, callbackParent);
+			});
+		}
+		else {
+			
+
+
+
+			//add hold for this function, release when complete?
+			//when is it complete?
+			//when complete is called by all applicable prior opFuncs in children, and
+			//all applicable current opFuncs in this domNode
+
+			//if key applies and hold, wait again
+
+			//if all my callbacks have occured, I call back too
+			//my first callbacks are for applying needles
+			//then I send them onto my children
+			//who return a call back when they've done the above
+
+			
+			root._pine_.ops.hold = true;
+			LOG("hold", "run");
+			LOG(root, "run");
+
+			//TODO: callback parent first if nothing in queue should happen first
+			var onComplete = function(root, callbackParent) {
+				var root = root;
+				var callbackParent = callbackParent;
+				return function(domNode, opFuncs) {
+					root._pine_.ops.hold = false;
+					LOG("unhold", "run");
+					LOG(root, "run");
+					callbackParent(domNode, opFuncs);
+
+					runNextInQueue();
+				}
+			}(root, callbackParent);
+
+
+			var localOpFuncs = [];
+
+			for(i in opFuncs)  {
+				if(PINE.keyApplies(opFuncs[i].keyword, root)) {
+					localOpFuncs.push(opFuncs[i]);
+				}
+			}
+			
+
+			
+
+
+
+			if(localOpFuncs.length)  {
+
+				var pineFuncCallback = PINE.createPineFuncCallback(root, opFuncs, localOpFuncs.slice(0), onComplete);
+
+				for(i in localOpFuncs) {
+					var opFunc = localOpFuncs[i];
+					// console.log("calling op Func at");
+					// console.log(opFunc);
+					// console.log(i);
+					// console.log(localOpFuncs);
+					// console.log(root);
+
+					opFunc.fn(root, pineFuncCallback);
+				}
+			}
+			else PINE.permeate2Children(root, opFuncs, onComplete);
+
+			//key applies
+			//if no hold, apply func
+			//else wait, try again (keyapplies)
+
+			//don't move onto children if keyApplies and u
+			
+
+			
+
+			
+		}
+	}
+
 	//if Super Root is on a previous step, tell it to call this back when it's back 
 	//to an equal or greater step
-
-	if(root._pine_ === undefined){
+	else if(root._pine_ === undefined){
 		PINE.initiate(root);
 
 		if(opFuncs)  {
@@ -909,16 +1020,19 @@ PINE.permeate2 = function(root, opFuncs, callbackParent)  {
 			//*then release hold
 			//*and move on normally
 
-			root._pine_.ops.hold = true;
+			// root._pine_.ops.hold = true;
 
 			var cloneMe = PINE.pinefuncs.completed;
-			var updates;
+			var updates = {};
 			for(opType in cloneMe) 
 				updates[opType] = cloneMe[opType].slice(0);
+
+			LOG("updates for found node", "async");
+			LOG(updates, "async");
 			
 
 			PINE.sprout(root, updates, null, function() {
-				root._pine_.ops.hold = false;
+				// root._pine_.ops.hold = false;
 				PINE.permeate2(root, opFuncs, callbackParent);
 			});
 
@@ -928,93 +1042,6 @@ PINE.permeate2 = function(root, opFuncs, callbackParent)  {
 
 
 
-	}
-
-	//TODO: fix queing issues.
-	//holds should only work if placed by an operation that is supposed to happen
-	//before this operation
-	else if(root._pine_.ops.hold){
-		LOG("queueing for hold on", "run");
-		LOG(root, "run");
-		root._pine_.ops.queue.push(function () {
-			LOG("queued function called", "run");
-			PINE.permeate2(root, opFuncs, callbackParent);
-		});
-	}
-	else {
-		
-
-
-
-		//add hold for this function, release when complete?
-		//when is it complete?
-		//when complete is called by all applicable prior opFuncs in children, and
-		//all applicable current opFuncs in this domNode
-
-		//if key applies and hold, wait again
-
-		//if all my callbacks have occured, I call back too
-		//my first callbacks are for applying needles
-		//then I send them onto my children
-		//who return a call back when they've done the above
-
-		
-		root._pine_.ops.hold = true;
-		LOG("hold", "run");
-		LOG(root, "run");
-
-		var onComplete = function(root, callbackParent) {
-			var root = root;
-			var callbackParent = callbackParent;
-			return function(domNode, opFuncs) {
-				root._pine_.ops.hold = false;
-				LOG("unhold", "run");
-				LOG(root, "run");
-				callbackParent(domNode, opFuncs);
-
-				var nextOpFuncs = root._pine_.ops.queue.pop();
-
-				if(nextOpFuncs)
-					nextOpFuncs();
-			}
-		}(root, callbackParent);
-
-
-		var localOpFuncs = [];
-			//
-		// if(opFuncs)  {
-			for(i in opFuncs)  {
-				if(PINE.keyApplies(opFuncs[i].keyword, root)) {
-					localOpFuncs.push(opFuncs[i]);
-				}
-			}
-		// }
-
-		
-
-
-
-		if(localOpFuncs.length)  {
-
-			var pineFuncCallback = PINE.createPineFuncCallback(root, opFuncs, localOpFuncs.slice(0), onComplete);
-
-			for(i in localOpFuncs) {
-				var opFunc = localOpFuncs[i];
-				opFunc.fn(root, pineFuncCallback);
-			}
-		}
-		else PINE.permeate2Children(root, opFuncs, onComplete);
-
-		//key applies
-		//if no hold, apply func
-		//else wait, try again (keyapplies)
-
-		//don't move onto children if keyApplies and u
-		
-
-		
-
-		
 	}	
 }
 
@@ -1032,10 +1059,17 @@ PINE.createPineFuncCallback = function(root, opFuncs, localOpFuncs, callbackPare
 	var callbackParent = callbackParent;
 
 	return function(removeMe)  {
+		// console.log("removing, from, at ");
+		// console.log(removeMe);
+		// console.log(localOpFuncs);
+		// console.log(root);
 
-		var index = localOpFuncs.indexOf(removeMe);  //TODO:  this needs to be a list of PineFunc ID's
-		if(index == -1)
-			PINE.err(removeMe+" does not exist in "+localOpFuncs);
+		var index = localOpFuncs.indexOf(removeMe);
+		if(index == -1) {
+			PINE.err(removeMe+" does not exist in localOpFuncs: "+localOpFuncs);
+			// console.log(removeMe);
+			// console.log(localOpFuncs);
+		}
 		else 
 			localOpFuncs.splice(index, 1);
 
@@ -1051,7 +1085,11 @@ PINE.permeate2Children = function(root, opFuncs, callbackParent) {
 	var callbackParent = callbackParent;
 	var branches = root.childNodes;
 
-	if(branches != null && branches.length > 0) {
+	LOG("permeating children", "run");
+	LOG(branches, "run");
+	// LOG(childNodes, "run");
+
+	if(branches && branches.length) {
 
 		var childListCopy = [];
 			//
@@ -1061,21 +1099,29 @@ PINE.permeate2Children = function(root, opFuncs, callbackParent) {
 
 		var childCallback = PINE.createChildCallback(root, opFuncs, childListCopy, callbackParent);
 			//
-		for(var i = 0; i < branches.length; i++)  
-			PINE.permeate2(branches[i], opFuncs, childCallback);
+		for(var i = 0; i < childListCopy.length; i++)  
+			PINE.permeate2(childListCopy[i], opFuncs, childCallback);
 			
 	}
 	else callbackParent(root, opFuncs);
 }
 
 
-PINE.createChildCallback = function(root, opFuncs, childNodes, callbackParent) {
+PINE.createChildCallback = function(root, opFuncs, copyMeChildNodes, callbackParent) {
 	var root = root;
-	var childNodes = childNodes;
+	var childNodes = [];
+	// var childListCopy = [];
+			//
+	for(var i = 0; i < copyMeChildNodes.length; i++)  
+		childNodes.push(copyMeChildNodes[i]);
 	var opFuncs = opFuncs;
 	var callbackParent = callbackParent;
 
 	return function(removeMe)  {
+		LOG("child finished, removing from", "run");
+		LOG(removeMe, "run");
+		LOG(childNodes, "run");
+
 		var index = childNodes.indexOf(removeMe);
 		if(index == -1)
 			PINE.err(removeMe+" does not exist in "+childNodes);
@@ -1084,6 +1130,9 @@ PINE.createChildCallback = function(root, opFuncs, childNodes, callbackParent) {
 
 		if(childNodes.length == 0)
 			callbackParent(root, opFuncs);
+
+		LOG("child nodes left", "run");
+		LOG(childNodes, "run");
 	}
 }
 
@@ -1141,7 +1190,7 @@ function tryFuncKey(keyName, step, root, func_array)  {
 function applyFuncToChildren(root, step, keyName, applyUs)  {
 	var branches = root.childNodes;
 
-	for(var i = 0; i < branches.length; i++)  {
+	for(var i = 0; branches && i < branches.length; i++)  {
 		var branch = branches[i];
 		var nodeName = branch.nodeName;
 
@@ -1291,6 +1340,15 @@ PINE.fillTree = function(root, pinefuncs, isRetry)  {
 
 
 
+
+
+document.addEventListener("DOMContentLoaded", function(event) { 
+	// console.log("running");
+	// window.PVARS = {};
+  	PINE.initDebug();
+	// PINE.run();
+	PINE.run2();
+});
 
 
 

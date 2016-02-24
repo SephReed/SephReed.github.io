@@ -1,5 +1,8 @@
+<script src="../public/js/zepto.js"></script>
+
 <script src="PINE_Core.js"></script>
 <script src="PINE_template.js"></script>
+<script src="PINE.needles.js"></script>
 
 <script>
 
@@ -18,13 +21,13 @@ var test = hatter("fez");
 
 
 
+
+
+
 var sayHey = PINE.createNeedle("sayHey");
 sayHey.registerFunction({
-	step_type : PINE.STATIC, 
+	step_type : "non",
 	fn : function(initMe, needle)  {
-		// console.log("SETTING innerHtml");
-		// console.log(initMe);
-		// console.log(this);
 		initMe.innerHTML = "hey";
 	}
 });
@@ -34,18 +37,9 @@ sayHey.registerFunction({
 
 
 </script>
-
-
 <pine>
-	<sayHey></sayHey>
 
-	<foo template>
-		I am foo
-	</foo>
-
-	<foo></foo>
-	<foo></foo>
-	<foo></foo>
+	
 
 
 </pine>	

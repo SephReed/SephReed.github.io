@@ -1,24 +1,21 @@
 <script src="PINE.Core.js"></script>
 
 <script>
-
-var helloFunction = function(initMe, needle) {
-	var place = initMe.attributes.place;
-	if(place)
-		initMe.innerHTML = "Oh, Hello "+place.value+"!  This is my favorite place to be.  Or perhaps..";
-}
-
 var P_hello = PINE.createNeedle("hello");
 P_hello.registerFunction({
-	step_type : PINE.STATIC,  //PREPROCESS, STATIC, POPULATER, DEFINER, EVENTS
-	continuous : false,  //default
-	layering : false,  //default
-	topToBottom : true,  //default
-	fn : helloFunction  //can also be defined inline
+	step_type : PINE.ops.STATIC,  //PREPROCESS, STATIC, POPULATER, DEFINER, EVENTS
+	fn : function(initMe, needle) {
+		var place = initMe.attributes.place;
+		if(place) 
+			initMe.innerHTML = "Oh, Hello "+place.value+"!";
+	}	
 });
 </script>
+
 
 <pine>
 	<hello place="world"></hello>
 	<hello place="docs"></hello>
 </pine>
+
+

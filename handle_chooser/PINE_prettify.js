@@ -1,23 +1,49 @@
-//html
-//matches tags    (>(\w?)+)?(<\/?\w+|>)>?
 
-//within
-//<.+>
-//        /  \w+/g
-//		(".+?"|'.+')
+
+
+
 
 
 
 
 PINE.createNeedle("[pretifyCode]").registerFunction({
-	step_type : PINE.PREPROCESS,
+	step_type : PINE.ops.PREPROCESS,
 	fn : function(initMe, needle) {
 		// console.log("HEY");
 		var codeType = initMe.attributes.pretifyCode.value || "html";
 
 		console.log("codeType "+codeType);
 
-		initMe.innerHTML = pretifyCode(initMe.innerHTML, codeType);
+		PINE.atFirstHtml(initMe, function(domNode) {
+			domNode.innerHTML = pretifyCode(domNode.innerHTML, codeType);
+		});
+
+		// var innerHTML = initMe.innerHTML;
+
+		// if(innerHTML.match(/.+/g))
+		// 	initMe.innerHTML = pretifyCode(innerHTML, codeType);
+
+		// else {
+		// 	// create an observer instance
+		// 	var observer = new MutationObserver(function(mutations) {
+		// 	  	// mutations.forEach(function(mutation) {
+
+		// 	  		console.log(initMe);
+		// 	  		console.log(innerHTML);
+		// 	  		console.log(codeType);
+
+		// 	    	observer.disconnect();
+		// 	    	initMe.innerHTML = pretifyCode(initMe.innerHTML, codeType);
+		// 	  	// });    
+		// 	});
+			 
+		// 	// configuration of the observer:
+		// 	var config = { childList: true, subtree: true };
+			 
+		// 	// pass in the target node, as well as the observer options
+		// 	observer.observe(initMe, config);
+		// }
+			
 	}
 });
 
@@ -193,10 +219,11 @@ function pretifyCode(code, codeType)  {
 
 
 
+
 	out = removeSurroundingWhitespace(out);
 	out = out.replace(/\n/g, '<br>');
 
-
+	out = "<depine>"+out+"</depine>"
 	
 
 
