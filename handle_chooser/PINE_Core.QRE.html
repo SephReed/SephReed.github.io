@@ -1,0 +1,32 @@
+<script src="PINE.Core.js"></script>
+
+<script>
+var P_cUrl = PINE.createNeedle("currentUrl");
+P_cUrl.registerFunction({
+	step_type : PINE.ops.STATIC,  //PREPROCESS, STATIC, POPULATER, DEFINER, EVENTS
+	fn : function(initMe, needle) {
+		initMe.innerHTML = window.document.URL;
+	}	
+});
+
+var P_cTime = PINE.createNeedle("currentTime");
+P_cTime.registerFunction({
+	step_type : PINE.ops.STATIC,  //PREPROCESS, STATIC, POPULATER, DEFINER, EVENTS
+	fn : function(initMe, needle) {
+		var d = new Date();
+		initMe.innerHTML = d.toLocaleString();
+	}	
+});
+</script>
+
+
+<pine>
+	<center>
+		You're currently viewing:<br>
+		<currentUrl></currentUrl><br>
+		At:<br>
+		<currentTime></currentTime>
+	</center>
+</pine>
+
+

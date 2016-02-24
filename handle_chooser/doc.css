@@ -38,7 +38,8 @@ html {
 	/*color: #222;*/
 	color: #444;
 	/*background: linear-gradient(#839984, #335434);*/
-	background: linear-gradient(#909F91, #3D503E);
+	/*background: linear-gradient(#909F91, #3D503E);*/
+	background: linear-gradient(#909F91, #B9CCC7);
 	font-family: arial;
 
 }
@@ -59,7 +60,7 @@ content, header {
 	margin-left: 5%;
 	margin-right: 5%;
 	padding: 30px;
-	background-color: rgba(234, 232, 206, 0.8);
+	background-color: rgba(234, 232, 206, 0.9);
 }
 
 header {
@@ -158,7 +159,7 @@ pre com {  color: #666; font-style: italic;  }
 }
 
 #tree_and_hill {
-	background-image: url('../public/images/Pine_hill.png');
+	background-image: url('../public/images/Pine_hill_2.png');
 	background-repeat: no-repeat;	
 	bottom: -80px;
 	background-size: auto 80%;
@@ -179,11 +180,12 @@ pre com {  color: #666; font-style: italic;  }
 #pine {
 	display: inline-block;
 	font-size: 40px;
-	background-image: url('../public/images/Pine_tree.png');
+	background-image: url('../public/images/Pine_tree_2.png');
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center center;
-	background-color: #64864F;
+	/*background-color: #64864F;*/
+	background-color: #94AB7C;
 	line-height: 100px;
 	/*height: 100px;*/
 	/*width: 100px;*/
