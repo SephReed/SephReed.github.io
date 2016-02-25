@@ -11,7 +11,6 @@ html {
   	box-sizing: inherit;
   	margin: 0px;
 	padding: 0px;
-
 }
 
 
@@ -42,20 +41,12 @@ a:hover {  color: #FFA;  }
 *               BASIC BITS                 *
 *******************************************/
 
-.standard_portfolio_block {
-	width: 100%
-	padding-top: 20px;
-	padding-bottom: 40px;
-	border-bottom: solid 1px #222;
-	box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
-}
-
-
-.big_text {
+h1, .big_text {
+	font-weight: normal;
 	font-size: 20px;
 }
 
-.undertitle {
+h1 + span, .undertitle {
 	font-size: 15px;
 }
 
@@ -95,11 +86,6 @@ a:hover {  color: #FFA;  }
 	color: #EEE;
 	text-align: center;
 	overflow: hidden;
-}
-
-
-#header .big_text {
-	font-size: 70px;
 }
 
 
@@ -452,6 +438,214 @@ a:hover {  color: #FFA;  }
 
 
 
+
+
+
+
+
+
+
+
+
+
+		
+
+		.terminal {
+			background: #181713;
+			color: #5DCFA7;
+		}
+
+		.tabletop {
+			/*background: url("public/images/WoodRough0089_1_S.jpg");*/
+			background: url("public/images/PlywoodNew0050_1_S.jpg");
+			box-shadow: inset 0px 10px 3px rgba(0,0,0,0.2);
+			border-top: 3px solid #222;
+		}
+
+		.regal {
+			border-top: 10px solid #222;
+			background: linear-gradient(rgb(60, 37, 38), rgb(53, 27, 33) 6px);
+			color: #CC905C;
+		}
+
+		.terminal hr {
+			border-color: rgba(255,255,255,0.2);
+		}
+
+
+		.terminal .detail_block_group > div {
+			
+			box-shadow: 1px 1px 5px rgba(105, 20, 53, 0.2);
+			border: 3px #112 none;
+			border-bottom: solid;
+			border-right: solid;
+			border-color: rgba(256,256,256,0.1);
+			border-bottom-right-radius: 10px;
+		}
+
+		.tabletop .detail_block_group {
+			text-align: center;
+		}
+
+		.tabletop .detail_block_group > div {
+			width: 93%;
+			/*transform: rotate(0.5deg);*/
+			border-color: rgba(256,256,256,0.1);
+			background-color: #EEE;
+			box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+		}
+	
+
+
+		.terminal .undertitle {
+			font-family: 'Orbitron', monospace;
+		}
+
+		.terminal .big_text {
+			font-weight: bold;
+			font-family: 'Orbitron', monospace;
+		}
+
+	
+
+		
+
+		.terminal .group_items h1 {
+			font-family: 'Orbitron', monospace;
+			color: #6B232F;
+		}
+
+		.terminal .group_items h2 {
+			color: #EEE;
+		}	
+
+
+
+		#popin_wrapper {
+			position: fixed;
+			text-align: center;
+			width: 100%;
+			bottom: -10px;
+			z-index: 10;
+			/*pointer-events: none;*/
+		}
+
+
+		#popin {
+			display: inline-block;
+			/*background: #122;*/
+			color: white;
+			position: relative;
+			/*bottom: -20px;*/
+			
+			/*left:50%;*/
+			/*transform: translateX(-50%);*/
+			/*padding: 10px;*/
+			/*border: 3px solid rgba(39, 95, 85, 0.62);
+			border-bottom-width: 0px;
+			border-radius: 10px;
+			border-bottom-left-radius: 0px;
+			border-bottom-right-radius: 0px*/
+
+		}
+
+
+		
+
+
+		#hidden_mail {
+			text-align: center;
+			color: #68262D;
+			background-color: rgba(237, 231, 203, 0.95);
+			border: 2px outset rgba(119, 63, 44, 0.2);
+			box-shadow: 1px 3px 4px  rgba(0, 0, 0, 0.92);
+			border-radius: 8px;
+		}
+
+
+
+
+
+
+
+
+
+
+#bottom_tab {
+	
+  	/*height: 50;*/
+  	/*width: 200;*/
+  	stroke-width: 2px;
+  	/*fill: #43623E;*/
+	stroke: rgba(39, 38, 38, 0.92);
+	stroke: #5DCFA7;
+}
+
+#popin_overlay {
+	position: absolute;
+	/*top: -20px;*/
+	top: 5px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	text-align: center;
+}
+
+
+#popin_overlay a {
+	position: relative;
+	/*margin-top: 20px;*/
+	top: 0px;
+	display: inline-block;
+	height: 50px;
+	width: 50px;
+	background-size: 90% 90%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	-webkit-filter: invert(80%);
+	filter: invert(80%);
+	/*opacity: 0.6;*/
+	transition: all 0.3s ease;
+	
+	/*target-new: tab;*/
+}
+
+#popin_overlay a:hover {
+	top: -3px;
+	background-size: 100% 100%;
+}
+
+#popin_wrapper {
+	/*padding-top: 20px;*/
+}
+
+
+.tooltip_group > a span {
+	pointer-events: none;
+      position: absolute;
+      width: 100px;
+      height: 30px;
+      top: -35px;
+      /*left: -20px;*/
+      /*line-height: 30px;*/
+      /*padding: 10px;*/
+      opacity: 0.0;
+      font-size: 14px;
+      text-align: center;
+      color: rgb(113, 157, 171);
+      background: rgb(255, 255, 255);
+      border: 4px solid rgb(255, 255, 255);
+      border-radius: 5px;
+      text-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px;
+      box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 0px;
+
+      transform: translateX(-50%);
+      transition: all 0.3s ease 0.2s;
+}
+
+.tooltip_group > a:hover span {
+	opacity: 0.9;
+}
 
 
 

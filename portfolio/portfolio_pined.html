@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8"/>
+	<link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+	
+	<script src="three.min.js"></script>
+	<script src="ColladaLoader.js"></script>
+	<script src="three.detector.js"></script>
+	
+	<script src="tween.min.js"></script>
+	
+	<script src="zepto.js"></script>
+	<script src="touch.js"></script>
+	<script src="zepto.inc.js"></script>
+	<script src="portfolio.js"></script>
+
+	<script src="../handle_chooser/PINE_Core.js"></script>
+	<script src="../handle_chooser/PINE_Needles.js"></script>
+
+	
+	
+
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenLite.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/easing/EasePack.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/CSSPlugin.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/ScrollToPlugin.min.js"></script>
+
+	
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.02" />
+
+
+
+
+
+
+	<link rel="stylesheet" type="text/css" href="portfolio_pined.css" />
+	<!-- <link rel="stylesheet" type="text/css" href="terminal.css" /> -->
+	<link rel="stylesheet" type="text/css" href="public/css/gentrific.css" />
+
+</head>
+<body>
+
+
+
+
+<script>
+PINE.createNeedle("bgimg").registerFunction({
+	step_type: PINE.ops.POPULATER,
+	fn: function(initMe, needle) {
+
+		//POS
+		var pos = initMe.attributes.pos ? initMe.attributes.pos.value : "center center";
+		$(initMe).css('background-position', pos);
+
+		//REPEAT
+		var repeat = initMe.attributes.repeat ? initMe.attributes.repeat.value : "";
+		var repeatX = (repeat.indexOf('x') != -1);
+		var repeatY = (repeat.indexOf('y') != -1);
+
+		if(repeatX && repeatY)
+			$(initMe).css('background-repeat', "repeat");
+
+		else if(repeatX)
+			$(initMe).css('background-repeat', "repeat-x");
+
+		else if(repeatY)
+			$(initMe).css('background-repeat', "repeat-y");
+
+		else if(repeat == "")
+			$(initMe).css('background-repeat', "no-repeat");
+
+		else
+			$(initMe).css('background-repeat', repeat);
+
+
+
+		//SIZE
+		var size = initMe.attributes.size ? initMe.attributes.size.value : "auto auto";
+		$(initMe).css('background-size', size);
+
+		//src
+		var src = initMe.attributes.src ? initMe.attributes.src.value : "unset src";
+		initMe.style.backgroundImage = "url('"+src+"')";
+
+	}
+});
+
+
+PINE.createNeedle("[opacity]").registerFunction({
+	step_type: PINE.ops.INITIALIZER,
+	fn: function(initMe, needle) {
+		var opacity = initMe.attributes.opacity ? initMe.attributes.opacity.value : "1.0";
+		$(initMe).css('opacity', opacity);	
+	}
+});
+
+
+
+PINE.createNeedle("[textAlign]").registerFunction({
+	step_type: PINE.ops.INITIALIZER,
+	fn: function(initMe, needle) {
+		var align = initMe.attributes.textAlign ? initMe.attributes.textAlign.value : "left";
+		$(initMe).css('text-align', align);	
+	}
+});
+
+
+PINE.createNeedle("[fontSize]").registerFunction({
+	step_type: PINE.ops.INITIALIZER,
+	fn: function(initMe, needle) {
+		var fsize = initMe.attributes.fontSize ? initMe.attributes.fontSize.value : "inherit";
+		$(initMe).css('font-size', fsize);	
+	}
+});
+
+
+PINE.createNeedle("[bgImage]").registerFunction({
+	step_type: PINE.ops.INITIALIZER,
+	fn: function(initMe, needle) {
+		var bgImage = initMe.attributes.bgImage ? initMe.attributes.bgImage.value : "NOT SPECIFIED";
+		$(initMe).css('background-image', bgImage);	
+	}
+});
+
+
+
+// PINE.createNeedle("[trigger]").registerFunction({
+// 	step_type: PINE.ops.POPULATER,
+// 	fn: function(initMe, needle) {
+// 		var triggerType = initMe.attributes.trigger.value;
+
+// 		initMe.addEventListener(triggerType, function() {
+// 			var target = initMe.attributes.target.value;
+
+// 			$(target).each(function() {
+// 				var events = this._pine_.triggerEvents;
+				
+// 				for(i in events)
+// 					events[i]();
+// 			}
+			
+// 		}, false);
+// 	}
+// });
+
+
+
+
+
+
+
+
+</script>
+
+<style>
+	bgimg {
+		display: block;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		top: 0px;
+		pointer-events: none;
+	}
+</style>
+
+
+
+
+<pine>
+
+
+<style>
+content > div {
+	width: 100%
+	padding-top: 20px;
+	padding-bottom: 40px;
+	border-bottom: solid 1px #222;
+	box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
+}
+</style>
+
+<content>
+
+
+
+<div id="header"> 
+	<h1 fontSize="70px">Seph Reed</h1>
+	<span>I'll work the first month for minimum wage.</span> <br>
+
+	<div id="space_box"></div>
+	<div id="thumbz_box"></div>
+	
+	<div opacity="0.2">
+		<bgimg pos="bottom" repeat="x" opacity="0.8" src="../public/images/treeline.png"></bgimg>
+		<bgimg pos="bottom left" size="250px auto" src="../public/images/Pine_hill_2.png"></bgimg>
+	</div>
+
+
+	
+	<include src="portfolio_contact.html"></include>
+</div>
+
+
+
+
+<div id="skillsets" textAlign="center">
+	<h1>My Skillsets</h1>
+	<span>They could be called expansive. They could also be called the whimsical meanderings of an eccentric young male. <br>
+	 In any case, choose one of the below for details.</span> <br>
+
+
+	<div class="show_item_group">
+		<a class="worktype" href="#coding" id="coding_btn" ><div>Coding</div></a>
+		<a class="worktype" href="#digital_art" id="digital_art_btn" ><div>Digital Artist</div></a>
+		<a class="worktype" href="#artisan" id="artisan_btn" ><div>Artisan</div></a>
+		
+	</div>
+</div>
+
+
+
+
+<popin id="popin_wrapper">
+
+	<div id="popin">
+		<svg id="bottom_tab" height="60" width="280" viewBox="0 0 100 100" preserveAspectRatio = "none">
+			<defs>
+		    	<linearGradient id="copper_grad" x1="0%" y1="0%" x2="0%" y2="100%">
+		      		<stop offset="0%" style="stop-color:rgb(38, 37, 35);stop-opacity:1" />
+		      		<stop offset="100%" style="stop-color:rgb(17, 17, 17);stop-opacity:1" />
+		    	</linearGradient>
+		  	</defs>
+
+		  	<polyline points="0,100 15,0 85,0 100,100" fill="url(#copper_grad)"/>
+		</svg>
+	
+		<div id="popin_overlay" class="tooltip_group">
+			<a 	href="#header"
+				bgImage="url('public/images/Thumbz_icon.png')">
+				<span>Back to Top</span>
+			</a>
+
+			<a 	href="#skillsets"
+				bgImage="url('public/images/skillsets_icon.png')">
+				<span>Other Skillsets</span>
+			</a>
+
+			<a 	href="#bottom"
+				bgImage="url('public/images/email_icon.png')">
+				<span>Email</span>
+			</a>
+			
+			<a 	href="https://www.instagram.com/seph_reed/"
+				bgImage="url('public/images/instagram_icon.png')"
+				target="_newtab">
+				<span>My Photos</span>
+			</a>
+		</div>
+	</div>
+	
+</popin>
+
+
+
+<include src="portfolio_coding.html"></include>
+<include src="portfolio_digital_art.html"></include>
+<include src="portfolio_artisan.html"></include>
+</pine>
+
+
+
+
+
+
+</content>
+
+</body>
+
+<script src="space.js"></script>
+<script src="thumbz_symbol.js"></script>
+
+</html>

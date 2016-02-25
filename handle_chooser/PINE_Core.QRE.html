@@ -9,24 +9,18 @@ P_cUrl.registerFunction({
 	}	
 });
 
-var P_cTime = PINE.createNeedle("currentTime");
-P_cTime.registerFunction({
-	step_type : PINE.ops.STATIC,  //PREPROCESS, STATIC, POPULATER, DEFINER, EVENTS
-	fn : function(initMe, needle) {
-		var d = new Date();
-		initMe.innerHTML = d.toLocaleString();
-	}	
+PINE.createNeedle("currentTime").registerFunction({
+	step_type : PINE.ops.STATIC,
+	fn : function(initMe) {
+		initMe.innerHTML = new Date().toLocaleString();  }	
 });
 </script>
 
-
-<pine>
-	<center>
+<pine><center>
 		You're currently viewing:<br>
 		<currentUrl></currentUrl><br>
 		At:<br>
 		<currentTime></currentTime>
-	</center>
-</pine>
+</center></pine>
 
 
