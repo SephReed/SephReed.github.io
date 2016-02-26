@@ -89,7 +89,7 @@ if ( havePointerLock ) {
 	}, false );
 
 } else {
-
-	instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+	alert("Your browser doesn't seem to support Pointer Lock");
+	// instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 
 }
