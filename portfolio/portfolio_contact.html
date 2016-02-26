@@ -7,7 +7,7 @@
 }
 
 
-#contact_stuff a {
+#contact_stuff a, #contact_stuff span {
 	display: inline-block;
 	height: 40px;
 	width: 40px;
@@ -20,7 +20,7 @@
 	transition: all 0.4s ease;
 }
 
-#contact_stuff a:hover {
+#contact_stuff a:hover, #contact_stuff span:hover {
 	background-size: 100% 100%;
 	-webkit-filter: invert(100%) blur(0px);
 	filter: invert(100%) blur(0px);
@@ -30,8 +30,12 @@
 
 
 <div id="contact_stuff">
-	<a id="mail_me" href="#"
-		style="background-image: url('public/images/email_icon.png')"></a>
+	<span style="background-image: url('public/images/email_icon.png')"
+		trigger="click"
+		target="#myCardOverlay"
+		fn="show"
+		args=""
+		></span>
 
 	<a href="https://twitter.com/SephReed"
 		style="background-image: url('public/images/twitter_icon.png')"
