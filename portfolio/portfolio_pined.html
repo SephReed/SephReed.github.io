@@ -159,6 +159,15 @@ PINE.createNeedle("[bgImage]").registerFunction({
 
 
 
+
+
+
+
+
+
+
+
+
 PINE.createNeedle("[trigger]").registerFunction({
 	step_type: PINE.ops.POPULATER,
 	fn: function(initMe, needle) {
@@ -178,9 +187,29 @@ PINE.createNeedle("[trigger]").registerFunction({
 });
 
 
+function selectNodeText( domNode ) {
+	 if ( document.selection ) {
+        var range = document.body.createTextRange();
+        range.moveToElementText( domNode  );
+        range.select();
+    } else if ( window.getSelection ) {
+        var range = document.createRange();
+        range.selectNodeContents( domNode );
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange( range );
+    }
+}
 
 
 
+PINE.createNeedle("[selectOnClick]").registerFunction({
+	step_type: PINE.ops.POPULATER,
+	fn: function(initMe, needle) {
+		initMe.addEventListener("click", function(e) {
+			selectNodeText(initMe);
+		});
+	}
+});
 
 
 
@@ -455,68 +484,21 @@ overlay {
 
 
 
-#emailOverlay > content section {
-	display: inline-block;
+#myCardOverlay bgimg:nth-child(1){
+	animation: pulse 7s infinite;
 }
 
-#emailOverlay > content div{
-	z-index: 3;
-	height: 100%;
-}
-
-
-
-#emailOverlay > content emailObfuscater {
-	z-index: 4;
-	background-color: rgba(255, 251, 244, 0.7);
-}
-
-
-#emailOverlay > content bgimg {
-	z-index: -1;	
-}
-
-#emailOverlay > content:hover bgimg:nth-child(1){
-	animation: pulse1 5s infinite;
-	animation-delay: 0s;
-}
-
-#emailOverlay > content:hover bgimg:nth-child(2){
-	animation: pulse2 5s infinite;
-	animation-delay: 2s;
-}
-
-#emailOverlay > content:hover bgimg:nth-child(3){
-	animation: pulse3 5s infinite;
-	animation-delay: 4s;
-}
-
-@keyframes pulse1 {
+@keyframes pulse {
   50% {
-    opacity: 0;
+  	opacity: 0.2;
+    /*filter: blur(0.5px);*/
   }
   0%, 100% {
-    opacity: 0.5;
+  	opacity: 0.5;
+    /*filter: blur(0px);*/
   }
 }
 
-@keyframes pulse2 {
-  50% {
-    opacity: 0;
-  }
-  0%, 100% {
-    opacity: 0.1;
-  }
-}
-
-@keyframes pulse3 {
-  50% {
-    opacity: 0;
-  }
-  0%, 100% {
-    opacity: 0.2;
-  }
-}
 
 
 fade {
@@ -547,7 +529,7 @@ overlay, fade{
 	
 	<!-- <div> -->
 		<h1><pre>SEPH  REED</pre></h1>
-		<span>ShadyWillowCreek@gmail.com</span>
+		<span selectOnClick>ShadyWillowCreek@gmail.com</span>
 	<!-- </div> -->
 </overlay>
 
@@ -608,7 +590,11 @@ overlay, fade{
 
 <section id="header"> 
 	<h1 fontSize="70px" class="thumbz_logo">Seph&nbsp;&nbsp; Reed</h1>
-	<span>I'll work the first week for minimum wage.</span> <br>
+	<!-- <span>A Neo-Renaissance Man</span> <br> -->
+	<!-- <span>put a slogan here to fit in</span> <br> -->
+	<!-- <span>Unequivocally Assessed, Partisan Suppressed</span> <br> -->
+	<span>Freelance, Full Stack, Physical/Digital/Artistic Creator</span> <br>
+	<!-- <span>I'll work the first week for minimum wage.</span> <br> -->
 
 	<div id="space_box"></div>
 	<div id="thumbz_box"></div>

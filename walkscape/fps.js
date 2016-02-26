@@ -54,14 +54,14 @@ var keyboardControls = (function() {
 			SIDE_L : 65, 
 			SIDE_R : 68,
 			ROLL_L : 81,
-			ROLL_R : 77,
+			ROLL_R : 69,
 			UP : 38, 
 			LT : 37, 
 			DN : 40, 
 			RT : 39, 
 			ESC : 27, 
-			ACT : 76,
-			I : 85,
+			ACT : 82,
+			I : 73,
 		};
 	}
 
@@ -82,7 +82,7 @@ var keyboardControls = (function() {
 		var handler = function( down ) {
 			return function( e ) {
 				var index = watchedKeyCodes.indexOf( e.keyCode );
-				// console.log(e.keyCode);
+				console.log(e.keyCode);
 				if( index >= 0 ) {
 					if(keysPressed[watchedKeyCodes[index]] != down)  {
 						keysUpdated[watchedKeyCodes[index]] = true;
