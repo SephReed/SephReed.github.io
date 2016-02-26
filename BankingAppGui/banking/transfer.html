@@ -1,0 +1,71 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="../phone.css">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+<style>
+.cam_column {
+	display: inline-block;
+	width: 146px;
+	text-align: center;
+}
+
+.cam_column, .cam_column .small_title {
+	padding-left: 0px !important;
+}
+
+.camera {
+	height: 100px;
+}
+
+</style>
+
+</head>
+
+
+<div id="phone">
+	<img src="iPhone_top_info.jpg" id="phone_top"/>
+
+	<div id="content">
+		<div id="topbar" class="whitebox">
+			Tranfer Money
+			<a href="checking.html"><div id="back_page"></div></a>
+			<a href="../home.html"><div id="top_right_button"></div></a>
+		</div>
+
+		<hr>
+		<div class="whitebox padleft">
+			<hr>
+			<hr>
+			<div class="small_title">AMOUNT</div>
+			<input type="text"></input>
+			<hr>
+			<div class="small_title">FROM</div>
+			<select>
+				<option value="none"> </option>
+				<option value="text">Checking</option>
+				<option value="email">Brokerage</option>
+			</select>
+			<hr>
+			<hr>
+			<div class="small_title">TO</div>
+			<select>
+				<option value="none"> </option>
+				<option value="text">Checking</option>
+				<option value="email">Brokerage</option>
+			</select>
+			<hr>
+			<hr>
+			<div>
+				<a href="checking.html"><div class="button">Cancel</div></a>
+				<a href="transferComplete.html"><div id="continue" class="button">Continue</div></a>
+			</div>
+			<hr>
+		</div>
+	</div>
+</div>
+
+
+
+</html>

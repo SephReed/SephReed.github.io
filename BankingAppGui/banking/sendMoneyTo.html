@@ -1,0 +1,200 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="../phone.css">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+<style>
+	
+
+	#message .button {
+		width: 105px;
+		font-size: 12px;
+	}
+
+	#overlay, #calendar_overlay {
+		position: fixed;
+		top: 42px;
+		height: 526px;
+		width: 320px;
+		background-color: rgba(95, 95, 95, 0.75);
+		display: none;
+	}
+
+
+	#message {
+		margin: 20px;
+		background-color: white;
+		height: 416px;
+		border-radius: 6px;
+	}
+
+	.date {
+		background-image: url("../icons/calendar_nodate_icon.svg");
+		background-repeat: no-repeat;
+		background-size: 23px auto;
+		background-position: 260px 4px;
+	}
+</style>
+
+</head>
+
+<!-- Bebe is beauitful -->
+
+
+<div id="phone">
+	<img src="iPhone_top_info.jpg" id="phone_top"/>
+
+	<div id="content">
+		<div id="topbar" class="whitebox">
+			<center>Send Money</center>
+			<a href="checking.html"><div id="back_page"></div></a>
+			<a href="../home.html"><div id="top_right_button"></div></a>
+		</div>
+
+		<hr>
+		<div class="whitebox padleft">
+			<hr>
+			<div class="small_title">FROM</div>
+			
+			<div class="text_entry_header">Checking</div>
+			<hr>
+			<div class="small_title">TO</div>
+			
+			<div class="text_entry_header">Jon Smith</div>
+			
+			<hr>
+		</div>
+
+		<hr>
+		<div class="whitebox padleft">
+			<hr>
+			<hr>
+			<div class="small_title">AMOUNT</div>
+			<input type="text"></input>
+			<hr>
+			<hr>
+			<div class="small_title">DATE</div>
+			<input id="date_input" class="date" type="text" value="1/2/3"></input>
+			<hr>
+			<hr>
+			<div class="small_title">MEMO</div>
+			<input type="text"></input>
+			<hr>
+			<hr>
+			<div>
+				<a href="checking.html"><div class="button">Cancel</div></a>
+				<div id="continue" class="button">Continue</div>
+			</div>
+			<hr>
+		</div>
+	</div>
+</div>
+
+<div id="overlay">
+	<div id="message" class="padleft">
+		<hr>
+		<div class="small_title">PAYMENT SUMMARY</div>
+		<hr>
+		<hr>
+		<div class="small_title">TO PAYEE:</div>
+		<div class="text_entry_header">Jon Smith</div>
+		<hr>
+		<div class="small_title">FROM:</div>
+		<div class="text_entry_header">Checking</div>
+		<hr>
+		<div class="small_title">AMOUNT:</div>
+		<div class="text_entry_header">$100.00</div>
+		<hr>
+		<div class="small_title">DATE:</div>
+		<div class="text_entry_header">1/2/3</div>
+		<hr>
+		<div class="small_title">MEMO:</div>
+		<div class="text_entry_header">Lawl</div>
+		<hr>
+		<hr>
+		<div>
+			<div id="cancel_overlay" class="button">Cancel</div>
+			<a href="payComplete.html"><div class="button">Send Payment</div></a>
+		</div>
+	</div>
+</div>
+
+
+
+<style>
+
+#calendar_overlay {
+	/*display: inherit;*/
+	background-image: url("../pic_page/calander.png");
+	background-repeat: no-repeat;
+	background-position: bottom;
+}
+
+#calendar_cancel, #calendar_choose_date {
+	position: fixed;
+	/*background-color: red;*/
+}
+
+#calendar_choose_date {
+	top: 418px;
+	height: 50px;
+	width: 47px;
+	left: 43px;
+}
+
+#calendar_cancel {
+	top: 193px;
+	height: 50px;
+	width: 47px;
+	left: 264px;
+}
+
+
+</style>
+
+<div id="calendar_overlay">
+	<div id="calendar_cancel"></div>
+	<div id="calendar_choose_date"></div>
+</div>
+
+<script type="text/javascript">
+	window.onload = function() {
+	 	
+
+	    var cntn = document.getElementById('continue');
+	    cntn.onclick = function() {
+		    document.getElementById("overlay").style.display = "inherit";
+	    }
+
+	   	var close = document.getElementById('cancel_overlay');
+	    close.onclick = function() {
+		    document.getElementById("overlay").style.display = "none";
+	    }
+
+
+	    //Calander Stuff
+
+	    var cal_open = document.getElementById('date_input');
+	    cal_open.onclick = function() {
+		    document.getElementById("calendar_overlay").style.display = "inherit";
+	    }
+
+	    var cal_cncl = document.getElementById('calendar_cancel');
+	    cal_cncl.onclick = function() {
+		    document.getElementById("calendar_overlay").style.display = "none";
+	    }
+
+	    var cal_date = document.getElementById('calendar_choose_date');
+	    cal_date.onclick = function() {
+		    document.getElementById("calendar_overlay").style.display = "none";
+		    document.getElementById("date_input").value = "1/2/3";
+	    }
+	    
+	  
+	}
+</script>
+
+
+
+</html>
