@@ -1,8 +1,98 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
-<!-- <a href="portfolio/thumbz_test.html">Hey</a> -->
-<a href="portfolio/portfolio.html">Click here to see my super rad Portfolio</a>
+<head>
+	<meta charset="utf-8"/>
 
-Eventually something that is not a portfolio will occupy this space.
+	<style>
 
+		html {
+			font-family: monospace;
+		}
+
+		overlay {  
+			margin: 0px;
+			padding: 0px;
+			height: 100%;
+			width: 100%;
+			position: fixed;
+			z-index: -1;
+			top: 0px;
+			left: 0px;
+			display: block;
+			
+		}
+
+		#lines { 
+			background-image: url('public/images/diagonal_lines.png');  
+			opacity: 0.1;
+		}
+
+		#gradient {  background-image: linear-gradient(#322129, #182224);  }
+
+
+		h1 {
+			color: #159f87;
+			font-weight: normal;
+		}
+
+		body {
+			text-align: center;
+		}
+
+
+		body a {
+			margin: 40px;
+			display: inline-block;
+			/*height: 300px;*/
+			width: 300px;
+			text-align: center;
+			color: #D8D292;
+			font-size: 30px;
+			text-decoration: none;
+			text-shadow: 1px 1px rgba(0,0,0,0.4);
+		}
+
+		.img {
+			height: 300px;
+			background-position: center center;
+			background-size: cover;
+			border: 1px solid #333;
+			box-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+			border-radius: 6px;
+			margin-bottom: 10px;
+		}
+
+		#portfolio .img {  background-image: url('public/images/PortfolioScreen.png');  }
+		#walkscape .img {  background-image: url('public/images/WalkscapeScreen.png');  }
+
+	</style>
+
+
+</head>
+
+
+
+<body>
+	<overlay id="gradient"></overlay>
+	<overlay id="lines"></overlay>
+
+	<h1> You're probably here for one of these: </h1>
+	<!-- <a href="portfolio/thumbz_test.html">Hey</a> -->
+	<!-- <a href="portfolio/portfolio_pined.html">Click here to see my super rad Portfolio</a> -->
+
+	<!-- Eventually something that is not a portfolio will occupy this space. -->
+
+	<content>
+		<a id="portfolio" href="portfolio/portfolio_pined.html">
+			<div class="img"></div>
+			Portfolio
+		</a>
+
+		<a id="walkscape" href="walkscape/index.html">
+			<div class="img"></div>
+			3d Walkscape
+		</a>
+	</content>
+</body>
 </html>
