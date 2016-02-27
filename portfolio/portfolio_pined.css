@@ -373,11 +373,10 @@ h1 + span, .undertitle {
 *******************************************/
 
 @media all and (max-width: 900px) {
-  	.detail_block_group{
+  	columns, .detail_block_group{
     	-moz-column-count: 1;
 		-webkit-column-count: 1;
 		column-count: 1;
-	
   	}
 
   	.group_items > div {
@@ -402,13 +401,14 @@ h1 + span, .undertitle {
 	.image_blurb_group > div {
   		/*text-align: left;*/
   		padding-left: 15px;
-  		background-size: 55px auto;
+  		background-size: 50px auto;
   		background-position: 10px 2px;
 
   	}
 
   	.image_blurb_group h2 {
   		/*text-align: center;*/
+  		padding-top: 10px;
   		padding-left: 60px;
   		padding-bottom: 10px;
   	}
