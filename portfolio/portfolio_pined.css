@@ -381,10 +381,6 @@ h1 + span, .undertitle {
 
   	.group_items > div {
   		text-align: left;
-  		/*padding-left: 15px;*/
-  		/*background-size: 55px auto;*/
-  		/*background-position: left top;*/
-
   	}
 
   	.wide_block_group {
@@ -392,9 +388,10 @@ h1 + span, .undertitle {
   		margin-right: 2%;
   	}
 
-  	./*group_items h2 {
-  		text-align: center;
-  	}*/
+  	.image_layer > div {
+  		opacity: 0.8;
+  	}
+
 }
 
 @media all and (max-width: 400px) {
