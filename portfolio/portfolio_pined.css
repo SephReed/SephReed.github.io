@@ -252,6 +252,7 @@ h1 + span, .undertitle {
 	background-size: 120px auto;
 	background-repeat: no-repeat;
 	padding-left: 130px;
+	padding-bottom: 10px;
 	background-position: 5px center;
 }
 
