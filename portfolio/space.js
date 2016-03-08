@@ -1,6 +1,6 @@
 if (!Detector.webgl) Detector.addGetWebGLMessage();
 
-function spaceOut() {
+document.addEventListener("DOMContentLoaded", function(event) {
 
     var container, stats;
     var camera, scene, renderer, particles, geometry, materials = [],
@@ -188,6 +188,5 @@ function spaceOut() {
         renderer.render(scene, camera);
 
     }
-}
+});
 
-spaceOut();

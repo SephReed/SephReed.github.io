@@ -1,5 +1,5 @@
 
-	function thumbzSymbolInit() {
+document.addEventListener("DOMContentLoaded", function(event) {
 
 	var mouseX, mouseY;
 	var windowHalfX, windowHalfY;
@@ -200,9 +200,9 @@
 
 	}
 
-}
+});
 
-thumbzSymbolInit();
+
 
 
 

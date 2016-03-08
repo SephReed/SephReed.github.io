@@ -643,6 +643,17 @@ PINE.initDebug = function()  {
 
 
 
+document.addEventListener("DOMContentLoaded", function(event) { 
+	// console.log("running");
+	// window.PVARS = {};
+  	PINE.initDebug();
+	// PINE.run();
+	PINE.run2();
+});
+
+
+
+
 
 //TODO: make sure hold and steps are separated
 
@@ -1339,16 +1350,6 @@ PINE.fillTree = function(root, pinefuncs, isRetry)  {
 
 
 
-
-
-
-document.addEventListener("DOMContentLoaded", function(event) { 
-	// console.log("running");
-	// window.PVARS = {};
-  	PINE.initDebug();
-	// PINE.run();
-	PINE.run2();
-});
 
 
 
