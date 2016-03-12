@@ -1079,7 +1079,7 @@ PINE.permeate2 = function(root, opFuncs, callbackParent, newRoot)  {
 
 			if (newRoot === false) {
 				PINE.permeate2Children(root, opFuncs, onComplete);
-				console.log("non new root, skipping");
+				// console.log("non new root, skipping");
 			}
 			else {
 
@@ -1163,8 +1163,8 @@ PINE.updateAt = function(root, callback) {
 	var newRoot = (root._pine_ === undefined);
 	if(newRoot){
 		PINE.initiate(root);
-		alert("newRootFound");
-		console.log("new Root", root);
+		// alert("newRootFound");
+		// console.log("new Root", root);
 	}
 
 	//TODO: Fix this so that it is the completed functions of this round.
