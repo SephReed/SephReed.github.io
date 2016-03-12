@@ -89,7 +89,8 @@ spawner.addFunction({
 spawner.addFunction({
 	step_type : PINE.ops.POPULATER,
 	fn : function(initMe, needle) {
-		needle.update(initMe);
+		if( U.attr(initMe, "autoUpdate") !== "false")
+			needle.update(initMe);
 	}
 });
 
