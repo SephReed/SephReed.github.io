@@ -48,28 +48,6 @@ PINE.createNeedle("[trigger]").addFunction({
 
 
 var spawner = PINE.createNeedle("[spawner]");
-spawner.update = function(initMe) {
-	var keyString = initMe.attributes.spawner.value;
-	var array = pnv.getVarFrom(keyString, initMe);
-
-	var spawn = initMe._pine_.spawner.spawn;
-
-	if(spawn){
-		var indexer = initMe._pine_.spawner.indexer;
-
-		for(i in array)  {
-			var i = i;
-
-			var addMe = PINE.deepCloneNode(spawn);
-			U.getnit(addMe, "PVARS."+indexer, i);
-			
-			addMe.setAttribute("scopeVar", indexer+'='+i);
-
-			initMe.appendChild(addMe);
-		}
-	}
-}
-
 
 spawner.addFunction({
 	step_type : PINE.ops.INITIALIZER,
@@ -114,6 +92,36 @@ spawner.addFunction({
 		needle.update(initMe);
 	}
 });
+
+
+spawner.update = function(initMe) {
+	var keyString = initMe.attributes.spawner.value;
+	var array = pnv.getVarFrom(keyString, initMe);
+
+	var spawn = initMe._pine_.spawner.spawn;
+
+	if(spawn){
+		while (initMe.lastChild) {
+		    initMe.removeChild(initMe.lastChild);
+		}
+
+
+		var indexer = initMe._pine_.spawner.indexer;
+
+		for(i in array)  {
+			var i = i;
+
+			var addMe = PINE.deepCloneNode(spawn);
+			U.getnit(addMe, "PVARS."+indexer, i);
+			
+			addMe.setAttribute("scopeVar", indexer+'='+i);
+
+			initMe.appendChild(addMe);
+		}
+
+		PINE.updateAt(initMe);
+	}
+}
 
 
 

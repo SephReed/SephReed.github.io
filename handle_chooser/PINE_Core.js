@@ -740,7 +740,7 @@ PINE.initDebug = function()  {
 
 document.addEventListener("DOMContentLoaded", function(event) { 
   	PINE.initDebug();
-	PINE.run2();
+	PINE.run();
 });
 
 
@@ -753,7 +753,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 //the major function for PINE.  it creates the super root (PINE.forest), initiates it, and runs
 //sprout on it using the queued pine funcs array (which all new pine funcs are added to)
-PINE.run2 = function() {
+PINE.run = function() {
 	LOG("running", "needle");
 
 	if(PINE.forest == null) {
@@ -766,7 +766,7 @@ PINE.run2 = function() {
 	Pine_Forest.childNodes = PINE.getFirstsOf(document, "PINE");
 
 	PINE.initiate(Pine_Forest);
-	PINE.sprout(Pine_Forest, PINE.pinefuncs.queued, PINE.pinefuncs.completed, function() {
+	PINE.sprout(Pine_Forest, PINE.pinefuncs.queued, PINE.pinefuncs.completed, true, function() {
 		U.log("Run complete", "success");
 		// alert("RUN: run complete");
 	});
@@ -828,7 +828,7 @@ PINE.initiate = function(root) {
 //and it's children, moving them to completedOps when they are complete, and then
 //callsback when all queued functions have been applied.  If a function is added
 //mid process to queued ops, it will be sent as well
-PINE.sprout = function(root, queuedOps, completedOps, callback)  {
+PINE.sprout = function(root, queuedOps, completedOps, newRoot, callback)  {
 		//
 	LOG("sprouting at; with; ", "needle");
 	LOG(root, "needle");
@@ -851,7 +851,7 @@ PINE.sprout = function(root, queuedOps, completedOps, callback)  {
 	//because some permeates might be asynchronous, sprout is called again to ensure
 	//nothing was added in while waiting
 	var permeateCallback = PINE.createPermeateCallBack(queuedOps, incompleteOps, completedOps, function() {
-		PINE.sprout(root, queuedOps, completedOps, callback);
+		PINE.sprout(root, queuedOps, completedOps, newRoot, callback);
 	});
 	
 
@@ -896,7 +896,15 @@ PINE.sprout = function(root, queuedOps, completedOps, callback)  {
 					//
 				unsentOps[opType] = [];
 
-				PINE.permeate2(root, opFuncs, permeateCallback);
+				// if(newRoot) {
+					PINE.permeate2(root, opFuncs, permeateCallback, newRoot);
+				// }
+
+				// else {
+				// 	for(var c = 0; c < root.childNodes.length; c++) {
+
+				// 	}
+				// }
 
 				//after they have been sent, restart the check to make sure no new operations
 				//have entered the queue, and mark permeate called as true
@@ -912,7 +920,8 @@ PINE.sprout = function(root, queuedOps, completedOps, callback)  {
 	//so just call it now.
 	if(permeateCalled == false) {
 		LOG("sprout uneeded", "needle");
-		callback();
+		if(callback !== undefined)
+			callback();
 	}
 }
 
@@ -990,7 +999,7 @@ PINE.createPermeateCallBack = function(queuedOps, incompleteOps, completedOps, s
 
 
 
-PINE.permeate2 = function(root, opFuncs, callbackParent)  {
+PINE.permeate2 = function(root, opFuncs, callbackParent, newRoot)  {
 
 	LOG("permeate", "run");
 	LOG(root, "run");
@@ -1041,25 +1050,12 @@ PINE.permeate2 = function(root, opFuncs, callbackParent)  {
 			LOG(root, "run");
 			root._pine_.ops.queue.push(function () {
 				LOG("queued function called", "run");
-				PINE.permeate2(root, opFuncs, callbackParent);
+				PINE.permeate2(root, opFuncs, callbackParent, newRoot);
 			});
 		}
 		else {
 			
 
-
-
-			//add hold for this function, release when complete?
-			//when is it complete?
-			//when complete is called by all applicable prior opFuncs in children, and
-			//all applicable current opFuncs in this domNode
-
-			//if key applies and hold, wait again
-
-			//if all my callbacks have occured, I call back too
-			//my first callbacks are for applying needles
-			//then I send them onto my children
-			//who return a call back when they've done the above
 
 			
 			root._pine_.ops.hold = true;
@@ -1081,41 +1077,53 @@ PINE.permeate2 = function(root, opFuncs, callbackParent)  {
 			}(root, callbackParent);
 
 
-			var localOpFuncs = [];
-
-			for(i in opFuncs)  {
-				if(PINE.keyApplies(opFuncs[i].keyword, root)) {
-					localOpFuncs.push(opFuncs[i]);
-				}
+			if (newRoot === false) {
+				PINE.permeate2Children(root, opFuncs, onComplete);
+				console.log("non new root, skipping");
 			}
+			else {
+
+				var localOpFuncs = [];
+
+				
+				for(i in opFuncs)  {
+					if(PINE.keyApplies(opFuncs[i].keyword, root)) {
+						localOpFuncs.push(opFuncs[i]);
+					}
+				}
+
+				if(localOpFuncs.length)  {
+
+					var pineFuncCallback = PINE.createPineFuncCallback(root, opFuncs, localOpFuncs.slice(0), onComplete);
+
+					for(i in localOpFuncs) {
+						var opFunc = localOpFuncs[i];
+						// console.log("calling op Func at");
+						// console.log(opFunc);
+						// console.log(i);
+						// console.log(localOpFuncs);
+						// console.log(root);
+
+						opFunc.fn(root, pineFuncCallback);
+					}
+				}
+				else PINE.permeate2Children(root, opFuncs, onComplete);
+
+				//key applies
+				//if no hold, apply func
+				//else wait, try again (keyapplies)
+
+				//don't move onto children if keyApplies and u
+			}
+			
+			
 			
 
 			
 
 
 
-			if(localOpFuncs.length)  {
-
-				var pineFuncCallback = PINE.createPineFuncCallback(root, opFuncs, localOpFuncs.slice(0), onComplete);
-
-				for(i in localOpFuncs) {
-					var opFunc = localOpFuncs[i];
-					// console.log("calling op Func at");
-					// console.log(opFunc);
-					// console.log(i);
-					// console.log(localOpFuncs);
-					// console.log(root);
-
-					opFunc.fn(root, pineFuncCallback);
-				}
-			}
-			else PINE.permeate2Children(root, opFuncs, onComplete);
-
-			//key applies
-			//if no hold, apply func
-			//else wait, try again (keyapplies)
-
-			//don't move onto children if keyApplies and u
+		
 			
 
 			
@@ -1124,41 +1132,52 @@ PINE.permeate2 = function(root, opFuncs, callbackParent)  {
 		}
 	}
 
-	//if Super Root is on a previous step, tell it to call this back when it's back 
-	//to an equal or greater step
+	//if this node has not been initiated
 	else if(root._pine_ === undefined){
-		PINE.initiate(root);
+		// PINE.initiate(root);
 
-		if(opFuncs)  {
-			//* uninitiated node was found mid cycle
-			//* set hold vertically until it get's up to speed.
-			//*initiate it with all "old" funcs
-			//*then release hold
-			//*and move on normally
+		// //TODO: Fix this so that it is the completed functions of this round.
+		// var cloneMe = PINE.pinefuncs.completed;
+		// var updates = {};
+		// for(opType in cloneMe) 
+		// 	updates[opType] = cloneMe[opType].slice(0);
 
-			// root._pine_.ops.hold = true;
+		// LOG("updates for found node", "async");
+		// LOG(updates, "async");
+		
 
-			var cloneMe = PINE.pinefuncs.completed;
-			var updates = {};
-			for(opType in cloneMe) 
-				updates[opType] = cloneMe[opType].slice(0);
+		// PINE.sprout(root, updates, null, function() {
+		// 	// root._pine_.ops.hold = false;
+		// 	PINE.permeate2(root, opFuncs, callbackParent);
+		// });
 
-			LOG("updates for found node", "async");
-			LOG(updates, "async");
-			
-
-			PINE.sprout(root, updates, null, function() {
-				// root._pine_.ops.hold = false;
-				PINE.permeate2(root, opFuncs, callbackParent);
-			});
-
-
-
-		}
-
-
-
+		PINE.updateAt(root, function() {
+			PINE.permeate2(root, opFuncs, callbackParent);
+		});
 	}	
+}
+
+
+PINE.updateAt = function(root, callback) {
+
+	var newRoot = (root._pine_ === undefined);
+	if(newRoot){
+		PINE.initiate(root);
+		alert("newRootFound");
+		console.log("new Root", root);
+	}
+
+	//TODO: Fix this so that it is the completed functions of this round.
+	var cloneMe = PINE.pinefuncs.completed;
+	var updates = {};
+	for(opType in cloneMe) 
+		updates[opType] = cloneMe[opType].slice(0);
+
+	LOG("updates for found node", "async");
+	LOG(updates, "async");
+	
+
+	PINE.sprout(root, updates, null, newRoot, callback);
 }
 
 
