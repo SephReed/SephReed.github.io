@@ -1,14 +1,19 @@
-<html>
-<head>
-	<script src="../public/js/zepto.js"></script>
-</head>
-<body>
-</body>
+<script src="../public/js/zepto.js"></script>
+<script src="PINE_Core.js"></script>
+<script src="PINE_Var.js"></script>
+<script src="PINE_Needles.js"></script>
+<script src="PINE_Template.js"></script>
 
-<script>
-	$.get('helloworld.html', function(response){
-		console.log(response);
-	  	$(document.body).append(response.documentElement);
-	})
-</script>
-</html>
+<pine>
+	<needle src="overlay_needle.html"></needle>
+</pine>
+
+<pine>
+	<include src="PINE_Core.QRE.html"></include>
+	
+
+	<overlay>
+		Hey HI
+	</overlay>
+</pine>
+

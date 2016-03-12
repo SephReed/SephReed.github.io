@@ -45,23 +45,6 @@ PINE.createNeedle("[bgImage]").registerFunction({
 
 
 
-PINE.createNeedle("[trigger]").registerFunction({
-	step_type: PINE.ops.POPULATER,
-	fn: function(initMe, needle) {
-		var triggerType = initMe.attributes.trigger.value;
-
-
-		initMe.addEventListener(triggerType, function() {
-			var target = initMe.attributes.target.value;
-			var fn = initMe.attributes.fn.value;
-			var args = initMe.attributes.args.value;
-
-			$(target).each(function() {
-				this._pine_.fns[fn]();
-			});
-		}, false);
-	}
-});
 
 
 function selectNodeText( domNode ) {

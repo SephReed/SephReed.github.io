@@ -4,6 +4,126 @@
 		"selected_items":
 		[
 			[
+				"char",
+				"charAt"
+			],
+			[
+				"text",
+				"textToEval"
+			],
+			[
+				"sp",
+				"spawn"
+			],
+			[
+				"in",
+				"initMe"
+			],
+			[
+				"init",
+				"initMe"
+			],
+			[
+				"su",
+				"submitFn"
+			],
+			[
+				"sub",
+				"submitFn"
+			],
+			[
+				"sum",
+				"submitFn"
+			],
+			[
+				"u",
+				"undefined"
+			],
+			[
+				"roo",
+				"rootVar"
+			],
+			[
+				"key",
+				"keyString"
+			],
+			[
+				"dom",
+				"domNode"
+			],
+			[
+				"getF",
+				"getVarFrom2"
+			],
+			[
+				"bracke",
+				"bracketsCase"
+			],
+			[
+				"brac",
+				"bracketsCase"
+			],
+			[
+				"getV",
+				"getVarFrom"
+			],
+			[
+				"root",
+				"rootVar"
+			],
+			[
+				"open",
+				"openBrackets"
+			],
+			[
+				"last",
+				"lastStop"
+			],
+			[
+				"get",
+				"getnit"
+			],
+			[
+				"call",
+				"callback"
+			],
+			[
+				"bor",
+				"border-bottom"
+			],
+			[
+				"wi",
+				"width"
+			],
+			[
+				"out",
+				"outerHTML"
+			],
+			[
+				"i",
+				"innerHTML"
+			],
+			[
+				"add",
+				"addMe"
+			],
+			[
+				"st",
+				"styles"
+			],
+			[
+				"do",
+				"doInclude"
+			],
+			[
+				"ic",
+				"includeBank"
+			],
+			[
+				"stop",
+				"stopTags"
+			],
+			[
 				"pd",
 				"padNum"
 			],
@@ -42,10 +162,6 @@
 			[
 				"da",
 				"data1"
-			],
-			[
-				"st",
-				"stalledButtonHits"
 			],
 			[
 				"bu",
@@ -98,10 +214,6 @@
 			[
 				"te",
 				"text-align"
-			],
-			[
-				"i",
-				"inline"
 			],
 			[
 				"marg",
@@ -184,10 +296,6 @@
 				"status	(num)"
 			],
 			[
-				"u",
-				"updateMasterPage()"
-			],
-			[
 				"c",
 				"currentPage	(str)"
 			],
@@ -202,10 +310,6 @@
 			[
 				"trackN",
 				"trackIndex	(?)"
-			],
-			[
-				"get",
-				"getTrack	(?)"
 			],
 			[
 				"setT",
@@ -380,20 +484,12 @@
 				"link"
 			],
 			[
-				"wi",
-				"withFlip"
-			],
-			[
 				"up",
 				"updateBlam"
 			],
 			[
 				"bla",
 				"black_list"
-			],
-			[
-				"add",
-				"add_item"
 			],
 			[
 				"rg",
@@ -404,16 +500,8 @@
 				"font-weight"
 			],
 			[
-				"bor",
-				"border-width"
-			],
-			[
 				"fu",
 				"function"
-			],
-			[
-				"in",
-				"indexOf"
 			],
 			[
 				"butt",
@@ -426,60 +514,29 @@
 			[
 				"ac",
 				"activeTab"
-			],
-			[
-				"new",
-				"newNodes"
-			],
-			[
-				"che",
-				"checkDOMChange"
-			],
-			[
-				"h",
-				"href"
-			],
-			[
-				"r",
-				"rgba"
-			],
-			[
-				"bac",
-				"background-color"
-			],
-			[
-				"fak",
-				"fakebook_css"
-			],
-			[
-				"border-r",
-				"border-radius"
-			],
-			[
-				"no",
-				"no_display"
-			],
-			[
-				"str",
-				"struct"
-			],
-			[
-				"ra",
-				"randomTheme"
-			],
-			[
-				"su",
-				"sunrise_colors"
 			]
 		]
 	},
 	"buffers":
 	[
+		{
+			"file": "handle_chooser/PINE_Needles.js",
+			"settings":
+			{
+				"buffer_size": 8370,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
 	"command_palette":
 	{
 		"height": 392.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[
@@ -495,7 +552,10 @@
 	},
 	"console":
 	{
-		"height": 126.0
+		"height": 126.0,
+		"history":
+		[
+		]
 	},
 	"distraction_free":
 	{
@@ -506,8 +566,30 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/Users/seph/Code/Web/SephReed.github.io",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/public"
+	],
 	"file_history":
 	[
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/server.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/nodemysql.js",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Core.js",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Var.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/app.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/commentView.html",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/Needle_CommentBox.html",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/test.html",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/helloplace.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.css",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/overlay_needle.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/zepto.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/overlay_needle.html",
 		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/eImprov_Keys.control.js",
 		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/ClipPage.js",
 		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Shared/MultiDeviceInterface.js",
@@ -619,23 +701,7 @@
 		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/moose_knuckle.css",
 		"/Users/sjaromin/Projects/Code/Web/fakebook/hidden_elements.html",
 		"/Users/sjaromin/Projects/Code/Web/fakebook/hidden_elements.js",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/lol.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/ugly.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/initialize.css",
-		"/Applications/My Apps/Music/Bitwig Studio.app/Contents/Resources/ControlSurfaceScripts/KMI/QUNEO/QUNEO_functions.js",
-		"/Applications/My Apps/Music/Bitwig Studio.app/Contents/Resources/ControlSurfaceScripts/KMI/QUNEO/QUNEO_notes.js",
-		"/Applications/My Apps/Music/Bitwig Studio.app/Contents/Resources/ControlSurfaceScripts/KMI/QUNEO/QUNEO_pages.js",
-		"/Applications/My Apps/Music/Bitwig Studio.app/Contents/Resources/ControlSurfaceScripts/KMI/QUNEO/QUNEO.control.js",
-		"/Applications/My Apps/Music/Bitwig Studio.app/Contents/Resources/ControlSurfaceScripts/KMI/QUNEO/QUNEO_parameterPage.js",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/coopernurse/gorp/gorp.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/controllers/gorp.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/models/post.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/controllers/app.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/revel/revel/samples/booking/app/controllers/app.go",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/models/test.go",
-		"/Users/sjaromin/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
-		"/Users/sjaromin/Desktop/revel.command",
-		"/Users/sjaromin/Projects/Code/GoLang/src/github.com/ScottJaromin/thumbzart/app/routes/routes.go"
+		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/lol.css"
 	],
 	"find":
 	{
@@ -651,9 +717,15 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"registerFunction",
+			"LOG",
+			"trigger",
+			"assignVal",
+			"$",
+			"evalElement",
 			"MDI_seleced_track",
 			"println",
 			"selected",
@@ -778,6 +850,8 @@
 		"regex": false,
 		"replace_history":
 		[
+			"addFunction",
+			"evalElementScripts",
 			"MDI_focusedLiveTrack",
 			"MDI_selected_tra",
 			"MDI_seleced_track",
@@ -808,8 +882,38 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "handle_chooser/PINE_Needles.js",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 8370,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3814,
+								3145
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2643.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -848,6 +952,8 @@
 	{
 		"height": 0.0
 	},
+	"pinned_build_system": "",
+	"project": "github.io.sublime-project",
 	"replace":
 	{
 		"height": 64.0
@@ -856,23 +962,73 @@
 	"select_file":
 	{
 		"height": 0.0,
+		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"pnv",
+				"handle_chooser/PINE_Var.js"
+			],
+			[
+				"nee",
+				"handle_chooser/PINE_Needles.js"
+			],
+			[
+				"core",
+				"handle_chooser/PINE_Core.js"
+			],
+			[
+				"pined",
+				"portfolio/portfolio_pined.html"
+			],
+			[
+				"pine",
+				"portfolio/portfolio_pined.html"
+			],
+			[
+				"zep",
+				"portfolio/zepto.js"
+			],
+			[
+				"hello",
+				"handle_chooser/helloplace.html"
+			],
+			[
+				"pine_c",
+				"handle_chooser/PINE_Core.js"
+			]
 		],
 		"width": 0.0
 	},
 	"select_project":
 	{
 		"height": 0.0,
+		"last_filter": "",
 		"selected_items":
 		[
 		],
 		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
 	},
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
 	"side_bar_width": 202.0,
-	"status_bar_visible": true
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
 }

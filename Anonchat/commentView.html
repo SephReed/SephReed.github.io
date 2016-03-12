@@ -1,0 +1,24 @@
+<script>
+	posts = [
+		"The universe is crazy",
+		"People are crazy",
+		"What is crazy?",
+		"You",
+		"Now that you mention it, maybe"
+	];
+
+	var i = 0;
+</script>
+
+
+<postlist spawner="posts">
+	<post spawn>{{posts[i]}}</post>
+</postlist>
+
+<commentbox submitfn="addComment">
+	lalalal
+</commentbox>
+
+<button trigger="click" target="commentbox" fn="submit">
+	Submit
+</button>

@@ -1,17 +1,6 @@
 
 
-LOG = function(logMe, logType)  {
-	logType = logType || "all";
-	if (LOG.showLog[logType] !== false)
-		console.log(logMe);
-}
-LOG.showLog = [];
-LOG.showLog["all"] = false;
-LOG.showLog["pnv"] = false;
-LOG.showLog["run"] = false;
-LOG.showLog["sprout"] = false;
-LOG.showLog["pinefunc"] = false;
-LOG.showLog["async"] = false;
+
 
 
 
@@ -28,6 +17,19 @@ PINE.class = {};
 
 PINE.evals = [];
 
+PINE.stopTags = [
+	"DEPINE",
+	"SCRIPT",
+	"STYLE",
+	"HTML"
+]
+
+
+PINE.stopNodes = [
+	"#text",
+	"#comment"
+]
+
 
 
 /**********************************
@@ -40,29 +42,8 @@ PINE.evals = [];
 
 var U = PINE.UTILITIES = {};
 
-U.get = function(start, keyString)  {
-	
-	// var keyArray = keyString.match(/([\w\d]+|\[.+\])/g);
-	var keyArray = keyString.match(/[\w\d]+/g);
-	var pos = start;
-
-	for(i in keyArray)  {
-		if(pos === null || pos === undefined) 
-			return undefined;
-		
-		var key = keyArray[i];
-		// if(key.charAt(0) == '[') {
-		// 	key = U.get(pos, key);
-		// }
-		// else pos = pos[key];
-
-		// var num = parseInt(key);
-		// if(num != NaN)  key = num;
-
-		pos = pos[key];
-		
-	}
-	return pos;
+U.get = function(start, keyString, bracketsCase)  {
+	return U.getnit(start, keyString, undefined, bracketsCase);
 }
 
 
@@ -93,27 +74,89 @@ U.assertVar = function(start, keyString, keyNotArray)  {
 }
 
 
-//mix between get and init.
 
-U.getnit = function(start, keyString, init)  {
+//mix between get and init.
+U.getnit = function(start, keyString, init, bracketsCase)  {
+	// console.log("case");
+	// console.log(bracketsCase);
+	// console.log(keyString);
+
+	if(keyString === undefined)
+		return start;
+
+	var bracketsCase = bracketsCase || U.get;
+
+	// console.log("getting"+keyString)
+	// console.log(start);
 	
 	var pos = start;
 
+	
+	//if there is a starting point
 	if(start) {
 			//
-		var keyArray = keyString.match(/([\w\d]+)|('.+')|(".+")/g)
+		var keyArray = [];
+		var lastStop = 0;
+		var openBrackets = 0;
+		for(var c = 0; c < keyString.length; c++) {
+			var char = keyString.charAt(c);
+
+			if(char == '[') { 
+				if(openBrackets == 0 && c != 0) {
+					keyArray.push(keyString.substring(lastStop, c));
+					lastStop = c;	
+				}
+				openBrackets++; 
+			}
+			else if(char == ']') {  openBrackets--;  }
+
+			else if(openBrackets == 0 && char == '.') {
+				keyArray.push(keyString.substring(lastStop, c));
+				lastStop = c+1;	
+			}
+		}
+		keyArray.push(keyString.substring(lastStop));
+
+		// console.log(keyArray);
+
+
+		//match any brackets, or any string of digits and characters
+		//KLUDGE: very little error handling
+		// var keyArray = keyString.match(/(\[.+?\])|([\w\d]+)/g)
 		for(i in keyArray)  {
 			var key = keyArray[i];
-			key = key.replace(/['"]/g, '');
 
-			if(pos[key] == null) {
+			// console.log("IN"+key);
+
+			//if this is a brackets match, remove the outermost brackets
+			if(key.charAt(0) == '[') {
+				key = key.replace(/(^\[|\]$)/g, '');
+
+				//if the new first char not a quote it is it's own variable
+				if (key.charAt(0) != "'" && key.charAt(0) != '"') {
+					// console.log("HEYHE");
+					key = bracketsCase(start, key, bracketsCase);
+					// console.log("SPECIAL CASE"+key);
+				}
+
+				//otherwise, replace the quotes
+				else {
+					key = key.replace(/['"]/g, '');
+				}
+			}
+			
+
+			// console.log("OUT"+key);
+
+			if(pos[key] === undefined) {
+				if(init === undefined)
+					return undefined;
+
 				//last one
-				if(i == keyArray.length - 1)
-					pos[key] = init;
-
-				else
+				else if(i < keyArray.length - 1)
 					pos[key] = {};
 
+				else pos[key] = init;
 			}
 			pos = pos[key];
 		}
@@ -144,8 +187,7 @@ U.clone = function(obj) {
     	var copy;
     	try { copy = obj.constructor(); }
     	catch(e) {
-    		PINE.err("Trynig to copy an object which references itself");
-    		PINE.err(e);
+    		PINE.err("Trynig to copy an object which references itself", e);
 
     		return;
     	}
@@ -179,8 +221,8 @@ U.initArray = function(val, size)  {
 
 
 PINE.deepCloneNode = function(cloneMe)  {
-	console.log("cloning:");
-	console.log(cloneMe);
+	// console.log("cloning:");
+	// console.log(cloneMe);
 
 	var out = cloneMe.cloneNode(true);
 	out._pine_ = U.clone(cloneMe._pine_);
@@ -220,6 +262,7 @@ U.log = function(msg, color) {
         case "start":    color = "OliveDrab";  bgc = "PaleGreen";       break;
         case "warning":  color = "Tomato";     bgc = "Black";           break;
         case "end":      color = "Orchid";     bgc = "MediumVioletRed"; break;
+        case "light":    color = "LightGrey";       bgc = "White";			break;
         default: color = color;
     }
 
@@ -229,7 +272,7 @@ U.log = function(msg, color) {
         console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
         console.log(color);
     } else {
-        console.log("%c" + msg, "color:" + color + ";font-weight:bold; background-color: " + bgc + ";");
+        console.log("%c" + msg, "color:" + color + "; background-color: " + bgc + ";");
     }
 }
 
@@ -250,13 +293,16 @@ PINE.ops.INITIALIZER = "initializers";
 PINE.ops.STATIC = "static";
 PINE.ops.POPULATER = "populater";
 PINE.ops.DEFINER = "definer";
+PINE.ops.FINALIZER = "finalizer";
 
-PINE.ops.order = [PINE.ops.PREPROCESS, 
+PINE.ops.order = [
+	PINE.ops.PREPROCESS, 
 	PINE.ops.INITIALIZER, 
 	PINE.ops.STATIC, 
 	PINE.ops.SEMISTATIC, 
 	PINE.ops.POPULATER, 
-	PINE.ops.DEFINER
+	PINE.ops.DEFINER,
+	PINE.ops.FINALIZER
 ];
 
 
@@ -291,8 +337,7 @@ PINE.needles = {};
 
 PINE.class.Needle = function(keyword) {
 	this.keyword = keyword;
-	// this.keyword = keyword;
-	// this.functions = {};
+	this.uses = 0;
 	this.pinefuncs = {};
 
 	for(i in PINE.OrderOfOperations)  {
@@ -311,7 +356,12 @@ PINE.class.Needle.prototype.addFunction = function(args) {
 	PINE.registerFunction2(args);
 }
 
+// PINE.class.Needle.prototype.addLocalVariables = function(localVars) {
+// 	for(i in localVars)
+// }
+
 PINE.class.Needle.prototype.registerFunction = function(args) {
+	LOG("registerFunction is DEPRICATED", "depreciate");
 	args.keyword = this.keyword;
 	// PINE.registerFunction(args);
 	PINE.registerFunction2(args);
@@ -327,6 +377,10 @@ PINE.createNeedle = function(key)  {
 	else {
 		PINE.err("needle "+key+" already exists!");
 	}
+
+	// if(localVars !== undefined) {
+	// 	needles[key].addLocalVariables(localVars);
+	// }
 
 	//TODO: add typeof check
 	// if(init_function != null) needles[key].inits.push(init_function);
@@ -369,16 +423,18 @@ for(i in PINE.ops.order)  {
 
 
 
-//TODO: make complete a per use function
+
 PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 	this.keyword = needle.keyword;
 	this.needle = needle;
 	this.opType = opType;
 
-	//TODO!!!!: make complete a per use function
+	
 	this.fn = function(domNode, callbackPermeate)  {
 		var helpers = {};
 		var pinefunc = this;
+
+		this.needle.uses += 1;
 
 		helpers.complete = function() { 
 			// console.log("complete");
@@ -390,7 +446,7 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 		}
 
 
-		var completed = U.getnit(domNode, "_pine_.needles.['"+this.keyword+"'].completed", false);
+		var completed = U.getnit(domNode, "_pine_.needles['"+this.keyword+"'].completed", false);
 		LOG(this.keyword+" completed = "+completed, "pinefunc");
 
 		if(!completed || !oneOff) {
@@ -456,8 +512,16 @@ PINE.registerFunction2 = function(args)  {
 
 
 /**********************************
-*	 	RUN HELPERS
+*	 	NEEDLE HELPERS
 **********************************/
+
+
+PINE.addFunctionToNode = function(domNode, funcName, func) {
+	if(domNode._pine_.fns[funcName] !== undefined)
+		PINE.err("fuction "+funcName+" already registered at domNode "+domNode)
+
+	else domNode._pine_.fns[funcName] = func;
+}
 
 
 
@@ -482,6 +546,10 @@ PINE.atFirstHtml = function(domNode, callback)  {
 
 
 
+
+/**********************************
+*	 	RUN HELPERS
+**********************************/
 
 PINE.getFirstsOf = function(root, keyword)  {
 	if(PINE.keyApplies(keyword, root)) {
@@ -516,76 +584,78 @@ PINE.keyApplies = function(keyword, domNode)  {
 
 
 
-PINE.holdVar = function(scopeDom, var_name)  {
-	console.log('!!holding var '+var_name);
+// PINE.holdVar = function(scopeDom, var_name)  {
+// 	console.log('!!holding var '+var_name);
 
-	U.assertKey(scopeDom, "_pine_.pnv.holds");
-	scopeDom._pine_.pnv.holds[var_name] = true;
-}
-
-
-
-PINE.unholdVar = function(scopeDom, var_name)  {
-	console.log('!!unholding var '+var_name);
-
-	U.assertKey(scopeDom, "_pine_.pnv.holds");
-	scopeDom._pine_.pnv.holds[var_name] = false;
-}
+// 	U.assertKey(scopeDom, "_pine_.pnv.holds");
+// 	scopeDom._pine_.pnv.holds[var_name] = true;
+// }
 
 
 
-PINE.addHold = function(step_type, holdId, domNode)  {
+// PINE.unholdVar = function(scopeDom, var_name)  {
+// 	console.log('!!unholding var '+var_name);
 
-	console.log("adding hold"+holdId)
-
-	if(domNode._pine_.holds == null) {
-		domNode._pine_.holds = {};
-	}
-
-	var holds = domNode._pine_.holds;
-	if(holds[step_type] == null)  {
-		holds[step_type] = [];
-	}
-
-	holds[step_type].push(holdId);
-
-	if(domNode.tagName != "PINE" && domNode.tagName != "PINEFOREST") {
-		var parent = domNode.parentNode;
-		if(parent != null) {
-			PINE.addHold(step_type, holdId, parent);		
-		}
-	}
-}
+// 	U.assertKey(scopeDom, "_pine_.pnv.holds");
+// 	scopeDom._pine_.pnv.holds[var_name] = false;
+// }
 
 
+
+// PINE.addHold = function(step_type, holdId, domNode)  {
+
+// 	console.log("adding hold"+holdId)
+
+// 	if(domNode._pine_.holds == null) {
+// 		domNode._pine_.holds = {};
+// 	}
+
+// 	var holds = domNode._pine_.holds;
+// 	if(holds[step_type] == null)  {
+// 		holds[step_type] = [];
+// 	}
+
+// 	holds[step_type].push(holdId);
+
+// 	if(domNode.tagName != "PINE" && domNode.tagName != "PINEFOREST") {
+// 		var parent = domNode.parentNode;
+// 		if(parent != null) {
+// 			PINE.addHold(step_type, holdId, parent);		
+// 		}
+// 	}
+// }
 
 
 
 
-PINE.removeHold = function(step_type, holdId, domNode)  {
-
-	console.log("removing hold"+holdId)
-	// console.log(domNode);
-
-	var holds = domNode._pine_.holds;
-	if(holds && holds[step_type]) {
-		var index = holds[step_type].indexOf(holdId);
-		if (index > -1) {
-			holds[step_type].splice(index, 1);
-		}	
-	}
-
-	if(domNode.tagName != "PINE" && domNode.tagName != "PINEFOREST") {
-		var parent = domNode.parentNode;
-		if(parent != null) {
-			PINE.removeHold(step_type, holdId, parent);		
-		}
-	}
-}
 
 
+// PINE.removeHold = function(step_type, holdId, domNode)  {
+
+// 	console.log("removing hold"+holdId)
+// 	// console.log(domNode);
+
+// 	var holds = domNode._pine_.holds;
+// 	if(holds && holds[step_type]) {
+// 		var index = holds[step_type].indexOf(holdId);
+// 		if (index > -1) {
+// 			holds[step_type].splice(index, 1);
+// 		}	
+// 	}
+
+// 	if(domNode.tagName != "PINE" && domNode.tagName != "PINEFOREST") {
+// 		var parent = domNode.parentNode;
+// 		if(parent != null) {
+// 			PINE.removeHold(step_type, holdId, parent);		
+// 		}
+// 	}
+// }
 
 
+
+
+
+LOG = function() { return; }
 
 
 PINE.initDebug = function()  {
@@ -609,6 +679,31 @@ PINE.initDebug = function()  {
 
 		console.log(observer);
  	}
+
+
+ 	LOG = function(logMe, logType)  {
+		logType = logType || "all";
+
+		// console.log(logType);
+		if (LOG.showLog[logType] !== false){
+			var callerLine = new Error().stack.split('\n');
+			var line = callerLine[1].match(/([^\/])+?$/g)[0];
+			line += "....";
+			line += callerLine[2].match(/([^\/])+?$/g)[0];
+			U.log(line, "light");
+			console.log(logMe);
+		}
+	}
+
+	LOG.showLog = [];
+
+		LOG.showLog["all"] = false;
+		// LOG.showLog["needle"] = false;
+	LOG.showLog["pnv"] = false;
+	LOG.showLog["run"] = false;
+		LOG.showLog["sprout"] = false;
+		LOG.showLog["pinefunc"] = false;
+	LOG.showLog["async"] = false;
 
 }
 
@@ -644,10 +739,7 @@ PINE.initDebug = function()  {
 
 
 document.addEventListener("DOMContentLoaded", function(event) { 
-	// console.log("running");
-	// window.PVARS = {};
   	PINE.initDebug();
-	// PINE.run();
 	PINE.run2();
 });
 
@@ -707,6 +799,8 @@ PINE.initiate = function(root) {
 		root._pine_.ops = {};
 		root._pine_.ops.hold = false;
 		root._pine_.ops.queue = [];
+			//
+		root._pine_.fns = {};
 	}
 
 	//pvars might be defined before an initiation
@@ -904,11 +998,22 @@ PINE.permeate2 = function(root, opFuncs, callbackParent)  {
 	LOG(opFuncs, "run");
 
 
-	if(root.tagName == "DEPINE" || root.tagName == "SCRIPT" || root.nodeName == "#text" || root.nodeName == "#comment"){
-		LOG("depine, text, or comment found", "run");
-		callbackParent(root, opFuncs);
-		return;
+	for(var i in PINE.stopTags) {
+		if(root.tagName == PINE.stopTags[i]) {
+			LOG("depine, text, or comment found", "run");
+			callbackParent(root, opFuncs);
+			return;
+		}
 	}
+
+	for(var i in PINE.stopNodes) {
+		if(root.nodeName == PINE.stopNodes[i]) {
+			LOG("depine, text, or comment found", "run");
+			callbackParent(root, opFuncs);
+			return;
+		}
+	}
+
 	
 
 	var runNextInQueue = function() {
@@ -1167,110 +1272,110 @@ PINE.createChildCallback = function(root, opFuncs, copyMeChildNodes, callbackPar
 
 
 
-function applyFuncArray(root, needle, func_array)  {
-	for(index in func_array)  {
-		func_array[index].fn(root, needle);
-	}
-}
+// function applyFuncArray(root, needle, func_array)  {
+// 	for(index in func_array)  {
+// 		func_array[index].fn(root, needle);
+// 	}
+// }
 
 
-//KLUDGE: using step when it's in func_array
-function tryFuncKey(keyName, step, root, func_array)  {
-	if(PINE.keyApplies(keyName, root)){
-		//check all steps before current step for holds on domNode
-		for(var i = 0; i < PINE.OrderOfOperations.length; i++){
-			var check_step = PINE.OrderOfOperations[i];
+// //KLUDGE: using step when it's in func_array
+// function tryFuncKey(keyName, step, root, func_array)  {
+// 	if(PINE.keyApplies(keyName, root)){
+// 		//check all steps before current step for holds on domNode
+// 		for(var i = 0; i < PINE.OrderOfOperations.length; i++){
+// 			var check_step = PINE.OrderOfOperations[i];
 
-			// console.log("checking step "+check_step+" to "+step+" in "+root.tagName);
-			if(step == check_step) break;
-			else if(U.get(root, "_pine_.holds["+check_step+"].length")) 
-			{
-				console.log("should wait");
+// 			// console.log("checking step "+check_step+" to "+step+" in "+root.tagName);
+// 			if(step == check_step) break;
+// 			else if(U.get(root, "_pine_.holds["+check_step+"].length")) 
+// 			{
+// 				console.log("should wait");
 				
-				return false;
-			}			
-		}
+// 				return false;
+// 			}			
+// 		}
 
-		applyFuncArray(root, PINE.get(keyName), func_array);
-	}
-	return true;
-}
-
-
-
-function applyFuncToChildren(root, step, keyName, applyUs)  {
-	var branches = root.childNodes;
-
-	for(var i = 0; branches && i < branches.length; i++)  {
-		var branch = branches[i];
-		var nodeName = branch.nodeName;
-
-		if(nodeName!="#text" && nodeName!="#comment")  {
-			// PINE.fillTree(branch, step, keyName, applyUs);
-			PINE.fillTree(branch, applyUs);
-		}
-	}
-
-}
+// 		applyFuncArray(root, PINE.get(keyName), func_array);
+// 	}
+// 	return true;
+// }
 
 
-PINE.fillTree = function(root, pinefuncs, isRetry)  {
-	// console.log(pinefuncs);
 
-	if(root.tagName == "DEPINE") 
-		return;
+// function applyFuncToChildren(root, step, keyName, applyUs)  {
+// 	var branches = root.childNodes;
+
+// 	for(var i = 0; branches && i < branches.length; i++)  {
+// 		var branch = branches[i];
+// 		var nodeName = branch.nodeName;
+
+// 		if(nodeName!="#text" && nodeName!="#comment")  {
+// 			// PINE.fillTree(branch, step, keyName, applyUs);
+// 			PINE.fillTree(branch, applyUs);
+// 		}
+// 	}
+
+// }
 
 
-	if(root._pine_ == null) { root._pine_ = {}; }
-	var topToBottom = pinefuncs[0].topToBottom;
-	var key = pinefuncs[0].key;
-	var step = pinefuncs[0].step;
+// PINE.fillTree = function(root, pinefuncs, isRetry)  {
+// 	// console.log(pinefuncs);
+
+// 	if(root.tagName == "DEPINE") 
+// 		return;
 
 
-	//KLUDGE: don't use isRetry
-	// if(topToBottom == false) {
-	// 	if(isRetry != true)
-	// 		applyFuncToChildren(root, step, key, pinefuncs);
+// 	if(root._pine_ == null) { root._pine_ = {}; }
+// 	var topToBottom = pinefuncs[0].topToBottom;
+// 	var key = pinefuncs[0].key;
+// 	var step = pinefuncs[0].step;
 
-	// 	if(tryFuncKey(key, step, root, pinefuncs) == false)  {
-	// 		setTimeout(function() { 
-	// 				if(PINE.fillTree(root, pinefuncs, true)) 
-	// 					PINE.run();
-	// 			}, 
-	// 			10
-	// 		);
-	// 		return false;
-	// 	}
-	// }
-	// else {
-		// applyFuncToChildren(root, step, key, pinefuncs);
-		if(tryFuncKey(key, step, root, pinefuncs) == false)  {
-			setTimeout(function() { 
-					if(PINE.fillTree(root, pinefuncs)) 
-						PINE.run();
-				}, 
-				10
-			);
-			return false;
-		}
-		applyFuncToChildren(root, step, key, pinefuncs);
-	// }
+
+// 	//KLUDGE: don't use isRetry
+// 	// if(topToBottom == false) {
+// 	// 	if(isRetry != true)
+// 	// 		applyFuncToChildren(root, step, key, pinefuncs);
+
+// 	// 	if(tryFuncKey(key, step, root, pinefuncs) == false)  {
+// 	// 		setTimeout(function() { 
+// 	// 				if(PINE.fillTree(root, pinefuncs, true)) 
+// 	// 					PINE.run();
+// 	// 			}, 
+// 	// 			10
+// 	// 		);
+// 	// 		return false;
+// 	// 	}
+// 	// }
+// 	// else {
+// 		// applyFuncToChildren(root, step, key, pinefuncs);
+// 		if(tryFuncKey(key, step, root, pinefuncs) == false)  {
+// 			setTimeout(function() { 
+// 					if(PINE.fillTree(root, pinefuncs)) 
+// 						PINE.run();
+// 				}, 
+// 				10
+// 			);
+// 			return false;
+// 		}
+// 		applyFuncToChildren(root, step, key, pinefuncs);
+// 	// }
 	
 	
 
-	// if(topToBottom == true) 
+// 	// if(topToBottom == true) 
 		
 
 	
 
 
-	// }
+// 	// }
 
 
 
 
-	return true;
-}
+// 	return true;
+// }
 
 
 
@@ -1337,21 +1442,6 @@ PINE.fillTree = function(root, pinefuncs, isRetry)  {
 // 		// pass in the target node, as well as the observer options
 // 		observer.observe(target, config);
 // 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

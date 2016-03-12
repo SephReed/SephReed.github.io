@@ -1,0 +1,36 @@
+<style>
+	commentbox {
+		display: inline-block;
+		-moz-appearance: textfield-multiline;
+	    -webkit-appearance: textarea;
+	    overflow: auto;
+	    padding: 2px;
+	    resize: both;
+	}
+</style>
+
+<script type="text/javascript">
+
+PINE.createNeedle("commentbox").addFunction({
+	step_type : PINE.ops.STATIC,
+	fn: function(initMe, needle) {
+		initMe.setAttribute("contenteditable", "true");
+
+		PINE.addFunctionToNode(initMe, "submit", function() {
+			var submitFn = initMe.attributes.submitFn.value;
+			var fn = window[submitFn];
+
+			if(fn) fn(initMe.innerHTML);
+
+			initMe.innerHTML = '';
+		});
+
+		initMe.addEventListener("keypress", function(event) {
+			if(event.keyCode == 13) {
+				initMe._pine_.fns.submit();
+			}
+		});
+	}
+})
+	
+</script>

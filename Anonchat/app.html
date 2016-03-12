@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8"/>
+
+	<script src="../public/js/zepto.js"></script>
+	<script src="../handle_chooser/PINE_Core.js"></script>
+	<script src="../handle_chooser/PINE_Var.js"></script>
+	<script src="../handle_chooser/PINE_Needles.js"></script>
+	<!-- <script src="../handle_chooser/PINE_Template.js"></script> -->
+
+	<pine>
+		<needle src="Needle_CommentBox.html"></needle>
+	</pine>
+</head>
+
+
+<style>
+
+html {
+  box-sizing: border-box;
+
+}
+
+*, *:before, *:after {
+  	box-sizing: inherit;
+  	margin: 0px;
+	padding: 0px;
+}
+
+img {
+	outline : none;
+}
+
+
+
+
+
+/*CONSTANTS*/
+postlist {
+	width: 100%;
+}
+
+post {
+	display: block;
+}
+
+
+/*THEMES*/
+
+body {  
+	background-color: #FAFAFA;  
+	font-family: arial;
+	color: #333;
+}
+
+post {
+	border-bottom: 1px solid rgba(0,0,0,0.2);
+	padding: 10px;
+}
+
+commentbox {
+	width: 100%;
+	height: 100px;
+}
+
+
+</style>
+
+<script type="text/javascript">
+	function addComment(addMe) {
+		posts.push(addMe);
+
+		$("postlist")[0]._pine_.fns.update();
+	}
+</script>
+
+
+<!-- *********************
+*						*
+*		BEGIN BODY      *
+*						*
+************************-->
+<body><pine>
+
+	<content>
+		
+		<include src="commentView.html"></include>
+
+	</content>
+
+
+
+
+
+</pine></body>
+</html>
+

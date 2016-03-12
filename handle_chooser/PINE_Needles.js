@@ -1,4 +1,40 @@
 
+U.attr = function(domNode, name, value) {
+	var target = domNode.attributes[name];
+
+	if(target == null){
+		if(value === undefined)
+			return undefined;
+		else return null;
+			//create the attribute and assign value
+	}
+	else {
+		if(value === undefined)
+			return target.value;
+		else
+			target.value = value;
+	}
+}
+
+
+
+PINE.createNeedle("[trigger]").addFunction({
+	step_type: PINE.ops.FINALIZER,
+	fn: function(initMe, needle) {
+		var triggerType = initMe.attributes.trigger.value;
+
+
+		initMe.addEventListener(triggerType, function() {
+			var target = initMe.attributes.target.value;
+			var fn = initMe.attributes.fn.value;
+			var args = U.attr(initMe, "args");
+
+			$(target).each(function() {
+				this._pine_.fns[fn]();
+			});
+		}, false);
+	}
+});
 
 
 
@@ -12,36 +48,38 @@
 
 
 var spawner = PINE.createNeedle("[spawner]");
-spawner.registerFunction({
-	step_type : PINE.ops.PREPROCESS,
+spawner.update = function(initMe) {
+	var keyString = initMe.attributes.spawner.value;
+	var array = pnv.getVarFrom(keyString, initMe);
+
+	var spawn = initMe._pine_.spawner.spawn;
+
+	if(spawn){
+		var indexer = initMe._pine_.spawner.indexer;
+
+		for(i in array)  {
+			var i = i;
+
+			var addMe = PINE.deepCloneNode(spawn);
+			U.getnit(addMe, "PVARS."+indexer, i);
+			
+			addMe.setAttribute("scopeVar", indexer+'='+i);
+
+			initMe.appendChild(addMe);
+		}
+	}
+}
+
+
+spawner.addFunction({
+	step_type : PINE.ops.INITIALIZER,
 	topToBottog : true,
 	fn : function(initMe, needle) {
-		console.log("spawner PREPROCESS");
-		console.log(initMe);
 
-		// initMe._pine_["[spawner]"] = {};
-
-
-
-		// var keyString = initMe.attributes.for.value;
-		// var array = U.get(window, keyString);
-
-		// U.assertKey(initMe, "_pine_.for");
-		// initMe._pine_.for.array = array;
-
-
-		var indexer = initMe.attributes.index;
-		indexer = indexer ? indexer.value : "i";
-
-		// PINE.holdVar(initMe, indexer);
+		var indexer = U.attr(initMe, "indexer") || "i";
 
 		U.assertKey(initMe, "_pine_.spawner");
 		initMe._pine_.spawner.indexer = indexer;
-
-		console.log(this);
-
-		// this.pvar(spawner).indexer = indexer;
-
 		
 		var branches = initMe.childNodes;
 		var spawn = null;
@@ -49,117 +87,31 @@ spawner.registerFunction({
 			var branch = branches[i];
 			var atts = branch.attributes;
 
-			// console.log(branch);
-			// console.log(atts);
-			
 			for(var i_att = 0; atts && i_att < atts.length && !spawn; i_att++)  {
-
-				// console.log(atts[i_att]);
-
 				if("spawn" == atts[i_att].name)  {
 					spawn = branch;	
-					// branch.remove();
 				}
 			}
 		}
 		if(spawn)  {
-			PINE.holdVar(spawn, indexer);
+			initMe._pine_.spawner.spawn = spawn;
+			initMe.removeChild(spawn);
 		}
 
 
 
-		// console.log(initMe);
+		PINE.addFunctionToNode(initMe, "update", function() {
+			needle.update(initMe);
+		});
 
-		// var scope = {};
-		// scope.i = 0;
-		// for(scope.i in array)  {
-			
-		// }
 	}
 });
 
 
-spawner.registerFunction({
+spawner.addFunction({
 	step_type : PINE.ops.POPULATER,
 	fn : function(initMe, needle) {
-		// console.log("for found");
-
-
-		// if(initMe._pine_["[spawner]"].complete == true) {
-		// 	console.log("spawner already spawned");
-		// 	return;
-		// }
-
-		console.log("spawner POPULATER");
-		console.log(initMe);
-
-		var keyString = initMe.attributes.spawner.value;
-		// var array = U.get(window, keyString);
-
-
-		var array = window[keyString];
-		// var array = PINE.pnv.getVarFrom(keyString, initMe).value;
-
-		// U.assertKey(initMe, "_pine_.for");
-		// initMe._pine_.for.array = array;
-
-
-		// var holdMe = initMe.attributes.index;
-		// holdMe = holdMe ? holdMe.value : "i";
-
-		// PINE.holdVar(initMe, holdMe);
-
-		
-		var branches = initMe.childNodes;
-		var spawn = null;
-		for(var i = 0; i < branches.length && !spawn; i++)  {
-			var branch = branches[i];
-			var atts = branch.attributes;
-			
-			for(var i_att = 0; atts && i_att < atts.length && !spawn; i_att++)  {
-
-				if("spawn" == atts[i_att].name)  {
-					spawn = branch;	
-					branch.remove();
-				}
-			}
-		}
-
-
-
-		if(spawn){
-			var indexer = initMe._pine_.spawner.indexer;
-
-			// PINE.unholdVar(initMe, indexer);
-			PINE.unholdVar(spawn, indexer);
-			console.log(array);
-
-			// var scope = {};
-			// scope.indexer = 0;
-			for(i in array)  {
-				console.log(spawn);
-
-				var addMe = PINE.deepCloneNode(spawn);
-				// var addMe = spawn.cloneNode();
-				// spawn.cloneNode(true);
-				U.assertKey(addMe, "_pine_.pnv.vars."+indexer);
-				addMe._pine_.pnv.vars[indexer] = i;
-
-				addMe.setAttribute("scopeVar", indexer+'='+i);
-
-				console.log("adding:");
-				console.log(addMe);
-				
-
-				initMe.appendChild(addMe);
-
-				// PINE.permeate(addMe);
-			}
-
-			// initMe._pine_["[spawner]"].complete = true;
-		}
-
-		
+		needle.update(initMe);
 	}
 });
 
@@ -170,7 +122,7 @@ spawner.registerFunction({
 
 
 
-// PINE.createNeedle("showHtml").registerFunction({
+// PINE.createNeedle("showHtml").addFunction({
 // 	step_type : PINE.PREPROCESS,
 // 	// continuous : true,
 // 	fn : function(initMe, needle) {
@@ -180,7 +132,7 @@ spawner.registerFunction({
 // 	}
 // });
 
-// PINE.createNeedle("[showHtml]").registerFunction({
+// PINE.createNeedle("[showHtml]").addFunction({
 // 	step_type : PINE.PREPROCESS,
 // 	// continuous : true,
 // 	fn : function(initMe, needle) {
@@ -205,74 +157,6 @@ spawner.registerFunction({
 
 
 
-// var templateAttNeedle = PINE.createNeedle("[template]");
-// PINE.registerFunction({
-// 	key : "[template]",
-// 	step_type : PINE.DEFINER,
-// 	fn: function(initMe, needle) {
-
-// 		// console.log("running template");
-
-// 		var tagName = initMe.tagName;
-
-// 		// console.log(needle);
-// 		// console.log(initMe);
-
-
-// 		var templatedNeedle = PINE.get(tagName);
-// 		if(templatedNeedle == null) {
-// 			templatedNeedle = PINE.createNeedle(tagName, null);	
-// 		}
-
-// 		if (templatedNeedle.template == null) {
-// 			templatedNeedle.template = {}
-// 			templatedNeedle.template.clones = [];
-// 			templatedNeedle.template.masterCopy = initMe;
-// 		}
-// 		else {
-// 			PINE.err("template for "+tagName+" already exists!  Overwriting in case that's what you want... if not, just remove template attribute");	
-// 		}
-
-		
-		
-
-// 		$(initMe).remove();
-
-
-
-// 		PINE.registerFunction({
-// 			key : tagName,
-// 			step_type : PINE.POPULATER,
-// 			fn: function(tagElement, tagNeedle) {
-// 				// console.log(tagElement);
-// 				// console.log(tagNeedle);
-
-// 				var template = tagNeedle.template;
-
-// 				$elem = $(tagElement);
-
-// 				// tagNeedle.masterCopy = masterCopy;
-// 				var attributes = template.masterCopy.attributes;
-
-// 				for(var i = 0; i < attributes.length; i++) {
-// 					var att_name = attributes[i].name;
-
-// 					if(att_name != "template")  {
-// 						var att_value = attributes[i].value;
-// 						if($elem.attr(att_name) == null) {
-// 							$elem.attr(att_name, att_value);
-// 						}
-// 					}
-// 				}
-
-// 				$elem.html(template.masterCopy.innerHTML);
-// 				template.clones.push(tagElement);
-
-// 				// PINE.permeate(tagElement);
-// 			}
-// 		});
-// 	}
-// });
 
 
 
@@ -280,253 +164,249 @@ spawner.registerFunction({
 
 
 
+PINE.ajaxGetSrc = function(initMe, needle, callback) {
+	var src = initMe.attributes.src;
+	
+	if(src != null) {
+
+		var target = src.value;
+		// console.log(window.location.hostname);
+		// console.log("ajax get: "+target);
+
+		if(target.indexOf("..") == 0) {
+			// \w+\/[\w|\.]+$
+			var location = window.location.toString().replace(/\w+\/[\w|\.]+$/g, '');
+			var extension = target.replace("../", '');
+			target = location+extension;
+		}
+
+
+
+		if(needle.includeBank[target] == null)  {
+			needle.includeBank[target] = {};
+
+			var request = new XMLHttpRequest();
+			request.responseType = 'text';
+			request.open('GET', target, true);
+
+			request.onload = function() {
+				if (request.status >= 200 && request.status < 400) {
+				    // Success!
+				    var response = request.responseText;
+				    needle.includeBank[target].outerHTML = response;
+				    callback(target);
+				} else {
+				    // We reached our target server, but it returned an error
+				    PINE.err("include src '"+target+"' does not exist")
+				}
+			};
+
+
+
+			request.onerror = function() {
+			  	// There was a connection error of some sort
+			  	PINE.err("include src '"+target+"' does not exist")
+			};
+
+			request.send();
+		}			
+		else callback(target);
+
+
+
+	}
+
+	else PINE.err("include src for "+initMe+" in not set");
+}
 
 
 
 
+var p_include = PINE.createNeedle("include");
+p_include.includeBank = {};
 
-
-
-
-
-PINE.createNeedle("include").registerFunction({
+p_include.addFunction({
 	step_type : PINE.ops.STATIC,
 	autoComplete : false,
 	fn: function(initMe, needle) {
 
 		var pineFunc = this;
-		// console.log(this);
 
-		// console.log("INCLUDING" );
+		function doInclude(target) {
 
-
-		// U.assertKey(initMe, "_pine_.include.included");
-		// if(initMe._pine_.include.included == true) {
-		// 	console.log('already included');
-		// 	return;
-		// }
-		// 	//
-		// else initMe._pine_.include.included = false;
-
-			
-
-
-		// if(initMe.attributes.included !== undefined)  {
-		// 	console.log('already included');
-		// 	return;
-		// }
-
-
-
-		// console.log(needle);
-		
-
-		// console.log("include");
-
-		if(needle.includeBank == null) {
-			needle.includeBank = {};
-		}
-
-		var src = initMe.attributes.src;
-		// console.log(src);
-		// console.log(initMe);
-		
-		
-		if(src != null) {
-			
-			if(src.value == '') return;
-
-			var id = needle.keyName;
-			// PINE.addHold(PINE.STATIC, id, initMe);
-
-			var target = src.value;
-
-			if(needle.includeBank[target] == null)  {
-				needle.includeBank[target] = {};
-
-
-				$.ajax({
-					type: 'GET',
-					url: target,
-				  	dataType: 'html',
-				  	success: function(response){
-				  		needle.includeBank[target].outerHTML = response;
-						doInclude();
-				  	},
-				  	error: function(xhr, type){
-				    	PINE.err("include src '"+target+"' does not exist")
-				  	}
-				});
-
-
-			}			
-			else doInclude();
-		}
-
-		else PINE.err("include src for "+initMe+" in not set");
-
-
-		function doInclude()  {
 			if(needle.includeBank[target].outerHTML == null)  {
-				setTimeout(doInclude, 10);
+				setTimeout(function(){ doInclude(target) }, 10);
 			}
 			else  {
-				// initMe._pine_.include.included = true;
+				initMe.innerHTML = needle.includeBank[target].outerHTML;
+
+				//FUCKING KLUDGE;
+				if(PINE.pnv) {
+					PINE.pnv.parseText(initMe);
+					PINE.pnv.parseAtts(initMe);
+				}
+
+				var localVars = U.evalElementScripts(initMe);
+
+				U.assertKey(initMe, "PVARS");
+				for(key in localVars)  {
+					initMe.PVARS[key] = localVars[key];
+				}
+
+				pineFunc.complete();
+			}
+		}
+
+		PINE.ajaxGetSrc(initMe, needle, doInclude);
+
+	}
+});
+
+
+
+
+
+
+//TODO : make sure variables defined a second time are not touched
+U.evalElementScripts = function(initMe) {
+
+	//if previously evaluated, throw an error
+	// if(initMe._pine_.previouslyEvaled === true) {
+	// 	PINE.err("element previously evaled");
+	// 	PINE.err(initMe);
+	// }
+
+	//create a new object for all the local variables of this eval to be stored in
+	var evalIndex = PINE.evals.length;
+	PINE.evals[evalIndex] = {};
+	var evalPrefix = "PINE.evals["+evalIndex+"].";
+
+
+	
+	var localVars = [];
+	var scripts = initMe.getElementsByTagName("script");
+		//
+	//go through every item with a script tag
+	for(var s = 0; s < scripts.length; s++)  {
+
+		//check for anything that is either within brackets {} or starts with var
+		var rex = /(var.+(;|\n)|(\{(.|\n)+?\}))/g;
+		var localVarRex = scripts[s].innerHTML.match(rex);
+
+		//if any of the results aren't brackets, get the var name and add it to list of local vars
+		for(i in localVarRex)  {
+			var match = localVarRex[i];
+			if(match.charAt(0) != '{') {
+				var var_name = match.replace(/(var +|( ?)+=.+\n?)/g, '');
+				
+				var_name = var_name.replace(/[\n\r;]/g, '');
+				localVars.push(var_name);
+			}
+		}
+	}
+
+
+
+
+	//go through all the scripts again
+	for(var s = 0; s < scripts.length; s++) {
+
+		//get the code and check it for local variables
+		//if a local variable is found, append the evalPrefix so it is stored globally instead
+		var textToEval = scripts[s].innerHTML;
+		for(i in localVars)  {
+			var match = localVars[i];
+			var replace = evalPrefix+match;
+
+			
+			var noVarZones = "\\/\\*\\*.*?\\*\\/";  	/**multiline comment*/
+				noVarZones += "|" + "\\/\\/.*?\\n";  	//single line comment
+				noVarZones += "|" + "'.*?'"			//'string'
+				noVarZones += "|" + "\".*?\""		//"string"
+			//match anything that has the name of the variable without a dot or letter before it
+			//this is the trolliest regex I've ever used
+			var rex = new RegExp(noVarZones+"|(var)?([^\\.\\/\\\\\\w]|^)"+match, "g");
+			// console.log(rex);
+
+			textToEval = textToEval.replace(rex, function(replaceMe) {
+				var char = replaceMe.charAt(0);
+				var out = replaceMe;
+
+				if(char != "\/" && char != "'" && char != "\"") {
+					out = replace;
+					//special case for not "var some_name" ie "some_name = 'joe'"
+					if(char != 'v')
+						out = replaceMe.charAt(0)+out;
+
+				}
+
+				return out;
+			});
+		}
+
+		//once all local variables have been renamed to be stored globally, proceed with eval
+		// console.log(textToEval);
+		eval(textToEval);
+	}
+
+	// initMe._pine_.previouslyEvaled = true;
+
+	return PINE.evals[evalIndex];
+}
+
+
+
+U.evalElementStyles = function(initMe) {
+	var addMe = document.createElement('style');
+	addMe.type = 'text/css';
+	addMe.innerHTML = "";
+
+	var styles = initMe.getElementsByTagName("style");
+
+	for(var s = 0; s < styles.length; s++)  {
+		addMe.innerHTML += styles[s].innerHTML;
+		// console.log(styles[s].innerHTML);
+	}
+
+	// console.log(addMe);
+	document.getElementsByTagName('head')[0].appendChild(addMe);
+}
+
+
+
+
+
+
+var p_needle = PINE.createNeedle("needle");
+p_needle.includeBank = {};
+
+p_needle.addFunction({
+	step_type : PINE.ops.INITIALIZER,
+	autoComplete : false,
+	fn: function(initMe, needle) {
+
+		var pineFunc = this;
+
+		function doInclude(target) {
+			if(needle.includeBank[target].outerHTML == null)  {
+				setTimeout(function(){ doInclude(target) }, 10);
+			}
+			else  {
+				var domNode = document.createElement('div');
+				domNode.innerHTML = needle.includeBank[target].outerHTML;
 
 				// console.log(needle.includeBank[target].outerHTML);
 
-				initMe.innerHTML = needle.includeBank[target].outerHTML;
-
-				var evalIndex = PINE.evals.length;
-				PINE.evals[evalIndex] = {};
-				var evalPrefix = "PINE.evals["+evalIndex+"].";
-
-				var localVars = [];
-
-				var scripts = initMe.getElementsByTagName("script");
-				// console.log(scripts);
-				for(var s = 0; s < scripts.length; s++)  {
-
-					var rex = /(var.+(;|\n)|(\{(.|\n)+?\}))/g;
-					var localVarRex = scripts[s].innerHTML.match(rex);
-
-					for(i in localVarRex)  {
-						var match = localVarRex[i];
-						if(match.charAt(0) != '{') {
-							var var_name = match.replace(/(var +|( ?)+=.+\n?)/g, '');
-							
-							var_name = var_name.replace(/[\n\r;]/g, '');
-							localVars.push(var_name);
-						}
-					}
-				}
-
-
-				// console.log(localVars);
-
-
-				for(var s = 0; s < scripts.length; s++) {
-					var textToEval = scripts[s].innerHTML;
-					for(i in localVars)  {
-						var match = localVars[i];
-						var replace = evalPrefix+match;
-
-						var rex = new RegExp("(var)?[^\.]"+match, "g");
-						// console.log(rex);
-
-						textToEval = textToEval.replace(rex, function(replaceMe) {
-							var out = replaceMe;
-							if(replaceMe.charAt(0) != '.') {
-								// console.log('match::"'+replaceMe+'"');
-								out = replace;
-								if(replaceMe.charAt(0) != 'v')
-									out = replaceMe.charAt(0)+replace;
-								
-								// var var_name = match.replace(/(var +|( ?)+=.+)\n?/g, '');
-								// var store = evalPrefix+var_name+" = "+var_name;
-								// // var store = match.replace(/var +/g, evalPrefix);
-								// out = match+'\n'+store+';\n';
-								// console.log("out::"+out);
-							}
-							return out;
-						});
-
-						
-
-
-					}
-
-					// console.log(textToEval);
-
-					eval(textToEval);
-				}
-
-
-				// var scripts = initMe.getElementsByTagName("script");
-				// console.log(scripts);
-				// for(var s = 0; s < scripts.length; s++)  {
-				// 	console.log(scripts[s].innerHTML);
-
-				// 	var rex = /(var.+(;|\n)|(\{(.|\n)+?\}))/g;
-
-				// 	var textToEval = scripts[s].innerHTML.replace(rex, function(match) {
-				// 		var out = match;
-				// 		if(match.charAt(0) != '{') {
-				// 			console.log('match::'+match);
-				// 			var var_name = match.replace(/(var +|( ?)+=.+)\n?/g, '');
-				// 			var store = evalPrefix+var_name+" = "+var_name;
-				// 			// var store = match.replace(/var +/g, evalPrefix);
-				// 			out = match+'\n'+store+';\n';
-				// 			console.log("out::"+out);
-				// 		}
-				// 		return out;
-				// 	});
-				// 	// var varsToPrefix = 
-
-				// 	// while (m = re.exec(text)) {
-				// 	//    print(m.index);
-				// 	// } 
-
-				// 	// eval(scripts[s].innerHTML);
-				// 	console.log(textToEval);
-				// 	eval(textToEval);
-				// }
-
-				for(key in PINE.evals[evalIndex])  {
-					U.assertKey(initMe, "_pine_.pnv.vars");
-					initMe._pine_.pnv.vars[key] = PINE.evals[evalIndex][key];
-				}
-
-
-
-				// PINE.removeHold(PINE.STATIC, id, initMe);
-
-				// initMe.setAttribute("included", '');
-
+				U.evalElementScripts(domNode);
+				U.evalElementStyles(domNode);
 				
 
-
-				// var step_maps = [];
-				// for(index in PINE.OrderOfOperations)  {
-				// 	var step_type = PINE.OrderOfOperations[index];
-				// 	step_maps.push(PINE.functions[step_type].all);
-				// }
-
-
-				// var fakeGroup = {};
-				// fakeGroup.childNodes = initMe.childNodes;
-				// fakeGroup.attributes = {};
-				// fakeGroup.tagName = {};
-
-				
-
-				// for(var step = 0; step < step_maps.length; step++)  {
-
-				// 	for(keyName in step_maps[step]) {
-				// 		var applyUs = step_maps[step][keyName];
-				// 		delete step_maps[step][keyName];
-						
-
-				// 		var func_step = PINE.OrderOfOperations[step];
-				
-				// 		PINE.fillTree(fakeGroup, func_step, keyName, applyUs);
-
-				// 		// PINE.fillTree(fakeGroup, step, keyName, applyUs);
-
-				// 		// console.log(keyName)
-				// 		step = -1;
-				// 		break;
-				// 	}
-
-				// 	// console.log(step)
-				// }
-			
-				// console.log(pineFunc);
 				pineFunc.complete();
-				// PINE.permeate(initMe);
-				// PINE.run();
 			}
 		}
+
+		PINE.ajaxGetSrc(initMe, needle, doInclude);
+		
 	}
 });
 

@@ -14,30 +14,6 @@ var pnv = PINE.pnv = {};
 PINE.class.PineVar = function(i_val) {
 	this.val = i_val;
 	this.onChange = [];
-	// this.me = this;
-
-	// var handle = function() {
-	// 	return val;
-	// }
-
-	// handle.set = function(i_val) {
-	// 	val = i_val;
-	// 	me.change();
-	// }
-
-	// Object.defineProperty(this, 'val', {
-	//     get: function() {
-	//       	console.log('get!');
-	//       	return this.val;
-	//     },
-	//     set: function(i_val) {
-	//     	console.log('set!');
- //      		this.val = i_val;
-      		
- //    	}
- //  	});
-
-
 }
 
 
@@ -53,6 +29,8 @@ PINE.class.PineVar.prototype.change = function(observer) {
 	}
 };
 
+
+
 PINE.class.PineVar.prototype.removeObserver = function(removeMe)  {
 	var target = this.onChange.indexOf(removeMe);
 
@@ -62,9 +40,13 @@ PINE.class.PineVar.prototype.removeObserver = function(removeMe)  {
 		this.onChange.splice(target, 1);
 }
 
+
+
 PINE.class.PineVar.prototype.val = function() {
 	return this.val;
 };
+
+
 
 PINE.class.PineVar.prototype.setVal = function(i_val) {
 	this.val = i_val;
@@ -148,11 +130,14 @@ PINE.newVar = function(varName, value, domNode) {
 
 
 
-pnv.getVarFrom = function(varName, domNode)  {
+pnv.searchForPinevar = function(varName, domNode)  {
 	var scope = domNode;
-	if(!domNode || !domNode.PVARS)
+	if(!domNode || !domNode._pine_){
+		// console.log("no node");
 		scope = window;
-	 
+	}
+	
+	// console.log("getting "+varName+" from:"); 
 	// console.log(scope);
 
 	if(scope.PVARS && scope.PVARS[varName])
@@ -161,13 +146,52 @@ pnv.getVarFrom = function(varName, domNode)  {
 	if(scope.parentNode)
 		return pnv.getVarFrom(varName, scope.parentNode);
 
-	else return undefined;
+	else return scope[varName];
+}
+
+
+
+pnv.getVarFrom = function(varName, domNode)  {
+	var scope = domNode;
+	if(!domNode || !domNode.PVARS)
+		scope = window;
+
+	// console.log(varName);
+	// console.log(domNode);
+
+	var rootVar;
+	var extension;
+	for(var c = 0; rootVar == null && c < varName.length; c++) {
+		var char = varName.charAt(c);
+
+		if(char == '[' || char == '.') {
+			var rootVarName = varName.substring(0, c);
+			var extension = varName.substring(c);
+			rootVar = pnv.searchForPinevar(rootVarName, domNode);
+		} 
+	}
+
+	if(rootVar == undefined) {
+		rootVar = pnv.searchForPinevar(varName, domNode);
+	}
+
+	// console.log(rootVar);
+	// console.log(extension);
+
+	if(extension) {
+		return U.get(rootVar, extension, function(start, varName){
+			// console.log("WOO");
+			// console.log(varName);
+			return pnv.getVarFrom(varName, domNode);
+		});
+	}
+	else return rootVar;
 }
 
 
 
 PINE.var = function(varName, domScope, callback)  {
-	// console.log(varName);
+	// console.log("HHEY"+varName);
 	var args = varName.split(' ', 1);
 	// console.log(args);
 
@@ -206,20 +230,25 @@ pnv.needles["PNV_DEFAULT"] = function(varName, domScope, callback) {
 	// console.log(domScope);
 	// console.log(pinevar);
 
-	if(pinevar !== undefined) {
-		if(pinevar.val !== undefined)
-			callback(pinevar.val);
+	callback(pinevar);
 
-		else {
-			var observer = function(me)  {
-				callback(me.val);
-				me.removeObserver(observer);
-			};
 
-			pinevar.change(observer);
-		}
-	}
-	else callback(window[varName]);
+	// if(pinevar !== undefined) {
+	// 	if(pinevar.val !== undefined)
+	// 		callback(pinevar.val);
+
+	// 	else {
+	// 		var observer = function(me)  {
+	// 			callback(me.val);
+	// 			me.removeObserver(observer);
+	// 		};
+
+	// 		pinevar.change(observer);
+	// 	}
+	// }
+	// // else callback(window[varName]);
+
+	// else callback(U.get(window, varName));
 }
 
 
@@ -353,7 +382,7 @@ pnv.needles["PNV_DEFAULT"] = function(varName, domScope, callback) {
 
 
 
-PINE.get("pine").registerFunction({
+PINE.get("pine").addFunction({
 	step_type : PINE.ops.INITIALIZER,
 	fn : function(initMe, needle) {
 		PINE.pnv.parseText(initMe);
@@ -422,21 +451,21 @@ PINE.pnv.parseText = function(root, addToMe)  {
 
 
 
-PINE.createNeedle("pnv").registerFunction({
-	step_type : PINE.ops.STATIC,
+PINE.createNeedle("pnv").addFunction({
+	step_type : PINE.ops.FINALIZER,
 	fn : function(initMe, needle) {
 		var get = initMe.attributes["var"];
 
 		if(get != null)  {
 
 
-			pnv.assignValTo
+			// pnv.assignValTo
 
 			// console.log("setting pnv :")
 			// console.log(initMe);
 
 
-			var value = PINE.var(get.value, initMe, function(val) {
+			PINE.var(get.value, initMe, function(val) {
 				// console.log(val);
 				initMe.innerHTML = val;	
 			});
@@ -539,8 +568,8 @@ PINE.pnv.parseAtts = function(root, addToMe)  {
 
 
 
-PINE.createNeedle("[pnvatt]").registerFunction({
-	step_type : PINE.ops.INITIALIZER,
+PINE.createNeedle("[pnvatt]").addFunction({
+	step_type : PINE.ops.FINALIZER,
 	fn : function(initMe, needle) {
 		// console.log(initMe);
 		var rules = initMe.attributes["pnvatt"].value;

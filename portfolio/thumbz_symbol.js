@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					.easing( TWEEN.Easing.Sinusoidal.InOut).onComplete(
 						function() {
 							pause = true;
-							console.log("Rotated symbol to rotation #"+lastSide);
+							// console.log("Rotated symbol to rotation #"+lastSide);
 						}
 					).start(); 
 
@@ -170,8 +170,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 		event.preventDefault();
 
-		// var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
-
 		if ( state === STATE.ROTATE ) {
 			rotateEnd.set( event.clientX, event.clientY );
 			rotateDelta.subVectors( rotateEnd, rotateStart );
@@ -190,15 +188,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 
 	function onMouseUp( /* event */ ) {
-
 		if ( scope.enabled === false ) return;
 
 		document.removeEventListener( 'mousemove', onMouseMove, false );
 		document.removeEventListener( 'mouseup', onMouseUp, false );
-		// scope.dispatchEvent( endEvent );
 		state = STATE.NONE;
-
 	}
+
+
 
 });
 
