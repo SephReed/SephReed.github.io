@@ -1208,7 +1208,7 @@ PINE.createPineFuncCallback = function(root, opFuncs, localOpFuncs, callbackPare
 
 		var index = localOpFuncs.indexOf(removeMe);
 		if(index == -1) {
-			PINE.err(removeMe+" does not exist in localOpFuncs: "+localOpFuncs);
+			PINE.err(removeMe.needle.keyword+" does not exist in localOpFuncs: "+localOpFuncs);
 			// console.log(removeMe);
 			// console.log(localOpFuncs);
 		}
