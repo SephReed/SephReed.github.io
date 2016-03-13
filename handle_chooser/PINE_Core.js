@@ -319,8 +319,12 @@ PINE.alertErr = false;
 
 PINE.err = function(whatevers_the_problem) { //?
 	if(PINE.logErr)  {
+		var callerLine = new Error().stack.split('\n');
+		var line = callerLine[1].match(/([^\/])+?$/g)[0];
+		line += "....";
+		line += callerLine[2].match(/([^\/])+?$/g)[0];
+		U.log(line, "light");
 		U.log("PINE error: "+whatevers_the_problem, "error")
-		
 		// console.log(new Error());
 	}
 	if(PINE.alertErr)  {
