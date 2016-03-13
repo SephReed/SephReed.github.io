@@ -247,7 +247,8 @@ p_include.update = function(initMe, needle, callback) {
 			if(needle.evalBank[target] === undefined) {
 				var injects = {};
 				var fakeLoc = {};
-				fakeLoc.search = target.match(/\?.*/g)[0]
+				var search = target.match(/\?.*/g);
+				fakeLoc.search = search ? search[0] : "";
 				injects["window.location"] = fakeLoc;
 				// evalHelper.window_location = {};
 				// evalHelper.window_location.search = "?s=hey";
