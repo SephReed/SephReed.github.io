@@ -807,6 +807,9 @@ PINE.initiate = function(root) {
 	if(root.PVARS === undefined)
 		root.PVARS = {};
 
+	if(root.FNS === undefined)
+		root.FNS = {};
+
 	//move on to children, regardless of personal init state
 	var branches = root.childNodes;
 	for(var i = 0; branches && i < branches.length; i++)  

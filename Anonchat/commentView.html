@@ -8,10 +8,18 @@
 	];
 
 	var i = 0;
+
+	function getQuery(name){
+		alert(window.location.search);
+	   	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(window.location.search))
+	        return decodeURIComponent(name[1]);
+	}
+
+	alert(getQuery("s"));
 </script>
 
 
-<postlist spawner="posts" autoUpdate="false">
+<postlist spawner="posts">
 	<post spawn>{{posts[i]}}</post>
 </postlist>
 

@@ -182,12 +182,12 @@ PINE.ajaxGetSrc = function(initMe, needle, callback) {
 		// console.log(window.location.hostname);
 		// console.log("ajax get: "+target);
 
-		if(target.indexOf("..") == 0) {
-			// \w+\/[\w|\.]+$
-			var location = window.location.toString().replace(/\w+\/[\w|\.]+$/g, '');
-			var extension = target.replace("../", '');
-			target = location+extension;
-		}
+		// if(target.indexOf("..") == 0) {
+		// 	// \w+\/[\w|\.]+$
+		// 	var location = window.location.toString().replace(/\w+\/[\w|\.]+$/g, '');
+		// 	var extension = target.replace("../", '');
+		// 	target = location+extension;
+		// }
 
 
 
@@ -233,6 +233,48 @@ PINE.ajaxGetSrc = function(initMe, needle, callback) {
 
 var p_include = PINE.createNeedle("include");
 p_include.includeBank = {};
+p_include.evalBank = {};
+
+p_include.update = function(initMe, needle, callback) {
+	function doInclude(target) {
+
+		if(needle.includeBank[target].outerHTML == null)  {
+			setTimeout(function(){ doInclude(target) }, 10);
+		}
+		else  {
+			initMe.innerHTML = needle.includeBank[target].outerHTML;
+
+			if(needle.evalBank[target] === undefined) {
+				var injects = {};
+				var fakeLoc = {};
+				fakeLoc.search = target.match(/\?.*/g)[0]
+				injects["window.location"] = fakeLoc;
+				// evalHelper.window_location = {};
+				// evalHelper.window_location.search = "?s=hey";
+
+				needle.evalBank[target] = U.evalElementScripts(initMe, injects);
+			}
+
+			//FUCKING KLUDGE;
+			if(PINE.pnv) {
+				PINE.pnv.parseText(initMe);
+				PINE.pnv.parseAtts(initMe);
+			}
+
+			U.assertKey(initMe, "PVARS");
+			initMe.PVARS[key] = needle.evalBank[target];
+
+			
+			// for(key in localVars)  {
+			// 	initMe.PVARS[key] = localVars[key];
+			// }
+
+			callback();
+		}
+	}
+
+	PINE.ajaxGetSrc(initMe, needle, doInclude);
+}
 
 p_include.addFunction({
 	step_type : PINE.ops.STATIC,
@@ -241,32 +283,39 @@ p_include.addFunction({
 
 		var pineFunc = this;
 
-		function doInclude(target) {
+		needle.update(initMe, needle, pineFunc.complete);
 
-			if(needle.includeBank[target].outerHTML == null)  {
-				setTimeout(function(){ doInclude(target) }, 10);
-			}
-			else  {
-				initMe.innerHTML = needle.includeBank[target].outerHTML;
-
-				//FUCKING KLUDGE;
-				if(PINE.pnv) {
-					PINE.pnv.parseText(initMe);
-					PINE.pnv.parseAtts(initMe);
-				}
-
-				var localVars = U.evalElementScripts(initMe);
-
-				U.assertKey(initMe, "PVARS");
-				for(key in localVars)  {
-					initMe.PVARS[key] = localVars[key];
-				}
-
-				pineFunc.complete();
-			}
+		initMe.FNS.changeSrc = function(src) {
+			initMe.setAttribute("src", src);
+			needle.update(initMe, needle, pineFunc.complete);
 		}
 
-		PINE.ajaxGetSrc(initMe, needle, doInclude);
+		// function doInclude(target) {
+
+		// 	if(needle.includeBank[target].outerHTML == null)  {
+		// 		setTimeout(function(){ doInclude(target) }, 10);
+		// 	}
+		// 	else  {
+		// 		initMe.innerHTML = needle.includeBank[target].outerHTML;
+
+		// 		//FUCKING KLUDGE;
+		// 		if(PINE.pnv) {
+		// 			PINE.pnv.parseText(initMe);
+		// 			PINE.pnv.parseAtts(initMe);
+		// 		}
+
+		// 		var localVars = U.evalElementScripts(initMe);
+
+		// 		U.assertKey(initMe, "PVARS");
+		// 		for(key in localVars)  {
+		// 			initMe.PVARS[key] = localVars[key];
+		// 		}
+
+		// 		pineFunc.complete();
+		// 	}
+		// }
+
+		// PINE.ajaxGetSrc(initMe, needle, doInclude);
 
 	}
 });
@@ -277,7 +326,7 @@ p_include.addFunction({
 
 
 //TODO : make sure variables defined a second time are not touched
-U.evalElementScripts = function(initMe) {
+U.evalElementScripts = function(initMe, injects) {
 
 	//if previously evaluated, throw an error
 	// if(initMe._pine_.previouslyEvaled === true) {
@@ -314,6 +363,21 @@ U.evalElementScripts = function(initMe) {
 		}
 	}
 
+	//if user defines window locally, this will cause issues
+	var evalHelper = PINE.evals[evalIndex]["__eval__"] = {};
+	evalHelper.injects = {};
+
+	for(key in injects) {
+		var exitKey = key.replace('.', '_');
+		evalHelper.injects[key] = evalPrefix+"__eval__."+exitKey;
+		evalHelper[exitKey] = injects[key];
+	}
+
+	// var loc = evalHelper.injects["window.location"] = evalPrefix+"__eval__.window_location";
+	// evalHelper.window_location = {};
+	// evalHelper.window_location.search = "?s=hey";
+
+	
 
 
 
@@ -323,34 +387,20 @@ U.evalElementScripts = function(initMe) {
 		//get the code and check it for local variables
 		//if a local variable is found, append the evalPrefix so it is stored globally instead
 		var textToEval = scripts[s].innerHTML;
+
+		for(key in evalHelper.injects) {
+			var replaceMe = key;
+			var addMe = evalHelper.injects[key];
+			textToEval = U.replaceVarInScript(replaceMe, addMe, textToEval);
+		}
+
+
+
 		for(i in localVars)  {
-			var match = localVars[i];
-			var replace = evalPrefix+match;
+			var replaceMe = localVars[i];
+			var addMe = evalPrefix+replaceMe;
 
-			
-			var noVarZones = "\\/\\*\\*.*?\\*\\/";  	/**multiline comment*/
-				noVarZones += "|" + "\\/\\/.*?\\n";  	//single line comment
-				noVarZones += "|" + "'.*?'"			//'string'
-				noVarZones += "|" + "\".*?\""		//"string"
-			//match anything that has the name of the variable without a dot or letter before it
-			//this is the trolliest regex I've ever used
-			var rex = new RegExp(noVarZones+"|(var)?([^\\.\\/\\\\\\w]|^)"+match, "g");
-			// console.log(rex);
-
-			textToEval = textToEval.replace(rex, function(replaceMe) {
-				var char = replaceMe.charAt(0);
-				var out = replaceMe;
-
-				if(char != "\/" && char != "'" && char != "\"") {
-					out = replace;
-					//special case for not "var some_name" ie "some_name = 'joe'"
-					if(char != 'v')
-						out = replaceMe.charAt(0)+out;
-
-				}
-
-				return out;
-			});
+			textToEval = U.replaceVarInScript(replaceMe, addMe, textToEval);
 		}
 
 		//once all local variables have been renamed to be stored globally, proceed with eval
@@ -361,6 +411,33 @@ U.evalElementScripts = function(initMe) {
 	// initMe._pine_.previouslyEvaled = true;
 
 	return PINE.evals[evalIndex];
+}
+
+U.replaceVarInScript = function(replaceMe, addMe, script) {
+	var noVarZones = "\\/\\*\\*.*?\\*\\/";  	/**multiline comment*/
+		noVarZones += "|" + "\\/\\/.*?\\n";  	//single line comment
+		noVarZones += "|" + "'.*?'"			//'string'
+		noVarZones += "|" + "\".*?\""		//"string"
+	//match anything that has the name of the variable without a dot or letter before it
+	//this is the trolliest regex I've ever used
+	//(var)?([^\.\/\\\w]|^)varName(?=([\.\s:]|$))
+	var rex = new RegExp(noVarZones+"|(var)?([^\\.\\/\\\\\\w]|^)"+replaceMe+"(?=([\\.\\s:]|$))", "g");
+	// console.log(rex);
+
+	return script.replace(rex, function(replaceMe) {
+		var char = replaceMe.charAt(0);
+		var out = replaceMe;
+
+		if(char != "\/" && char != "'" && char != "\"") {
+			out = addMe;
+			//special case for not "var some_name" ie "some_name = 'joe'"
+			if(char != 'v')
+				out = replaceMe.charAt(0)+out;
+
+		}
+
+		return out;
+	});
 }
 
 

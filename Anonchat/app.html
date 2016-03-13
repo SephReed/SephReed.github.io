@@ -74,6 +74,10 @@ commentbox {
 
 		$("postlist")[0]._pine_.fns.update();
 	}
+
+	function changeSrc() {
+		$("include")[0].FNS.changeSrc("streak.html");
+	}
 </script>
 
 
@@ -86,8 +90,8 @@ commentbox {
 
 	<content>
 		
-		<include src="commentView.html"></include>
-
+		<include src="commentView.html?s=woo"></include>
+		<button onclick="changeSrc()"></button>
 	</content>
 
 
