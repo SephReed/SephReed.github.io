@@ -1,0 +1,70 @@
+<script>
+	posts = [
+		"The universe is crazy",
+		"People are crazy",
+		"What is crazy?",
+		"You",
+		"Now that you mention it, maybe"
+	];
+
+
+	PINE.addEventListener("DOMContentLoaded", function() {
+	    // alert("hi you");
+
+	    var target = "http://localhost:8080/aardvark/posts?wall=0&topic=0";
+	    // var target = "http://localhost:8080/aardvark/wall/0/topic/0/posts";
+
+	    var request = new XMLHttpRequest();
+	    // request.responseType = 'text';
+	    request.open('GET', target, true);
+
+	    request.onload = function() {
+	        if (request.status >= 200 && request.status < 400) {
+	            // Success!
+	            var response = request.responseText;
+	            console.log(response);
+	            var data = JSON.parse(response);
+	            console.log(data);
+	            console.log(data.name);
+
+	            posts = data.vals;
+	            $("postlist")[0]._pine_.fns.update();
+	        } else {
+	            // We reached our target server, but it returned an error
+	            alert("include src '"+target+"' does not exist")
+	        }
+	    };
+
+
+
+	    request.onerror = function() {
+	        // There was a connection error of some sort
+	        alert("include src '"+target+"' does not exist")
+	    };
+
+	    request.send();
+	});
+
+	// var i = 0;
+
+	function getQuery(name){
+		// alert(window.location.search);
+	   	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(window.location.search))
+	        return decodeURIComponent(name[1]);
+	}
+
+	// alert(getQuery("s"));
+</script>
+
+
+<postlist spawner="posts" autoRun="false">
+	<post spawn>{{posts[i]}}</post>
+</postlist>
+
+<commentbox submitfn="addComment">
+	lalalal
+</commentbox>
+
+<button trigger="click" target="commentbox" fn="submit">
+	Submit
+</button>

@@ -4,14 +4,17 @@
 <head>
 	<meta charset="utf-8"/>
 
+
+
 	<script src="../public/js/zepto.js"></script>
 	<script src="../handle_chooser/PINE_Core.js"></script>
+	<script> PINE.disable(["[PNVATT]", "INCLUDE"]); </script>
 	<script src="../handle_chooser/PINE_Var.js"></script>
 	<script src="../handle_chooser/PINE_Needles.js"></script>
 	<!-- <script src="../handle_chooser/PINE_Template.js"></script> -->
 
 	<pine>
-		<needle src="Needle_CommentBox.html"></needle>
+		<needle src="needles/Needle_CommentBox.html"></needle>
 	</pine>
 </head>
 
@@ -69,35 +72,97 @@ commentbox {
 </style>
 
 <script type="text/javascript">
-	function addComment(addMe) {
-		posts.push(addMe);
 
-		$("postlist")[0]._pine_.fns.update();
-	}
 
-	function changeSrc() {
-		$("include")[0].FNS.changeSrc("streak.html");
-	}
+
+        function addComment(addMe) {
+            posts.push(addMe);
+
+            $("postlist")[0]._pine_.fns.update();
+
+
+
+            var request = new XMLHttpRequest();
+            request.open('POST', 'http://localhost:8080/aardvark/posts', true);
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            request.send(addMe);
+
+
+        }
+
+        var wallNotPosts = false;
+        function changePage() {
+
+            if(wallNotPosts)
+                $("include")[0].FNS.changeSrc("views/topicView.html");
+
+            else
+                $("include")[0].FNS.changeSrc("views/wallView.html");
+
+            wallNotPosts = !wallNotPosts; 
+        }
+    </script>
+
+
+    <!-- *********************
+    *                       *
+    *       BEGIN BODY      *
+    *                       *
+    ************************-->
+    <body><pine>
+
+        <content>
+            <button id="changePage" onclick="changePage()">Change Page</button>
+            
+            <view src="views/topicView.html?s=hey" cache="true"></view>
+            <button id="where">Where?</button>
+
+        </content>
+
+
+
+
+
+    </pine></body>
+</html>
+
+
+
+
+
+<script>
+
+
+
+var where = document.getElementById("where");
+    //
+where.addEventListener("click", function(event) {
+    var onSuccess = function(position) {
+    alert('Latitude: '          + position.coords.latitude          + '\n' +
+          'Longitude: '         + position.coords.longitude         + '\n' +
+          'Altitude: '          + position.coords.altitude          + '\n' +
+          'Accuracy: '          + position.coords.accuracy          + '\n' +
+          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+          'Heading: '           + position.coords.heading           + '\n' +
+          'Speed: '             + position.coords.speed             + '\n' +
+          'Timestamp: '         + position.timestamp                + '\n');
+    };
+
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+});
+
+
+
+
 </script>
 
 
-<!-- *********************
-*						*
-*		BEGIN BODY      *
-*						*
-************************-->
-<body><pine>
 
-	<content>
-		
-		<include src="commentView.html?s=woo"></include>
-		<button onclick="changeSrc()"></button>
-	</content>
-
-
-
-
-
-</pine></body>
-</html>
 

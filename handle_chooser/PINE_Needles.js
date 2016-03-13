@@ -1,20 +1,4 @@
 
-U.attr = function(domNode, name, value) {
-	var target = domNode.attributes[name];
-
-	if(target == null){
-		if(value === undefined)
-			return undefined;
-		else return null;
-			//create the attribute and assign value
-	}
-	else {
-		if(value === undefined)
-			return target.value;
-		else
-			target.value = value;
-	}
-}
 
 
 
@@ -89,7 +73,7 @@ spawner.addFunction({
 spawner.addFunction({
 	step_type : PINE.ops.POPULATER,
 	fn : function(initMe, needle) {
-		if( U.attr(initMe, "autoUpdate") !== "false")
+		if( U.attr(initMe, "autoRun") !== "false")
 			needle.update(initMe);
 	}
 });
@@ -168,12 +152,70 @@ spawner.update = function(initMe) {
 
 
 
+var INC = PINE.Include = {};
+
+
+INC.init = function(initMe, needle, pineFunc) {
+	// var pineFunc = this;
+
+	INC.update(initMe, needle, pineFunc.complete);
+
+	initMe.FNS.changeSrc = function(src) {
+		initMe.setAttribute("src", src);
+		INC.update(initMe, needle, pineFunc.complete);
+	}
+}
+
+
+
+
+INC.update = function(initMe, needle, callback) {
+	function doInclude(target) {
+
+		if(needle.includeBank[target].outerHTML == null)  {
+			setTimeout(function(){ doInclude(target) }, 10);
+		}
+		else  {
+			initMe.innerHTML = needle.includeBank[target].outerHTML;
+
+			if(needle.evalBank[target] === undefined) {
+				var injects = {};
+				var fakeLoc = {};
+				var search = target.match(/\?.*/g);
+				fakeLoc.search = search ? search[0] : "";
+				injects["window.location"] = fakeLoc;
+				// evalHelper.window_location = {};
+				// evalHelper.window_location.search = "?s=hey";
+
+				needle.evalBank[target] = U.evalElementScripts(initMe, injects);
+			}
+
+			//FUCKING KLUDGE;
+			if(PINE.pnv) {
+				PINE.pnv.parseText(initMe);
+				PINE.pnv.parseAtts(initMe);
+			}
+
+			U.assertKey(initMe, "PVARS");
+			initMe.PVARS[key] = needle.evalBank[target];
+
+			
+			// for(key in localVars)  {
+			// 	initMe.PVARS[key] = localVars[key];
+			// }
+
+			callback();
+		}
+	}
+
+	INC.ajaxGetSrc(initMe, needle, doInclude);
+}
 
 
 
 
 
-PINE.ajaxGetSrc = function(initMe, needle, callback) {
+INC.ajaxGetSrc = function(initMe, needle, callback) {
 	var src = initMe.attributes.src;
 	
 	if(src != null) {
@@ -231,95 +273,31 @@ PINE.ajaxGetSrc = function(initMe, needle, callback) {
 
 
 
+
+
 var p_include = PINE.createNeedle("include");
-p_include.includeBank = {};
-p_include.evalBank = {};
-
-p_include.update = function(initMe, needle, callback) {
-	function doInclude(target) {
-
-		if(needle.includeBank[target].outerHTML == null)  {
-			setTimeout(function(){ doInclude(target) }, 10);
-		}
-		else  {
-			initMe.innerHTML = needle.includeBank[target].outerHTML;
-
-			if(needle.evalBank[target] === undefined) {
-				var injects = {};
-				var fakeLoc = {};
-				var search = target.match(/\?.*/g);
-				fakeLoc.search = search ? search[0] : "";
-				injects["window.location"] = fakeLoc;
-				// evalHelper.window_location = {};
-				// evalHelper.window_location.search = "?s=hey";
-
-				needle.evalBank[target] = U.evalElementScripts(initMe, injects);
-			}
-
-			//FUCKING KLUDGE;
-			if(PINE.pnv) {
-				PINE.pnv.parseText(initMe);
-				PINE.pnv.parseAtts(initMe);
-			}
-
-			U.assertKey(initMe, "PVARS");
-			initMe.PVARS[key] = needle.evalBank[target];
-
-			
-			// for(key in localVars)  {
-			// 	initMe.PVARS[key] = localVars[key];
-			// }
-
-			callback();
-		}
-	}
-
-	PINE.ajaxGetSrc(initMe, needle, doInclude);
-}
-
 p_include.addFunction({
 	step_type : PINE.ops.STATIC,
 	autoComplete : false,
-	fn: function(initMe, needle) {
-
-		var pineFunc = this;
-
-		needle.update(initMe, needle, pineFunc.complete);
-
-		initMe.FNS.changeSrc = function(src) {
-			initMe.setAttribute("src", src);
-			needle.update(initMe, needle, pineFunc.complete);
-		}
-
-		// function doInclude(target) {
-
-		// 	if(needle.includeBank[target].outerHTML == null)  {
-		// 		setTimeout(function(){ doInclude(target) }, 10);
-		// 	}
-		// 	else  {
-		// 		initMe.innerHTML = needle.includeBank[target].outerHTML;
-
-		// 		//FUCKING KLUDGE;
-		// 		if(PINE.pnv) {
-		// 			PINE.pnv.parseText(initMe);
-		// 			PINE.pnv.parseAtts(initMe);
-		// 		}
-
-		// 		var localVars = U.evalElementScripts(initMe);
-
-		// 		U.assertKey(initMe, "PVARS");
-		// 		for(key in localVars)  {
-		// 			initMe.PVARS[key] = localVars[key];
-		// 		}
-
-		// 		pineFunc.complete();
-		// 	}
-		// }
-
-		// PINE.ajaxGetSrc(initMe, needle, doInclude);
-
-	}
+	fn: INC.init
 });
+p_include.includeBank = {};
+p_include.evalBank = {};
+
+
+
+
+
+var p_view = PINE.createNeedle("view");
+p_view.addFunction({
+	step_type : PINE.ops.STATIC,
+	autoComplete : false,
+	fn: INC.init
+});
+p_view.includeBank = {};
+p_view.evalBank = {};
+
+
 
 
 
@@ -492,7 +470,7 @@ p_needle.addFunction({
 			}
 		}
 
-		PINE.ajaxGetSrc(initMe, needle, doInclude);
+		INC.ajaxGetSrc(initMe, needle, doInclude);
 		
 	}
 });

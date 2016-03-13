@@ -1,4 +1,18 @@
-
+/******************************************
+*          ____   _   _   _   ____
+*         |    \ | | | \ | | |  __|
+*         |  = | | | |  \| | | |__
+*         |  __/ | | | \   | |  __|
+*         | |    | | | |\  | | |__ 
+*         |_|    |_| |_| \_| |____|
+*
+*	     Live a little: blur the line
+*
+*		                    /\
+*          by: Seph Reed   X  X
+*		           		    \/
+*
+********************************************/
 
 
 
@@ -14,6 +28,8 @@ var PINE = {};
 PINE.class = {};
 // PINE.createMutateLogger = false;
 
+
+PINE.loaded = false;
 
 PINE.evals = [];
 
@@ -32,252 +48,42 @@ PINE.stopNodes = [
 
 
 
+
 /**********************************
-*	 	PINE UTILITIES
-*	shall some day be replaced by 
-*  native functions I hope
+*	 	PINE INTERFACE FUNCTIONS 
 **********************************/
 
+var ev = PINE.events = {};
+PINE.events.load = "DOMContentLoaded";
+PINE.validEvents = [ev.load];
+PINE.eventListeners = {};
 
+PINE.addEventListener = function(type, callback) {
+	if(PINE.validEvents.indexOf(type) != null) {
+		if(PINE.eventListeners[type] === undefined)
+			PINE.eventListeners[type] = [];
 
-var U = PINE.UTILITIES = {};
+		PINE.eventListeners[type].push(callback);
 
-U.get = function(start, keyString, bracketsCase)  {
-	return U.getnit(start, keyString, undefined, bracketsCase);
-}
-
-
-
-U.assertVar = function(start, keyString, keyNotArray)  {
-	var keyArray = keyString.match(/[\w\d]+/g)
-	var pos = start;
-
-	var noNeed = true;
-
-	if(start) {
-		for(i in keyArray)  {
-			var key = keyArray[i];
-			if(pos[key] == null) {
-				pos[key] = {};
-				noNeed = false;
-			}
-			pos = pos[key];
+		if(type == PINE.events.load && PINE.loaded == true) {
+			callback();
 		}
 	}
-	else noNeed = false;
-
-	if(keyNotArray == false && noNeed == false){
-		pos = [];
+	else {
+		PINE.err("event of type:"+type+" has no meaning for PINE.  not valid.  see PINE.validEvents");
 	}
+}
 
-	return noNeed;
+PINE.ready = function(callback) {
+	PINE.addEventListener(PINE.events.load, callback);
 }
 
 
+PINE.disabledNeedles = [];
 
-//mix between get and init.
-U.getnit = function(start, keyString, init, bracketsCase)  {
-	// console.log("case");
-	// console.log(bracketsCase);
-	// console.log(keyString);
-
-	if(keyString === undefined)
-		return start;
-
-	var bracketsCase = bracketsCase || U.get;
-
-	// console.log("getting"+keyString)
-	// console.log(start);
-	
-	var pos = start;
-
-	
-	//if there is a starting point
-	if(start) {
-			//
-		var keyArray = [];
-		var lastStop = 0;
-		var openBrackets = 0;
-		for(var c = 0; c < keyString.length; c++) {
-			var char = keyString.charAt(c);
-
-			if(char == '[') { 
-				if(openBrackets == 0 && c != 0) {
-					keyArray.push(keyString.substring(lastStop, c));
-					lastStop = c;	
-				}
-				openBrackets++; 
-			}
-			else if(char == ']') {  openBrackets--;  }
-
-			else if(openBrackets == 0 && char == '.') {
-				keyArray.push(keyString.substring(lastStop, c));
-				lastStop = c+1;	
-			}
-		}
-		keyArray.push(keyString.substring(lastStop));
-
-		// console.log(keyArray);
-
-
-		//match any brackets, or any string of digits and characters
-		//KLUDGE: very little error handling
-		// var keyArray = keyString.match(/(\[.+?\])|([\w\d]+)/g)
-		for(i in keyArray)  {
-			var key = keyArray[i];
-
-			// console.log("IN"+key);
-
-			//if this is a brackets match, remove the outermost brackets
-			if(key.charAt(0) == '[') {
-				key = key.replace(/(^\[|\]$)/g, '');
-
-				//if the new first char not a quote it is it's own variable
-				if (key.charAt(0) != "'" && key.charAt(0) != '"') {
-					// console.log("HEYHE");
-					key = bracketsCase(start, key, bracketsCase);
-					// console.log("SPECIAL CASE"+key);
-				}
-
-				//otherwise, replace the quotes
-				else {
-					key = key.replace(/['"]/g, '');
-				}
-			}
-			
-
-			// console.log("OUT"+key);
-
-			if(pos[key] === undefined) {
-				if(init === undefined)
-					return undefined;
-
-				//last one
-				else if(i < keyArray.length - 1)
-					pos[key] = {};
-
-				else pos[key] = init;
-			}
-			pos = pos[key];
-		}
-	}
-
-	return pos;
+PINE.disable = function(needles) {
+	PINE.disabledNeedles = PINE.disabledNeedles.concat(needles);
 }
-
-
-
-
-U.assertKey = function(start, keyString)  {
-	U.assertVar(start, keyString, true);
-}
-
-U.assertArray = function(start, keyString)  {
-	U.assertVar(start, keyString, false);
-}
-
-
-U.clone = function(obj) {
-    if (null == obj)  return obj;
-
-    // console.log(typeof obj + "::");
-    // console.log(obj);
-
-    if("object" == typeof obj)  {
-    	var copy;
-    	try { copy = obj.constructor(); }
-    	catch(e) {
-    		PINE.err("Trynig to copy an object which references itself", e);
-
-    		return;
-    	}
-
-    	// console.log("should not be last");
-
-	    for (var attr in obj) {
-	        if (obj.hasOwnProperty(attr)) {
-	        	copy[attr] = U.clone(obj[attr]);
-	        }
-    	}
-    }
-    else if("array" == typeof obj)  {
-    	// console.log("IN ARRAY");
-    	PINE.err("U.clone array case unfinished");
-    }
-    else return obj;
-    
-    return copy;
-}
-
-
-U.initArray = function(val, size)  {
-	var out = [];
-	for(var i = 0; i < size; i++) {
-		out[i] = val;
-	}
-	return out;
-}
-
-
-
-PINE.deepCloneNode = function(cloneMe)  {
-	// console.log("cloning:");
-	// console.log(cloneMe);
-
-	var out = cloneMe.cloneNode(true);
-	out._pine_ = U.clone(cloneMe._pine_);
-
-	return out;
-}
-
-
-
-
-U.ajax = function(url, callback){
-    var xmlhttp;
-    // compatible with IE7+, Firefox, Chrome, Opera, Safari
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function(){
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
-            callback(xmlhttp.responseText);
-        }
-        else {
-        	console.log("error in U.ajax");
-        }
-    }
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-}
-
-
-
-
-U.log = function(msg, color) {
-    color = color || "black";
-    bgc = "White";
-    switch (color) {
-        case "success":  color = "Green";      bgc = "LimeGreen";       break;
-        case "info":     color = "DodgerBlue"; bgc = "Turquoise";       break;
-        case "error":    color = "Red";        bgc = "Black";           break;
-        case "start":    color = "OliveDrab";  bgc = "PaleGreen";       break;
-        case "warning":  color = "Tomato";     bgc = "Black";           break;
-        case "end":      color = "Orchid";     bgc = "MediumVioletRed"; break;
-        case "light":    color = "LightGrey";       bgc = "White";			break;
-        default: color = color;
-    }
-
-    if (typeof msg == "object") {
-        console.log(msg);
-    } else if (typeof color == "object") {
-        console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
-        console.log(color);
-    } else {
-        console.log("%c" + msg, "color:" + color + "; background-color: " + bgc + ";");
-    }
-}
-
-
-
 
 
 
@@ -311,26 +117,6 @@ PINE.ops.order = [
 
 
 
-/**********************************
-*	 	ERROR HANDLING
-**********************************/
-PINE.logErr = true;
-PINE.alertErr = false;
-
-PINE.err = function(whatevers_the_problem) { //?
-	if(PINE.logErr)  {
-		var callerLine = new Error().stack.split('\n');
-		var line = callerLine[1].match(/([^\/])+?$/g)[0];
-		line += "....";
-		line += callerLine[2].match(/([^\/])+?$/g)[0];
-		U.log(line, "light");
-		U.log("PINE error: "+whatevers_the_problem, "error")
-		// console.log(new Error());
-	}
-	if(PINE.alertErr)  {
-		alert("PINE error: "+whatevers_the_problem);
-	}
-}
 
 
 
@@ -360,20 +146,20 @@ PINE.class.Needle.prototype.addFunction = function(args) {
 	PINE.registerFunction2(args);
 }
 
-// PINE.class.Needle.prototype.addLocalVariables = function(localVars) {
-// 	for(i in localVars)
-// }
 
-PINE.class.Needle.prototype.registerFunction = function(args) {
-	LOG("registerFunction is DEPRICATED", "depreciate");
-	args.keyword = this.keyword;
-	// PINE.registerFunction(args);
-	PINE.registerFunction2(args);
-}
+PINE.class.DummyNeedle = function(keyword) {}
+PINE.class.DummyNeedle.prototype.addFunction = function(args) {}
+
 
 
 PINE.createNeedle = function(key)  {
 	key = key.toUpperCase();
+
+	if(PINE.disabledNeedles.indexOf(key) !== -1) {
+		U.log("Needle of type: "+key+" disabled", "info")
+		return new PINE.class.DummyNeedle(key);
+	}
+
 	var needles = PINE.needles;
 	if(needles[key] == null)  {
 		needles[key] = new PINE.class.Needle(key);
@@ -382,12 +168,6 @@ PINE.createNeedle = function(key)  {
 		PINE.err("needle "+key+" already exists!");
 	}
 
-	// if(localVars !== undefined) {
-	// 	needles[key].addLocalVariables(localVars);
-	// }
-
-	//TODO: add typeof check
-	// if(init_function != null) needles[key].inits.push(init_function);
 	return needles[key];
 };
 
@@ -398,10 +178,8 @@ PINE.get = function(keyword) {
 }
 
 
+
 PINE.createNeedle("PINE");
-
-
-
 
 
 
@@ -457,7 +235,7 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 
 			LOG("running needle "+this.keyword+" at", "needle");
 			LOG(domNode, "needle");
-			userFn.call(helpers, domNode, this.needle);
+			userFn.call(helpers, domNode, this.needle, helpers);
 
 			if(autoComplete) {
 				LOG("calling autoComplete for "+this.keyword, "pinefunc");
@@ -551,41 +329,6 @@ PINE.atFirstHtml = function(domNode, callback)  {
 
 
 
-/**********************************
-*	 	RUN HELPERS
-**********************************/
-
-PINE.getFirstsOf = function(root, keyword)  {
-	if(PINE.keyApplies(keyword, root)) {
-		return root;
-	}
-
-	var out = [];
-
-	var branches = root.childNodes;
-	for(var i = 0; branches && i < branches.length; i++)  {
-		var matches = PINE.getFirstsOf(branches[i], keyword);
-		
-		if(matches != null)
-			out = out.concat(matches);
-	}
-
-	return (out.length > 0) ? out : null;
-}
-
-
-PINE.keyApplies = function(keyword, domNode)  {
-	if(keyword && domNode)  {
-		keyword = keyword.toUpperCase();
-		if(keyword.charAt(0) == '[')  {
-			var att = keyword.replace(/\[|\]/g, '');
-			return domNode.attributes[att] != null;
-		}
-		else return domNode.tagName == keyword;
-	}
-	return false;
-}
-
 
 
 // PINE.holdVar = function(scopeDom, var_name)  {
@@ -659,70 +402,47 @@ PINE.keyApplies = function(keyword, domNode)  {
 
 
 
-LOG = function() { return; }
 
 
-PINE.initDebug = function()  {
-
-	if(PINE.createMutateLogger == true) {
-		// select the target node
-		var target = document.querySelector('body');
-		 
-		// create an observer instance
-		var observer = new MutationObserver(function(mutations) {
-		  mutations.forEach(function(mutation) {
-		    console.log(mutation);
-		  });    
-		});
-		 
-		// configuration of the observer:
-		var config = { attributes: true, childList: true, characterData: true, subtree: true };
-		 
-		// pass in the target node, as well as the observer options
-		observer.observe(target, config);
-
-		console.log(observer);
- 	}
 
 
- 	LOG = function(logMe, logType)  {
-		logType = logType || "all";
 
-		// console.log(logType);
-		if (LOG.showLog[logType] !== false){
-			var callerLine = new Error().stack.split('\n');
-			var line = callerLine[1].match(/([^\/])+?$/g)[0];
-			line += "....";
-			line += callerLine[2].match(/([^\/])+?$/g)[0];
-			U.log(line, "light");
-			console.log(logMe);
-		}
+
+
+/**********************************
+*	 	RUN HELPERS
+**********************************/
+
+PINE.getFirstsOf = function(root, keyword)  {
+	if(PINE.keyApplies(keyword, root)) {
+		return root;
 	}
 
-	LOG.showLog = [];
+	var out = [];
 
-		LOG.showLog["all"] = false;
-		// LOG.showLog["needle"] = false;
-	LOG.showLog["pnv"] = false;
-	LOG.showLog["run"] = false;
-		LOG.showLog["sprout"] = false;
-		LOG.showLog["pinefunc"] = false;
-	LOG.showLog["async"] = false;
+	var branches = root.childNodes;
+	for(var i = 0; branches && i < branches.length; i++)  {
+		var matches = PINE.getFirstsOf(branches[i], keyword);
+		
+		if(matches != null)
+			out = out.concat(matches);
+	}
 
+	return (out.length > 0) ? out : null;
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
+PINE.keyApplies = function(keyword, domNode)  {
+	if(keyword && domNode)  {
+		keyword = keyword.toUpperCase();
+		if(keyword.charAt(0) == '[')  {
+			var att = keyword.replace(/\[|\]/g, '');
+			return domNode.attributes[att] != null;
+		}
+		else return domNode.tagName == keyword;
+	}
+	return false;
+}
 
 
 
@@ -743,8 +463,27 @@ PINE.initDebug = function()  {
 
 
 document.addEventListener("DOMContentLoaded", function(event) { 
-  	PINE.initDebug();
-	PINE.run();
+  	
+  	if(PINE.debugOn === true)
+  		PINE.initDebug();
+
+
+	PINE.run(function() {
+		var listeners = PINE.eventListeners[PINE.events.load];
+
+		if(listeners) {
+			for(i in listeners)
+				listeners[i]();
+		}
+
+		if(PINE.debugOn === true)
+  			setTimeout(PINE.logDebugAnalysis, 2000);
+
+  		PINE.loaded = true;
+  		U.log("PINE Run complete", "success");
+	});
+
+	
 });
 
 
@@ -757,7 +496,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 //the major function for PINE.  it creates the super root (PINE.forest), initiates it, and runs
 //sprout on it using the queued pine funcs array (which all new pine funcs are added to)
-PINE.run = function() {
+PINE.run = function(callback) {
 	LOG("running", "needle");
 
 	if(PINE.forest == null) {
@@ -771,8 +510,7 @@ PINE.run = function() {
 
 	PINE.initiate(Pine_Forest);
 	PINE.sprout(Pine_Forest, PINE.pinefuncs.queued, PINE.pinefuncs.completed, true, function() {
-		U.log("Run complete", "success");
-		// alert("RUN: run complete");
+		callback();
 	});
 }
 
@@ -1290,6 +1028,134 @@ PINE.createChildCallback = function(root, opFuncs, copyMeChildNodes, callbackPar
 
 
 
+/**********************************
+*	 	DEBUGGING
+**********************************/
+PINE.logErr = true;
+PINE.alertErr = false;
+PINE.debugOn = true;
+PINE.showUnusedNeedles = true;
+
+PINE.err = function(whatevers_the_problem) { //?
+	if(PINE.logErr)  {
+		var callerLine = new Error().stack.split('\n');
+		var line = callerLine[1].match(/([^\/])+?$/g)[0];
+		line += "....";
+		line += callerLine[2].match(/([^\/])+?$/g)[0];
+		U.log(line, "light");
+		U.log("PINE error: "+whatevers_the_problem, "error")
+		// console.log(new Error());
+	}
+	if(PINE.alertErr)  {
+		alert("PINE error: "+whatevers_the_problem);
+	}
+}
+
+
+
+LOG = function() { return; }
+
+
+PINE.initDebug = function()  {
+
+	if(PINE.createMutateLogger == true) {
+		// select the target node
+		var target = document.querySelector('body');
+		 
+		// create an observer instance
+		var observer = new MutationObserver(function(mutations) {
+		  mutations.forEach(function(mutation) {
+		    console.log(mutation);
+		  });    
+		});
+		 
+		// configuration of the observer:
+		var config = { attributes: true, childList: true, characterData: true, subtree: true };
+		 
+		// pass in the target node, as well as the observer options
+		observer.observe(target, config);
+
+		console.log(observer);
+ 	}
+
+
+ 	LOG = function(logMe, logType)  {
+		logType = logType || "all";
+
+		// console.log(logType);
+		if (LOG.showLog[logType] !== false){
+
+			var callerLine = new Error().stack.split('\n');
+
+			var line = logType+"::"
+			line += callerLine[1].match(/([^\/])+?$/g)[0];
+			line += "....";
+			line += callerLine[2].match(/([^\/])+?$/g)[0];
+			U.log(line, "light");
+			
+			console.log(logMe);
+		}
+	}
+
+	LOG.showLog = [];
+
+	LOG.showLog["all"] = false;  //
+	LOG.showLog["needle"] = false; //
+	LOG.showLog["pnv"] = false;
+	LOG.showLog["run"] = false;
+	LOG.showLog["sprout"] = false;  //
+	LOG.showLog["pinefunc"] = false;  //		
+	LOG.showLog["async"] = false;
+
+}
+
+
+PINE.logDebugAnalysis = function() {
+
+	var output = "to stop seeing all debuging messages, set PINE.debugOn = false"; 
+	U.log(output, "info");
+
+	if(PINE.showUnusedNeedles) {
+			//
+		var unusedNeedles = "";
+		for(key in PINE.needles)  {
+			if(PINE.needles[key].uses == 0) {
+				if(unusedNeedles != "")
+					unusedNeedles += ", ";
+
+				unusedNeedles += "\""+key+"\"";
+			}
+		}
+
+		if(unusedNeedles != "") {
+			var output = "Unused Needles found:\n";
+			output += unusedNeedles + "\n";
+			output += "use PINE.disable(["+unusedNeedles+"]) if you have no intention of using these needles\n";
+			output += "to stop seeing this message, set PINE.showUnusedNeedles = false";
+
+			U.log(output, "info");
+		}
+		else {
+			
+			U.log("All needles used at least once.  Good job!", "success");	
+		}
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1476,6 +1342,271 @@ PINE.createChildCallback = function(root, opFuncs, copyMeChildNodes, callbackPar
 
 
 
+
+
+
+/**********************************
+*	 	PINE UTILITIES
+*	shall some day be replaced by 
+*  native functions I hope
+**********************************/
+
+
+
+var U = PINE.UTILITIES = {};
+
+U.get = function(start, keyString, bracketsCase)  {
+	return U.getnit(start, keyString, undefined, bracketsCase);
+}
+
+
+
+U.assertVar = function(start, keyString, keyNotArray)  {
+	var keyArray = keyString.match(/[\w\d]+/g)
+	var pos = start;
+
+	var noNeed = true;
+
+	if(start) {
+		for(i in keyArray)  {
+			var key = keyArray[i];
+			if(pos[key] == null) {
+				pos[key] = {};
+				noNeed = false;
+			}
+			pos = pos[key];
+		}
+	}
+	else noNeed = false;
+
+	if(keyNotArray == false && noNeed == false){
+		pos = [];
+	}
+
+	return noNeed;
+}
+
+
+
+//mix between get and init.
+U.getnit = function(start, keyString, init, bracketsCase)  {
+	// console.log("case");
+	// console.log(bracketsCase);
+	// console.log(keyString);
+
+	if(keyString === undefined)
+		return start;
+
+	var bracketsCase = bracketsCase || U.get;
+
+	// console.log("getting"+keyString)
+	// console.log(start);
+	
+	var pos = start;
+
+	
+	//if there is a starting point
+	if(start) {
+			//
+		var keyArray = [];
+		var lastStop = 0;
+		var openBrackets = 0;
+		for(var c = 0; c < keyString.length; c++) {
+			var char = keyString.charAt(c);
+
+			if(char == '[') { 
+				if(openBrackets == 0 && c != 0) {
+					keyArray.push(keyString.substring(lastStop, c));
+					lastStop = c;	
+				}
+				openBrackets++; 
+			}
+			else if(char == ']') {  openBrackets--;  }
+
+			else if(openBrackets == 0 && char == '.') {
+				keyArray.push(keyString.substring(lastStop, c));
+				lastStop = c+1;	
+			}
+		}
+		keyArray.push(keyString.substring(lastStop));
+
+		// console.log(keyArray);
+
+
+		//match any brackets, or any string of digits and characters
+		//KLUDGE: very little error handling
+		// var keyArray = keyString.match(/(\[.+?\])|([\w\d]+)/g)
+		for(i in keyArray)  {
+			var key = keyArray[i];
+
+			// console.log("IN"+key);
+
+			//if this is a brackets match, remove the outermost brackets
+			if(key.charAt(0) == '[') {
+				key = key.replace(/(^\[|\]$)/g, '');
+
+				//if the new first char not a quote it is it's own variable
+				if (key.charAt(0) != "'" && key.charAt(0) != '"') {
+					// console.log("HEYHE");
+					key = bracketsCase(start, key, bracketsCase);
+					// console.log("SPECIAL CASE"+key);
+				}
+
+				//otherwise, replace the quotes
+				else {
+					key = key.replace(/['"]/g, '');
+				}
+			}
+			
+
+			// console.log("OUT"+key);
+
+			if(pos[key] === undefined) {
+				if(init === undefined)
+					return undefined;
+
+				//last one
+				else if(i < keyArray.length - 1)
+					pos[key] = {};
+
+				else pos[key] = init;
+			}
+			pos = pos[key];
+		}
+	}
+
+	return pos;
+}
+
+
+
+
+U.assertKey = function(start, keyString)  {
+	U.assertVar(start, keyString, true);
+}
+
+U.assertArray = function(start, keyString)  {
+	U.assertVar(start, keyString, false);
+}
+
+
+U.clone = function(obj) {
+    if (null == obj)  return obj;
+
+    // console.log(typeof obj + "::");
+    // console.log(obj);
+
+    if("object" == typeof obj)  {
+    	var copy;
+    	try { copy = obj.constructor(); }
+    	catch(e) {
+    		PINE.err("Trynig to copy an object which references itself", e);
+
+    		return;
+    	}
+
+    	// console.log("should not be last");
+
+	    for (var attr in obj) {
+	        if (obj.hasOwnProperty(attr)) {
+	        	copy[attr] = U.clone(obj[attr]);
+	        }
+    	}
+    }
+    else if("array" == typeof obj)  {
+    	// console.log("IN ARRAY");
+    	PINE.err("U.clone array case unfinished");
+    }
+    else return obj;
+    
+    return copy;
+}
+
+
+U.initArray = function(val, size)  {
+	var out = [];
+	for(var i = 0; i < size; i++) {
+		out[i] = val;
+	}
+	return out;
+}
+
+
+
+PINE.deepCloneNode = function(cloneMe)  {
+	// console.log("cloning:");
+	// console.log(cloneMe);
+
+	var out = cloneMe.cloneNode(true);
+	out._pine_ = U.clone(cloneMe._pine_);
+
+	return out;
+}
+
+
+
+
+U.ajax = function(url, callback){
+    var xmlhttp;
+    // compatible with IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function(){
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
+            callback(xmlhttp.responseText);
+        }
+        else {
+        	console.log("error in U.ajax");
+        }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+}
+
+
+
+
+U.log = function(msg, color) {
+    color = color || "black";
+    bgc = "White";
+    switch (color) {
+        case "success":  color = "Yellow";      bgc = "Green";       break;
+        case "info":     color = "Black"; 	   bgc = "Orange";       break;
+        case "error":    color = "Red";        bgc = "Black";           break;
+        case "start":    color = "OliveDrab";  bgc = "PaleGreen";       break;
+        case "warning":  color = "Tomato";     bgc = "Black";           break;
+        case "end":      color = "Orchid";     bgc = "MediumVioletRed"; break;
+        case "light":    color = "LightGrey";       bgc = "White";			break;
+        default: color = color;
+    }
+
+    if (typeof msg == "object") {
+        console.log(msg);
+    } else if (typeof color == "object") {
+        console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
+        console.log(color);
+    } else {
+        console.log("%c" + msg, "color:" + color + "; background-color: " + bgc + ";");
+    }
+}
+
+
+
+U.attr = function(domNode, name, value) {
+	var target = domNode.attributes[name];
+
+	if(target == null){
+		if(value === undefined)
+			return undefined;
+		else return null;
+			//create the attribute and assign value
+	}
+	else {
+		if(value === undefined)
+			return target.value;
+		else
+			target.value = value;
+	}
+}
 
 
 
