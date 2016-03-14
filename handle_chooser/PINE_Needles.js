@@ -1,4 +1,16 @@
-
+/******************************************
+*          ____   _   _   _   ____
+*         |    \ | | | \ | | |  __|
+*         |  = | | | |  \| | | |__
+*         |  __/ | | | \   | |  __|
+*         | |    | | | |\  | | |__ 
+*         |_|    |_| |_| \_| |____|
+*
+*		                    /\
+*          by: Seph Reed   X  X
+*		           		    \/
+*
+********************************************/
 
 
 
@@ -143,16 +155,21 @@ spawner.update = function(initMe) {
 
 
 
-
-
-
-
-
-
-
-
-
 var INC = PINE.Include = {};
+INC.includeBank = {};
+INC.srcCache = {};
+
+
+
+
+PINE.class.CacheSetting = function(url, cacheOp) {}
+INC.cacheOp = {};
+INC.cacheOp.BYROOT = "byroot";
+INC.cacheOp.NORMAL = "rormal";
+INC.cacheOp.NEVER = "never";
+
+
+
 
 
 INC.init = function(initMe, needle, pineFunc) {
@@ -160,9 +177,10 @@ INC.init = function(initMe, needle, pineFunc) {
 
 	INC.update(initMe, needle, pineFunc.complete);
 
-	initMe.FNS.changeSrc = function(src) {
+	initMe.FNS.changeSrc = function(src, callback) {
+		callback = callback || function(){};
 		initMe.setAttribute("src", src);
-		INC.update(initMe, needle, pineFunc.complete);
+		INC.update(initMe, needle, callback);
 	}
 }
 
@@ -221,16 +239,6 @@ INC.ajaxGetSrc = function(initMe, needle, callback) {
 	if(src != null) {
 
 		var target = src.value;
-		// console.log(window.location.hostname);
-		// console.log("ajax get: "+target);
-
-		// if(target.indexOf("..") == 0) {
-		// 	// \w+\/[\w|\.]+$
-		// 	var location = window.location.toString().replace(/\w+\/[\w|\.]+$/g, '');
-		// 	var extension = target.replace("../", '');
-		// 	target = location+extension;
-		// }
-
 
 
 		if(needle.includeBank[target] == null)  {
@@ -275,7 +283,132 @@ INC.ajaxGetSrc = function(initMe, needle, callback) {
 
 
 
+
+INC.updateNode = function(initMe) {
+
+	return new Promise( function(resolve, reject) {
+		var src = U.attr(initMe, "src");
+		
+		if(src) {
+			INC.get(url).then(function(response) {
+				resolve(response);
+			});
+		
+		} else {
+			reject("include src for "+initMe+" in not set");
+		}
+	});
+
+			
+		
+	
+
+	
+}
+
+
+
+
+
+INC.get = function(url, responseType) {
+
+	//return a promise
+	return new Promise( function(resolve, reject) {
+
+		var cache = INC.srcCache[url];
+			
+		//if this url has not yet been requested
+		if(cache == null)  {
+
+			cache = INC.srcCache[url] = {};
+				//
+			cache.resolveQueue = [];
+			cache.rejectQueue = [];
+			cache.complete = false;
+
+			var request = new XMLHttpRequest();
+			request.responseType = responseType || "text";
+			request.open('GET', url);
+
+			request.onload = function() {
+				if (request.status >= 200 && request.status < 400) {
+				    cache.response = request.response;
+				    cache.complete = true;
+
+				    resolve(cache.response);
+
+				    for(i in cache.resolveQueue)
+				    	cache.resolveQueue[i](cache.response);
+
+					cache.resolveQueue = [];				    
+
+				} else {
+				    request.onerror();
+				}
+			};
+
+			request.onerror = function() {
+			  	
+			  	var err = "include src '"+url+"' does not exist";
+
+			  	PINE.err(err)
+			  	reject(err)
+
+			  	for(i in cache.rejectQueue)
+			    	cache.rejectQueue[i](err);
+
+				cache.rejectQueue = [];
+			};
+
+			request.send();
+		}			
+
+		//if the url has been requested, but not yet resolved
+		else if(cache.complete == false) {
+			cache.resolveQueue.push(resolve);
+			cache.rejectQueue.push(reject);
+		}
+
+		//the url has been included and resolved
+		else resolve(cache.response);
+	});
+
+}
+
+
+
+
+
+
+
+
 var p_include = PINE.createNeedle("include");
+
+p_include.init = function(initMe, needle, pineFunc) {
+	// initMe.innerHTML = response;
+
+				// if(needle.evalBank[target] === undefined) {
+				// 	var injects = {};
+
+				// 	var fakeLoc = {};
+				// 	var search = target.match(/\?.*/g);
+				// 	fakeLoc.search = search ? search[0] : "";
+				// 	injects["window.location"] = fakeLoc;
+
+				// 	needle.evalBank[target] = U.evalElementScripts(initMe, injects);
+				// }
+
+				// //FUCKING KLUDGE;
+				// if(PINE.pnv) {
+				// 	PINE.pnv.parseText(initMe);
+				// 	PINE.pnv.parseAtts(initMe);
+				// }
+
+				// initMe.PVARS[key] = needle.evalBank[target];
+
+}
+
+
 p_include.addFunction({
 	step_type : PINE.ops.STATIC,
 	autoComplete : false,
@@ -288,14 +421,34 @@ p_include.evalBank = {};
 
 
 
+
+
+
 var p_view = PINE.createNeedle("view");
 p_view.addFunction({
 	step_type : PINE.ops.STATIC,
 	autoComplete : false,
 	fn: INC.init
 });
-p_view.includeBank = {};
-p_view.evalBank = {};
+
+p_view.View = function(url, evalCache, styleNode, childNodes) {
+	this.url = url;
+	this.evalCache = evalCache;
+	this.styleNode = styleNode;
+	this.childNodes = childNodes;
+}
+
+p_view.setView = function(url) {
+
+}
+
+p_view.View.prototype.addFunction = function(args) {
+	args.keyword = this.keyword;
+	// PINE.registerFunction(args);
+	PINE.registerFunction2(args);
+}
+
+p_view.viewBank = {};
 
 
 

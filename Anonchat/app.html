@@ -94,10 +94,10 @@ commentbox {
         function changePage() {
 
             if(wallNotPosts)
-                $("include")[0].FNS.changeSrc("views/topicView.html");
+                $("view")[0].FNS.changeSrc("views/topicView.html?wall=0&topic=0");
 
             else
-                $("include")[0].FNS.changeSrc("views/wallView.html");
+                $("view")[0].FNS.changeSrc("views/wallView.html");
 
             wallNotPosts = !wallNotPosts; 
         }
@@ -114,7 +114,7 @@ commentbox {
         <content>
             <button id="changePage" onclick="changePage()">Change Page</button>
             
-            <view src="views/topicView.html?s=hey" cache="true"></view>
+            <view src="views/topicView.html?wall=0&topic=0" cache="true"></view>
             <button id="where">Where?</button>
 
         </content>

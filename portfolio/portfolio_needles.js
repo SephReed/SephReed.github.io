@@ -1,4 +1,4 @@
-PINE.createNeedle("[opacity]").registerFunction({
+PINE.createNeedle("[opacity]").addFunction({
 	step_type: PINE.ops.INITIALIZER,
 	fn: function(initMe, needle) {
 		var opacity = initMe.attributes.opacity ? initMe.attributes.opacity.value : "1.0";
@@ -8,7 +8,7 @@ PINE.createNeedle("[opacity]").registerFunction({
 
 
 
-PINE.createNeedle("[textAlign]").registerFunction({
+PINE.createNeedle("[textAlign]").addFunction({
 	step_type: PINE.ops.INITIALIZER,
 	fn: function(initMe, needle) {
 		var align = initMe.attributes.textAlign ? initMe.attributes.textAlign.value : "left";
@@ -17,7 +17,7 @@ PINE.createNeedle("[textAlign]").registerFunction({
 });
 
 
-PINE.createNeedle("[fontSize]").registerFunction({
+PINE.createNeedle("[fontSize]").addFunction({
 	step_type: PINE.ops.INITIALIZER,
 	fn: function(initMe, needle) {
 		var fsize = initMe.attributes.fontSize ? initMe.attributes.fontSize.value : "inherit";
@@ -26,7 +26,7 @@ PINE.createNeedle("[fontSize]").registerFunction({
 });
 
 
-PINE.createNeedle("[bgImage]").registerFunction({
+PINE.createNeedle("[bgImage]").addFunction({
 	step_type: PINE.ops.INITIALIZER,
 	fn: function(initMe, needle) {
 		var bgImage = initMe.attributes.bgImage ? initMe.attributes.bgImage.value : "NOT SPECIFIED";
@@ -62,7 +62,7 @@ function selectNodeText( domNode ) {
 
 
 
-PINE.createNeedle("[selectOnClick]").registerFunction({
+PINE.createNeedle("[selectOnClick]").addFunction({
 	step_type: PINE.ops.POPULATER,
 	fn: function(initMe, needle) {
 		initMe.addEventListener("click", function(e) {

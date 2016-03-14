@@ -20,6 +20,7 @@
 
 	<!-- PINE -->
 	<script src="../handle_chooser/PINE_Core.js"></script>
+	<script>PINE.disable(["PINE", "[SPAWNER]", "VIEW", "NEEDLE"]);</script>
 	<script src="../handle_chooser/PINE_Needles.js"></script>
 
 	<!-- THREE JS -->
@@ -70,7 +71,7 @@
 	</style>
 
 	<script>
-	PINE.createNeedle("bgimg").registerFunction({
+	PINE.createNeedle("bgimg").addFunction({
 		step_type: PINE.ops.POPULATER,
 		fn: function(initMe, needle) {
 

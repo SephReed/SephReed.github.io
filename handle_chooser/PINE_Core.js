@@ -463,6 +463,10 @@ PINE.keyApplies = function(keyword, domNode)  {
 
 
 document.addEventListener("DOMContentLoaded", function(event) { 
+
+	console.log(event)
+	alert("content loaded")
+
   	
   	if(PINE.debugOn === true)
   		PINE.initDebug();
@@ -1092,7 +1096,7 @@ PINE.initDebug = function()  {
 			line += "....";
 			line += callerLine[2].match(/([^\/])+?$/g)[0];
 			U.log(line, "light");
-			
+
 			console.log(logMe);
 		}
 	}
