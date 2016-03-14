@@ -465,7 +465,7 @@ PINE.keyApplies = function(keyword, domNode)  {
 document.addEventListener("DOMContentLoaded", function(event) { 
 
 	console.log(event)
-	alert("content loaded")
+	// alert("content loaded")
 
   	
   	if(PINE.debugOn === true)
