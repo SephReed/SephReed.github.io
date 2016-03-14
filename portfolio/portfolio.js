@@ -1,11 +1,14 @@
 
-console.log("Hey you! \n\nThanks for taking the time to actually look at my work!  "+
-	"It's nice to know you have that much sense, especially if you're thinking of employing me in the future.  "+
-	"Honestly, I don't really think many people come looking around here, "+
-	"and they probably take most things in life at face value.  "+
-	"In other words, I think you're better than most people, by virtue of the fact you are reading this.  "+
-	"\n\nI hope you have an amazing day,"+
-	"\n-Seph :p");
+console.log("Hey you! \n\n"+
+	"I'm glad you came here to check things out.  Below you'll probably see a lot of console Jargon.  "+
+	"This is because this page is running on my own js frontend which I'm still developing.  "+
+	"I don't like to brag, but almost everything you see here is made from scratch.  "+
+	"And what isn't made from scratch is so basic I'm likely to replace it just for the sake of being able to "+
+	"say that absolutely everything is.\n\n"+
+	"Anyways, thanks for coming to check it out!\n"+
+	"-Seph"
+);
+
 
 
 // var work_btns = document.getElementsByTagName("worktype");
