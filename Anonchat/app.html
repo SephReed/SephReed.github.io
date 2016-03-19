@@ -8,7 +8,9 @@
 
 	<script src="../public/js/zepto.js"></script>
 	<script src="../handle_chooser/PINE_Core.js"></script>
-	<script> PINE.disable(["[PNVATT]", "INCLUDE"]); </script>
+
+	<!-- <script> PINE.disable(["[PNVATT]", "INCLUDE"]); </script> -->
+
 	<script src="../handle_chooser/PINE_Var.js"></script>
 	<script src="../handle_chooser/PINE_Needles.js"></script>
 	<!-- <script src="../handle_chooser/PINE_Template.js"></script> -->
@@ -73,33 +75,24 @@ commentbox {
 
 <script type="text/javascript">
 
-
-
-        function addComment(addMe) {
-            posts.push(addMe);
-
-            $("postlist")[0]._pine_.fns.update();
-
-
-
-            var request = new XMLHttpRequest();
-            request.open('POST', 'http://localhost:8080/aardvark/posts', true);
-            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-            request.send(addMe);
-
-
-        }
-
-        var wallNotPosts = false;
+        var rotater = 0;
         function changePage() {
 
-            if(wallNotPosts)
-                $("view")[0].FNS.changeSrc("views/topicView.html?wall=0&topic=0");
+            console.log("CHANGING VIEW")
+
+            rotater++;
+            rotater %= 3;
+
+            if(rotater == 0)
+                $("include")[0].FNS.changeSrc("views/posts.html?wall=0");
+
+            else if(rotater == 1)
+                $("include")[0].FNS.changeSrc("views/map.html");                
 
             else
-                $("view")[0].FNS.changeSrc("views/wallView.html");
+                $("include")[0].FNS.changeSrc("views/wallTopics.html");
 
-            wallNotPosts = !wallNotPosts; 
+            
         }
     </script>
 
@@ -114,7 +107,7 @@ commentbox {
         <content>
             <button id="changePage" onclick="changePage()">Change Page</button>
             
-            <view src="views/topicView.html?wall=0&topic=0" cache="true"></view>
+            <include id="content_view" src="views/posts.html?wall=0"></include>
             <button id="where">Where?</button>
 
         </content>

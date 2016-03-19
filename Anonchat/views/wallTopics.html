@@ -1,17 +1,11 @@
 <script>
-	posts = [
-		"The universe is crazy",
-		"People are crazy",
-		"What is crazy?",
-		"You",
-		"Now that you mention it, maybe"
-	];
+	var posts = [];
 
+	var wall = getQuery("wall") || 0;
 
 	PINE.addEventListener("DOMContentLoaded", function() {
-	    // alert("hi you");
 
-	    var target = "http://localhost:8080/aardvark/posts?wall=0&topic=0";
+	    var target = "http://localhost:8080/aardvark/topics?wall="+wall;
 	    // var target = "http://localhost:8080/aardvark/wall/0/topic/0/posts";
 
 	    var request = new XMLHttpRequest();
@@ -28,7 +22,7 @@
 	            console.log(data.name);
 
 	            posts = data.vals;
-	            $("postlist")[0]._pine_.fns.update();
+	            $("topiclist")[0]._pine_.fns.update();
 	        } else {
 	            // We reached our target server, but it returned an error
 	            alert("include src '"+target+"' does not exist")
@@ -45,6 +39,13 @@
 	    request.send();
 	});
 
+
+
+
+
+
+
+
 	// var i = 0;
 
 	function getQuery(name){
@@ -56,15 +57,15 @@
 	// alert(getQuery("s"));
 </script>
 
+topics for wall:{{wall}}
 
-<postlist spawner="posts" autoRun="false">
-	<post spawn>{{posts[i]}}</post>
-</postlist>
+<topiclist spawner="posts" autoRun="false">
+	<!-- <post spawn>#{{posts[i].topic_tag}}</post> -->
+	<topic>
+		<changeSrc target="content_view" src="views/posts.html?wall={{wall}}">See all</changeSrc>
+	</topic>
+	<topic spawn>
+		<changeSrc target="content_view" src="views/posts.html?wall={{wall}}&topic={{posts[i].topic_id}}">#{{posts[i].topic_tag}}</changeSrc>
+	</topic>
+</topiclist>
 
-<commentbox submitfn="addComment">
-	lalalal
-</commentbox>
-
-<button trigger="click" target="commentbox" fn="submit">
-	Submit
-</button>

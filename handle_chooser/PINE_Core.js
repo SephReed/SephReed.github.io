@@ -299,8 +299,15 @@ PINE.registerFunction2 = function(args)  {
 
 
 PINE.addFunctionToNode = function(domNode, funcName, func) {
-	if(domNode._pine_.fns[funcName] !== undefined)
-		PINE.err("fuction "+funcName+" already registered at domNode "+domNode)
+	LOG("adding function "+funcName+" to node:", "FNS");
+	LOG(domNode, "FNS");
+
+	if(domNode._pine_.fns[funcName] !== undefined) {
+		PINE.err("fuction "+funcName+" already registered at domNode ")
+		PINE.err(domNode)
+		PINE.err("this is an error with completed round in PINE.updateAt ")
+		console.log(domNode)
+	}
 
 	else domNode._pine_.fns[funcName] = func;
 }
@@ -907,12 +914,17 @@ PINE.permeate2 = function(root, opFuncs, callbackParent, newRoot)  {
 }
 
 
+
+//TODO: fix completed rounds error
 PINE.updateAt = function(root, callback) {
+
+	LOG("update at", "async");
+	LOG(root, "async");
 
 	var newRoot = (root._pine_ === undefined);
 	if(newRoot){
 		PINE.initiate(root);
-		// alert("newRootFound");
+		LOG("new Root Found", "async");
 		// console.log("new Root", root);
 	}
 
@@ -1110,6 +1122,7 @@ PINE.initDebug = function()  {
 	LOG.showLog["sprout"] = false;  //
 	LOG.showLog["pinefunc"] = false;  //		
 	LOG.showLog["async"] = false;
+	LOG.showLog["FNS"] = false;
 
 }
 

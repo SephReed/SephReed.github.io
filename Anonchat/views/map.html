@@ -1,0 +1,347 @@
+<style type="text/css">
+	#map {
+		position: fixed;
+		top: 0px;
+		width:  100%;
+		height:  100%;
+		background-color: #AFA;
+		z-index: -1;
+	}
+
+	#you {
+		top: 50%;
+		left: 50%;
+		background-color: #222;
+	}
+
+	.wall {
+		background-color: #804;
+	}
+
+	.dot {
+		position: fixed;
+		border-radius: 100px;
+		height: 20px;
+		width: 20px;
+		
+		transform: translateX(-50%) translateY(-50%);
+		transition: all 0.2s;
+	}
+
+
+	#peephole{
+		pointer-events: none;
+
+		position: fixed;
+		border: 200px solid black;
+		height: 700px;
+		width: 700px;
+		top: 50%;
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%);
+
+		background-image: url('public/images/peephole.png');
+		background-size: contain;
+
+		opacity: 0.2;
+	}
+
+	#readout {
+		position: fixed;
+		bottom: 0px;
+		right: 0px;
+	}
+</style>
+
+
+<div id="map" tabindex="1" >
+	<div id="peephole"></div>
+	<div id="you" class="dot"></div>
+	<div id="points">
+	</div>
+	<span id="readout"></span>
+</div>
+
+
+
+
+<script>
+
+
+
+// function measure(lat1, lon1, lat2, lon2){  // generally used geo measurement function
+//     var R = 6378.137; // Radius of earth in KM
+//     var dLat = (lat2 - lat1) * Math.PI / 180;
+//     var dLon = (lon2 - lon1) * Math.PI / 180;
+//     var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+//     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+//     Math.sin(dLon/2) * Math.sin(dLon/2);
+//     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+//     var d = R * c;
+//     return d * 1000; // meters
+// }
+
+
+
+
+
+var walls;// = [ { wall_lat: 30.5, wall_lng: -97.5 } ];
+
+
+
+
+PINE.ready(function(){
+
+	/*****************
+	*   VARS
+	*****************/
+
+	var map = document.getElementById("map");
+	var points = document.getElementById("points");
+	var width;
+	var height;
+	var degPerPx;
+	var halfWidthDLat;
+	var halfHeightDLng;
+
+	var lat = 0, lng = 0;
+	var mouse_dlat = 0;
+	var mouse_dlng = 0;
+
+	var readout = document.getElementById("readout");
+
+
+	/*****************
+	*   INIT
+	*****************/
+
+	function resizeUpdate(event) {
+		alert("ya")
+
+		width = map.offsetWidth;
+		height = map.offsetHeight;
+
+		degPerPx = 0.5 / Math.min(width, height);
+
+		halfWidthDLat = (degPerPx * width)/2;
+		halfHeightDLng = (degPerPx * height)/2;
+
+		console.log(width, height, degPerPx, halfWidthDLat, halfHeightDLng);
+	}
+	resizeUpdate();
+
+	map.addEventListener("resize", resizeUpdate);
+
+
+
+	/*****************
+	*   SET UP MOUSE
+	*****************/
+
+	map.addEventListener("mousemove", function(event) {
+		var x = event.offsetX;
+		var y = event.offsetY;
+
+		var rx = x / width;
+		rx = (rx - 0.5) * 2;
+
+		var ry = y / height;
+		ry = (ry - 0.5) * 2;
+
+		mouse_dlat = rx * halfWidthDLat;
+		mouse_dlng = ry * halfHeightDLng;
+
+		updateReadout()
+	});
+
+
+	/*****************
+	*   SET UP KEYS
+	*****************/
+
+	keys = [ 
+		"ArrowDown",
+		"ArrowUp",
+		"ArrowLeft",
+		"ArrowRight",
+	];
+
+	var keysPressed = {};
+	var keysUpdated = {};
+
+	(function( watchedKeys, domNode ) {
+		var handler = function( down ) {
+			return function( e ) {
+				var index = watchedKeys.indexOf( e.key );
+
+				console.log(e.key)
+
+				if( index >= 0 ) {
+					if( keysPressed[e.key] != down ) {
+						keysUpdated[e.key] = true;
+					}
+					keysPressed[e.key] = down; 
+					//e.preventDefault();
+				}
+			};
+		};
+		domNode.addEventListener( "keydown", handler( true ), false );
+		domNode.addEventListener( "keyup", handler( false ), false );
+
+		//init all keys
+		for(i in watchedKeys) {
+			keysUpdated[watchedKeys[i]] = false;
+			keysPressed[watchedKeys[i]] = false;
+		}
+
+	})(keys, map);
+
+	
+	
+	
+
+
+
+	/*****************
+	*   SET UP UPDATING
+	*****************/
+
+	// navigator.geolocation.getCurrentPosition(function(position){
+	// 	setLocation(position.coords.latitude, position.coords.longitude)
+	// });
+
+	setLocation(30, -97);
+
+	function setLocation(i_lat, i_lng) {
+		lat = i_lat;
+		lng = i_lng;
+
+		getPoints();
+	}
+
+	function getPoints()  {
+		var min_lat = lat - 2;
+		var max_lat = lat + 2;
+
+		var min_lng = lng - 2;
+		var max_lng = lng + 2;
+
+
+
+		var target = "http://localhost:8080/aardvark/walls"
+		target += "?min_lat="+min_lat;
+		target += "&max_lat="+max_lat;
+		target += "&min_lng="+min_lng;
+		target += "&max_lng="+max_lng;
+	    // var target = "http://localhost:8080/aardvark/wall/0/topic/0/posts";
+
+	    var request = new XMLHttpRequest();
+	    // request.responseType = 'text';
+	    request.open('GET', target, true);
+
+	    request.onload = function() {
+	        if (request.status >= 200 && request.status < 400) {
+	            // Success!
+	            var response = request.responseText;
+	            console.log(response);
+	            var data = JSON.parse(response);
+	            console.log(data);
+	            console.log(data.name);
+
+	            walls = data.vals;
+	            replaceMapPoints();
+	            
+	        } else {
+	            // We reached our target server, but it returned an error
+	            alert("include src '"+target+"' does not exist")
+	        }
+	    };
+
+
+
+	    request.onerror = function() {
+	        // There was a connection error of some sort
+	        alert("include src '"+target+"' does not exist")
+	    };
+
+	    request.send();
+
+	}
+
+	
+
+
+
+
+	function updateMovement() {
+
+		// console.log(lat +" "+lng);
+
+		var dlat = 0, dlng = 0;
+
+		if( keysPressed["ArrowUp"] )
+			dlng += 0.01
+
+		if( keysPressed["ArrowDown"] ) 
+			dlng -= 0.01
+
+		if( keysPressed["ArrowLeft"] )
+			dlat -= 0.01
+
+		if( keysPressed["ArrowRight"] )
+			dlat += 0.01
+
+		if(dlat || dlng) {
+			lat += dlat;
+			lng += dlng;
+
+			updateReadout()
+			updatePointPositions();
+		}
+	}
+
+	setInterval(updateMovement, 100)
+
+	function updateReadout() {
+		var latOut = ((lat+mouse_dlat)+'').substring(0, 6);
+		var lngOut = ((lng+mouse_dlng)+'').substring(0, 6);
+		readout.innerHTML = latOut+", "+lngOut;
+	}
+
+	function replaceMapPoints() {
+
+		while(points.lastChild)
+			points.removeChild(points.lastChild)
+		
+		for(wa in walls) {
+			var wall = walls[wa];
+
+			var addMe = document.createElement("div");
+			addMe.className += " dot wall";
+
+			wall.domNode = addMe;
+
+			points.appendChild(addMe);
+		}
+
+		updatePointPositions();
+	}
+
+	function updatePointPositions() {
+		for(wa in walls) {
+			var wall = walls[wa];
+
+			var x = (width/2) + ~~((wall.wall_lat - lat) / degPerPx);
+			var y = (height/2) + ~~((wall.wall_lng - lng) / degPerPx);
+
+			wall.domNode.style.top = (height - y)+"px";
+			wall.domNode.style.left = x+"px";
+		}
+	}
+
+});
+
+
+</script>
+
+

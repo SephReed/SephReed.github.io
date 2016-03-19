@@ -131,16 +131,18 @@ PINE.newVar = function(varName, value, domNode) {
 
 
 pnv.searchForPinevar = function(varName, domNode)  {
-	var scope = domNode;
-	if(!domNode || !domNode._pine_){
-		// console.log("no node");
-		scope = window;
-	}
+	// var scope = domNode;
+	// if(!domNode || !domNode._pine_){
+	// 	// console.log("no node");
+	// 	scope = window;
+	// }
+
+	var scope = (domNode && domNode._pine_) ? domNode : window;
 	
 	// console.log("getting "+varName+" from:"); 
 	// console.log(scope);
 
-	if(scope.PVARS && scope.PVARS[varName])
+	if(scope.PVARS && scope.PVARS[varName] !== undefined)
 		return scope.PVARS[varName];
 
 	if(scope.parentNode)
@@ -156,8 +158,12 @@ pnv.getVarFrom = function(varName, domNode)  {
 	if(!domNode || !domNode.PVARS)
 		scope = window;
 
+
+
 	// console.log(varName);
 	// console.log(domNode);
+
+	// console.log(domNode.PVARS);
 
 	var rootVar;
 	var extension;
@@ -578,12 +584,27 @@ PINE.createNeedle("[pnvatt]").addFunction({
 		var pairs = rules.split(":+:");
 		for(i_p in pairs)  {
 
-			var rule = pairs[i_p].split('=');
-			var outVal = rule[1];
+			console.log(pairs[i_p]);
+
+			var splitPoint = pairs[i_p].indexOf("=");
+			// var rule = pairs[i_p].split('=', 2);
+
+			// console.log(rule);
+
+			var setAtt = pairs[i_p].substring(0, splitPoint);
+			var outVal = pairs[i_p].substring(splitPoint+1);
 			var matches = outVal.match(/{{.+?}}/g);
 
 			for(i_m in matches)  {
+				
+
+				var replaceMe = matches[i_m];
+
 				var key = matches[i_m].replace(/[{}]/g, '');
+				var addMe = pnv.getVarFrom(key, initMe); 
+
+				outVal = outVal.replace(replaceMe, addMe);
+
 				// console.log(key);
 				// var pinevar = pnv.getVarFrom(key, initMe); 
 				// if(pinevar.hold === undefined)  {
@@ -595,7 +616,7 @@ PINE.createNeedle("[pnvatt]").addFunction({
 				// }
 			}
 
-			var setAtt = rule[0];
+			
 
 			initMe.attributes[setAtt].value = outVal;
 		}

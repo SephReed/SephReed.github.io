@@ -95,11 +95,20 @@ spawner.update = function(initMe) {
 	var keyString = initMe.attributes.spawner.value;
 	var array = pnv.getVarFrom(keyString, initMe);
 
+	// console.log(array)
+	// console.log(initMe);
+	// alert("pause needle ~100");
+
 	var spawn = initMe._pine_.spawner.spawn;
 
 	if(spawn){
-		while (initMe.lastChild) {
-		    initMe.removeChild(initMe.lastChild);
+		for(var i = 0; i < initMe.childNodes.length;) {
+			var child = initMe.childNodes[i];
+			
+			if(child.attributes && child.attributes.spawn)
+		    	initMe.removeChild(child);
+
+		    else i++;
 		}
 
 
@@ -111,7 +120,7 @@ spawner.update = function(initMe) {
 			var addMe = PINE.deepCloneNode(spawn);
 			U.getnit(addMe, "PVARS."+indexer, i);
 			
-			addMe.setAttribute("scopeVar", indexer+'='+i);
+			addMe.setAttribute("scopeVarDoesNothing", indexer+'='+i);
 
 			initMe.appendChild(addMe);
 		}
@@ -284,31 +293,6 @@ INC.ajaxGetSrc = function(initMe, needle, callback) {
 
 
 
-INC.updateNode = function(initMe) {
-
-	return new Promise( function(resolve, reject) {
-		var src = U.attr(initMe, "src");
-		
-		if(src) {
-			INC.get(url).then(function(response) {
-				resolve(response);
-			});
-		
-		} else {
-			reject("include src for "+initMe+" in not set");
-		}
-	});
-
-			
-		
-	
-
-	
-}
-
-
-
-
 
 INC.get = function(url, responseType) {
 
@@ -384,38 +368,64 @@ INC.get = function(url, responseType) {
 
 var p_include = PINE.createNeedle("include");
 
+p_include.update = function(initMe, callback) {
+
+	console.log("updating")
+
+
+	var url = U.attr(initMe, "src");
+		
+	if(url) {
+		INC.get(url).then(function(response) {
+			initMe.innerHTML = response;
+
+			U.evalElementScripts2(initMe, url);
+			// console.log("localVars")
+			// console.log(localVars)
+
+			
+
+			//FUCKING KLUDGE;
+			if(PINE.pnv) {
+				PINE.pnv.parseText(initMe);
+				PINE.pnv.parseAtts(initMe);
+			}
+
+			// initMe.PVARS[key] = localVars;
+			
+			// alert("Pause neelde~396");
+
+			callback ? callback() : null
+
+			//MORE KLUDGE
+			// PINE.updateAt(initMe);
+		});
+	
+	} else {
+		PINE.err("include src for "+initMe+" in not set");
+	}
+}
+
+
+
 p_include.init = function(initMe, needle, pineFunc) {
-	// initMe.innerHTML = response;
+	p_include.update(initMe, pineFunc.complete);
 
-				// if(needle.evalBank[target] === undefined) {
-				// 	var injects = {};
-
-				// 	var fakeLoc = {};
-				// 	var search = target.match(/\?.*/g);
-				// 	fakeLoc.search = search ? search[0] : "";
-				// 	injects["window.location"] = fakeLoc;
-
-				// 	needle.evalBank[target] = U.evalElementScripts(initMe, injects);
-				// }
-
-				// //FUCKING KLUDGE;
-				// if(PINE.pnv) {
-				// 	PINE.pnv.parseText(initMe);
-				// 	PINE.pnv.parseAtts(initMe);
-				// }
-
-				// initMe.PVARS[key] = needle.evalBank[target];
-
+	initMe.FNS.changeSrc = function(src, callback) {
+		// callback = callback || function(){};
+		initMe.setAttribute("src", src);
+		p_include.update(initMe, function(){
+			PINE.updateAt(initMe, callback);
+		});
+	}
 }
 
 
 p_include.addFunction({
 	step_type : PINE.ops.STATIC,
 	autoComplete : false,
-	fn: INC.init
+	fn: p_include.init
 });
-p_include.includeBank = {};
-p_include.evalBank = {};
 
 
 
@@ -453,6 +463,555 @@ p_view.viewBank = {};
 
 
 
+var p_changeSrc = PINE.createNeedle("changeSrc");
+p_changeSrc.addFunction({
+	step_type : PINE.ops.FINALIZER,
+	fn: function(initMe, needle) {
+		
+
+		if (initMe.HACK_USED_changeSrc !== true) {
+
+			initMe.addEventListener("click", function(event) {
+				
+				var src = U.attr(initMe, "src");
+
+				var target = U.attr(initMe, "target");
+				var domNode = document.getElementById(target);
+
+				if(domNode && domNode.FNS && domNode.FNS.changeSrc) {
+					// alert(src);
+					domNode.FNS.changeSrc(src);
+				}
+			});
+		}
+
+		initMe.HACK_USED_changeSrc = true;
+	}
+});
+
+
+
+
+U.evalElementScripts2 = function(initMe, url) {
+
+	var injects = [];
+
+	var fakeLoc = {};
+	var search = url.match(/\?.*/g);
+	fakeLoc.search = search ? search[0] : "";
+	injects.push({var_name: "window.location", addMe: fakeLoc});
+
+	var scriptNodes = initMe.getElementsByTagName("script");
+
+	// console.log(scriptNodes);
+
+	var scripts = [];
+	for(sc = 0; sc < scriptNodes.length; sc++) {
+		scripts[sc] = scriptNodes[sc].innerHTML;
+	}
+
+	// console.log(scripts);
+
+	var hack = U.hackScripts(scripts, injects);
+
+	initMe.PVARS = hack.localVars;
+
+	for(sc in hack.scripts) {
+		// console.log(hack.scripts[sc]);
+		eval(hack.scripts[sc]);
+	}
+
+	return hack;
+}
+
+
+
+
+
+U.Context = function(script, type) {
+	this.script = script;
+	this.type = type;
+	this.subContexts;
+}
+
+U.Context.TYPE = {};
+U.Context.TYPE.STRING = "string";
+U.Context.TYPE.COMMENT = "comment";
+U.Context.TYPE.LOCAL = "local";
+U.Context.TYPE.UNLOCAL = "unlocal";
+
+U.Context.prototype.toString = function() {
+	if(this.type == U.Context.TYPE.UNLOCAL) {
+		var out = ""
+		for(su in this.subContexts) 
+			out += this.subContexts[su].toString()
+		
+		return "{"+out+"}";
+	}
+	else return this.script;
+}
+
+
+
+U.parseScriptToContexts = function(script) {
+	var contexts = [];
+
+	var bracketDepth = 0;
+	var lastCut = 0;
+	for(var c = 0; c < script.length; c++) {
+		var char = script.charAt(c);
+
+
+		var atEnd = (c == script.length-1);
+	
+		if(char == "}") {
+			bracketDepth--;
+
+			if(bracketDepth == 0) {
+				var scriptChunk = script.substring(lastCut, c+1);
+				var context = new U.Context(scriptChunk, U.Context.TYPE.UNLOCAL);
+				context.subContexts = U.parseScriptToContexts(scriptChunk.substring(1, scriptChunk.length-1));
+				contexts.push(context);
+				lastCut = c + 1;
+			}
+		}
+
+
+		else if(char == "{" || atEnd) {
+			if(bracketDepth == 0) {
+				if(atEnd) c++;
+				var scriptChunk = script.substring(lastCut, c);
+				var context = new U.Context(scriptChunk);
+				contexts.push(context);
+				lastCut = c;
+			}
+
+			bracketDepth++;
+		}
+	}
+
+
+	for (var co = 0; co < contexts.length; co++) {
+		// console.log(contexts[co]);
+
+		if(contexts[co].type === undefined) {
+			var script = contexts.splice(co, 1)[0].script;
+
+			var chunks = [];
+
+			var exiting = false;
+			var dubQuote = 0;
+			var singQuote = 0;
+			var comment = 0;
+
+			var lastCut = 0;
+
+			for(var c = 0; c < script.length; c++) {
+				var char = script.charAt(c);
+				var new_chunk = false;
+				
+				if(!exiting) {
+					if(char == "\\") exiting = true;
+
+					else if(char == "\"" && !singQuote) {
+						new_chunk = true;
+						dubQuote++;
+					}
+
+					else if(char == "\'" && !dubQuote) {
+						new_chunk = true;
+						singQuote++;
+					}
+
+					// else if(char == "/") {
+					// 	if()
+					// }
+
+					var atEnd = (c == script.length-1);
+					if(new_chunk || atEnd) {
+						var scriptChunk, context;
+
+						if(dubQuote > 1 || singQuote > 1) {
+							scriptChunk = script.substring(lastCut, c+1);
+							context = U.Context.TYPE.STRING;
+						
+							dubQuote = singQuote = 0;
+							lastCut = c + 1;
+						}
+						else if(comment > 1) {
+							scriptChunk = script.substring(lastCut, c);
+							context = U.Context.TYPE.COMMENT;
+
+							comment = false;
+							lastCut = c;
+						}
+						else {
+							if(atEnd) c++;
+							scriptChunk = script.substring(lastCut, c);
+								//
+							// else scriptChunk = script.substring(lastCut, c);
+							context = U.Context.TYPE.LOCAL;
+
+							lastCut = c;
+						}
+
+						
+						chunks.push(new U.Context(scriptChunk, context));
+					}
+				}
+				else exiting = false;
+				
+			}
+
+
+			for(ch in chunks) {
+				contexts.splice(co, 0, chunks[ch])
+				co++;
+			}
+		}
+	}
+
+
+	return contexts;
+}
+
+
+
+
+U.hackScripts = function(scriptsArray, i_injects) {
+	var injects = i_injects || [];
+
+	var evalIndex = PINE.evals.length;
+	PINE.evals[evalIndex] = {};
+	var evalPrefix = "PINE.evals["+evalIndex+"].";
+
+	if(i_injects !== undefined) {
+		var injectReferences = PINE.evals[evalIndex]["__eval__"] = {};
+
+		for(i in injects) {
+			var exitKey = injects[i].var_name.replace('.', '_');
+
+			injectReferences[exitKey] = injects[i].addMe;
+			injects[i].addMe = evalPrefix+"__eval__."+exitKey;
+			
+		}
+	}
+
+
+	
+
+	var scriptContexts = []
+
+	for(sc in scriptsArray) {
+		var contexts = scriptContexts[sc] = U.parseScriptToContexts(scriptsArray[sc]);
+
+		for (co in contexts) {
+			if(contexts[co].type == U.Context.TYPE.LOCAL) {
+				// var rex = /(var.+?(?=([;\n=]|$)))/g;
+
+				//check for anything that starts with var or function(
+				var rex = /(function +.+\()|(var.+?(?=([;\n=]|$)))/g;
+
+				contexts[co].script = contexts[co].script.replace(rex, function(replaceMe, isFunc) {
+					if(isFunc) {
+						return replaceMe.replace(/function +\w*/g, function(relaceMe) {
+							var var_name = relaceMe.replace(/function +/g, '');
+							return "window[\""+var_name+"\"] = function";
+						});
+					}
+					else {
+						var var_name = replaceMe.replace(/var +| +$/g, '');
+						var addMe = evalPrefix+var_name;
+						// var rex = RegExp("([^\\.]|^)"+var_name+"(?! *:)");
+						injects.push({ var_name : var_name, addMe : addMe});
+
+						return addMe;
+					}
+				});
+			}
+		}
+	}
+
+	for(i in injects) {
+		injects[i].rex = RegExp("([^\\.\\w\\d]|^)"+injects[i].var_name+"(?!( *:|[\\w\\d]))");
+	}
+
+	// console.log(scriptContexts);
+	// console.log(injects);
+
+	var scriptsOut = [];
+
+	for(sc in scriptContexts) {
+		var contexts = scriptContexts[sc];
+
+		U.injectVars(contexts, injects);
+
+		var script = ""
+
+		for (co in contexts) {
+			script += contexts[co].toString();
+		}
+
+		scriptsOut[sc] = script;
+	}
+
+	var out = {};
+	out.scripts = scriptsOut;
+	out.evalIndex = evalIndex;
+	out.localVars = PINE.evals[evalIndex];
+
+
+	return out;
+}
+
+
+U.injectVars = function(contexts, injects) {
+
+	for(co in contexts) {
+		var con = contexts[co];
+		if(con.type == U.Context.TYPE.LOCAL) {
+			for(i in injects) {
+				var inj = injects[i]; 
+				con.script = con.script.replace(inj.rex, function(replaceMe, prependChar){
+					var out = inj.addMe;
+
+					if(prependChar)
+						out = prependChar + out;
+
+					return out;
+				});
+			}
+		}
+		if(con.type == U.Context.TYPE.UNLOCAL) {
+			U.injectVars(con.subContexts, injects)
+		}
+	}
+}
+
+
+
+// U.hackScripts2 = function(scriptsArray, injects) {
+
+// 	var injects = injects || [];
+
+// 	//find all local vars and functions
+// 	//replace them
+
+// 	//anything within brackets is off limits
+
+// 	//go through each script, break into chunks local and bracket
+
+
+// 	//find all local chunks
+// 	var scriptChunkArrays = [];
+
+// 	for(s in scriptsArray) {
+// 		scriptChunkArrays[s] = U.splitAtBrackets(scriptsArray[s]);	
+// 	}
+
+
+// 	console.log(scriptChunkArrays);
+
+
+	
+
+
+// 	// create a new object for all the local variables of this eval to be stored in
+// 	var evalIndex = PINE.evals.length;
+// 	PINE.evals[evalIndex] = {};
+// 	var evalPrefix = "PINE.evals["+evalIndex+"].";
+
+
+// 	// var localVars = [];
+// 		//
+
+// 	for(sc in scriptChunkArrays){
+// 		var chunks = scriptChunkArrays[sc];
+
+// 		//go through every item with a script tag
+// 		for(ch in chunks)  {
+
+// 			if(chunks[ch].charAt(0) != "{") {
+
+// 				//check for anything that starts with var or function(
+// 				// var rex = /(function +.+\()|(var.+?(?=([;\n=]|$)))/g;
+
+// 				// chunks[ch] = chunks[ch].replace(rex, function(replaceMe, isFunc, isVar) {
+// 				// var out = replaceMe;
+
+// 				// 	if(isFunc) {
+// 				// 		var out = out.replace(/function \w*/g, function(relaceMe) {
+// 				// 			var var_name = relaceMe.substring("function ".length);
+
+// 				// 			return "window[\""+var_name+"\"] = function";
+// 				// 		});
+// 				// 	}
+// 				// 	else if (isVar) {
+// 				// 		var var_name = out.replace(/var +| +$/g, '');
+// 				// 		localVars.push(var_name);
+
+// 				// 		out = evalPrefix+var_name;
+// 				// 	}
+
+// 				// return out;
+// 				// });
+
+// 				var rex = /(var.+?(?=([;\n=]|$)))/g;
+
+// 				var matches =  chunks[ch].match(rex)
+				
+// 				for(ma in matches) {
+// 					var var_name = matches[ma].replace(/var +| +$/g, '');
+// 					var addMe = evalPrefix+var_name;
+// 					injects.push({ replaceMe : var_name, addMe : addMe });
+// 				}				
+// 			}
+// 		}
+// 	}
+
+// 	console.log(injects);
+
+
+
+
+// 	for(sc in scriptChunkArrays){
+// 		var chunks = scriptChunkArrays[sc];
+
+// 		//go through every item with a script tag
+// 		for(ch in chunks)  {
+// 			chunks[ch] = U.injectVars(chunks[ch], injects);
+			
+// 		}
+// 	}
+
+
+
+
+
+// 	var outScripts = [];
+
+// 	for(sc in scriptChunkArrays){
+// 		var chunks = scriptChunkArrays[sc];
+
+// 		outScripts[sc] = "";
+
+// 		//go through every item with a script tag
+// 		for(ch in chunks)  {
+// 			outScripts[sc] += chunks[ch];
+// 		}
+// 	}
+
+// 	return outScripts;
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 	// create a new object for all the local variables of this eval to be stored in
+// 	// var evalIndex = PINE.evals.length;
+// 	// PINE.evals[evalIndex] = {};
+// 	// var evalPrefix = "PINE.evals["+evalIndex+"].";
+
+
+	
+// 	// var localVars = [];
+// 	// var scripts = initMe.getElementsByTagName("script");
+// 	// var bracketChunks = []
+// 		//
+// 	//go through every item with a script tag
+// 	// for(var s = 0; s < scripts.length; s++)  {
+// 	// 	var script = scripts[s];
+
+// 	// 	var localChunks = [];
+
+// 	// 	var bracketDepth = 0;
+// 	// 	var localBegin = 0;
+// 	// 	for(var c = 0; c < script.length; c++) {
+// 	// 		var char = script.charAt(c);
+
+// 	// 		if(char == "{") {
+// 	// 			bracketDepth++;
+
+// 	// 			if(bracketDepth == 0) {
+// 	// 				localChunks.push(script.substring(localBegin, c));
+// 	// 			}
+// 	// 		}
+// 	// 		else if (char == "}") {
+// 	// 			bracketDepth--;
+// 	// 			localBegin = c;
+// 	// 		}
+// 	// 	}
+
+// 	// 	console.log(localChunks);
+// 	// }
+
+// 	// //if user defines window locally, this will cause issues
+// 	// var evalHelper = PINE.evals[evalIndex]["__eval__"] = {};
+// 	// evalHelper.injects = {};
+
+// 	// for(key in injects) {
+// 	// 	var exitKey = key.replace('.', '_');
+// 	// 	evalHelper.injects[key] = evalPrefix+"__eval__."+exitKey;
+// 	// 	evalHelper[exitKey] = injects[key];
+// 	// }
+
+// 	// // var loc = evalHelper.injects["window.location"] = evalPrefix+"__eval__.window_location";
+// 	// // evalHelper.window_location = {};
+// 	// // evalHelper.window_location.search = "?s=hey";
+
+	
+
+
+
+// 	// //go through all the scripts again
+// 	// for(var s = 0; s < scripts.length; s++) {
+
+// 	// 	//get the code and check it for local variables
+// 	// 	//if a local variable is found, append the evalPrefix so it is stored globally instead
+// 	// 	var textToEval = scripts[s].innerHTML;
+
+// 	// 	for(key in evalHelper.injects) {
+// 	// 		var replaceMe = key;
+// 	// 		var addMe = evalHelper.injects[key];
+// 	// 		textToEval = U.replaceVarInScript(replaceMe, addMe, textToEval);
+// 	// 	}
+
+
+
+// 	// 	for(i in localVars)  {
+// 	// 		var replaceMe = localVars[i];
+// 	// 		var addMe = evalPrefix+replaceMe;
+
+// 	// 		textToEval = U.replaceVarInScript(replaceMe, addMe, textToEval);
+// 	// 	}
+
+// 	// 	//once all local variables have been renamed to be stored globally, proceed with eval
+// 	// 	console.log(textToEval);
+// 	// 	eval(textToEval);
+// 	// }
+
+// 	// // initMe._pine_.previouslyEvaled = true;
+
+// 	// return PINE.evals[evalIndex];
+
+// 	// return scriptsArray;
+// }
+
+
+
+
+
+
+
 
 
 
@@ -479,20 +1038,63 @@ U.evalElementScripts = function(initMe, injects) {
 	//go through every item with a script tag
 	for(var s = 0; s < scripts.length; s++)  {
 
-		//check for anything that is either within brackets {} or starts with var
-		var rex = /(var.+(;|\n)|(\{(.|\n)+?\}))/g;
-		var localVarRex = scripts[s].innerHTML.match(rex);
+		// console.log(scripts[s].innerHTML);
 
-		//if any of the results aren't brackets, get the var name and add it to list of local vars
-		for(i in localVarRex)  {
-			var match = localVarRex[i];
-			if(match.charAt(0) != '{') {
-				var var_name = match.replace(/(var +|( ?)+=.+\n?)/g, '');
+		//check for anything that is either within brackets {} or starts with var or function(
+		var rex = /([\n;]|^)[\t ]*?function.*\(|(var.+(;|\n)|(\{(.|\n)+?\}))/g;
+
+		scripts[s].innerHTML = scripts[s].innerHTML.replace(rex, function(replaceMe) {
+			var out = replaceMe;
+
+			if(out.charAt(0) != '{') {
+
 				
-				var_name = var_name.replace(/[\n\r;]/g, '');
-				localVars.push(var_name);
+
+				if(out.indexOf("function") != -1) {
+					// alert(match);
+					var out = out.replace(/function \w*/g, function(relaceMe) {
+						var var_name = relaceMe.substring("function ".length);
+
+						return "window[\""+var_name+"\"] = function";
+					});
+					
+					// alert("function found "+replaceMe+" --> "+out);
+				}
+				else {
+					var var_name = out.replace(/(var +|( ?)+=.+\n?)/g, '');
+				
+					var_name = var_name.replace(/[\n\r;]/g, '');
+					localVars.push(var_name);
+				}
+
+				
 			}
-		}
+
+			return out;
+		});
+
+		// var localVarRex = scripts[s].innerHTML.match(rex);
+
+		// //if any of the results aren't brackets, get the var name and add it to list of local vars
+		// for(i in localVarRex)  {
+		// 	var match = localVarRex[i];
+		// 	if(match.charAt(0) != '{') {
+		// 		if(match.indexOf("function") != -1) {
+		// 			// alert(match);
+		// 			var func_string = match.match(/function \w*/g)[0]
+		// 			var var_name = func_string.substring("function ".length);
+		// 			alert("function found "+var_name);
+		// 		}
+		// 		else {
+		// 			var var_name = match.replace(/(var +|( ?)+=.+\n?)/g, '');
+				
+		// 			var_name = var_name.replace(/[\n\r;]/g, '');
+		// 			localVars.push(var_name);
+		// 		}
+
+				
+		// 	}
+		// }
 	}
 
 	//if user defines window locally, this will cause issues
@@ -536,7 +1138,7 @@ U.evalElementScripts = function(initMe, injects) {
 		}
 
 		//once all local variables have been renamed to be stored globally, proceed with eval
-		// console.log(textToEval);
+		console.log(textToEval);
 		eval(textToEval);
 	}
 
@@ -548,15 +1150,17 @@ U.evalElementScripts = function(initMe, injects) {
 U.replaceVarInScript = function(replaceMe, addMe, script) {
 	var noVarZones = "\\/\\*\\*.*?\\*\\/";  	/**multiline comment*/
 		noVarZones += "|" + "\\/\\/.*?\\n";  	//single line comment
-		noVarZones += "|" + "'.*?'"			//'string'
+		noVarZones += "|" + "'.*?'"			//'string'   ".*?"
 		noVarZones += "|" + "\".*?\""		//"string"
 	//match anything that has the name of the variable without a dot or letter before it
 	//this is the trolliest regex I've ever used
 	//(var)?([^\.\/\\\w]|^)varName(?=([\.\s:]|$))
-	var rex = new RegExp(noVarZones+"|(var)?([^\\.\\/\\\\\\w]|^)"+replaceMe+"(?=([\\.\\s:]|$))", "g");
+	var rex = new RegExp(noVarZones+"|(var)?([^\\.\\/\\\\\\w]|^)"+replaceMe+"(?=([\\.\\s;:]|$))", "g");
 	// console.log(rex);
 
 	return script.replace(rex, function(replaceMe) {
+		// console.log(replaceMe);
+
 		var char = replaceMe.charAt(0);
 		var out = replaceMe;
 
