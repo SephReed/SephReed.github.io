@@ -1,0 +1,26 @@
+<script>
+	var styleFilenames = [
+		"empty.css",
+		"commandline.css",
+		"retroHacker.css"
+	]
+</script>
+
+<style>
+	stylelink {
+		display: block;
+	}
+</style>
+
+
+<h3><center>Settings</center></h3>
+
+<stylelist spawner="styleFilenames">
+	<stylelink spawn>
+		<changeSrc target="style_include" src="public/styles/{{styleFilenames[i]}}">
+			{{styleFilenames[i]}}
+		</changeSrc>
+	</stylelink>
+</stylelist>
+
+

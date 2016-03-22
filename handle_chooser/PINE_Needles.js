@@ -13,22 +13,30 @@
 ********************************************/
 
 
+/****************
+*    trigger
+***************/
+
 
 PINE.createNeedle("[trigger]").addFunction({
 	step_type: PINE.ops.FINALIZER,
 	fn: function(initMe, needle) {
-		var triggerType = initMe.attributes.trigger.value;
+
+		if (initMe.HACK_USED_trigger !== true) {
+			var triggerType = initMe.attributes.trigger.value;
 
 
-		initMe.addEventListener(triggerType, function() {
-			var target = initMe.attributes.target.value;
-			var fn = initMe.attributes.fn.value;
-			var args = U.attr(initMe, "args");
+			initMe.addEventListener(triggerType, function(event) {
+				var target = initMe.attributes.target.value;
+				var fn = initMe.attributes.fn.value;
+				var args = U.attr(initMe, "args");
 
-			$(target).each(function() {
-				this._pine_.fns[fn]();
-			});
-		}, false);
+				$(target).each(function() {
+					this.FNS[fn]();
+				});
+			}, false);
+		}
+		initMe.HACK_USED_trigger = true;
 	}
 });
 
@@ -37,7 +45,9 @@ PINE.createNeedle("[trigger]").addFunction({
 
 
 
-
+/****************
+*    spawner
+***************/
 
 
 
@@ -363,7 +373,9 @@ INC.get = function(url, responseType) {
 
 
 
-
+/****************
+*    include
+***************/
 
 
 var p_include = PINE.createNeedle("include");
@@ -377,28 +389,27 @@ p_include.update = function(initMe, callback) {
 		
 	if(url) {
 		INC.get(url).then(function(response) {
-			initMe.innerHTML = response;
 
-			U.evalElementScripts2(initMe, url);
-			// console.log("localVars")
-			// console.log(localVars)
+			if(url.indexOf(".html") != -1) {
+				initMe.innerHTML = response;
 
-			
+				U.evalElementScripts2(initMe, url);
 
-			//FUCKING KLUDGE;
-			if(PINE.pnv) {
-				PINE.pnv.parseText(initMe);
-				PINE.pnv.parseAtts(initMe);
+				//FUCKING KLUDGE;
+				if(PINE.pnv) {
+					PINE.pnv.parseText(initMe);
+					PINE.pnv.parseAtts(initMe);
+				}
+			}
+			else if(url.indexOf(".css") != -1) {
+				initMe.innerHTML = "<style>"+response+"</style>"
+			}
+			else {
+				PINE.err("file is neither .html or .css");
 			}
 
-			// initMe.PVARS[key] = localVars;
-			
-			// alert("Pause neelde~396");
 
 			callback ? callback() : null
-
-			//MORE KLUDGE
-			// PINE.updateAt(initMe);
 		});
 	
 	} else {
@@ -411,13 +422,13 @@ p_include.update = function(initMe, callback) {
 p_include.init = function(initMe, needle, pineFunc) {
 	p_include.update(initMe, pineFunc.complete);
 
-	initMe.FNS.changeSrc = function(src, callback) {
+	PINE.addFunctionToNode(initMe, "changeSrc", function(src, callback) {
 		// callback = callback || function(){};
 		initMe.setAttribute("src", src);
 		p_include.update(initMe, function(){
 			PINE.updateAt(initMe, callback);
 		});
-	}
+	});
 }
 
 
@@ -430,7 +441,9 @@ p_include.addFunction({
 
 
 
-
+/****************
+*   view
+***************/
 
 
 
@@ -463,6 +476,13 @@ p_view.viewBank = {};
 
 
 
+
+/****************
+*   changeSrc
+***************/
+
+
+
 var p_changeSrc = PINE.createNeedle("changeSrc");
 p_changeSrc.addFunction({
 	step_type : PINE.ops.FINALIZER,
@@ -488,6 +508,9 @@ p_changeSrc.addFunction({
 		initMe.HACK_USED_changeSrc = true;
 	}
 });
+
+
+
 
 
 
@@ -733,11 +756,11 @@ U.hackScripts = function(scriptsArray, i_injects) {
 	}
 
 	for(i in injects) {
-		injects[i].rex = RegExp("([^\\.\\w\\d]|^)"+injects[i].var_name+"(?!( *:|[\\w\\d]))");
+		injects[i].rex = RegExp("([^\\.\\w\\d]|^)"+injects[i].var_name+"(?!( *:|[\\w\\d]))", "g");
 	}
 
 	// console.log(scriptContexts);
-	// console.log(injects);
+	console.log(injects);
 
 	var scriptsOut = [];
 

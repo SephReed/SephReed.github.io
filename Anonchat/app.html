@@ -4,8 +4,6 @@
 <head>
 	<meta charset="utf-8"/>
 
-
-
 	<script src="../public/js/zepto.js"></script>
 	<script src="../handle_chooser/PINE_Core.js"></script>
 
@@ -17,6 +15,11 @@
 
 	<pine>
 		<needle src="needles/Needle_CommentBox.html"></needle>
+        <needle src="needles/peephole.html"></needle>
+        <include src="public/styles/fallback.css"></include>
+        <!-- <include id="style_include" src="public/styles/testing.css"></include> -->
+        <include id="style_include" src="{{style_include_cookie}}"></include>
+        <!-- <include id="style_include" src="public/styles/{{ COOKIE['style_include'] }}"></include> -->
 	</pine>
 </head>
 
@@ -24,8 +27,8 @@
 <style>
 
 html {
-  box-sizing: border-box;
-
+    box-sizing: border-box;
+    font-family: arial;
 }
 
 *, *:before, *:after {
@@ -36,6 +39,18 @@ html {
 
 img {
 	outline : none;
+}
+
+
+
+#back_btn {
+    position: fixed;
+    top: 0px;
+    background-color: rgba(250,250,250,0.5);
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.3);
+    padding: 2px;
+    cursor: pointer;
 }
 
 
@@ -54,11 +69,7 @@ post {
 
 /*THEMES*/
 
-body {  
-	background-color: #FAFAFA;  
-	font-family: arial;
-	color: #333;
-}
+
 
 post {
 	border-bottom: 1px solid rgba(0,0,0,0.2);
@@ -74,27 +85,71 @@ commentbox {
 </style>
 
 <script type="text/javascript">
+    SESSION_CACHE = {};
+    SESSION_CACHE.topic_tags = [];
 
-        var rotater = 0;
-        function changePage() {
 
-            console.log("CHANGING VIEW")
+    var style_include_cookie = U.getCookie("style_include") || "public/styles/testing.css";
 
-            rotater++;
-            rotater %= 3;
 
-            if(rotater == 0)
-                $("include")[0].FNS.changeSrc("views/posts.html?wall=0");
+    // var rotater = 0;
+    // function changePage() {
 
-            else if(rotater == 1)
-                $("include")[0].FNS.changeSrc("views/map.html");                
+    //     console.log("CHANGING VIEW")
 
-            else
-                $("include")[0].FNS.changeSrc("views/wallTopics.html");
+    //     rotater++;
+    //     rotater %= 3;
 
-            
-        }
-    </script>
+    //     if(rotater == 0)
+    //         $("include")[0].FNS.changeSrc("views/posts.html?wall=0");
+
+    //     else if(rotater == 1)
+    //         $("include")[0].FNS.changeSrc("views/map.html");                
+
+    //     else
+    //         $("include")[0].FNS.changeSrc("views/wallTopics.html");
+
+        
+    // }
+
+
+
+
+
+    PINE.ready(function() {
+        // console.log(document.getElementById("content_view").FNS)
+        // alert(document.getElementById("content_view").FNS)
+
+        var back_btn = document.getElementById("back_btn");
+
+        document.getElementById("content_view").FNS.changeSrc.add(function(src) {
+            var oldView = U.attr(this, "src");
+
+            if(src.indexOf("views/settings") != -1) {
+                back_btn.setAttribute("src", "views/map.html");
+            }
+            else if(src.indexOf("views/map") != -1) {
+                back_btn.setAttribute("src", "views/settings.html");
+            }
+            else if(src.indexOf("views/wallTopics") != -1) {
+                back_btn.setAttribute("src", "views/map.html");
+            }
+            else if(src.indexOf("views/posts") != -1) {
+                back_btn.setAttribute("src", oldView);
+            }
+        }, "before");
+
+
+
+
+        document.getElementById("style_include").FNS.changeSrc.add(function(src) {
+            U.setCookie("style_include", src);
+        }, "after");
+    });
+
+
+
+</script>
 
 
     <!-- *********************
@@ -104,57 +159,19 @@ commentbox {
     ************************-->
     <body><pine>
 
+
         <content>
-            <button id="changePage" onclick="changePage()">Change Page</button>
+            <!-- <button id="changePage" onclick="changePage()">Change Page</button> -->
+            <changeSrc id="back_btn" target="content_view" src="views/settings.html">BACK</changeSrc>
             
-            <include id="content_view" src="views/posts.html?wall=0"></include>
-            <button id="where">Where?</button>
-
+            <include id="content_view" src="views/map.html"></include>
+            
         </content>
-
-
-
-
-
     </pine></body>
 </html>
 
 
 
-
-
-<script>
-
-
-
-var where = document.getElementById("where");
-    //
-where.addEventListener("click", function(event) {
-    var onSuccess = function(position) {
-    alert('Latitude: '          + position.coords.latitude          + '\n' +
-          'Longitude: '         + position.coords.longitude         + '\n' +
-          'Altitude: '          + position.coords.altitude          + '\n' +
-          'Accuracy: '          + position.coords.accuracy          + '\n' +
-          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-          'Heading: '           + position.coords.heading           + '\n' +
-          'Speed: '             + position.coords.speed             + '\n' +
-          'Timestamp: '         + position.timestamp                + '\n');
-    };
-
-    // onError Callback receives a PositionError object
-    //
-    function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
-    }
-
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
-});
-
-
-
-
-</script>
 
 
 

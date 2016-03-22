@@ -1,0 +1,26 @@
+body {  
+	background-color: #FAFAFA;  
+	font-family: arial;
+	color: #333;
+}
+
+#map {
+	background-color: #AFA;
+}
+
+point {
+	/*background-color: #804;*/
+}
+
+peephole{
+	background-image: url('public/images/peephole.png');
+	opacity: 0.3;
+}
+
+.point_icon_0 {
+	background-image: url("public/images/icons/map_sets/retro_pixel/pixel_tree.png")
+}
+
+.point_icon_1 {
+	background-image: url("public/images/icons/map_sets/testing/mens_room.png")
+}

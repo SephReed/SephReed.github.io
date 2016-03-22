@@ -1,0 +1,55 @@
+<style>
+	peephole {
+		pointer-events: none;
+		position: absolute;
+
+		border: solid black;
+
+		top: 50%;
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%);
+
+
+		background-size: cover;
+		background-position: center;
+		/*background-repeat: no-repeat;*/
+	}
+	/*commentbox {
+		display: inline-block;
+		-moz-appearance: textfield-multiline;
+	    -webkit-appearance: textarea;
+	    overflow: auto;
+	    padding: 2px;
+	    resize: both;
+	}*/
+</style>
+
+<script type="text/javascript">
+
+PINE.createNeedle("peephole").addFunction({
+	step_type : PINE.ops.STATIC,
+	fn: function(initMe, needle) {
+
+		function updateSize() {
+			var sizeAtt = U.attr(initMe, "size");
+			initMe.style.width = initMe.style.height = sizeAtt;
+
+			// var width = initMe.offsetWidth;
+			// var height = initMe.offsetHeight;
+
+			var size = initMe.style.width = initMe.style.height = Math.min(initMe.offsetWidth, initMe.offsetHeight)
+			
+			var sides = initMe.offsetLeft - ~~(size/2);
+			var floors = initMe.offsetTop - ~~(size/2);
+
+			initMe.style.borderWidth = floors+"px "+sides+"px "+floors+"px "+sides+"px ";
+			initMe.style.width = "100%"
+			initMe.style.height = "100.1%"	
+		}
+
+		updateSize();
+
+	}
+})
+	
+</script>

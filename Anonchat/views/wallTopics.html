@@ -1,6 +1,12 @@
 <script>
 	var posts = [];
 
+	function getQuery(name){
+		// alert(window.location.search);
+	   	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(window.location.search))
+	        return decodeURIComponent(name[1]);
+	}
+
 	var wall = getQuery("wall") || 0;
 
 	PINE.addEventListener("DOMContentLoaded", function() {
@@ -22,7 +28,15 @@
 	            console.log(data.name);
 
 	            posts = data.vals;
-	            $("topiclist")[0]._pine_.fns.update();
+
+
+	            for(po in posts) {
+	            	var id = posts[po].topic_id;
+	            	var tag = posts[po].topic_tag;
+	            	SESSION_CACHE.topic_tags[id] = tag;
+	            }
+
+	            $("topiclist")[0].FNS.update();
 	        } else {
 	            // We reached our target server, but it returned an error
 	            alert("include src '"+target+"' does not exist")
@@ -40,29 +54,27 @@
 	});
 
 
-
-
-
-
-
-
-	// var i = 0;
-
-	function getQuery(name){
-		// alert(window.location.search);
-	   	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(window.location.search))
-	        return decodeURIComponent(name[1]);
-	}
-
-	// alert(getQuery("s"));
 </script>
 
-topics for wall:{{wall}}
+<style>
+	topic changeSrc{
+		display: block;
+		border: 1px solid rgba(0,0,0,0.1);
+		padding: 10px;
+		cursor: pointer;
+	}
+
+	topic changeSrc:hover {
+		background-color: rgba(0, 250, 250, 0.1);
+	}
+</style>
+
+<h3><center>topics for wall_id:{{wall}}</center></h3>
 
 <topiclist spawner="posts" autoRun="false">
 	<!-- <post spawn>#{{posts[i].topic_tag}}</post> -->
 	<topic>
-		<changeSrc target="content_view" src="views/posts.html?wall={{wall}}">See all</changeSrc>
+		<changeSrc target="content_view" src="views/posts.html?wall={{wall}}">No Topic</changeSrc>
 	</topic>
 	<topic spawn>
 		<changeSrc target="content_view" src="views/posts.html?wall={{wall}}&topic={{posts[i].topic_id}}">#{{posts[i].topic_tag}}</changeSrc>

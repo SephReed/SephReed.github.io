@@ -122,6 +122,10 @@ PINE.ops.order = [
 
 /**********************************
 *	 	NEEDLE STUFF
+* do they inject functionality?
+* are they the last step in the pine branching process?
+* do they fulfill a need?
+* YES
 **********************************/
 PINE.needles = {};
 
@@ -293,24 +297,86 @@ PINE.registerFunction2 = function(args)  {
 
 
 
+
 /**********************************
-*	 	NEEDLE HELPERS
+*	 	NODE FUNC
 **********************************/
+
+PINE.class.NodeFunc = function(domNode, func) {
+	var me = this;
+	this.domNode = domNode;
+	// this.name = name;
+	
+	this.pre_fns = [];
+	this.post_fns = [];
+
+	this.fn = function() {
+		var args = arguments;
+
+		for(pr in me.pre_fns)
+			me.pre_fns[pr].apply(me.domNode, args);
+
+		func.apply(me.domNode, args);
+
+		for(po in me.post_fns)
+			me.post_fns[po].apply(me.domNode, args);
+	}
+
+	this.fn.add = function(func, beforeOrAfter) {
+		beforeOrAfter == beforeOrAfter ? beforeOrAfter.toLowerCase() : "after"
+
+		if(beforeOrAfter == "after") me.post_fns.push(func);
+		else if(beforeOrAfter == "before") me.pre_fns.push(func);
+		else PINE.err(beforeOrAfter+" is not a valid.  choose 'before' or 'after'");
+	};
+
+	return this.fn;
+}
+
+// PINE.class.NodeFunc.prototype.setMainFn(func) {
+	
+
+// 	return this.fn;
+// }
+
+
+// PINE.class.NodeFunc.prototype.add = function(fn, postNotPre) {
+// 	if(postNotPre === undefined)
+// 		postNotPre = true;
+
+// 	if(postNotPre) post_fns.push(fn);
+// 	else pre_fns.push(fn);
+// };
 
 
 PINE.addFunctionToNode = function(domNode, funcName, func) {
 	LOG("adding function "+funcName+" to node:", "FNS");
 	LOG(domNode, "FNS");
 
-	if(domNode._pine_.fns[funcName] !== undefined) {
+	if(domNode.FNS[funcName] !== undefined) {
 		PINE.err("fuction "+funcName+" already registered at domNode ")
 		PINE.err(domNode)
 		PINE.err("this is an error with completed round in PINE.updateAt ")
-		console.log(domNode)
 	}
 
-	else domNode._pine_.fns[funcName] = func;
+	else domNode.FNS[funcName] = new PINE.class.NodeFunc(domNode, func);
 }
+
+
+PINE.getNodeFunction = function(domNode, funcName) {
+	return domNode.FNS[funcName];
+}
+
+
+
+
+
+/**********************************
+*	 	NEEDLE HELPERS
+**********************************/
+
+
+
 
 
 
@@ -338,72 +404,6 @@ PINE.atFirstHtml = function(domNode, callback)  {
 
 
 
-// PINE.holdVar = function(scopeDom, var_name)  {
-// 	console.log('!!holding var '+var_name);
-
-// 	U.assertKey(scopeDom, "_pine_.pnv.holds");
-// 	scopeDom._pine_.pnv.holds[var_name] = true;
-// }
-
-
-
-// PINE.unholdVar = function(scopeDom, var_name)  {
-// 	console.log('!!unholding var '+var_name);
-
-// 	U.assertKey(scopeDom, "_pine_.pnv.holds");
-// 	scopeDom._pine_.pnv.holds[var_name] = false;
-// }
-
-
-
-// PINE.addHold = function(step_type, holdId, domNode)  {
-
-// 	console.log("adding hold"+holdId)
-
-// 	if(domNode._pine_.holds == null) {
-// 		domNode._pine_.holds = {};
-// 	}
-
-// 	var holds = domNode._pine_.holds;
-// 	if(holds[step_type] == null)  {
-// 		holds[step_type] = [];
-// 	}
-
-// 	holds[step_type].push(holdId);
-
-// 	if(domNode.tagName != "PINE" && domNode.tagName != "PINEFOREST") {
-// 		var parent = domNode.parentNode;
-// 		if(parent != null) {
-// 			PINE.addHold(step_type, holdId, parent);		
-// 		}
-// 	}
-// }
-
-
-
-
-
-
-// PINE.removeHold = function(step_type, holdId, domNode)  {
-
-// 	console.log("removing hold"+holdId)
-// 	// console.log(domNode);
-
-// 	var holds = domNode._pine_.holds;
-// 	if(holds && holds[step_type]) {
-// 		var index = holds[step_type].indexOf(holdId);
-// 		if (index > -1) {
-// 			holds[step_type].splice(index, 1);
-// 		}	
-// 	}
-
-// 	if(domNode.tagName != "PINE" && domNode.tagName != "PINEFOREST") {
-// 		var parent = domNode.parentNode;
-// 		if(parent != null) {
-// 			PINE.removeHold(step_type, holdId, parent);		
-// 		}
-// 	}
-// }
 
 
 
@@ -1180,188 +1180,6 @@ PINE.logDebugAnalysis = function() {
 
 
 
-
-// function applyFuncArray(root, needle, func_array)  {
-// 	for(index in func_array)  {
-// 		func_array[index].fn(root, needle);
-// 	}
-// }
-
-
-// //KLUDGE: using step when it's in func_array
-// function tryFuncKey(keyName, step, root, func_array)  {
-// 	if(PINE.keyApplies(keyName, root)){
-// 		//check all steps before current step for holds on domNode
-// 		for(var i = 0; i < PINE.OrderOfOperations.length; i++){
-// 			var check_step = PINE.OrderOfOperations[i];
-
-// 			// console.log("checking step "+check_step+" to "+step+" in "+root.tagName);
-// 			if(step == check_step) break;
-// 			else if(U.get(root, "_pine_.holds["+check_step+"].length")) 
-// 			{
-// 				console.log("should wait");
-				
-// 				return false;
-// 			}			
-// 		}
-
-// 		applyFuncArray(root, PINE.get(keyName), func_array);
-// 	}
-// 	return true;
-// }
-
-
-
-// function applyFuncToChildren(root, step, keyName, applyUs)  {
-// 	var branches = root.childNodes;
-
-// 	for(var i = 0; branches && i < branches.length; i++)  {
-// 		var branch = branches[i];
-// 		var nodeName = branch.nodeName;
-
-// 		if(nodeName!="#text" && nodeName!="#comment")  {
-// 			// PINE.fillTree(branch, step, keyName, applyUs);
-// 			PINE.fillTree(branch, applyUs);
-// 		}
-// 	}
-
-// }
-
-
-// PINE.fillTree = function(root, pinefuncs, isRetry)  {
-// 	// console.log(pinefuncs);
-
-// 	if(root.tagName == "DEPINE") 
-// 		return;
-
-
-// 	if(root._pine_ == null) { root._pine_ = {}; }
-// 	var topToBottom = pinefuncs[0].topToBottom;
-// 	var key = pinefuncs[0].key;
-// 	var step = pinefuncs[0].step;
-
-
-// 	//KLUDGE: don't use isRetry
-// 	// if(topToBottom == false) {
-// 	// 	if(isRetry != true)
-// 	// 		applyFuncToChildren(root, step, key, pinefuncs);
-
-// 	// 	if(tryFuncKey(key, step, root, pinefuncs) == false)  {
-// 	// 		setTimeout(function() { 
-// 	// 				if(PINE.fillTree(root, pinefuncs, true)) 
-// 	// 					PINE.run();
-// 	// 			}, 
-// 	// 			10
-// 	// 		);
-// 	// 		return false;
-// 	// 	}
-// 	// }
-// 	// else {
-// 		// applyFuncToChildren(root, step, key, pinefuncs);
-// 		if(tryFuncKey(key, step, root, pinefuncs) == false)  {
-// 			setTimeout(function() { 
-// 					if(PINE.fillTree(root, pinefuncs)) 
-// 						PINE.run();
-// 				}, 
-// 				10
-// 			);
-// 			return false;
-// 		}
-// 		applyFuncToChildren(root, step, key, pinefuncs);
-// 	// }
-	
-	
-
-// 	// if(topToBottom == true) 
-		
-
-	
-
-
-// 	// }
-
-
-
-
-// 	return true;
-// }
-
-
-
-
-
-// 		$(initMe).find("[setsVal]").each(function() {
-// 			var target = $(this).attr("setsVal");
-// 			ASSERT_VAR_INIT(target);
-
-// 			$(this).change(function() {
-// 				var i_val = $(this).val();
-
-// 				my_data[target].value = i_val;
-
-// 				var update_us = my_data[target].onChange;
-// 				for(var i = 0; i < update_us.length; i++)  {
-// 					update_us[i](target);
-// 				}
-// 			});
-
-// 			$(this).change();
-// 		});
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 	//THIS SOLVES THE PROBLEM BADLY
-// 	//TODO: call init functions without observing all changes.
-// 	//know when a static page will call for inits to work
-// 	if(PINE.avoidReferenceIssues) {
-// 		// select the target node
-// 		var target = document.querySelector('body');
-		 
-// 		// create an observer instance
-// 		var observer = new MutationObserver(function(mutations) {
-// 		  	mutations.forEach(function(mutation) {
-// 		  		var newBits = mutation.addedNodes;
-// 		  		// console.log(newBits);
-// 		  		for(var i = 0; i < newBits.length; i++) {
-
-// 		  			var justAdded = newBits[i];
-// 		  			var needle = PINE.get(justAdded.tagName);
-
-// 		    		if(needle != null) {
-// 		    			PINE.init(justAdded);
-// 		    			needle.init(justAdded);
-// 		    		}
-// 		    	}
-// 		  	});    
-// 		});
-		 
-// 		// configuration of the observer:
-// 		var config = { childList: true, subtree: true };
-		 
-// 		// pass in the target node, as well as the observer options
-// 		observer.observe(target, config);
-// 	}
-
-
-
-
-
-
-
-
-
-
-
 /**********************************
 *	 	PINE UTILITIES
 *	shall some day be replaced by 
@@ -1580,34 +1398,6 @@ U.ajax = function(url, callback){
 }
 
 
-
-
-U.log = function(msg, color) {
-    color = color || "black";
-    bgc = "White";
-    switch (color) {
-        case "success":  color = "Yellow";      bgc = "Green";       break;
-        case "info":     color = "Black"; 	   bgc = "Orange";       break;
-        case "error":    color = "Red";        bgc = "Black";           break;
-        case "start":    color = "OliveDrab";  bgc = "PaleGreen";       break;
-        case "warning":  color = "Tomato";     bgc = "Black";           break;
-        case "end":      color = "Orchid";     bgc = "MediumVioletRed"; break;
-        case "light":    color = "LightGrey";       bgc = "White";			break;
-        default: color = color;
-    }
-
-    if (typeof msg == "object") {
-        console.log(msg);
-    } else if (typeof color == "object") {
-        console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
-        console.log(color);
-    } else {
-        console.log("%c" + msg, "color:" + color + "; background-color: " + bgc + ";");
-    }
-}
-
-
-
 U.attr = function(domNode, name, value) {
 	var target = domNode.attributes[name];
 
@@ -1626,6 +1416,77 @@ U.attr = function(domNode, name, value) {
 }
 
 
+
+/****
+*	Console colors shared by SeriousJoker
+*	http://stackoverflow.com/a/25042340/4808079
+*/
+
+U.log = function(msg, color) {
+    color = color || "black";
+    bgc = "White";
+    switch (color) {
+        case "success":  color = "Yellow";      bgc = "Green";       break;
+        case "info":     color = "Black"; 	   bgc = "Orange";       break;
+        case "error":    color = "Red";        bgc = "Black";           break;
+        // case "start":    color = "OliveDrab";  bgc = "PaleGreen";       break;
+        // case "warning":  color = "Tomato";     bgc = "Black";           break;
+        // case "end":      color = "Orchid";     bgc = "MediumVioletRed"; break;
+        case "light":    color = "LightGrey";       bgc = "White";			break;
+        default: color = color;
+    }
+
+    if (typeof msg == "object") {
+        console.log(msg);
+    } else if (typeof color == "object") {
+        console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
+        console.log(color);
+    } else {
+        console.log("%c" + msg, "color:" + color + "; background-color: " + bgc + ";");
+    }
+}
+
+
+
+
+
+/***
+*	Cookie get and set shared by Srinivas Sabbani
+*	http://stackoverflow.com/a/4825695/4808079
+* 	Modded
+***/
+
+U.setCookie = function(name, value, days) {
+    var expires;
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    }
+    else {
+        expires = "";
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+U.getCookie = function(c_name) {
+    if (document.cookie.length > 0) {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1) {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) {
+                c_end = document.cookie.length;
+            }
+            return unescape(document.cookie.substring(c_start, c_end));
+        }
+    }
+    return "";
+}
+
+U.deleteCookie = function(varName) {
+  	document.cookie = varName + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
 
 
 

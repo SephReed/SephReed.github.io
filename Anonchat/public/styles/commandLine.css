@@ -1,0 +1,21 @@
+body {
+	background-color: #222;
+	color: #FAFAFA;
+}
+
+commentbox {
+	background-color: #333;
+	color: #0FA;
+}
+
+
+#map {
+	background-color: #248647;
+}
+
+peephole {
+	opacity: 0.4;
+	filter: invert(95%);
+
+	background-image: url('public/images/cloud_peephole.png');
+}

@@ -199,8 +199,7 @@
 
 			var fade = initMe.attributes.fade ? initMe.attributes.fade.value : null;
 
-			initMe._pine_.fns = {};
-			initMe._pine_.fns.show = function() {
+			PINE.addFunctionToNode(initMe, "show", function() {
 				initMe.style.display = "inherit";
 
 				console.log(fade);
@@ -218,7 +217,7 @@
 
 				});
 
-			};
+			});
 		}
 	});
 	</script>
