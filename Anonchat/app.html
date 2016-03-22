@@ -17,9 +17,8 @@
 		<needle src="needles/Needle_CommentBox.html"></needle>
         <needle src="needles/peephole.html"></needle>
         <include src="public/styles/fallback.css"></include>
-        <!-- <include id="style_include" src="public/styles/testing.css"></include> -->
+
         <include id="style_include" src="{{style_include_cookie}}"></include>
-        <!-- <include id="style_include" src="public/styles/{{ COOKIE['style_include'] }}"></include> -->
 	</pine>
 </head>
 
@@ -89,7 +88,7 @@ commentbox {
     SESSION_CACHE.topic_tags = [];
 
 
-    var style_include_cookie = U.getCookie("style_include") || "public/styles/testing.css";
+    var style_include_cookie = U.getCookie("style_include") || "public/styles/empty.css";
 
 
     // var rotater = 0;
