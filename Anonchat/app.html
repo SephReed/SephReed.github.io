@@ -87,6 +87,11 @@ commentbox {
     SESSION_CACHE = {};
     SESSION_CACHE.topic_tags = [];
 
+    PATH_TO_SERVER = "http://108.238.241.202:8080";
+
+    if(window.location.href.indexOf("file://") != -1)
+        PATH_TO_SERVER = "http://localhost:8080";
+
 
     var style_include_cookie = U.getCookie("style_include") || "public/styles/empty.css";
 
