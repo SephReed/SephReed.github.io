@@ -79,7 +79,7 @@
         // alert("adding commert");
 
         var request = new XMLHttpRequest();
-        request.open('POST', 'http://localhost:8080/aardvark/posts', true);
+        request.open('POST', PATH_TO_SERVER+'/aardvark/posts', true);
         request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         // request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
         // request.send({"post_body": addMe, "post_wall_id": wall});
