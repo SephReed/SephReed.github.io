@@ -17,5 +17,5 @@ peephole {
 	opacity: 0.4;
 	filter: invert(95%);
 
-	background-image: url('public/images/cloud_peephole.png');
+	background-image: url('Anonchat/public/images/cloud_peephole.png');
 }

@@ -26,14 +26,8 @@
 
 	PINE.addEventListener("DOMContentLoaded", function() {
 	    
-	    // var topic = getQuery("topic") || 0;
-
-	    // var target = "http://localhost:8080/aardvark/posts?wall="+wall+"&topic="+topic;
 	    var target = PATH_TO_SERVER+"/aardvark/posts?wall="+wall;
 	    if(topic) { target += "&topic="+topic; }
-
-	    // var target = "http://localhost:8080/aardvark/wall/0/topic/0/posts";
-	    // alert(target);
 
 	    var request = new XMLHttpRequest();
 	    // request.responseType = 'text';
@@ -43,10 +37,10 @@
 	        if (request.status >= 200 && request.status < 400) {
 	            // Success!
 	            var response = request.responseText;
-	            console.log(response);
+	            // console.log(response);
 	            var data = JSON.parse(response);
-	            console.log(data);
-	            console.log(data.name);
+	            // console.log(data);
+	            // console.log(data.name);
 
 	            posts = data.vals;
 	            PINE.getNodeFunction($("postlist")[0], "update")();
@@ -75,46 +69,27 @@
 
         $("postlist")[0].FNS.update();
 
-
-        // alert("adding commert");
-
         var request = new XMLHttpRequest();
         request.open('POST', PATH_TO_SERVER+'/aardvark/posts', true);
         request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        // request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        // request.send({"post_body": addMe, "post_wall_id": wall});
 
         var topic_tag = document.getElementById("topic_tag").value;
-
-	  	// send the collected data as JSON
 	  	var data = {post_body: addMe, post_wall_id: wall, post_topic_tag: topic_tag};
-	  	// console.log(data);
-	  	request.send(JSON.stringify(data));
-	  	// request.send(data);
 
-	  	// xhr.onloadend = function () {
-	   //  	// done
-	  	// };
+	  	request.send(JSON.stringify(data));
 
     }
 
-
-
-	// var i = 0;
-
-
-
-	// alert(getQuery("s"));
 </script>
 
-<h3><center id="header">Posts</center></h3>
+<heading id="header">Posts</heading>
 
 <postlist spawner="posts" autoRun="false">
 	<post spawn>{{posts[i]}}</post>
 </postlist>
 
-<commentbox submitfn="addComment"></commentbox>
-#<input id="topic_tag" type="textarae"></input>
+<commentbox submitfn="addComment" placeholder="I think..."></commentbox>
+#<input id="topic_tag" type="textarea"></input>
 
 <button trigger="click" target="commentbox" fn="submit">
 	Submit

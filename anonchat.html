@@ -5,19 +5,26 @@
 	<meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-	<script src="../public/js/zepto.js"></script>
-	<script src="../handle_chooser/PINE_Core.js"></script>
+	<script src="public/js/zepto.js"></script>
+	<script src="PINE/PINE_Core.js"></script>
 
 	<!-- <script> PINE.disable(["[PNVATT]", "INCLUDE"]); </script> -->
 
-	<script src="../handle_chooser/PINE_Var.js"></script>
-	<script src="../handle_chooser/PINE_Needles.js"></script>
+	<script src="PINE/PINE_Var.js"></script>
+	<script src="PINE/PINE_Needles.js"></script>
 	<!-- <script src="../handle_chooser/PINE_Template.js"></script> -->
 
+    <link rel="stylesheet" type="text/css" href="Anonchat/public/styles/fallback.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/CSSPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/easing/EasePack.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenLite.min.js"></script>
+
 	<pine>
-		<needle src="needles/Needle_CommentBox.html"></needle>
-        <needle src="needles/peephole.html"></needle>
-        <include src="public/styles/fallback.css"></include>
+		<needle src="Anonchat/needles/Needle_CommentBox.html"></needle>
+        <needle src="PINE/needles/peephole.html"></needle>
+        <needle src="PINE/needles/overlay.html"></needle>
+        <needle src="PINE/needles/bgimg.html"></needle>
 
         <include id="style_include" src="{{style_include_cookie}}"></include>
 	</pine>
@@ -46,15 +53,20 @@ img {
 #back_btn {
     position: fixed;
     top: 0px;
-    background-color: rgba(250,250,250,0.5);
+    background-color: #AAA;
+    color: #222;
     border-radius: 10px;
     border: 1px solid rgba(0,0,0,0.3);
-    padding: 2px;
+    padding: 10px;
     cursor: pointer;
 }
 
-
-
+heading {
+    display: block;
+    height: 50px;
+    font-size: 30px;
+    text-align: center;
+}
 
 
 /*CONSTANTS*/
@@ -66,6 +78,9 @@ post {
 	display: block;
 }
 
+changeSrc {
+    cursor: pointer;
+}
 
 /*THEMES*/
 
@@ -87,6 +102,9 @@ commentbox {
 <script type="text/javascript">
     SESSION_CACHE = {};
     SESSION_CACHE.topic_tags = [];
+    SESSION_CACHE.location = {};
+    SESSION_CACHE.location.lat = 0;
+    SESSION_CACHE.location.lng = 0;
 
     PATH_TO_SERVER = "http://108.238.241.202:8080";
 
@@ -94,29 +112,7 @@ commentbox {
         PATH_TO_SERVER = "http://localhost:8080";
 
 
-    var style_include_cookie = U.getCookie("style_include") || "public/styles/empty.css";
-
-
-    // var rotater = 0;
-    // function changePage() {
-
-    //     console.log("CHANGING VIEW")
-
-    //     rotater++;
-    //     rotater %= 3;
-
-    //     if(rotater == 0)
-    //         $("include")[0].FNS.changeSrc("views/posts.html?wall=0");
-
-    //     else if(rotater == 1)
-    //         $("include")[0].FNS.changeSrc("views/map.html");                
-
-    //     else
-    //         $("include")[0].FNS.changeSrc("views/wallTopics.html");
-
-        
-    // }
-
+    var style_include_cookie = U.getCookie("style_include") || "Anonchat/public/styles/empty.css";
 
 
 
@@ -131,16 +127,24 @@ commentbox {
             var oldView = U.attr(this, "src");
 
             if(src.indexOf("views/settings") != -1) {
-                back_btn.setAttribute("src", "views/map.html");
+                back_btn.setAttribute("src", "Anonchat/views/map.html");
+                back_btn.innerHTML = "<- Map";
+            }
+            else if(src.indexOf("views/createWall") != -1) {
+                back_btn.setAttribute("src", "Anonchat/views/map.html");
+                back_btn.innerHTML = "<- Map";
             }
             else if(src.indexOf("views/map") != -1) {
-                back_btn.setAttribute("src", "views/settings.html");
+                back_btn.setAttribute("src", "Anonchat/views/settings.html");
+                back_btn.innerHTML = "Settings";
             }
             else if(src.indexOf("views/wallTopics") != -1) {
-                back_btn.setAttribute("src", "views/map.html");
+                back_btn.setAttribute("src", "Anonchat/views/map.html");
+                back_btn.innerHTML = "<- Map";
             }
             else if(src.indexOf("views/posts") != -1) {
                 back_btn.setAttribute("src", oldView);
+                back_btn.innerHTML = "<- Wall";
             }
         }, "before");
 
@@ -167,9 +171,9 @@ commentbox {
 
         <content>
             <!-- <button id="changePage" onclick="changePage()">Change Page</button> -->
-            <changeSrc id="back_btn" target="content_view" src="views/settings.html">BACK</changeSrc>
+            <changeSrc id="back_btn" target="content_view" src="Anonchat/views/settings.html">Settings</changeSrc>
             
-            <include id="content_view" src="views/map.html"></include>
+            <include id="content_view" src="Anonchat/views/map.html"></include>
             
         </content>
     </pine></body>

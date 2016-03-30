@@ -102,8 +102,10 @@ spawner.addFunction({
 
 
 spawner.update = function(initMe) {
-	var keyString = initMe.attributes.spawner.value;
-	var array = pnv.getVarFrom(keyString, initMe);
+	// var keyString = initMe.attributes.spawner.value;
+	// var spawnerSource = pnv.getVarFrom(keyString, initMe);
+
+
 
 	// console.log(array)
 	// console.log(initMe);
@@ -121,10 +123,24 @@ spawner.update = function(initMe) {
 		    else i++;
 		}
 
+		var count;
+		var countAtt = initMe.attributes.count;
+		var spawnerSource;
+
+		if(countAtt) {
+			count = parseInt(countAtt.value);
+			// if(countAtt)
+			// count = pnv.getVarFrom(countAtt.value, initMe);
+		}
+		else {
+			var keyString = initMe.attributes.spawner.value;
+			spawnerSource = pnv.getVarFrom(keyString, initMe);
+			count = spawnerSource.length;
+		}
 
 		var indexer = initMe._pine_.spawner.indexer;
 
-		for(i in array)  {
+		for(var i = 0; i < count; i++)  {
 			var i = i;
 
 			var addMe = PINE.deepCloneNode(spawn);
@@ -286,7 +302,14 @@ INC.ajaxGetSrc = function(initMe, needle, callback) {
 			  	PINE.err("include src '"+target+"' does not exist")
 			};
 
-			request.send();
+			try {
+				request.send();	
+			}
+			catch(e) {
+				PINE.err("NS_ERROR_DOM_BAD_URI: Access to restricted URI '"+target+"' denied");
+				// callback(target);
+			}
+			
 		}			
 		else callback(target);
 
@@ -354,7 +377,13 @@ INC.get = function(url, responseType) {
 				cache.rejectQueue = [];
 			};
 
-			request.send();
+			try {
+				request.send();	
+			}
+			catch(e) {
+				PINE.err("NS_ERROR_DOM_BAD_URI: Access to restricted URI '"+url+"' denied");
+				// callback(target);
+			}
 		}			
 
 		//if the url has been requested, but not yet resolved
@@ -541,7 +570,13 @@ U.evalElementScripts2 = function(initMe, url) {
 
 	for(sc in hack.scripts) {
 		// console.log(hack.scripts[sc]);
-		eval(hack.scripts[sc]);
+		try {
+			console.log("trying eval for "+url);
+			eval(hack.scripts[sc]);
+		}
+		catch(e) {
+			PINE.err("eval error in file "+url);
+		}
 	}
 
 	return hack;
@@ -1222,39 +1257,137 @@ U.evalElementStyles = function(initMe) {
 
 
 
+// var p_needle = PINE.createNeedle("needle");
+// p_needle.includeBank = {};
+
+// p_needle.addFunction({
+// 	step_type : PINE.ops.INITIALIZER,
+// 	autoComplete : false,
+// 	fn: function(initMe, needle) {
+
+// 		var pineFunc = this;
+
+// 		function doInclude(target) {
+// 			if(needle.includeBank[target].outerHTML == null)  {
+// 				setTimeout(function(){ doInclude(target) }, 10);
+// 			}
+// 			else  {
+// 				var domNode = document.createElement('div');
+// 				domNode.innerHTML = needle.includeBank[target].outerHTML;
+
+// 				// console.log(needle.includeBank[target].outerHTML);
+
+// 				U.evalElementScripts(domNode);
+// 				U.evalElementStyles(domNode);
+				
+
+// 				pineFunc.complete();
+// 			}
+// 		}
+
+// 		INC.ajaxGetSrc(initMe, needle, doInclude);
+		
+// 	}
+// });
+
+
+
+
+
+
+/****************
+*    include
+***************/
+
+
 var p_needle = PINE.createNeedle("needle");
-p_needle.includeBank = {};
+
+// p_include.update = function(initMe, callback) {
+
+// 	console.log("updating")
+
+
+// 	var url = U.attr(initMe, "src");
+		
+// 	if(url) {
+// 		INC.get(url).then(function(response) {
+
+// 			if(url.indexOf(".html") != -1) {
+// 				initMe.innerHTML = response;
+
+// 				U.evalElementScripts2(initMe, url);
+
+// 				//FUCKING KLUDGE;
+// 				if(PINE.pnv) {
+// 					PINE.pnv.parseText(initMe);
+// 					PINE.pnv.parseAtts(initMe);
+// 				}
+// 			}
+// 			else if(url.indexOf(".css") != -1) {
+// 				initMe.innerHTML = "<style>"+response+"</style>"
+// 			}
+// 			else {
+// 				PINE.err("file is neither .html or .css");
+// 			}
+
+
+// 			callback ? callback() : null
+// 		});
+	
+// 	} else {
+// 		PINE.err("include src for "+initMe+" in not set");
+// 	}
+// }
+
+
+
+// p_needle.init = function(initMe, needle, pineFunc) {
+// 	p_include.update(initMe, pineFunc.complete);
+
+// 	PINE.addFunctionToNode(initMe, "changeSrc", function(src, callback) {
+// 		// callback = callback || function(){};
+// 		initMe.setAttribute("src", src);
+// 		p_include.update(initMe, function(){
+// 			PINE.updateAt(initMe, callback);
+// 		});
+// 	});
+// }
+
 
 p_needle.addFunction({
 	step_type : PINE.ops.INITIALIZER,
 	autoComplete : false,
-	fn: function(initMe, needle) {
+	fn: function(initMe, needle, pineFunc) {
+		console.log("updating")
 
-		var pineFunc = this;
 
-		function doInclude(target) {
-			if(needle.includeBank[target].outerHTML == null)  {
-				setTimeout(function(){ doInclude(target) }, 10);
-			}
-			else  {
-				var domNode = document.createElement('div');
-				domNode.innerHTML = needle.includeBank[target].outerHTML;
+		var url = U.attr(initMe, "src");
+			
+		if(url) {
+			INC.get(url).then(function(response) {
 
-				// console.log(needle.includeBank[target].outerHTML);
+				if(url.indexOf(".html") != -1) {
+					initMe.innerHTML = response;
 
-				U.evalElementScripts(domNode);
-				U.evalElementStyles(domNode);
-				
+					U.evalElementScripts2(initMe, url);
+				}
+				else if(url.indexOf(".css") != -1) {
+					initMe.innerHTML = "<style>"+response+"</style>"
+				}
+				else {
+					PINE.err("file is neither .html or .css");
+				}
 
+
+				// callback ? callback() : null
 				pineFunc.complete();
-			}
-		}
-
-		INC.ajaxGetSrc(initMe, needle, doInclude);
+			});
 		
+		} else {
+			PINE.err("include src for "+initMe+" in not set");
+		}
 	}
 });
-
 
 
 

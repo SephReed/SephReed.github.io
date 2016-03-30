@@ -1,0 +1,37 @@
+<script type="text/javascript">
+	
+
+	var PATH_TO_SERVER = "http://api.openstreetmap.org";
+	var target = PATH_TO_SERVER+"/api/0.6/map?bbox=30,0,30.001,0.001";
+
+    var request = new XMLHttpRequest();
+    // request.responseType = 'text';
+    request.open('GET', target, true);
+
+    request.onload = function() {
+    	alert(request.status);
+        if (request.status >= 200 && request.status < 400) {
+            // Success!
+            var response = request.responseText;
+            console.log(response);
+            // var data = JSON.parse(response);
+            // console.log(data);
+            // console.log(data.name);
+
+            // addPointsToMap(data.vals);
+            
+        } else {
+            // We reached our target server, but it returned an error
+            alert("include src '"+target+"' does not exist")
+        }
+    };
+
+
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        alert("include src '"+target+"' does not exist")
+    };
+
+    request.send();
+</script>

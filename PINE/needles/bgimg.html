@@ -1,0 +1,69 @@
+<style>
+	bgimg {
+		display: block;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		pointer-events: none;
+	}
+</style>
+
+<script>
+PINE.createNeedle("bgimg").addFunction({
+	step_type: PINE.ops.POPULATER,
+	fn: function(initMe, needle) {
+
+		//POS
+		var pos = initMe.attributes.pos ? initMe.attributes.pos.value : "center center";
+		$(initMe).css('background-position', pos);
+
+		//REPEAT
+		var repeat = initMe.attributes.repeat ? initMe.attributes.repeat.value : "";
+		var repeatX = (repeat.indexOf('x') != -1);
+		var repeatY = (repeat.indexOf('y') != -1);
+
+		if(repeatX && repeatY)
+			$(initMe).css('background-repeat', "repeat");
+
+		else if(repeatX)
+			$(initMe).css('background-repeat', "repeat-x");
+
+		else if(repeatY)
+			$(initMe).css('background-repeat', "repeat-y");
+
+		else if(repeat == "")
+			$(initMe).css('background-repeat', "no-repeat");
+
+		else
+			$(initMe).css('background-repeat', repeat);
+
+
+
+		//SIZE
+		var size = initMe.attributes.size ? initMe.attributes.size.value : "auto auto";
+		$(initMe).css('background-size', size);
+
+		//src
+		var src = initMe.attributes.src ? initMe.attributes.src.value : "unset src";
+		initMe.style.backgroundImage = "url('"+src+"')";
+
+		console.log("PARENT POS");
+		
+
+		var $parent = $(initMe.parentNode);
+		var parentPos = $parent.css('position');
+
+		console.log(parentPos);
+
+		if(parentPos == undefined || parentPos == 'static')
+			$(initMe.parentNode).css('position', "relative");
+
+		// if(initMe.parentNode.attributes['z-index'] == undefined)
+		// 	$(initMe.parentNode).css('z-index', "1");
+
+	}
+});
+
+</script>

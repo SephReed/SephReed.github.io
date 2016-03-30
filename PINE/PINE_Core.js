@@ -1,3 +1,5 @@
+// 'use strict';
+
 /******************************************
 *          ____   _   _   _   ____
 *         |    \ | | | \ | | |  __|
@@ -120,72 +122,6 @@ PINE.ops.order = [
 
 
 
-/**********************************
-*	 	NEEDLE STUFF
-* do they inject functionality?
-* are they the last step in the pine branching process?
-* do they fulfill a need?
-* YES
-**********************************/
-PINE.needles = {};
-
-PINE.class.Needle = function(keyword) {
-	this.keyword = keyword;
-	this.uses = 0;
-	this.pinefuncs = {};
-
-	for(i in PINE.OrderOfOperations)  {
-			//
-		var opType = PINE.OrderOfOperations[i];
-
-		this.pinefuncs[ opType ] = [];
-	}
-
-}
-
-
-PINE.class.Needle.prototype.addFunction = function(args) {
-	args.keyword = this.keyword;
-	// PINE.registerFunction(args);
-	PINE.registerFunction2(args);
-}
-
-
-PINE.class.DummyNeedle = function(keyword) {}
-PINE.class.DummyNeedle.prototype.addFunction = function(args) {}
-
-
-
-PINE.createNeedle = function(key)  {
-	key = key.toUpperCase();
-
-	if(PINE.disabledNeedles.indexOf(key) !== -1) {
-		U.log("Needle of type: "+key+" disabled", "info")
-		return new PINE.class.DummyNeedle(key);
-	}
-
-	var needles = PINE.needles;
-	if(needles[key] == null)  {
-		needles[key] = new PINE.class.Needle(key);
-	}
-	else {
-		PINE.err("needle "+key+" already exists!");
-	}
-
-	return needles[key];
-};
-
-
-PINE.get = function(keyword) {
-	if(keyword === undefined) return null;
-	return PINE.needles[keyword.toUpperCase()];
-}
-
-
-
-PINE.createNeedle("PINE");
-
-
 
 
 /**********************************
@@ -198,7 +134,7 @@ PINE.pinefuncs.queued = {};  //for super root, only remove oneOffs
 PINE.pinefuncs.completed = {};  //for late commers
 
 
-for(i in PINE.ops.order)  {
+for(var i in PINE.ops.order)  {
 		//
 	var opType = PINE.ops.order[i];
 
@@ -293,6 +229,76 @@ PINE.registerFunction2 = function(args)  {
 		
 	}
 }
+
+
+
+
+
+/**********************************
+*	 	NEEDLE STUFF
+* do they inject functionality?
+* are they the last step in the pine branching process?
+* do they fulfill a need?
+* YES
+**********************************/
+PINE.needles = {};
+
+PINE.class.Needle = function(keyword) {
+	this.keyword = keyword;
+	this.uses = 0;
+	this.pinefuncs = {};
+
+	for(i in PINE.OrderOfOperations)  {
+			//
+		var opType = PINE.OrderOfOperations[i];
+
+		this.pinefuncs[ opType ] = [];
+	}
+
+}
+
+
+PINE.class.Needle.prototype.addFunction = function(args) {
+	args.keyword = this.keyword;
+	// PINE.registerFunction(args);
+	PINE.registerFunction2(args);
+}
+
+
+PINE.class.DummyNeedle = function(keyword) {}
+PINE.class.DummyNeedle.prototype.addFunction = function(args) {}
+
+
+
+PINE.createNeedle = function(key)  {
+	key = key.toUpperCase();
+
+	if(PINE.disabledNeedles.indexOf(key) !== -1) {
+		U.log("Needle of type: "+key+" disabled", "info")
+		return new PINE.class.DummyNeedle(key);
+	}
+
+	var needles = PINE.needles;
+	if(needles[key] == null)  {
+		needles[key] = new PINE.class.Needle(key);
+	}
+	else {
+		PINE.err("needle "+key+" already exists!");
+	}
+
+	return needles[key];
+};
+
+
+PINE.get = function(keyword) {
+	if(keyword === undefined) return null;
+	return PINE.needles[keyword.toUpperCase()];
+}
+
+
+
+PINE.createNeedle("PINE");
+
 
 
 
@@ -1487,6 +1493,23 @@ U.getCookie = function(c_name) {
 U.deleteCookie = function(varName) {
   	document.cookie = varName + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
+
+
+
+
+
+
+var El = PINE.UTILITIES.ELEMENT = {};
+
+El.byId = function(id) {
+	return(document.getElementById(id));
+}
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,142 @@
+<script>
+	function getQuery(name){
+	   	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(window.location.search))
+	        return decodeURIComponent(name[1]);
+	}
+
+	var wall = getQuery("wall");
+
+	if(wall) {
+		wall = parseInt(wall);
+		El.byId("wall_header").innerHTML = "Mod wall "+wall;
+		El.byId("delete_wall").style.display = "inherit";
+		El.byId("create_wall").style.display = "none";
+	}
+
+
+
+	var icon_chooser = document.getElementById("icon_chooser");
+	function showIconChooser() {
+		icon_chooser.FNS.show();
+	}
+
+	function setIcon(index) {
+		icon_chooser.value = index;
+		icon_chooser.FNS.hide();
+
+		document.getElementById("icon_preview").className = "point_icon_"+index;
+	}
+
+	function submitWall() {
+		var wall_name = El.byId("wall_name").value;
+		var icon_id = icon_chooser.value;
+		alert(wall_name+" "+icon_id);
+
+		var data = {
+			wall_name : wall_name,
+			wall_lat : SESSION_CACHE.location.lat,
+			wall_lng : SESSION_CACHE.location.lng,
+			wall_rollover : 100,
+			wall_icon_id : icon_id,
+			wall_creator_id : 0
+		}
+
+		var request = new XMLHttpRequest();
+        request.open('POST', PATH_TO_SERVER+'/aardvark/walls', true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+	  	request.send(JSON.stringify(data));
+	}
+
+
+	function deleteWall() {
+		var data = { wall_id : wall }
+
+		var request = new XMLHttpRequest();
+        request.open('DELETE', PATH_TO_SERVER+'/aardvark/walls', true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+	  	request.send(JSON.stringify(data));
+	}
+
+</script>
+
+<style>
+#icon_preview {
+	display: inline-block;
+	height: 50px;
+	width: 50px;
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+#icon_chooser {
+	background-color: rgba(250,250,250, 0.8);
+	border-radius: 6px;
+	border: 1px solid black;
+	line-height: 70px;
+}
+
+iconitem {
+	display: inline-block;
+	height: 50px;
+	width: 50px;
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+	margin: 10px;
+	cursor: pointer;
+	border-width: 1px;
+	border-color: black;
+	transition: ease all 0.1s;
+}
+
+iconitem:hover {
+	border-style: dashed;
+	height: 60px;
+	width: 60px;
+	margin: 5px;
+}
+
+</style>
+
+<heading id="wall_header">Create Wall</heading>
+
+<h2>Entrance</h2>
+
+
+Icon: <span id="icon_preview" class="point_icon_0" onclick="showIconChooser()"></span><br>
+
+
+<div style="opacity: 0.2">
+	Password:<br>
+
+	<h2>Users</h2>
+	Trolls:<br>
+	Flaggers:<br>
+	Spammers:<br>
+
+	<h2>Settings</h2>
+	Rollover count<br>
+</div>
+Wall name: <input id="wall_name" type="textarea" placeholder="Some Place"></input>
+
+<button id="create_wall" onclick="submitWall()">Create</button>
+<button id="delete_wall" onclick="deleteWall()" style="display: none">DELETE WALL</button>
+
+
+
+<!--****************
+**    Overlays
+******************-->
+
+<!-- <fade id="theFade" color="black" opacity="0.5"></fade> -->
+<overlay id="icon_chooser"><!--  fade="#theFade"> -->	
+	<iconlist spawner count=40>
+		<iconitem spawn class="point_icon_{{i}}" onclick="setIcon({{i}})"></iconitem>
+	</iconlist>
+</overlay>
+
+
+
+
