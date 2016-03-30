@@ -135,7 +135,11 @@ spawner.update = function(initMe) {
 		else {
 			var keyString = initMe.attributes.spawner.value;
 			spawnerSource = pnv.getVarFrom(keyString, initMe);
-			count = spawnerSource.length;
+
+			if(spawnerSource)
+				count = spawnerSource.length;
+
+			else return;
 		}
 
 		var indexer = initMe._pine_.spawner.indexer;
