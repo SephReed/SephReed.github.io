@@ -584,7 +584,7 @@ PINE.createNeedle("[pnvatt]").addFunction({
 		var pairs = rules.split(":+:");
 		for(i_p in pairs)  {
 
-			console.log(pairs[i_p]);
+			// console.log(pairs[i_p]);
 
 			var splitPoint = pairs[i_p].indexOf("=");
 			// var rule = pairs[i_p].split('=', 2);
