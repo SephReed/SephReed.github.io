@@ -359,11 +359,11 @@ PINE.addFunctionToNode = function(domNode, funcName, func) {
 	LOG("adding function "+funcName+" to node:", "FNS");
 	LOG(domNode, "FNS");
 
-	if(domNode.FNS[funcName] !== undefined) {
-		PINE.err("fuction "+funcName+" already registered at domNode ")
-		PINE.err(domNode)
-		PINE.err("this is an error with completed round in PINE.updateAt ")
-	}
+	// if(domNode.FNS[funcName] !== undefined) {
+	// 	PINE.err("fuction "+funcName+" already registered at domNode ")
+	// 	PINE.err(domNode)
+	// 	PINE.err("this is an error with completed round in PINE.updateAt ")
+	// }
 
 	else domNode.FNS[funcName] = new PINE.class.NodeFunc(domNode, func);
 }
