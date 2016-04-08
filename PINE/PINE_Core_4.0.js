@@ -8,11 +8,9 @@
 *         | |    | | | |\  | | |__ 
 *         |_|    |_| |_| \_| |____|
 *
-*	     Live a little: blur the line
-*
-*		                    /\
+*                 4.0       /\
 *          by: Seph Reed   X  X
-*		           		    \/
+*                           \/
 *
 ********************************************/
 
@@ -107,7 +105,7 @@ PINE.ops.order = [
 	PINE.ops.PREPROCESS, 
 	PINE.ops.INITIALIZER, 
 	PINE.ops.STATIC, 
-	PINE.ops.SEMISTATIC, 
+	// PINE.ops.SEMISTATIC, 
 	PINE.ops.POPULATER, 
 	PINE.ops.DEFINER,
 	PINE.ops.FINALIZER
@@ -146,11 +144,17 @@ for(var i in PINE.ops.order)  {
 
 
 
+
 PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 	var my = this;
+
+	my.id = PINE.class.PineFunc.counter;
+	PINE.class.PineFunc.counter++;
+
 	my.keyword = needle.keyword;
 	my.needle = needle;
 	my.opType = opType;
+	my.oneOff = true;
 
 	
 	my.fn = function(domNode)  {
@@ -158,6 +162,8 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 		return U.Go( function( resolve, reject )  {
 			var helpers = {};
 			var pinefunc = my;
+			var history = domNode._pine_.pinefuncHistory;
+			var passed = history[my.id];
 
 			my.needle.uses += 1;
 
@@ -166,16 +172,22 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 				// console.log(domNode);
 				// console.log(pinefunc.keyword);
 
-				domNode._pine_.needles[pinefunc.keyword].passed = true;
+				history[my.id] = true;
+				// domNode._pine_.needles[pinefunc.keyword].passed = true;
 				// callbackPermeate(pinefunc);
 				resolve();
 			}
 
 
-			var passed = U.getnit(domNode, "_pine_.needles['"+my.keyword+"'].passed", false);
-			LOG(my.keyword+" passed = "+passed, "pinefunc");
+			// var passed = U.getnit(domNode, "_pine_.needles['"+my.keyword+"'].passed", false);
+			// LOG(my.keyword+" passed = "+passed, "pinefunc");
+			
 
-			if(!passed || !oneOff) {
+			// var passes = U.getnit(domNode, "_pine_.pinefuncs", {});
+			// LOG(my.keyword+" passed = "+passed, "pinefunc");
+
+
+			if(!passed || !my.oneOff) {
 
 				LOG("running needle "+my.keyword+" at", "needle");
 				LOG(domNode, "needle");
@@ -186,10 +198,16 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 					helpers.complete();
 				}
 			}
+			else {
+				// alert(my.needle.keyword+my.opType+" not being run a second time");
+				helpers.complete();
+			}
 		});
 		
 	}
 }
+
+PINE.class.PineFunc.counter = 0;
 
 
 
@@ -566,6 +584,8 @@ PINE.initiate = function(root) {
 		root._pine_.ops.queue = [];
 			//
 		root._pine_.fns = {};
+
+		root._pine_.pinefuncHistory = {};
 	}
 
 	//pvars might be defined before an initiation
@@ -739,7 +759,7 @@ PINE.permeate = function(root, opFuncs, layer)  {
 	layer += '.';
 
 	return U.Go(function(resolve, reject) {
-		console.log(layer+">> permeate", root)
+		console.log(layer+">> permeate", root, opFuncs)
 
 		LOG(">> permeate", "permeate");
 		LOG(root, "permeate");
@@ -784,7 +804,7 @@ PINE.permeate = function(root, opFuncs, layer)  {
 					console.log(layer+"<< permeate", root)
 					resolve();
 
-					var nextOpFuncs = root._pine_.ops.queue.pop();
+					var nextOpFuncs = root._pine_.ops.queue.shift();
 
 					if(nextOpFuncs) {
 						nextOpFuncs();			
@@ -838,7 +858,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 
 	return U.Go(function(resolve, reject) {
 		// var resolve = resolve;
-		console.log(layer+">> applyOpFuncs", root)
+		console.log(layer+">> applyOpFuncs", root, opFuncs)
 			//
 		root._pine_.ops.hold = true;
 		LOG("hold", "run");
@@ -957,7 +977,10 @@ PINE.updateAt = function(root, callback) {
 	LOG(updates, "async");
 	
 
-	PINE.sprout(root, updates, null, newRoot).then(callback);
+	var willSprout = PINE.sprout(root, updates, null, newRoot);
+
+	if(callback)
+		willSprout.then(callback)
 }
 
 
@@ -1465,7 +1488,7 @@ U.Go.all = function(thenables) {
 				}
 				else {
 
-					waitForMe.next = new U.Thenable( function(result) {
+					waitForMe.then( function(result) {
 						results.push(result);
 						if (results.length == thenables.length) {
 							resolve(results);
@@ -1529,6 +1552,9 @@ U.Thenable.prototype.run = function(val) {
 		this.fn.run(this.resolve, this.reject);
 	}
 	else {
+		if(typeof this.fn != "function"){
+			PINE.err("non function");
+		}
 		this.return = this.fn(val);
 
 		if(this.return instanceof U.Async) {
@@ -1577,6 +1603,10 @@ U.Thenable.prototype.tryRunNext = function() {
 
 
 U.Thenable.prototype.then = function(fn) {
+	if(typeof fn != "function"){
+		PINE.err("non function passes to then");
+		fn();
+	}
 
 	// if( this.recievedThenable !== undefined ) {
 	// 	return this.recievedThenable.then(fn);

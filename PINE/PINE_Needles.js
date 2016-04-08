@@ -6,9 +6,9 @@
 *         | |    | | | |\  | | |__ 
 *         |_|    |_| |_| \_| |____|
 *
-*		                    /\
+*                 4.0       /\
 *          by: Seph Reed   X  X
-*		           		    \/
+*                           \/
 *
 ********************************************/
 
@@ -57,7 +57,6 @@ var spawner = PINE.createNeedle("[spawner]");
 
 spawner.addFunction({
 	step_type : PINE.ops.INITIALIZER,
-	topToBottog : true,
 	fn : function(initMe, needle) {
 
 		var indexer = U.attr(initMe, "indexer") || "i";
