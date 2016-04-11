@@ -24,6 +24,8 @@
 
 var PINE = {};
 PINE.class = {};
+
+var U = PINE.UTILITIES = {};
 // PINE.createMutateLogger = false;
 
 
@@ -1206,7 +1208,7 @@ PINE.logDebugAnalysis = function() {
 
 
 
-var U = PINE.UTILITIES = {};
+
 
 U.get = function(start, keyString, bracketsCase)  {
 	return U.getnit(start, keyString, undefined, bracketsCase);
