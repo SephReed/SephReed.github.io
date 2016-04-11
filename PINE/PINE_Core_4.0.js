@@ -307,7 +307,7 @@ PINE.createNeedle = function(key)  {
 	key = key.toUpperCase();
 
 	if(PINE.disabledNeedles.indexOf(key) !== -1) {
-		U.log("Needle of type: "+key+" disabled", "info")
+		U.log("info", "Needle of type: "+key+" disabled")
 		return new PINE.class.DummyNeedle(key);
 	}
 
@@ -330,7 +330,7 @@ PINE.get = function(keyword) {
 
 
 
-PINE.createNeedle("PINE");
+// PINE.createNeedle("PINE");
 
 
 
@@ -1509,7 +1509,7 @@ U.setCookie = function(name, value, days) {
 
 U.getCookie = function(c_name) {
     if (document.cookie.length > 0) {
-        c_start = document.cookie.indexOf(c_name + "=");
+        var c_start = document.cookie.indexOf(c_name + "=");
         if (c_start != -1) {
             c_start = c_start + c_name.length + 1;
             c_end = document.cookie.indexOf(";", c_start);

@@ -24,17 +24,18 @@ PINE.createNeedle("[trigger]").addFunction({
 	step_type: PINE.ops.FINALIZER,
 	fn: function(initMe, needle) {
 
-		var triggerType = initMe.attributes.trigger.value;
+		var triggerType = El.attr(initMe, "trigger");;
 
 
 		initMe.addEventListener(triggerType, function(event) {
-			var target = initMe.attributes.target.value;
-			var fn = initMe.attributes.fn.value;
+			var target = El.attr(initMe, "target");
+			var fn = El.attr(initMe, "fn");
 			var args = El.attr(initMe, "args");
 
-			El.byId(target).each(function() {
-				this.FNS[fn]();
-			});
+			// El.byId(target).each(function() {
+			// 	this.FNS[fn]();
+			// });
+			El.byId(target).FNS[fn]();
 		}, false);
 		
 	}
