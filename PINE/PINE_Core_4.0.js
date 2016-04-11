@@ -1071,6 +1071,21 @@ PINE.err = function(whatevers_the_problem) { //?
 
 
 var LOG = function() { return; }
+U.showLog = [];
+
+//<>LOG
+
+// U.showLog["all"] = true;  //
+// U.showLog["needle"] = true; //
+// U.showLog["permeate"] = true;
+// U.showLog["pnv"] = true;
+// U.showLog["initiate"] = true;
+// U.showLog["run"] = true;
+// U.showLog["sprout"] = true;  //
+// U.showLog["pinefunc"] = true;  //
+// U.showLog["opFunc"] = true;  //		
+// U.showLog["async"] = true;
+// U.showLog["FNS"] = true;
 
 
 PINE.initDebug = function()  {
@@ -1100,7 +1115,7 @@ PINE.initDebug = function()  {
 		var logType = arguments[0] || "all";
 
 		// console.log(logType);
-		if (LOG.showLog[logType]){
+		if (U.showLog[logType]){
 
 			var callerLine = new Error().stack.split('\n');
 
@@ -1123,21 +1138,7 @@ PINE.initDebug = function()  {
 		}
 	}
 
-	//<>LOG
-
-	LOG.showLog = [];
-
-	// LOG.showLog["all"] = true;  //
-	// LOG.showLog["needle"] = true; //
-	// LOG.showLog["permeate"] = true;
-	// LOG.showLog["pnv"] = true;
-	// LOG.showLog["initiate"] = true;
-	// LOG.showLog["run"] = true;
-	// LOG.showLog["sprout"] = true;  //
-	// LOG.showLog["pinefunc"] = true;  //
-	// LOG.showLog["opFunc"] = true;  //		
-	// LOG.showLog["async"] = true;
-	// LOG.showLog["FNS"] = true;
+	
 
 }
 
