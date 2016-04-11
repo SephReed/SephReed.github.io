@@ -84,6 +84,7 @@ spawner.addFunction({
 
 
 		PINE.addFunctionToNode(initMe, "update", function() {
+			console.log("calling needle update")
 			needle.update(initMe);
 		});
 
@@ -113,6 +114,7 @@ spawner.update = function(initMe) {
 	var spawn = initMe._pine_.spawner.spawn;
 
 	if(spawn){
+
 		for(var i = 0; i < initMe.childNodes.length;) {
 			var child = initMe.childNodes[i];
 			
@@ -143,6 +145,7 @@ spawner.update = function(initMe) {
 
 		var indexer = initMe._pine_.spawner.indexer;
 
+
 		for(var i = 0; i < count; i++)  {
 			var i = i;
 
@@ -152,7 +155,9 @@ spawner.update = function(initMe) {
 			addMe.setAttribute("scopeVarDoesNothing", indexer+'='+i);
 
 			initMe.appendChild(addMe);
+
 		}
+
 
 		PINE.updateAt(initMe);
 	}
@@ -413,9 +418,6 @@ INC.get = function(url, responseType) {
 var p_include = PINE.createNeedle("include");
 
 p_include.update = function(initMe, callback) {
-
-	console.log("updating")
-
 
 	var url = U.attr(initMe, "src");
 		

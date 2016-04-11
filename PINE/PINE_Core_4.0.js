@@ -123,7 +123,7 @@ PINE.ops.order = [
 
 
 /**********************************
-*	 	PINEFUNC STUFF
+*	 	<>PINEFUNC STUFF
 **********************************/
 
 PINE.pinefuncs = {};
@@ -144,7 +144,7 @@ for(var i in PINE.ops.order)  {
 
 
 
-
+//<>Pinefunc
 PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 	var my = this;
 
@@ -155,6 +155,7 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 	my.needle = needle;
 	my.opType = opType;
 	my.oneOff = true;
+	my.runningAsyncs = [];
 
 	
 	my.fn = function(domNode)  {
@@ -175,6 +176,11 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 				history[my.id] = true;
 				// domNode._pine_.needles[pinefunc.keyword].passed = true;
 				// callbackPermeate(pinefunc);
+				if(autoComplete == false) {
+					LOG("completing async function for "+my.keyword, "async");
+					my.runningAsyncs.shift();
+				}
+
 				resolve();
 			}
 
@@ -189,6 +195,8 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 
 			if(!passed || !my.oneOff) {
 
+				// alert(my.needle.keyword+my.opType+my.id+" IS ON");
+
 				LOG("running needle "+my.keyword+" at", "needle");
 				LOG(domNode, "needle");
 				userFn.call(helpers, domNode, my.needle, helpers);
@@ -197,9 +205,12 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 					LOG("calling autoComplete for "+my.keyword, "pinefunc");
 					helpers.complete();
 				}
+				else {
+					my.runningAsyncs.push(domNode);
+				}
 			}
 			else {
-				// alert(my.needle.keyword+my.opType+" not being run a second time");
+				// alert(my.needle.keyword+my.opType+my.id+" not being run a second time");
 				helpers.complete();
 			}
 		});
@@ -524,6 +535,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
   		U.log("PINE Run complete", "success");
 	});
 
+
+	setTimeout(function() {
+		if(PINE.showRunningAsyncs) {
+			var opTypes = PINE.pinefuncs.all;
+
+			for(var op in opTypes) {
+				var funcs = opTypes[op];
+				for(var fu in funcs) {
+					var func = funcs[fu];
+
+					if(func.runningAsyncs.length) {
+						var output = "Unterminated async function for "+func.needle.keyword+" "+func.opType;
+						PINE.err(output);
+					}
+				}
+			}
+			
+		}
+	}, 5000)
 	
 });
 
@@ -551,7 +581,11 @@ PINE.run = function() {
 		Pine_Forest.childNodes = PINE.getFirstsOf(document, "PINE");
 
 		PINE.initiate(Pine_Forest);
-		PINE.sprout(Pine_Forest, PINE.pinefuncs.queued, PINE.pinefuncs.passed, true).then(resolve);
+		PINE.sprout(Pine_Forest, {
+			// PINE.pinefuncs.queued, PINE.pinefuncs.passed, true
+			queuedOps : PINE.pinefuncs.queued,
+			passedOps : PINE.pinefuncs.passed
+		}).then(resolve);
 	});
 }
 
@@ -610,15 +644,17 @@ PINE.initiate = function(root) {
 
 
 
+PINE.growingSprouts = [];
+
 
 
 //Sprout is a major function.  it applies all fuctions in queued ops to root
 //and it's children, moving them to passedOps when they are complete, and then
 //callsback when all queued functions have been applied.  If a function is added
 //mid process to queued ops, it will be sent as well
-PINE.sprout = function( root, queuedOps, passedOps, newRoot )  {
-
-	return U.Go( function( resolve, reject ) {
+PINE.sprout = function( root, args)  {
+	var willSprout = U.Go( function( resolve, reject ) {
+		var queuedOps = args.queuedOps;
 			//
 		LOG("sprouting at; with; ", "sprout");
 		LOG(root, "sprout");
@@ -627,7 +663,7 @@ PINE.sprout = function( root, queuedOps, passedOps, newRoot )  {
 		//active ops is where all the ops which have been noticed by sprout are held
 		var incompleteOps = {};
 		var unsentOps = {};
-		passedOps = passedOps || {};
+		var passedOps = args.passedOps = args.passedOps || {};
 			
 		//initializing
 		for(key in queuedOps) {
@@ -689,36 +725,29 @@ PINE.sprout = function( root, queuedOps, passedOps, newRoot )  {
 
 					// if(newRoot) {
 						// PINE.permeate2(root, opFuncs, permeateCallback, newRoot);
-					var permeate = PINE.permeate(root, opFuncs);
-					permeate = permeate.then( function() {
-							//
-						for(var i = 0; i < opFuncs.length; i++)  {
-							LOG("removing", "opFunc");
-							LOG(opFuncs[i], "opFunc");
+					(function(opFuncs, opType, sproutState) {
+						var permeate = PINE.permeate(root, opFuncs, null, sproutState);
+						permeate = permeate.then( function() {
+								//
+							for(var i = 0; i < opFuncs.length; i++)  {
+								LOG("removing", "opFunc");
+								LOG(opFuncs[i], "opFunc");
 
-							var target = incompleteOps[opType].indexOf(opFuncs[i]);
-							if(target == -1)
-								PINE.err(opFuncs[i]+" (opFuncs[i] does not exist in "+incompleteOps[opType]);
-							else  {
+								var target = incompleteOps[opType].indexOf(opFuncs[i]);
+								if(target == -1)
+									PINE.err(opFuncs[i]+" (opFuncs[i] does not exist in "+incompleteOps[opType]);
+								else  {
 									//remove the op from the queue
 									//returns an array of length 1
 									//then pushes the first element into the passedOps section
-								var justCompleted = incompleteOps[opType].splice(target, 1);
-								passedOps[ opType ].push( justCompleted[ 0 ] );
+									var justCompleted = incompleteOps[opType].splice(target, 1);
+									passedOps[ opType ].push( justCompleted[ 0 ] );
+								}
 							}
-							// resolve();
-						}
-					});
+						});
 
-					permeatePromises.push( permeate );
-					
-					// }
-
-					// else {
-					// 	for(var c = 0; c < root.childNodes.length; c++) {
-
-					// 	}
-					// }
+						permeatePromises.push( permeate );
+					})(opFuncs, opType, args);
 
 					//after they have been sent, restart the check to make sure no new operations
 					//have entered the queue, and mark permeate called as true
@@ -742,6 +771,8 @@ PINE.sprout = function( root, queuedOps, passedOps, newRoot )  {
 		else U.Go.all(permeatePromises).then(resolve);
 	});
 	
+	PINE.growingSprouts.push(willSprout);
+	return willSprout;
 }
 
 
@@ -754,12 +785,12 @@ PINE.sprout = function( root, queuedOps, passedOps, newRoot )  {
 
 
 
-PINE.permeate = function(root, opFuncs, layer)  {
+PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 	layer = layer || '';
 	layer += '.';
 
 	return U.Go(function(resolve, reject) {
-		console.log(layer+">> permeate", root, opFuncs)
+		// console.log(layer+">> permeate", root, opFuncs)
 
 		LOG(">> permeate", "permeate");
 		LOG(root, "permeate");
@@ -771,7 +802,7 @@ PINE.permeate = function(root, opFuncs, layer)  {
 		for(var i in PINE.stopTags) {
 			if(root.tagName == PINE.stopTags[i]) {
 				LOG("depine, text, or comment found", "permeate");
-				console.log(layer+"<< permeate", root)
+				// console.log(layer+"<< permeate", root)
 				resolve();
 				return;
 			}
@@ -781,7 +812,7 @@ PINE.permeate = function(root, opFuncs, layer)  {
 		for(var i in PINE.stopNodes) {
 			if(root.nodeName == PINE.stopNodes[i]) {
 				LOG("depine, text, or comment found", "permeate");
-				console.log(layer+"<< permeate", root)
+				// console.log(layer+"<< permeate", root)
 				resolve();
 				return;
 			}
@@ -799,9 +830,9 @@ PINE.permeate = function(root, opFuncs, layer)  {
 		var apply = function() {
 			PINE.applyOpFuncsAtNode(root, opFuncs, layer).then(function() {
 
-				console.log(layer+"apply at children");
-				PINE.permeateChildren(root, opFuncs, layer).then(function() {
-					console.log(layer+"<< permeate", root)
+				// console.log(layer+"apply at children");
+				PINE.permeateChildren(root, opFuncs, layer, sproutState).then(function() {
+					// console.log(layer+"<< permeate", root)
 					resolve();
 
 					var nextOpFuncs = root._pine_.ops.queue.shift();
@@ -843,10 +874,12 @@ PINE.permeate = function(root, opFuncs, layer)  {
 
 			LOG(layer+"updates for found node", "async");
 	
-
+			
 			PINE.updateAt(root, function() {
-				PINE.permeate(root, opFuncs).then(resolve);
-			});
+				PINE.permeate(root, opFuncs, sproutState).then(resolve);
+			}, sproutState.passedOps);
+
+			
 		}
 
 	});
@@ -858,7 +891,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 
 	return U.Go(function(resolve, reject) {
 		// var resolve = resolve;
-		console.log(layer+">> applyOpFuncs", root, opFuncs)
+		// console.log(layer+">> applyOpFuncs", root, opFuncs)
 			//
 		root._pine_.ops.hold = true;
 		LOG("hold", "run");
@@ -871,7 +904,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 			LOG(root, "run");
 			root._pine_.ops.hold = false;
 
-			console.log(layer+"<< applyOpFuncs", root)
+			// console.log(layer+"<< applyOpFuncs", root)F
 
 			resolve();
 		}
@@ -889,7 +922,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 
 		if(localOpFuncs.length)  {
 				//
-			console.log("local ops found", localOpFuncs);
+			// console.log("local ops found", localOpFuncs);
 
 			var promises = [];
 
@@ -898,7 +931,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 				promises.push(opFunc.fn(root));
 			}
 
-			console.log(layer+"promises", promises);
+			// console.log(layer+"promises", promises);
 
 			U.Go.all(promises).then(complete);
 		}
@@ -911,7 +944,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 
 
 
-PINE.permeateChildren = function(root, opFuncs, layer) {
+PINE.permeateChildren = function(root, opFuncs, layer, sproutState) {
 		//
 	return U.Go( function(resolve, reject) {
 			//
@@ -928,10 +961,10 @@ PINE.permeateChildren = function(root, opFuncs, layer) {
 				//
 			for(var i = 0; i < branches.length; i++)  {
 				// childListCopy.push(branches[i]);
-				childPermPromises.push( PINE.permeate(branches[i], opFuncs, layer) );
+				childPermPromises.push( PINE.permeate(branches[i], opFuncs, layer, sproutState) );
 			}
 
-			console.log( layer + "child promises", childPermPromises )
+			// console.log( layer + "child promises", childPermPromises )
 			U.Go.all(childPermPromises).then(resolve);
 
 
@@ -952,10 +985,9 @@ PINE.permeateChildren = function(root, opFuncs, layer) {
 
 
 
-//TODO: fix passed rounds error
-PINE.updateAt = function(root, callback) {
 
-	// alert("update at");
+//TODO: micro improve performance by not running empty updates
+PINE.updateAt = function(root, callback, passedOps) {
 
 	LOG("update at", "async");
 	LOG(root, "async");
@@ -966,9 +998,18 @@ PINE.updateAt = function(root, callback) {
 		LOG("new Root Found", "async");
 		// console.log("new Root", root);
 	}
+	else if(root._pine_.ops.hold){
+		console.log("held node needs no updating!", root);
+		// alert("wo")
+
+		if(typeof callback == "function")
+			PINE.ready(callback)
+		//TODO FIX
+		return;
+	}
 
 	//TODO: Fix this so that it is the passed functions of this round.
-	var cloneMe = PINE.pinefuncs.passed;
+	var cloneMe = passedOps !== undefined ? passedOps : PINE.pinefuncs.passed;
 	var updates = {};
 	for(opType in cloneMe) 
 		updates[opType] = cloneMe[opType].slice(0);
@@ -977,7 +1018,7 @@ PINE.updateAt = function(root, callback) {
 	LOG(updates, "async");
 	
 
-	var willSprout = PINE.sprout(root, updates, null, newRoot);
+	var willSprout = PINE.sprout(root, { queuedOps: updates }, newRoot);
 
 	if(callback)
 		willSprout.then(callback)
@@ -996,12 +1037,13 @@ PINE.updateAt = function(root, callback) {
 
 
 /**********************************
-*	 	DEBUGGING
+*	 	<>DEBUGGING
 **********************************/
 PINE.logErr = true;
 PINE.alertErr = false;
 PINE.debugOn = true;
 PINE.showUnusedNeedles = true;
+PINE.showRunningAsyncs = true;
 
 PINE.err = function(whatevers_the_problem) { //?
 	if(PINE.logErr)  {
@@ -1070,6 +1112,8 @@ PINE.initDebug = function()  {
 		}
 	}
 
+	//<>LOG
+
 	LOG.showLog = [];
 
 	LOG.showLog["all"] = false;  //
@@ -1078,9 +1122,10 @@ PINE.initDebug = function()  {
 	LOG.showLog["pnv"] = false;
 	LOG.showLog["initiate"] = false;
 	LOG.showLog["run"] = false;
-	// LOG.showLog["sprout"] = false;  //
-	// LOG.showLog["pinefunc"] = false;  //		
-	// LOG.showLog["async"] = false;
+	LOG.showLog["sprout"] = false;  //
+	LOG.showLog["pinefunc"] = false;  //
+	LOG.showLog["opFunc"] = false;  //		
+	LOG.showLog["async"] = false;
 	LOG.showLog["FNS"] = false;
 
 }
@@ -1116,6 +1161,8 @@ PINE.logDebugAnalysis = function() {
 			U.log("All needles used at least once.  Good job!", "success");	
 		}
 	}
+
+	
 	
 }
 
