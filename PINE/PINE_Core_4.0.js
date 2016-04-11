@@ -1,5 +1,3 @@
-// 'use strict';
-
 /******************************************
 *          ____   _   _   _   ____
 *         |    \ | | | \ | | |  __|
@@ -14,7 +12,7 @@
 *
 ********************************************/
 
-
+"use strict"
 
 
 
@@ -177,7 +175,7 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 				// domNode._pine_.needles[pinefunc.keyword].passed = true;
 				// callbackPermeate(pinefunc);
 				if(autoComplete == false) {
-					LOG("completing async function for "+my.keyword, "async");
+					LOG("async", "completing async function for "+my.keyword);
 					my.runningAsyncs.shift();
 				}
 
@@ -210,7 +208,7 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 				}
 			}
 			else {
-				// alert(my.needle.keyword+my.opType+my.id+" not being run a second time");
+				LOG("pinefunc", my.needle.keyword+my.opType+my.id+" not being run a second time");
 				helpers.complete();
 			}
 		});
@@ -283,7 +281,7 @@ PINE.class.Needle = function(keyword) {
 	this.uses = 0;
 	this.pinefuncs = {};
 
-	for(i in PINE.OrderOfOperations)  {
+	for(var i in PINE.OrderOfOperations)  {
 			//
 		var opType = PINE.OrderOfOperations[i];
 
@@ -354,12 +352,12 @@ PINE.class.NodeFunc = function(domNode, func) {
 	this.fn = function() {
 		var args = arguments;
 
-		for(pr in me.pre_fns)
+		for(var pr in me.pre_fns)
 			me.pre_fns[pr].apply(me.domNode, args);
 
 		func.apply(me.domNode, args);
 
-		for(po in me.post_fns)
+		for(var po in me.post_fns)
 			me.post_fns[po].apply(me.domNode, args);
 	}
 
@@ -524,7 +522,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		var listeners = PINE.eventListeners[PINE.events.load];
 
 		if(listeners) {
-			for(i in listeners)
+			for(var i in listeners)
 				listeners[i]();
 		}
 
@@ -532,7 +530,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   			setTimeout(PINE.logDebugAnalysis, 2000);
 
   		PINE.loaded = true;
-  		U.log("PINE Run complete", "success");
+  		U.log("success", "PINE Run complete");
 	});
 
 
@@ -569,7 +567,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 //sprout on it using the queued pine funcs array (which all new pine funcs are added to)
 PINE.run = function() {
 	return U.Go(function(resolve, reject) {
-		LOG("running", "needle");
 
 		if(PINE.forest == null) {
 			PINE.forest = {};
@@ -597,10 +594,9 @@ PINE.run = function() {
 
 
 
+PINE.initiationFuncs = [];
 
-
-//initiate traverses the entire dom tree from root adding a variable for pine (_pine_)
-PINE.initiate = function(root) {
+PINE.initiationFuncs.push(function(root) {
 	LOG("initiate", "initiate");
 	LOG(root, "initiate");
 
@@ -633,6 +629,14 @@ PINE.initiate = function(root) {
 	var branches = root.childNodes;
 	for(var i = 0; branches && i < branches.length; i++)  
 		PINE.initiate(branches[i]);
+});
+
+
+//initiate traverses the entire dom tree from root adding a variable for pine (_pine_)
+PINE.initiate = function(root) {
+	for(var i in PINE.initiationFuncs) {
+		PINE.initiationFuncs[i](root);
+	}
 }
 
 
@@ -666,7 +670,7 @@ PINE.sprout = function( root, args)  {
 		var passedOps = args.passedOps = args.passedOps || {};
 			
 		//initializing
-		for(key in queuedOps) {
+		for(var key in queuedOps) {
 			incompleteOps[key] = [];
 			unsentOps[key] = [];
 			passedOps[key] = passedOps[key] || [];
@@ -786,23 +790,21 @@ PINE.sprout = function( root, args)  {
 
 
 PINE.permeate = function(root, opFuncs, layer, sproutState)  {
+	if(sproutState === undefined) {
+		PINE.err("sproutState undefined in", root);
+	}
+
 	layer = layer || '';
 	layer += '.';
 
 	return U.Go(function(resolve, reject) {
-		// console.log(layer+">> permeate", root, opFuncs)
-
-		LOG(">> permeate", "permeate");
-		LOG(root, "permeate");
-		LOG("opFuncs "+opFuncs[0].opType, "permeate");
-		LOG(opFuncs, "permeate");
+		LOG("permeate", layer+">> permeate", root, opFuncs)
 
 
 		//if this is a stopping point tag, resolve
 		for(var i in PINE.stopTags) {
 			if(root.tagName == PINE.stopTags[i]) {
-				LOG("depine, text, or comment found", "permeate");
-				// console.log(layer+"<< permeate", root)
+				LOG("permeate", layer+"<<permeate stopping at tag "+root.tagName, root);
 				resolve();
 				return;
 			}
@@ -811,8 +813,7 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 		//if this is a stopping point node, resolve
 		for(var i in PINE.stopNodes) {
 			if(root.nodeName == PINE.stopNodes[i]) {
-				LOG("depine, text, or comment found", "permeate");
-				// console.log(layer+"<< permeate", root)
+				LOG("permeate", layer+"<<permeate stopping at node "+root.nodeName, root);
 				resolve();
 				return;
 			}
@@ -830,9 +831,8 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 		var apply = function() {
 			PINE.applyOpFuncsAtNode(root, opFuncs, layer).then(function() {
 
-				// console.log(layer+"apply at children");
 				PINE.permeateChildren(root, opFuncs, layer, sproutState).then(function() {
-					// console.log(layer+"<< permeate", root)
+					LOG("permeate", layer+"<< permeate", root)
 					resolve();
 
 					var nextOpFuncs = root._pine_.ops.queue.shift();
@@ -856,11 +856,9 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 
 			//if an asynchronis needle is still working on this node, queue up
 			if(root._pine_.ops.hold){
-				LOG(layer+"queueing for hold on", "async");
-				LOG(root, "async");
-				LOG(opFuncs, "async");
+				LOG("async", layer+"queueing for hold on", root, opFuncs);
 				root._pine_.ops.queue.push(function () {
-					LOG(layer+"queued function called", "async");
+					LOG("async", layer+"queued function called");
 					apply();
 				});
 			}
@@ -872,11 +870,11 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 
 			// //TODO: Fix this so that it is the passed functions of this round.
 
-			LOG(layer+"updates for found node", "async");
+			LOG("async", layer+"updates for found node");
 	
 			
 			PINE.updateAt(root, function() {
-				PINE.permeate(root, opFuncs, sproutState).then(resolve);
+				PINE.permeate(root, opFuncs, layer, sproutState).then(resolve);
 			}, sproutState.passedOps);
 
 			
@@ -913,7 +911,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 		var localOpFuncs = [];
 
 		
-		for(i in opFuncs)  {
+		for(var i in opFuncs)  {
 			if(PINE.keyApplies(opFuncs[i].keyword, root)) {
 				localOpFuncs.push(opFuncs[i]);
 			}
@@ -989,17 +987,16 @@ PINE.permeateChildren = function(root, opFuncs, layer, sproutState) {
 //TODO: micro improve performance by not running empty updates
 PINE.updateAt = function(root, callback, passedOps) {
 
-	LOG("update at", "async");
-	LOG(root, "async");
+	LOG("async", "update at", root);
 
 	var newRoot = (root._pine_ === undefined);
 	if(newRoot){
 		PINE.initiate(root);
-		LOG("new Root Found", "async");
+		LOG("async", "new Root Found");
 		// console.log("new Root", root);
 	}
 	else if(root._pine_.ops.hold){
-		console.log("held node needs no updating!", root);
+		LOG("async", "held node needs no updating!", root);
 		// alert("wo")
 
 		if(typeof callback == "function")
@@ -1011,11 +1008,10 @@ PINE.updateAt = function(root, callback, passedOps) {
 	//TODO: Fix this so that it is the passed functions of this round.
 	var cloneMe = passedOps !== undefined ? passedOps : PINE.pinefuncs.passed;
 	var updates = {};
-	for(opType in cloneMe) 
+	for(var opType in cloneMe) 
 		updates[opType] = cloneMe[opType].slice(0);
 
-	LOG("updates for found node", "async");
-	LOG(updates, "async");
+	LOG("async", "updates for found node", updates);
 	
 
 	var willSprout = PINE.sprout(root, { queuedOps: updates }, newRoot);
@@ -1053,8 +1049,18 @@ PINE.err = function(whatevers_the_problem) { //?
 			line += "....";
 			line += callerLine[2].match(/([^\/])+?$/g)[0];	
 		}
-		U.log(line, "light");
-		U.log("PINE error: "+whatevers_the_problem, "error")
+
+		var args = [];
+
+		for(var ar in arguments)
+			args[ar] = arguments[ar];
+		
+		args.unshift("PINE error: ");
+		args.unshift("error");
+
+		U.log("light", line);
+
+		U.log.apply(this, args)
 		// console.log(new Error());
 	}
 	if(PINE.alertErr)  {
@@ -1064,7 +1070,7 @@ PINE.err = function(whatevers_the_problem) { //?
 
 
 
-LOG = function() { return; }
+var LOG = function() { return; }
 
 
 PINE.initDebug = function()  {
@@ -1090,11 +1096,11 @@ PINE.initDebug = function()  {
  	}
 
 
- 	LOG = function(logMe, logType)  {
-		logType = logType || "all";
+ 	LOG = function()  {
+		var logType = arguments[0] || "all";
 
 		// console.log(logType);
-		if (LOG.showLog[logType] !== false){
+		if (LOG.showLog[logType]){
 
 			var callerLine = new Error().stack.split('\n');
 
@@ -1106,9 +1112,14 @@ PINE.initDebug = function()  {
 				line += callerLine[2].match(/([^\/])+?$/g)[0];
 			}
 			
-			U.log(line, "light");
+			U.log("light", line);
 
-			console.log(logMe);
+			var args = [];
+
+			for(var ar = 1; ar < arguments.length; ar++)
+				args[ar-1] = arguments[ar];
+
+			console.log.apply(console, args);
 		}
 	}
 
@@ -1116,17 +1127,17 @@ PINE.initDebug = function()  {
 
 	LOG.showLog = [];
 
-	LOG.showLog["all"] = false;  //
-	LOG.showLog["needle"] = false; //
-	LOG.showLog["permeate"] = false; //
-	LOG.showLog["pnv"] = false;
-	LOG.showLog["initiate"] = false;
-	LOG.showLog["run"] = false;
-	LOG.showLog["sprout"] = false;  //
-	LOG.showLog["pinefunc"] = false;  //
-	LOG.showLog["opFunc"] = false;  //		
-	LOG.showLog["async"] = false;
-	LOG.showLog["FNS"] = false;
+	// LOG.showLog["all"] = true;  //
+	// LOG.showLog["needle"] = true; //
+	// LOG.showLog["permeate"] = true;
+	// LOG.showLog["pnv"] = true;
+	// LOG.showLog["initiate"] = true;
+	// LOG.showLog["run"] = true;
+	// LOG.showLog["sprout"] = true;  //
+	// LOG.showLog["pinefunc"] = true;  //
+	// LOG.showLog["opFunc"] = true;  //		
+	// LOG.showLog["async"] = true;
+	// LOG.showLog["FNS"] = true;
 
 }
 
@@ -1134,12 +1145,12 @@ PINE.initDebug = function()  {
 PINE.logDebugAnalysis = function() {
 
 	var output = "to stop seeing all debuging messages, set PINE.debugOn = false"; 
-	U.log(output, "info");
+	U.log("info", output);
 
 	if(PINE.showUnusedNeedles) {
 			//
 		var unusedNeedles = "";
-		for(key in PINE.needles)  {
+		for(var key in PINE.needles)  {
 			if(PINE.needles[key].uses == 0) {
 				if(unusedNeedles != "")
 					unusedNeedles += ", ";
@@ -1154,11 +1165,11 @@ PINE.logDebugAnalysis = function() {
 			output += "use PINE.disable(["+unusedNeedles+"]) if you have no intention of using these needles\n";
 			output += "to stop seeing this message, set PINE.showUnusedNeedles = false";
 
-			U.log(output, "info");
+			U.log("info", output);
 		}
 		else {
 			
-			U.log("All needles used at least once.  Good job!", "success");	
+			U.log("success", "All needles used at least once.  Good job!");	
 		}
 	}
 
@@ -1209,7 +1220,7 @@ U.assertVar = function(start, keyString, keyNotArray)  {
 	var noNeed = true;
 
 	if(start) {
-		for(i in keyArray)  {
+		for(var i in keyArray)  {
 			var key = keyArray[i];
 			if(pos[key] == null) {
 				pos[key] = {};
@@ -1277,7 +1288,7 @@ U.getnit = function(start, keyString, init, bracketsCase)  {
 		//match any brackets, or any string of digits and characters
 		//KLUDGE: very little error handling
 		// var keyArray = keyString.match(/(\[.+?\])|([\w\d]+)/g)
-		for(i in keyArray)  {
+		for(var i in keyArray)  {
 			var key = keyArray[i];
 
 			// console.log("IN"+key);
@@ -1331,37 +1342,37 @@ U.assertArray = function(start, keyString)  {
 }
 
 
-U.clone = function(obj) {
-    if (null == obj)  return obj;
+// U.clone = function(obj) {
+//     if (null == obj)  return obj;
 
-    // console.log(typeof obj + "::");
-    // console.log(obj);
+//     // console.log(typeof obj + "::");
+//     // console.log(obj);
 
-    if("object" == typeof obj)  {
-    	var copy;
-    	try { copy = obj.constructor(); }
-    	catch(e) {
-    		PINE.err("Trynig to copy an object which references itself", e);
+//     if("object" == typeof obj)  {
+//     	var copy;
+//     	try { copy = obj.constructor(); }
+//     	catch(e) {
+//     		PINE.err("Trynig to copy an object which references itself", e);
 
-    		return;
-    	}
+//     		return;
+//     	}
 
-    	// console.log("should not be last");
+//     	// console.log("should not be last");
 
-	    for (var attr in obj) {
-	        if (obj.hasOwnProperty(attr)) {
-	        	copy[attr] = U.clone(obj[attr]);
-	        }
-    	}
-    }
-    else if("array" == typeof obj)  {
-    	// console.log("IN ARRAY");
-    	PINE.err("U.clone array case unfinished");
-    }
-    else return obj;
+// 	    for (var attr in obj) {
+// 	        if (obj.hasOwnProperty(attr)) {
+// 	        	copy[attr] = U.clone(obj[attr]);
+// 	        }
+//     	}
+//     }
+//     else if("array" == typeof obj)  {
+//     	// console.log("IN ARRAY");
+//     	PINE.err("U.clone array case unfinished");
+//     }
+//     else return obj;
     
-    return copy;
-}
+//     return copy;
+// }
 
 
 U.initArray = function(val, size)  {
@@ -1374,52 +1385,52 @@ U.initArray = function(val, size)  {
 
 
 
-PINE.deepCloneNode = function(cloneMe)  {
-	// console.log("cloning:");
-	// console.log(cloneMe);
+// PINE.deepCloneNode = function(cloneMe)  {
+// 	// console.log("cloning:");
+// 	// console.log(cloneMe);
 
-	var out = cloneMe.cloneNode(true);
-	out._pine_ = U.clone(cloneMe._pine_);
+// 	var out = cloneMe.cloneNode(true);
+// 	out._pine_ = U.clone(cloneMe._pine_);
 
-	return out;
-}
-
-
+// 	return out;
+// }
 
 
-U.ajax = function(url, callback){
-    var xmlhttp;
-    // compatible with IE7+, Firefox, Chrome, Opera, Safari
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function(){
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
-            callback(xmlhttp.responseText);
-        }
-        else {
-        	console.log("error in U.ajax");
-        }
-    }
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-}
 
 
-U.attr = function(domNode, name, value) {
-	var target = domNode.attributes[name];
+// U.ajax = function(url, callback){
+//     var xmlhttp;
+//     // compatible with IE7+, Firefox, Chrome, Opera, Safari
+//     xmlhttp = new XMLHttpRequest();
+//     xmlhttp.onreadystatechange = function(){
+//         if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
+//             callback(xmlhttp.responseText);
+//         }
+//         else {
+//         	console.log("error in U.ajax");
+//         }
+//     }
+//     xmlhttp.open("GET", url, true);
+//     xmlhttp.send();
+// }
 
-	if(target == null){
-		if(value === undefined)
-			return undefined;
-		else return null;
-			//create the attribute and assign value
-	}
-	else {
-		if(value === undefined)
-			return target.value;
-		else
-			target.value = value;
-	}
-}
+
+// U.attr = function(domNode, name, value) {
+// 	var target = domNode.attributes[name];
+
+// 	if(target == null){
+// 		if(value === undefined)
+// 			return undefined;
+// 		else return null;
+// 			//create the attribute and assign value
+// 	}
+// 	else {
+// 		if(value === undefined)
+// 			return target.value;
+// 		else
+// 			target.value = value;
+// 	}
+// }
 
 
 
@@ -1428,28 +1439,49 @@ U.attr = function(domNode, name, value) {
 *	http://stackoverflow.com/a/25042340/4808079
 */
 
-U.log = function(msg, color) {
-    color = color || "black";
-    bgc = "Transparent";
+U.log = function() {
+    var color = arguments[0] || "black";
+    var bgc = "Transparent";
     switch (color) {
-        case "success":  color = "Yellow";      bgc = "Green";       break;
-        case "info":     color = "Black"; 	   bgc = "Orange";       break;
-        case "error":    color = "Red";        bgc = "Black";           break;
-        // case "start":    color = "OliveDrab";  bgc = "PaleGreen";       break;
-        // case "warning":  color = "Tomato";     bgc = "Black";           break;
-        // case "end":      color = "Orchid";     bgc = "MediumVioletRed"; break;
-        case "light":    color = "rgba(150,150,150,0.3)";     			break;
+        case "success":  color = "Yellow";      	bgc = "Green";      	break;
+        case "info":     color = "Black"; 	   		bgc = "Orange";       	break;
+        case "error":    color = "Red";        		bgc = "Black";          break;
+        case "light":    color = "rgba(150,150,150,0.3)";     				break;
         default: color = color;
     }
+    
+    var coloring = "color:" + color + "; background-color: " + bgc + ";";
 
-    if (typeof msg == "object") {
-        console.log(msg);
-    } else if (typeof color == "object") {
-        console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
-        console.log(color);
-    } else {
-        console.log("%c" + msg, "color:" + color + "; background-color: " + bgc + ";");
+    var args = [];
+
+    var insertAt = 0;
+
+    if(typeof arguments[1] == "string")  {
+    	args[0] = "%c"+arguments[1];
+    	args[1] = coloring;
     }
+    else {
+    	args[insertAt] = arguments[1];
+    }
+
+
+    for(var ar = 2; ar < arguments.length; ar++) {
+    	if(insertAt == 0) {
+	    	if(typeof arguments[ar] == "string") {
+	    		args[0] += arguments[ar]
+	    	}
+	    	else {
+	    		insertAt = 2;
+	    	}
+	    }
+
+	    if(insertAt != 0) {
+	    	args[insertAt] = arguments[ar]
+	    	insertAt++;
+	    }
+    }
+    
+    console.log.apply(console, args);
 }
 
 
@@ -1719,6 +1751,22 @@ El.byId = function(id) {
 
 
 
+El.attr = function(domNode, name, value) {
+	var target = domNode.attributes[name];
+
+	if(target == null){
+		if(value === undefined)
+			return undefined;
+		else return null;
+			//create the attribute and assign value
+	}
+	else {
+		if(value === undefined)
+			return target.value;
+		else
+			target.value = value;
+	}
+}
 
 
 
