@@ -197,12 +197,11 @@ PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
 
 				// alert(my.needle.keyword+my.opType+my.id+" IS ON");
 
-				LOG("running needle "+my.keyword+" at", "needle");
-				LOG(domNode, "needle");
+				LOG("pinefunc", "running needle "+my.needle.keyword+my.opType+my.id+" at", domNode);
 				userFn.call(helpers, domNode, my.needle, helpers);
 
 				if(autoComplete) {
-					LOG("calling autoComplete for "+my.keyword, "pinefunc");
+					LOG("pinefunc", "calling autoComplete for "+my.needle.keyword+my.opType+my.id);
 					helpers.complete();
 				}
 				else {
