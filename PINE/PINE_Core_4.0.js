@@ -523,6 +523,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	PINE.run().then(function() {
 		var listeners = PINE.eventListeners[PINE.events.load];
 
+		console.log("running READY listeners");
 		if(listeners) {
 			for(var i in listeners)
 				listeners[i]();
