@@ -322,13 +322,13 @@ U.evalElementScripts2 = function(initMe, url) {
 
 	for(var sc in hack.scripts) {
 		// console.log(hack.scripts[sc]);
-		try {
+		// try {
 			console.log("trying eval for "+url);
 			eval(hack.scripts[sc]);
-		}
-		catch(e) {
-			PINE.err("eval error in file "+url);
-		}
+		// }
+		// catch(e) {
+		// 	PINE.err("eval error in file "+url);
+		// }
 	}
 
 	return hack;
