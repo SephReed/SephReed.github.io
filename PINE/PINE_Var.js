@@ -88,7 +88,7 @@ PINE.pnv.parseAtts = function(root)  {
 
 	var pnvatt = root.attributes.pnvatt;
 
-	for(i = 0; i < root.attributes.length; i++)  {
+	for(var i = 0; i < root.attributes.length; i++)  {
 		var att = root.attributes[i];
 
 		if(att != pnvatt)  {
@@ -165,7 +165,7 @@ PINE.createNeedle("[pnvatt]").addFunction({
 
 		//KLUDGE: fix me if you can
 		var pairs = rules.split(":+:");
-		for(i_p in pairs)  {
+		for(var i_p in pairs)  {
 
 			// console.log(pairs[i_p]);
 
@@ -178,7 +178,7 @@ PINE.createNeedle("[pnvatt]").addFunction({
 			var outVal = pairs[i_p].substring(splitPoint+1);
 			var matches = outVal.match(/{{.+?}}/g);
 
-			for(i_m in matches)  {
+			for(var i_m in matches)  {
 				
 
 				var replaceMe = matches[i_m];
