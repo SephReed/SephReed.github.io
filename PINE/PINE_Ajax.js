@@ -26,9 +26,8 @@ INC.srcCache = {};
 
 PINE.class.CacheSetting = function(url, cacheOp) {}
 INC.cacheOp = {};
-INC.cacheOp.BYROOT = "byroot";
-INC.cacheOp.NORMAL = "rormal";
-INC.cacheOp.NEVER = "never";
+INC.cacheOp.BYROOT = "byroot";    	//byroot will equate [place.com, place.com?hat=fez, and place.com?skill=lazers]
+INC.cacheOp.NORMAL = "normal";		//normal will let the browser figure out all equally cachable pages
 
 
 
@@ -55,6 +54,7 @@ INC.get = function(url, responseType) {
 
 			request.onload = function() {
 				if (request.status >= 200 && request.status < 400) {
+					LOG("include", request.status+" "+url);
 				    cache.response = request.response;
 				    cache.complete = true;
 
@@ -248,7 +248,7 @@ p_changeSrc.addFunction({
 
 
 /****************
-*    include
+*    needle
 ***************/
 
 var p_needle = PINE.createNeedle("needle");

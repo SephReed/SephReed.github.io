@@ -776,8 +776,7 @@ PINE.sprout = function( root, args)  {
 		//so just call it now.
 		if(permeateCalled == false) {
 			LOG("sprout uneeded", "sprout");
-			// if(resolve !== undefined)
-				resolve();
+			resolve();
 		}
 		else U.Go.all( permeatePromises ).then( PINE.sprout( root, args ) ).then(resolve);
 	});
