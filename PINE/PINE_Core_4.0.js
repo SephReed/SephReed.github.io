@@ -614,6 +614,12 @@ PINE.initiationFuncs.push(function(root) {
 		root._pine_.ops = {};
 		root._pine_.ops.hold = false;
 		root._pine_.ops.queue = [];
+		root._pine_.ops.applied = {};
+
+		for( var i in PINE.ops.order )  {
+			var opType = PINE.ops.order[ i ];
+			root._pine_.ops.applied[ opType ] = [];
+		}
 			//
 		root._pine_.fns = {};
 
@@ -736,8 +742,7 @@ PINE.sprout = function( root, args)  {
 						permeate = permeate.then( function() {
 								//
 							for(var i = 0; i < opFuncs.length; i++)  {
-								LOG("removing", "opFunc");
-								LOG(opFuncs[i], "opFunc");
+								LOG("opFunc", "removing ", opFuncs[i]);
 
 								var target = incompleteOps[opType].indexOf(opFuncs[i]);
 								if(target == -1)
@@ -875,10 +880,16 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 			LOG("async", layer+"updates for found node");
 	
 			
+			// PINE.updateAt(root, function() {
+			// 	PINE.permeate(root, opFuncs, layer, sproutState).then(resolve);
+			// }, sproutState.passedOps);
+
 			PINE.updateAt(root, function() {
 				PINE.permeate(root, opFuncs, layer, sproutState).then(resolve);
-			}, sproutState.passedOps);
+			}, root.parentNode._pine_.ops.applied);
 
+
+			
 			
 		}
 
@@ -917,6 +928,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 			if(PINE.keyApplies(opFuncs[i].keyword, root)) {
 				localOpFuncs.push(opFuncs[i]);
 			}
+			root._pine_.ops.applied[opFuncs[i].opType].push(opFuncs[i]);
 		}
 
 
@@ -929,7 +941,12 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 			for(var op in localOpFuncs) {
 				var opFunc = localOpFuncs[op];
 				promises.push(opFunc.fn(root));
-			}
+
+				// if(root._pine_.ops.applied[opFunc.opType] === undefined)
+				// 	root._pine_.ops.applied[opFunc.opType] = [];
+
+				
+			}	
 
 			// console.log(layer+"promises", promises);
 
