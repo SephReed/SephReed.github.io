@@ -779,7 +779,7 @@ PINE.sprout = function( root, args)  {
 			// if(resolve !== undefined)
 				resolve();
 		}
-		else U.Go.all(permeatePromises).then(resolve);
+		else U.Go.all( permeatePromises ).then( PINE.sprout( root, args ) ).then(resolve);
 	});
 	
 	PINE.growingSprouts.push(willSprout);
@@ -1650,6 +1650,12 @@ U.Thenable.prototype.run = function(val) {
 		this.isAsync = true;
 		this.fn.run(this.resolve, this.reject);
 	}
+
+	else if( this.fn instanceof U.Thenable ) {
+		this.isAsync = true;
+		this.fn.then(this.resolve);
+	}
+
 	else {
 		if(typeof this.fn != "function"){
 			PINE.err("non function");
@@ -1662,15 +1668,6 @@ U.Thenable.prototype.run = function(val) {
 		}
 
 		else {
-			// if( this.return instanceof U.Thenable ) {
-			// 	// this.isAsync = true;
-			// 	this.return.next = this.next;
-			// 	this.next = this.return;
-			// 	this.recievedThenable = this.return;
-			// 	this.return = undefined;
-			// 	// this.return.run(this.resolve, this.reject);
-			// }
-
 			this.tryRunNext();		
 		}
 	}
@@ -1702,10 +1699,10 @@ U.Thenable.prototype.tryRunNext = function() {
 
 
 U.Thenable.prototype.then = function(fn) {
-	if(typeof fn != "function"){
-		PINE.err("non function passes to then");
-		fn();
-	}
+	// if(typeof fn != "function"){
+	// 	PINE.err("non function passes to then ", fn);
+	// 	fn();
+	// }
 
 	// if( this.recievedThenable !== undefined ) {
 	// 	return this.recievedThenable.then(fn);

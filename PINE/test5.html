@@ -23,7 +23,10 @@
     }).then(function(result) {
         console.log(result);
         return "yup"
-    });
+    }).then( U.Go(function(resolve, reject) {
+        console.log("thenable")
+        resolve();
+    }));
 
     var wait = U.Go(function(resolve, reject) {
         setTimeout(function() {
@@ -33,10 +36,10 @@
     });
 
 
-    test.then(function(result) {
-        console.log("yup");
-        return "got it";
-    });
+    // test.then(function(result) {
+    //     console.log("yup");
+    //     return "got it";
+    // });
 
     U.Go.all([test, wait]).then(function(result) {
         console.log("yesss", result);
