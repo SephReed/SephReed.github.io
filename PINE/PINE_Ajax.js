@@ -20,14 +20,35 @@
 var INC = PINE.Include = {};
 INC.includeBank = {};
 INC.srcCache = {};
+INC.cacheSettings = {};
 
 
+PINE.Include.setCachingDefault = function(i_default) {
+	INC.cacheOp.default = i_default;
+}
+
+PINE.Include.cacheSetting = function(url, cacheOp) {
+	INC.cacheSettings[url] = cacheOp;
+}
+
+// INC.getCacheSettingFor = function(url) {
+
+// }
 
 
-PINE.class.CacheSetting = function(url, cacheOp) {}
+// PINE.class.CacheSetting = function(url, cacheOp) {
+// 	this.url = url;
+// 	this.cacheOp = cacheOp;
+// }
+
+// PINE.class.CacheSetting.prototype.applies = function(url) {
+// 	return url.indexOf(this.url) == 0;
+// };
+
 INC.cacheOp = {};
 INC.cacheOp.BYROOT = "byroot";    	//byroot will equate [place.com, place.com?hat=fez, and place.com?skill=lazers]
 INC.cacheOp.NORMAL = "normal";		//normal will let the browser figure out all equally cachable pages
+INC.cacheOp.default = INC.cacheOp.NORMAL;
 
 
 
@@ -36,6 +57,12 @@ INC.get = function(url, responseType) {
 
 	//return a promise
 	return new Promise( function(resolve, reject) {
+
+		var noQueryUrl = url.replace(/\?.*/g, '');
+		var cacheOp = INC.cacheSettings[noQueryUrl] || INC.cacheOp.default;
+
+		if(cacheOp == INC.cacheOp.BYROOT)
+			url = noQueryUrl;
 
 		var cache = INC.srcCache[url];
 			
@@ -54,6 +81,7 @@ INC.get = function(url, responseType) {
 
 			request.onload = function() {
 				if (request.status >= 200 && request.status < 400) {
+					LOG("include", request);
 					LOG("include", request.status+" "+url);
 				    cache.response = request.response;
 				    cache.complete = true;
