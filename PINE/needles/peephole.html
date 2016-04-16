@@ -31,7 +31,7 @@ PINE.createNeedle("peephole").addFunction({
 	fn: function(initMe, needle) {
 
 		function updateSize() {
-			var sizeAtt = U.attr(initMe, "size");
+			var sizeAtt = El.attr(initMe, "size");
 			initMe.style.width = initMe.style.height = sizeAtt;
 
 			// var width = initMe.offsetWidth;
