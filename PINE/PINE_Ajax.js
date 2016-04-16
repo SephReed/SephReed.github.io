@@ -261,6 +261,10 @@ p_view.update = function(initMe, callback) {
 
 			var oldView = initMe._pine_.views[currentUrl];
 
+			if(oldView === undefined) {
+				oldView = initMe._pine_.views[currentUrl] = new INC.View(currentUrl);
+			}
+
 			var moveMe;
 			while (moveMe = initMe.lastChild)  {
 				oldView.childNodes.push(moveMe)
