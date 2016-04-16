@@ -22,35 +22,23 @@ INC.includeBank = {};
 INC.srcCache = {};
 INC.cacheSettings = {};
 
+INC.BYROOT = "byroot";    	//byroot will equate [place.com, place.com?hat=fez, and place.com?skill=lazers]
+INC.NORMAL = "normal";		//normal will let the browser figure out all equally cachable pages
+INC.default = INC.default || INC.NORMAL;
+
 
 PINE.Include.setCachingDefault = function(i_default) {
-	INC.cacheOp.default = i_default;
+	INC.default = i_default;
 }
 
-PINE.Include.cacheSetting = function(url, cacheOp) {
+PINE.Include.setUrlCachingStyle = function(url, cacheOp) {
 	INC.cacheSettings[url] = cacheOp;
 }
 
-// INC.getCacheSettingFor = function(url) {
-
-// }
 
 
-// PINE.class.CacheSetting = function(url, cacheOp) {
-// 	this.url = url;
-// 	this.cacheOp = cacheOp;
-// }
 
-// PINE.class.CacheSetting.prototype.applies = function(url) {
-// 	return url.indexOf(this.url) == 0;
-// };
-
-INC.cacheOp = {};
-INC.cacheOp.BYROOT = "byroot";    	//byroot will equate [place.com, place.com?hat=fez, and place.com?skill=lazers]
-INC.cacheOp.NORMAL = "normal";		//normal will let the browser figure out all equally cachable pages
-INC.cacheOp.default = INC.cacheOp.NORMAL;
-
-
+//TODO remove caching.
 
 
 INC.get = function(url, responseType) {
@@ -59,9 +47,9 @@ INC.get = function(url, responseType) {
 	return new Promise( function(resolve, reject) {
 
 		var noQueryUrl = url.replace(/\?.*/g, '');
-		var cacheOp = INC.cacheSettings[noQueryUrl] || INC.cacheOp.default;
+		var cacheOp = INC.cacheSettings[noQueryUrl] || INC.default;
 
-		if(cacheOp == INC.cacheOp.BYROOT)
+		if(cacheOp == INC.BYROOT)
 			url = noQueryUrl;
 
 		var cache = INC.srcCache[url];
@@ -81,8 +69,7 @@ INC.get = function(url, responseType) {
 
 			request.onload = function() {
 				if (request.status >= 200 && request.status < 400) {
-					LOG("include", request);
-					LOG("include", request.status+" "+url);
+					LOG("include", request.status+" "+url, request);
 				    cache.response = request.response;
 				    cache.complete = true;
 
@@ -154,12 +141,6 @@ p_include.update = function(initMe, callback) {
 				initMe.innerHTML = response;
 
 				U.evalElementScripts2(initMe, url);
-
-				//FUCKING KLUDGE;
-				// if(PINE.pnv) {
-				// 	PINE.pnv.parseText(initMe);
-				// 	PINE.pnv.parseAtts(initMe);
-				// }
 			}
 			else if(url.indexOf(".css") != -1) {
 				initMe.innerHTML = "<style>"+response+"</style>"
@@ -205,33 +186,107 @@ p_include.addFunction({
 *   view
 ***************/
 
+INC.View = function(url) {
+	this.url = url;
+	this.childNodes = [];
+	this.PVARS = {};
+	// this.onShow = onShow;
+	// this.onHide = onHide;
+}
 
 
-// var p_view = PINE.createNeedle("view");
-// p_view.addFunction({
-// 	step_type : PINE.ops.STATIC,
-// 	autoComplete : false,
-// 	fn: INC.init
-// });
 
-// p_view.View = function(url, evalCache, styleNode, childNodes) {
-// 	this.url = url;
-// 	this.evalCache = evalCache;
-// 	this.styleNode = styleNode;
-// 	this.childNodes = childNodes;
-// }
+var p_view = PINE.createNeedle("view");
 
-// p_view.setView = function(url) {
 
-// }
+p_view.init = function(initMe, needle, pineFunc) {
+	initMe._pine_.views = {};
+	initMe._pine_.currentUrl = "unset";
 
-// p_view.View.prototype.addFunction = function(args) {
-// 	args.keyword = this.keyword;
-// 	// PINE.registerFunction(args);
-// 	PINE.registerFunction2(args);
-// }
+	p_view.update(initMe, pineFunc.complete);
 
-// p_view.viewBank = {};
+	PINE.addFunctionToNode(initMe, "changeSrc", function(src, callback) {
+		// callback = callback || function(){};
+		initMe.setAttribute("src", src);
+		p_view.update(initMe, function(){
+			PINE.updateAt(initMe, callback);
+		});
+	});
+}
+
+
+
+
+p_view.update = function(initMe, callback) {
+
+	var url = El.attr(initMe, "src");
+		
+	if(url) {
+		var currentUrl = initMe._pine_.currentUrl;
+
+		if(url == currentUrl) return;
+
+			//
+		if(currentUrl != "unset") {
+
+			var oldView = initMe._pine_.views[currentUrl];
+
+			var moveMe;
+			while (moveMe = initMe.lastChild)  {
+				oldView.childNodes.push(moveMe)
+				initMe.removeChild(moveMe);
+			}
+
+			oldView.PVARS = initMe.PVARS;
+			initMe.PVARS = {};
+		}
+
+
+		var view = initMe._pine_.views[url];
+			//
+		if(view !== undefined) {
+			var moveMe;
+			while (moveMe = view.childNodes.pop())  {
+				initMe.appendChild(moveMe);
+			}
+
+			initMe.PVARS = view.PVARS;
+			view.PVARS = {};
+		}
+		else {
+				//
+			INC.get(url).then(function(response) {
+				view = initMe._pine_.views[url] = new INC.View(url);
+					//
+				if(url.indexOf(".html") != -1) {
+					initMe.innerHTML = response;
+					U.evalElementScripts2(initMe, url);
+				}
+				else if(url.indexOf(".css") != -1) {
+					initMe.innerHTML = "<style>"+response+"</style>"
+				}
+				else {
+					PINE.err("file is neither .html or .css");
+				}
+
+
+				callback ? callback() : null
+			});
+		}
+
+		initMe._pine_.currentUrl = url;
+	
+	} else {
+		PINE.err("include src for "+initMe+" in not set");
+	}
+}
+
+p_view.addFunction({
+	step_type : PINE.ops.STATIC,
+	autoComplete : false,
+	fn: p_view.init
+});
+
 
 
 
