@@ -778,7 +778,9 @@ PINE.sprout = function( root, args)  {
 			LOG("sprout uneeded", "sprout");
 			resolve();
 		}
-		else U.Go.all( permeatePromises ).then( PINE.sprout( root, args ) ).then(resolve);
+		else U.Go.all( permeatePromises ).then( function() {
+			return PINE.sprout( root, args );
+		}).then(resolve);
 	});
 	
 	PINE.growingSprouts.push(willSprout);

@@ -205,6 +205,7 @@ p_view.init = function(initMe, needle, pineFunc) {
 
 	p_view.update(initMe, pineFunc.complete);
 
+
 	PINE.addFunctionToNode(initMe, "changeSrc", function(src, callback) {
 		// callback = callback || function(){};
 		initMe.setAttribute("src", src);
@@ -212,6 +213,35 @@ p_view.init = function(initMe, needle, pineFunc) {
 			PINE.updateAt(initMe, callback);
 		});
 	});
+
+	PINE.addFunctionToNode(initMe, "dropView", function(url) {
+		p_view.dropView(initMe, url);
+	});
+
+	PINE.addFunctionToNode(initMe, "dropAllViews", function() {
+		p_view.dropAllViews(initMe);
+	});
+
+	PINE.addFunctionToNode(initMe, "dropViewsContaining", function(url) {
+		p_view.dropViewsContaining(initMe, url);
+	});
+}
+
+
+p_view.dropView = function(domNode, url) {
+	delete domNode._pine_.views[url];
+}
+
+p_view.dropAllViews = function(domNode) {
+	domNode._pine_.views = {};
+}
+
+p_view.dropViewsContaining = function(domNode, url) {
+	var views = domNode._pine_.views;
+	for(var key in views) {
+		if(key.indexOf(url) != -1)
+			delete views[key];
+	}
 }
 
 
