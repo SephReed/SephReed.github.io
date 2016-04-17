@@ -26,30 +26,51 @@
 
 <script type="text/javascript">
 
-PINE.createNeedle("peephole").addFunction({
+var p_peephole = PINE.createNeedle("peephole")
+
+p_peephole.updateSize = function(initMe) {
+	var sizeAtt = El.attr(initMe, "size");
+	initMe.style.width = initMe.style.height = sizeAtt;
+
+	// var width = initMe.offsetWidth;
+	// var height = initMe.offsetHeight;
+
+	var size = initMe.style.width = initMe.style.height = Math.min(initMe.offsetWidth, initMe.offsetHeight)
+	
+	var sides = initMe.offsetLeft - ~~(size/2);
+	var floors = initMe.offsetTop - ~~(size/2);
+
+	initMe.style.borderWidth = floors+"px "+sides+"px "+floors+"px "+sides+"px ";
+	initMe.style.width = "100%"
+	initMe.style.height = "100.1%"	
+}
+
+p_peephole.addFunction({
 	step_type : PINE.ops.STATIC,
 	fn: function(initMe, needle) {
+		p_peephole.updateSize(initMe);
 
-		function updateSize() {
-			var sizeAtt = El.attr(initMe, "size");
-			initMe.style.width = initMe.style.height = sizeAtt;
+		PINE.addFunctionToNode(initMe, "update", function() {
+			p_peephole.updateSize(initMe);
+		});
 
-			// var width = initMe.offsetWidth;
-			// var height = initMe.offsetHeight;
-
-			var size = initMe.style.width = initMe.style.height = Math.min(initMe.offsetWidth, initMe.offsetHeight)
-			
-			var sides = initMe.offsetLeft - ~~(size/2);
-			var floors = initMe.offsetTop - ~~(size/2);
-
-			initMe.style.borderWidth = floors+"px "+sides+"px "+floors+"px "+sides+"px ";
-			initMe.style.width = "100%"
-			initMe.style.height = "100.1%"	
+		if( El.attr(initMe, "autoUpdate") !== "false") {
+			window.addEventListener("resize", function() {
+				p_peephole.updateSize(initMe);	
+			});
 		}
-
-		updateSize();
-
 	}
 })
 	
 </script>
+
+
+
+
+
+
+
+
+
+
+
