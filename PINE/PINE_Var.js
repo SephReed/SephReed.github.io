@@ -21,112 +21,103 @@ var pnv = PINE.pnv = {};
 
 
 
-PINE.initiationFuncs.push(function(root) {
-	PINE.pnv.parseText(root);
-	PINE.pnv.parseAtts(root);
+PINE.Needle('*').addFunction( {
+	step_type: PINE.ops.INIT, 
+	fn: function(initMe) {
+		// console.log("running PNV STUFF")
+
+		var childNodes = initMe.childNodes;
+		for(var ch in childNodes) {
+			var child = childNodes[ch];
+			if(child.nodeName == "#text")  
+				pnv.parseText(child);
+		}
+
+		
+		var pnvatt = initMe.attributes.pnvatt;
+
+		for(var i = 0; i < initMe.attributes.length; i++)  {
+			var att = initMe.attributes[i];
+
+			if(att != pnvatt)  {
+				var watched_vars = att.value.match( /{{.+?}}/g );
+				if(watched_vars)  {
+					// console.log(att);	
+
+					if(pnvatt == null)  {
+						pnvatt = document.createAttribute("pnvatt");
+						initMe.setAttributeNode(pnvatt);
+					}
+
+					if(pnvatt.value.length > 0)  {
+						//KLUDGE: fix me if you can
+						pnvatt.value += ":+:";
+					}
+
+					// pnvatt.value += att.name+"="+watched_vars[0];
+					pnvatt.value += att.name+"="+att.value;
+					att.value = "";
+
+				}
+			}
+			
+		}
+		
+	}
 });
 
 
 
 
 
-PINE.pnv.parseText = function(root)  {
+PINE.pnv.parseText = function(initMe)  {
+	var text = initMe.data;
 
+	var myRe = /{{.+?}}/g;
+	var myArray;
+	while ((myArray = myRe.exec(initMe.data)) !== null)
+	{
+		var indexOf = myRe.lastIndex - myArray[0].length;
 
-	var branches = root.childNodes;
+		var preVarTextNode = initMe;
+		var varTextNode = preVarTextNode.splitText(indexOf);
+		var postVarTextNode = varTextNode.splitText(myArray[0].length);
 
-	for(var i = 0; i < branches.length; i++)  {
-		var branch = branches[i];
-		var nodeName = branch.nodeName;
+		var get = varTextNode.data.replace(/[{}]/g, '');
 
-		if(nodeName == "#text")  {
-			var text = branch.data;
-			// var watched_vars = text.match( /{{\w+}}/g );
+		var pineVar = document.createElement("pnv");
+		var getAtt = document.createAttribute("var");
+		getAtt.value = get;
+		pineVar.setAttributeNode(getAtt);
+    	// pineVar.appendChild(varTextNode);
+    	varTextNode.remove();
 
+    	// PINE.initiate(pineVar);
 
-
-			var myRe = /{{.+?}}/g;
-			var myArray;
-			while ((myArray = myRe.exec(branch.data)) !== null)
-			{
-				var indexOf = myRe.lastIndex - myArray[0].length;
-
-				var preVarTextNode = branch;
-				var varTextNode = preVarTextNode.splitText(indexOf);
-				var postVarTextNode = varTextNode.splitText(myArray[0].length);
-
-				var get = varTextNode.data.replace(/[{}]/g, '');
-
-				var pineVar = document.createElement("pnv");
-				var getAtt = document.createAttribute("var");
-				getAtt.value = get;
-				pineVar.setAttributeNode(getAtt);
-		    	// pineVar.appendChild(varTextNode);
-		    	varTextNode.remove();
-
-		    	// PINE.initiate(pineVar);
-
-		    	root.insertBefore(pineVar, postVarTextNode);
-			}
-
-			
-		}
-		else if(nodeName != "#comment")  {
-			pnv.parseText(branch);
-		}
+    	initMe.parentNode.insertBefore(pineVar, postVarTextNode);
 	}
-
 }
 
 
 
 
 
-PINE.pnv.parseAtts = function(root)  {
+PINE.pnv.parseAtts = function(initMe)  {
 
-	if(root.attributes === undefined)  return;
+	  return;
 
-	var pnvatt = root.attributes.pnvatt;
+	
 
-	for(var i = 0; i < root.attributes.length; i++)  {
-		var att = root.attributes[i];
+	// var branches = root.childNodes;
 
-		if(att != pnvatt)  {
-			var watched_vars = att.value.match( /{{.+?}}/g );
-			if(watched_vars)  {
-				// console.log(att);	
+	// for(var i = 0; i < branches.length; i++)  {
+	// 	var branch = branches[i];
+	// 	var nodeName = branch.nodeName;
 
-				if(pnvatt == null)  {
-					pnvatt = document.createAttribute("pnvatt");
-					root.setAttributeNode(pnvatt);
-				}
-
-				if(pnvatt.value.length > 0)  {
-					//KLUDGE: fix me if you can
-					pnvatt.value += ":+:";
-				}
-
-				// pnvatt.value += att.name+"="+watched_vars[0];
-				pnvatt.value += att.name+"="+att.value;
-				att.value = "";
-
-			}
-		}
-
-		
-		
-	}
-
-	var branches = root.childNodes;
-
-	for(var i = 0; i < branches.length; i++)  {
-		var branch = branches[i];
-		var nodeName = branch.nodeName;
-
-		if(nodeName!="#text" && nodeName!="#comment")  {
-			pnv.parseAtts(branch);
-		}
-	}
+	// 	if(nodeName!="#text" && nodeName!="#comment")  {
+	// 		pnv.parseAtts(branch);
+	// 	}
+	// }
 }
 
 
@@ -135,13 +126,13 @@ PINE.pnv.parseAtts = function(root)  {
 
 
 PINE.createNeedle("pnv").addFunction({
-	step_type : PINE.ops.FINALIZER,
+	step_type : PINE.ops.STATIC,
 	fn : function(initMe, needle) {
-		var get = initMe.attributes["var"];
+		var get = El.attr(initMe, "var");
 
 		if(get != null)  {
 
-			PINE.var(get.value, initMe, function(val) {
+			PINE.var(get, initMe, function(val) {
 				initMe.innerHTML = val;	
 			});
 			
@@ -158,7 +149,7 @@ PINE.createNeedle("pnv").addFunction({
 
 
 PINE.createNeedle("[pnvatt]").addFunction({
-	step_type : PINE.ops.FINALIZER,
+	step_type : PINE.ops.STATIC,
 	fn : function(initMe, needle) {
 		// console.log(initMe);
 		var rules = initMe.attributes["pnvatt"].value;

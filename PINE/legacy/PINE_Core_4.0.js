@@ -6,7 +6,7 @@
 *         | |    | | | |\  | | |__ 
 *         |_|    |_| |_| \_| |____|
 *
-*                 4.0       /\
+*                 4.1       /\
 *          by: Seph Reed   X  X
 *                           \/
 *
@@ -38,6 +38,11 @@ PINE.stopTags = [
 	"SCRIPT",
 	"STYLE",
 	"HTML"
+]
+
+PINE.noPineTags = [
+	"NOPINE",
+	"ENDPINE"
 ]
 
 
@@ -100,6 +105,16 @@ PINE.ops.STATIC = "static";
 PINE.ops.POPULATER = "populater";
 PINE.ops.DEFINER = "definer";
 PINE.ops.FINALIZER = "finalizer";
+
+
+
+PINE.ops.INITIALIZES = "init op";
+PINE.ops.IS_STATIC = "static op";
+PINE.ops.IS_FUNCTIONAL = "functional op";
+
+//inits
+//statics
+//functionals
 
 PINE.ops.order = [
 	PINE.ops.PREPROCESS, 
@@ -222,7 +237,7 @@ PINE.class.PineFunc.counter = 0;
 
 
 
-PINE.registerFunction2 = function(args)  {
+PINE.registerFunction = function(args)  {
 	var keyword = args.keyword.toUpperCase();
 	var opType = args.step_type;
 	var userFn = args.fn;
@@ -294,8 +309,7 @@ PINE.class.Needle = function(keyword) {
 
 PINE.class.Needle.prototype.addFunction = function(args) {
 	args.keyword = this.keyword;
-	// PINE.registerFunction(args);
-	PINE.registerFunction2(args);
+	PINE.registerFunction(args);
 }
 
 
@@ -372,21 +386,6 @@ PINE.class.NodeFunc = function(domNode, func) {
 
 	return this.fn;
 }
-
-// PINE.class.NodeFunc.prototype.setMainFn(func) {
-	
-
-// 	return this.fn;
-// }
-
-
-// PINE.class.NodeFunc.prototype.add = function(fn, postNotPre) {
-// 	if(postNotPre === undefined)
-// 		postNotPre = true;
-
-// 	if(postNotPre) post_fns.push(fn);
-// 	else pre_fns.push(fn);
-// };
 
 
 PINE.addFunctionToNode = function(domNode, funcName, func) {
@@ -480,7 +479,9 @@ PINE.getFirstsOf = function(root, keyword)  {
 
 
 PINE.keyApplies = function(keyword, domNode)  {
-	if(keyword && domNode)  {
+	if(keyword == '*') return true;
+		//
+	else if(keyword && domNode)  {
 		keyword = keyword.toUpperCase();
 		if(keyword.charAt(0) == '[')  {
 			var att = keyword.replace(/\[|\]/g, '');
@@ -490,6 +491,7 @@ PINE.keyApplies = function(keyword, domNode)  {
 	}
 	return false;
 }
+
 
 
 
@@ -511,54 +513,104 @@ PINE.keyApplies = function(keyword, domNode)  {
 
 document.addEventListener("DOMContentLoaded", function(event) { 
 
+	PINE.loadResources().then( function() {
+		if(PINE.debugOn === true)
+	  		PINE.initDebug();
+
+
+		PINE.run().then(function() {
+			var listeners = PINE.eventListeners[PINE.events.load];
+
+			console.log("running READY listeners");
+			if(listeners) {
+				for(var i in listeners)
+					listeners[i]();
+			}
+
+			if(PINE.debugOn === true)
+	  			setTimeout(PINE.logDebugAnalysis, 2000);
+
+	  		PINE.loaded = true;
+	  		U.log("success", "PINE Run complete");
+		});
+
+
+		setTimeout(function() {
+			if(PINE.showRunningAsyncs) {
+				var opTypes = PINE.pinefuncs.all;
+
+				for(var op in opTypes) {
+					var funcs = opTypes[op];
+					for(var fu in funcs) {
+						var func = funcs[fu];
+
+						if(func.runningAsyncs.length) {
+							var output = "Unterminated async function for "+func.needle.keyword+" "+func.opType;
+							PINE.err(output);
+						}
+					}
+				}
+				
+			}
+		}, 5000)
+
+	});
+
 	// console.log(event)
 	// alert("content loaded")
 
   	
-  	if(PINE.debugOn === true)
-  		PINE.initDebug();
-
-
-	PINE.run().then(function() {
-		var listeners = PINE.eventListeners[PINE.events.load];
-
-		console.log("running READY listeners");
-		if(listeners) {
-			for(var i in listeners)
-				listeners[i]();
-		}
-
-		if(PINE.debugOn === true)
-  			setTimeout(PINE.logDebugAnalysis, 2000);
-
-  		PINE.loaded = true;
-  		U.log("success", "PINE Run complete");
-	});
-
-
-	setTimeout(function() {
-		if(PINE.showRunningAsyncs) {
-			var opTypes = PINE.pinefuncs.all;
-
-			for(var op in opTypes) {
-				var funcs = opTypes[op];
-				for(var fu in funcs) {
-					var func = funcs[fu];
-
-					if(func.runningAsyncs.length) {
-						var output = "Unterminated async function for "+func.needle.keyword+" "+func.opType;
-						PINE.err(output);
-					}
-				}
-			}
-			
-		}
-	}, 5000)
+  	
 	
 });
 
 
 
+PINE.loadResources = function() {
+
+	var promises = [];
+	// var heads = document.getElementsByTagName("head");
+
+	// for( var i_h = 0; i_h < heads.length; i_h++ ) {
+	// 	console.log(heads[i_h]);
+
+		var resources = document.getElementsByTagName("needle");
+
+		for( var i_r = 0; i_r < resources.length; i_r++ ) {
+			promises.push(PINE.runResource(resources[i_r]));
+		}
+	// }
+
+
+	return U.Go.all(promises);	
+}
+
+PINE.addedResources = {};
+PINE.runResource = function(domNode) {
+		//
+	return U.Go(function(resolve, reject) {
+			//
+		var src = El.attr(domNode, "src");
+
+		if(PINE.addedResources[src] !== undefined) resolve();
+
+		else {
+			PINE.addedResources[src] = domNode;
+
+			U.Ajax.get(src).then( function(request) {
+				domNode.innerHTML = request.response;
+
+				var scripts = document.getElementsByTagName("script");
+				for(var sc = 0; sc < scripts.length; sc++ ) {
+					eval(scripts[sc].innerHTML);
+				}
+
+				resolve();
+			}, reject);
+		}
+	});
+
+}
 
 
 //TODO: make sure hold and steps are separated
@@ -590,6 +642,40 @@ PINE.run = function() {
 
 
 
+// PINE.addNeedleFunction('*', PINE.ops.INIT, function(initMe, needle) {
+// 	LOG("initiate", "initiate");
+// 	LOG(initMe, "initiate");
+
+// 	//do not initiate text or comments
+// 	if(initMe.nodeName == "#text" || initMe.nodeName == "#comment")
+// 		return;
+
+// 	//if not initiated, do so
+// 	if(initMe._pine_ === undefined){
+// 		initMe._pine_ = {};
+// 			//
+// 		initMe._pine_.ops = {};
+// 		initMe._pine_.ops.hold = false;
+// 		initMe._pine_.ops.queue = [];
+// 		initMe._pine_.ops.applied = {};
+
+// 		for( var i in PINE.ops.order )  {
+// 			var opType = PINE.ops.order[ i ];
+// 			initMe._pine_.ops.applied[ opType ] = [];
+// 		}
+// 			//
+// 		initMe._pine_.fns = {};
+
+// 		initMe._pine_.pinefuncHistory = {};
+// 	}
+
+// 	//pvars might be defined before an initiation
+// 	if(initMe.PVARS === undefined)
+// 		initMe.PVARS = {};
+
+// 	if(initMe.FNS === undefined)
+// 		initMe.FNS = {};
+// });
 
 
 
@@ -1436,23 +1522,42 @@ U.initArray = function(val, size)  {
 // }
 
 
-// U.attr = function(domNode, name, value) {
-// 	var target = domNode.attributes[name];
+U.Ajax = {};
+U.Ajax.get = function(url, responseType) {
+	return new Promise( function(resolve, reject) {
 
-// 	if(target == null){
-// 		if(value === undefined)
-// 			return undefined;
-// 		else return null;
-// 			//create the attribute and assign value
-// 	}
-// 	else {
-// 		if(value === undefined)
-// 			return target.value;
-// 		else
-// 			target.value = value;
-// 	}
-// }
+		var request = new XMLHttpRequest();
+		request.responseType = responseType || "text";
+		request.open('GET', url);
+		
 
+		request.onload = function() {
+			if (request.status >= 200 && request.status < 400) {
+				LOG("ajax", request.status+" "+url, request);
+
+			    resolve(request);			    
+
+			} else {
+			    request.onerror();
+			}
+		};
+
+		request.onerror = function() {
+			var err = "include src '"+url+"' does not exist";
+		  	PINE.err(err)
+		  	reject(err)
+		};
+
+		try {
+			request.send();	
+		}
+		catch(e) {
+			var err = "NS_ERROR_DOM_BAD_URI: Access to restricted URI '"+url+"' denied";
+			PINE.err(err)
+		  	reject(err)
+		}
+	});
+}
 
 
 /****

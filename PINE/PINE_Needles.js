@@ -21,7 +21,7 @@
 
 
 PINE.createNeedle("[trigger]").addFunction({
-	step_type: PINE.ops.FINALIZER,
+	step_type: PINE.ops.COMMON,
 	fn: function(initMe, needle) {
 
 		var triggerType = El.attr(initMe, "trigger");;
@@ -57,7 +57,7 @@ PINE.createNeedle("[trigger]").addFunction({
 var spawner = PINE.createNeedle("[spawner]");
 
 spawner.addFunction({
-	step_type : PINE.ops.INITIALIZER,
+	step_type : PINE.ops.STATIC,
 	fn : function(initMe, needle) {
 
 		var indexer = El.attr(initMe, "indexer") || "i";
@@ -84,7 +84,7 @@ spawner.addFunction({
 
 
 
-		PINE.addFunctionToNode(initMe, "update", function() {
+		PINE.addNodeFunction(initMe, "update", function() {
 			console.log("calling needle update")
 			needle.update(initMe);
 		});
@@ -94,7 +94,7 @@ spawner.addFunction({
 
 
 spawner.addFunction({
-	step_type : PINE.ops.POPULATER,
+	step_type : PINE.ops.COMMON,
 	fn : function(initMe, needle) {
 		if( El.attr(initMe, "autoRun") !== "false")
 			needle.update(initMe);

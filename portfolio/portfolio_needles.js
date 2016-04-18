@@ -1,5 +1,5 @@
 PINE.createNeedle("[opacity]").addFunction({
-	step_type: PINE.ops.INITIALIZER,
+	step_type: PINE.ops.COMMON,
 	fn: function(initMe, needle) {
 		var opacity = initMe.attributes.opacity ? initMe.attributes.opacity.value : "1.0";
 		$(initMe).css('opacity', opacity);	
@@ -9,7 +9,7 @@ PINE.createNeedle("[opacity]").addFunction({
 
 
 PINE.createNeedle("[textAlign]").addFunction({
-	step_type: PINE.ops.INITIALIZER,
+	step_type: PINE.ops.COMMON,
 	fn: function(initMe, needle) {
 		var align = initMe.attributes.textAlign ? initMe.attributes.textAlign.value : "left";
 		$(initMe).css('text-align', align);	
@@ -18,7 +18,7 @@ PINE.createNeedle("[textAlign]").addFunction({
 
 
 PINE.createNeedle("[fontSize]").addFunction({
-	step_type: PINE.ops.INITIALIZER,
+	step_type: PINE.ops.COMMON,
 	fn: function(initMe, needle) {
 		var fsize = initMe.attributes.fontSize ? initMe.attributes.fontSize.value : "inherit";
 		$(initMe).css('font-size', fsize);	
@@ -27,7 +27,7 @@ PINE.createNeedle("[fontSize]").addFunction({
 
 
 PINE.createNeedle("[bgImage]").addFunction({
-	step_type: PINE.ops.INITIALIZER,
+	step_type: PINE.ops.COMMON,
 	fn: function(initMe, needle) {
 		var bgImage = initMe.attributes.bgImage ? initMe.attributes.bgImage.value : "NOT SPECIFIED";
 		$(initMe).css('background-image', bgImage);	
@@ -63,7 +63,7 @@ function selectNodeText( domNode ) {
 
 
 PINE.createNeedle("[selectOnClick]").addFunction({
-	step_type: PINE.ops.POPULATER,
+	step_type: PINE.ops.STATIC,
 	fn: function(initMe, needle) {
 		initMe.addEventListener("click", function(e) {
 			selectNodeText(initMe);

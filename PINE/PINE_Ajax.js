@@ -53,8 +53,8 @@ INC.get = function(url, responseType) {
 			url = noQueryUrl;
 
 		var cache = INC.srcCache[url];
-			
-		//if this url has not yet been requested
+
+
 		if(cache == null)  {
 
 			cache = INC.srcCache[url] = {};
@@ -63,48 +63,31 @@ INC.get = function(url, responseType) {
 			cache.rejectQueue = [];
 			cache.complete = false;
 
-			var request = new XMLHttpRequest();
-			request.responseType = responseType || "text";
-			request.open('GET', url);
+			var success = function(result) {
+				LOG("include", result.status+" "+url, result);
 
-			request.onload = function() {
-				if (request.status >= 200 && request.status < 400) {
-					LOG("include", request.status+" "+url, request);
-				    cache.response = request.response;
-				    cache.complete = true;
+				cache.response = result.response;
+				cache.complete = true;
 
-				    resolve(cache.response);
+				resolve(cache.response);
 
-				    for(i in cache.resolveQueue)
-				    	cache.resolveQueue[i](cache.response);
+				for(var i in cache.resolveQueue)
+			    	cache.resolveQueue[i](cache.response);
 
-					cache.resolveQueue = [];				    
-
-				} else {
-				    request.onerror();
-				}
-			};
-
-			request.onerror = function() {
-			  	
-			  	var err = "include src '"+url+"' does not exist";
-
-			  	PINE.err(err)
-			  	reject(err)
+				cache.resolveQueue = [];
+			}
+			var failure = function(result) {
+				reject(result)
 
 			  	for(i in cache.rejectQueue)
-			    	cache.rejectQueue[i](err);
+			    	cache.rejectQueue[i](result);
 
 				cache.rejectQueue = [];
-			};
+			}
 
-			try {
-				request.send();	
-			}
-			catch(e) {
-				PINE.err("NS_ERROR_DOM_BAD_URI: Access to restricted URI '"+url+"' denied");
-				// callback(target);
-			}
+
+			U.Ajax.get(url).then(success, failure)
+
 		}			
 
 		//if the url has been requested, but not yet resolved
@@ -116,6 +99,7 @@ INC.get = function(url, responseType) {
 		//the url has been included and resolved
 		else resolve(cache.response);
 	});
+
 
 }
 
@@ -163,7 +147,7 @@ p_include.update = function(initMe, callback) {
 p_include.init = function(initMe, needle, pineFunc) {
 	p_include.update(initMe, pineFunc.complete);
 
-	PINE.addFunctionToNode(initMe, "changeSrc", function(src, callback) {
+	PINE.addNodeFunction(initMe, "changeSrc", function(src, callback) {
 		// callback = callback || function(){};
 		initMe.setAttribute("src", src);
 		p_include.update(initMe, function(){
@@ -174,7 +158,7 @@ p_include.init = function(initMe, needle, pineFunc) {
 
 
 p_include.addFunction({
-	step_type : PINE.ops.STATIC,
+	step_type : PINE.ops.COMMON,
 	autoComplete : false,
 	fn: p_include.init
 });
@@ -206,7 +190,7 @@ p_view.init = function(initMe, needle, pineFunc) {
 	p_view.update(initMe, pineFunc.complete);
 
 
-	PINE.addFunctionToNode(initMe, "changeSrc", function(src, callback) {
+	PINE.addNodeFunction(initMe, "changeSrc", function(src, callback) {
 		// callback = callback || function(){};
 		initMe.setAttribute("src", src);
 		p_view.update(initMe, function(){
@@ -214,15 +198,15 @@ p_view.init = function(initMe, needle, pineFunc) {
 		});
 	});
 
-	PINE.addFunctionToNode(initMe, "dropView", function(url) {
+	PINE.addNodeFunction(initMe, "dropView", function(url) {
 		p_view.dropView(initMe, url);
 	});
 
-	PINE.addFunctionToNode(initMe, "dropAllViews", function() {
+	PINE.addNodeFunction(initMe, "dropAllViews", function() {
 		p_view.dropAllViews(initMe);
 	});
 
-	PINE.addFunctionToNode(initMe, "dropViewsContaining", function(url) {
+	PINE.addNodeFunction(initMe, "dropViewsContaining", function(url) {
 		p_view.dropViewsContaining(initMe, url);
 	});
 }
@@ -316,7 +300,7 @@ p_view.update = function(initMe, callback) {
 }
 
 p_view.addFunction({
-	step_type : PINE.ops.STATIC,
+	step_type : PINE.ops.COMMON,
 	autoComplete : false,
 	fn: p_view.init
 });
@@ -334,7 +318,7 @@ p_view.addFunction({
 
 var p_changeSrc = PINE.createNeedle("changeSrc");
 p_changeSrc.addFunction({
-	step_type : PINE.ops.FINALIZER,
+	step_type : PINE.ops.COMMON,
 	fn: function(initMe, needle) {
 		
 
@@ -371,7 +355,7 @@ p_changeSrc.addFunction({
 var p_needle = PINE.createNeedle("needle");
 
 p_needle.addFunction({
-	step_type : PINE.ops.INITIALIZER,
+	step_type : PINE.ops.INIT,
 	autoComplete : false,
 	fn: function(initMe, needle, pineFunc) {
 		console.log("updating")

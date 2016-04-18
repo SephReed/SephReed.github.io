@@ -19,7 +19,7 @@
 
 
 	<!-- PINE -->
-	<script src="../PINE/PINE_Core_4.0.js"></script>
+	<script src="../PINE/PINE_Core_4.2.js"></script>
 	<script>PINE.disable(["PINE", "[SPAWNER]", "VIEW", "NEEDLE", "CHANGESRC"]);</script>
 	<script src="../PINE/PINE_Needles.js"></script>
 	<script src="../PINE/PINE_Ajax.js"></script>
@@ -73,7 +73,7 @@
 
 	<script>
 	PINE.createNeedle("bgimg").addFunction({
-		step_type: PINE.ops.POPULATER,
+		step_type: PINE.ops.COMMON,
 		fn: function(initMe, needle) {
 
 			//POS
@@ -162,7 +162,7 @@
 
 	<script type="text/javascript">
 	PINE.createNeedle("overlay").addFunction({
-		step_type: PINE.ops.STATIC,
+		step_type: PINE.ops.COMMON,
 		fn: function(initMe, needle) {
 
 			initMe.style.position = "fixed";
@@ -200,7 +200,7 @@
 
 			var fade = initMe.attributes.fade ? initMe.attributes.fade.value : null;
 
-			PINE.addFunctionToNode(initMe, "show", function() {
+			PINE.addNodeFunction(initMe, "show", function() {
 				initMe.style.display = "inherit";
 
 				console.log(fade);
