@@ -6,7 +6,7 @@
 *         | |    | | | |\  | | |__ 
 *         |_|    |_| |_| \_| |____|
 *
-*                 4.0       /\
+*                 4.2       /\
 *          by: Seph Reed   X  X
 *                           \/
 *
@@ -20,25 +20,18 @@
 ***************/
 
 
-PINE.createNeedle("[trigger]").addFunction({
-	step_type: PINE.ops.COMMON,
-	fn: function(initMe, needle) {
+PINE.createNeedle("[trigger]").addFunction( function(initMe) {
 
-		var triggerType = El.attr(initMe, "trigger");;
+	var triggerType = El.attr(initMe, "trigger");
 
+	initMe.addEventListener(triggerType, function(event) {
+		var target = El.attr(initMe, "target");
+		var fn = El.attr(initMe, "fn");
+		var args = El.attr(initMe, "args");
 
-		initMe.addEventListener(triggerType, function(event) {
-			var target = El.attr(initMe, "target");
-			var fn = El.attr(initMe, "fn");
-			var args = El.attr(initMe, "args");
-
-			// El.byId(target).each(function() {
-			// 	this.FNS[fn]();
-			// });
-			El.byId(target).FNS[fn]();
-		}, false);
-		
-	}
+		El.byId(target).FNS[fn]();
+	}, false);
+	
 });
 
 
@@ -56,61 +49,47 @@ PINE.createNeedle("[trigger]").addFunction({
 
 var spawner = PINE.createNeedle("[spawner]");
 
-spawner.addFunction({
-	step_type : PINE.ops.STATIC,
-	fn : function(initMe, needle) {
+spawner.addFunction( PINE.ops.STATIC, function(initMe) {
 
-		var indexer = El.attr(initMe, "indexer") || "i";
+	var indexer = El.attr(initMe, "indexer") || "i";
 
-		U.assertKey(initMe, "_pine_.spawner");
-		initMe._pine_.spawner.indexer = indexer;
-		
-		var branches = initMe.childNodes;
-		var spawn = null;
-		for(var i = 0; i < branches.length && !spawn; i++)  {
-			var branch = branches[i];
-			var atts = branch.attributes;
+	U.assertKey(initMe, "_pine_.spawner");
+	initMe._pine_.spawner.indexer = indexer;
+	
+	var branches = initMe.childNodes;
+	var spawn = null;
+	for(var i = 0; i < branches.length && !spawn; i++)  {
+		var branch = branches[i];
+		var atts = branch.attributes;
 
-			for(var i_att = 0; atts && i_att < atts.length && !spawn; i_att++)  {
-				if("spawn" == atts[i_att].name)  {
-					spawn = branch;	
-				}
+		for(var i_att = 0; atts && i_att < atts.length && !spawn; i_att++)  {
+			if("spawn" == atts[i_att].name)  {
+				spawn = branch;	
 			}
 		}
-		if(spawn)  {
-			initMe._pine_.spawner.spawn = spawn;
-			initMe.removeChild(spawn);
-		}
-
-
-
-		PINE.addNodeFunction(initMe, "update", function() {
-			console.log("calling needle update")
-			needle.update(initMe);
-		});
-
 	}
+	if(spawn)  {
+		initMe._pine_.spawner.spawn = spawn;
+		initMe.removeChild(spawn);
+	}
+
+
+	var needle = this;
+	PINE.addNodeFunction(initMe, "update", function() {
+		console.log("calling needle update")
+		needle.update(initMe);
+	});
+
 });
 
 
-spawner.addFunction({
-	step_type : PINE.ops.COMMON,
-	fn : function(initMe, needle) {
-		if( El.attr(initMe, "autoRun") !== "false")
-			needle.update(initMe);
-	}
+spawner.addFunction( function(initMe) {
+	if( El.attr(initMe, "autoRun") !== "false")
+		this.update(initMe);
 });
 
 
 spawner.update = function(initMe) {
-	// var keyString = initMe.attributes.spawner.value;
-	// var spawnerSource = pnv.getVarFrom(keyString, initMe);
-
-
-
-	// console.log(array)
-	// console.log(initMe);
-	// alert("pause needle ~100");
 
 	var spawn = initMe._pine_.spawner.spawn;
 

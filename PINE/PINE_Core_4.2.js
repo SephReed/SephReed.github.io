@@ -102,148 +102,6 @@ PINE.ops.order = [
 
 
 
-/**********************************
-*	 	<>PINEFUNC STUFF
-**********************************/
-
-PINE.pinefuncs = {};
-PINE.pinefuncs.all = {};  //bookeeping
-PINE.pinefuncs.queued = {};  //for super root, only remove oneOffs
-PINE.pinefuncs.passed = {};  //for late commers
-
-
-for(var i in PINE.ops.order)  {
-		//
-	var opType = PINE.ops.order[i];
-
-	PINE.pinefuncs.all[ opType ] = [];
-	PINE.pinefuncs.queued[ opType ] = [];
-	PINE.pinefuncs.passed[ opType ] = [];
-}
-
-
-
-
-//<>Pinefunc
-PINE.class.PineFunc = function(needle, opType, userFn, autoComplete, oneOff)  {
-	var my = this;
-
-	my.id = PINE.class.PineFunc.counter;
-	PINE.class.PineFunc.counter++;
-
-	my.keyword = needle.keyword;
-	my.needle = needle;
-	my.opType = opType;
-	my.oneOff = true;
-	my.runningAsyncs = [];
-
-	
-	my.fn = function(domNode)  {
-
-		return U.Go( function( resolve, reject )  {
-			var helpers = {};
-			var pinefunc = my;
-			var history = domNode._pine_.pinefuncHistory;
-			var passed = history[my.id];
-
-			my.needle.uses += 1;
-
-			helpers.complete = function() { 
-				// console.log("complete");
-				// console.log(domNode);
-				// console.log(pinefunc.keyword);
-
-				history[my.id] = true;
-				// domNode._pine_.needles[pinefunc.keyword].passed = true;
-				// callbackPermeate(pinefunc);
-				if(autoComplete == false) {
-					LOG("async", "completing async function for "+my.keyword);
-					my.runningAsyncs.shift();
-				}
-
-				resolve();
-			}
-
-
-			// var passed = U.getnit(domNode, "_pine_.needles['"+my.keyword+"'].passed", false);
-			// LOG(my.keyword+" passed = "+passed, "pinefunc");
-			
-
-			// var passes = U.getnit(domNode, "_pine_.pinefuncs", {});
-			// LOG(my.keyword+" passed = "+passed, "pinefunc");
-
-
-			if(!passed || !my.oneOff) {
-
-				// alert(my.needle.keyword+my.opType+my.id+" IS ON");
-
-				LOG("pinefunc", "running needle "+my.needle.keyword+my.opType+my.id+" at", domNode);
-				userFn.call(helpers, domNode, my.needle, helpers);
-
-				if(autoComplete) {
-					LOG("pinefunc", "calling autoComplete for "+my.needle.keyword+my.opType+my.id);
-					helpers.complete();
-				}
-				else {
-					my.runningAsyncs.push(domNode);
-				}
-			}
-			else {
-				LOG("pinefunc", my.needle.keyword+my.opType+my.id+" not being run a second time");
-				helpers.complete();
-			}
-		});
-		
-	}
-}
-
-PINE.class.PineFunc.counter = 0;
-
-
-
-
-PINE.registerFunction = function(args)  {
-	var keyword = args.keyword.toUpperCase();
-	var opType = args.step_type;
-	var userFn = args.fn;
-	var autoComplete = !(args.autoComplete == false);
-	var oneOff = args.oneOff || false;
-	var asyncContent = args.asyncContent || false;
-
-
-	var needle = PINE.get(keyword);
-	var pinefuncs = PINE.pinefuncs;
-
-
-	if(needle == null)  
-		PINE.err("needle of keyword:"+keyword+" does not exist.  Use PINE.createNeedle(keyword) first");
-
-	else if(opType == null)
-		PINE.err("opType specified by needle '"+keyword+"' is undefined");
-
-	
-	else {
-		var addMe = new PINE.class.PineFunc(needle, opType, userFn, autoComplete, oneOff);
-		
-		if(pinefuncs.all[opType] == null) {
-			PINE.err("operation of type '"+opType+"' specified by needle '"+keyword+"' does not exist");
-			return;
-		// 	pinefuncs.all[opType] = pinefuncs.all[opType] | [];
-		// 	pinefuncs.queued[opType] = pinefuncs.queued[opType] | [];
-		// 	pinefuncs.passed[opType] = pinefuncs.passed[opType] | [];
-		}
-
-		pinefuncs.all[opType].push(addMe);
-		pinefuncs.queued[opType].push(addMe);
-
-		if(needle.pinefuncs[opType] == null)
-			needle.pinefuncs[opType] = [];
-
-		needle.pinefuncs[opType].push(addMe);
-
-		
-	}
-}
 
 
 
@@ -263,24 +121,41 @@ PINE.class.Needle = function(keyword) {
 	this.uses = 0;
 	this.pinefuncs = {};
 
-	for(var i in PINE.OrderOfOperations)  {
-			//
-		var opType = PINE.OrderOfOperations[i];
-
+	for(var i in PINE.ops.order)  {
+		var opType = PINE.ops.order[i];
 		this.pinefuncs[ opType ] = [];
 	}
 
 }
 
 
-PINE.class.Needle.prototype.addFunction = function(args) {
-	args.keyword = this.keyword;
-	PINE.registerFunction(args);
+PINE.class.Needle.prototype.addFunction = function(arg1, arg2) {
+
+	var args;
+
+	if(typeof arg1 == "object") {
+		args = arg1;
+	}
+	else if(typeof arg1 == "string" && typeof arg2 == "function") { 	
+		args = {};
+		args.opType = arg1;
+		args.fn = arg2;
+	}
+	else if(typeof arg1 == "function" && arg2 === undefined ) {
+		args = {};
+		args.opType = PINE.ops.COMMON;
+		args.fn = arg1;
+	}
+	else {
+		PINE.err("needle.addFunction has unrecognized parameters ("+typeof arg1+", "+typeof arg2+")");
+		return;
+	}
+
+	args.needle = this;
+
+	PINE.registerPineFunc(args);
 }
 
-
-PINE.class.DummyNeedle = function(keyword) {}
-PINE.class.DummyNeedle.prototype.addFunction = function(args) {}
 
 
 
@@ -289,7 +164,9 @@ PINE.createNeedle = function(key)  {
 
 	if(PINE.disabledNeedles.indexOf(key) !== -1) {
 		U.log("info", "Needle of type: "+key+" disabled")
-		return new PINE.class.DummyNeedle(key);
+		var dummyNeedle = {};
+		dummyNeedle.addFunction = function(){};
+		return dummyNeedle;
 	}
 
 	var needles = PINE.needles;
@@ -322,8 +199,125 @@ PINE.Needle = function(keyword) {
 }
 
 
-// PINE.createNeedle("PINE");
 
+
+
+/**********************************
+*	 	<>PINEFUNC STUFF
+**********************************/
+
+PINE.pinefuncs = {};
+PINE.pinefuncs.all = {};  //bookeeping
+PINE.pinefuncs.queued = {};  //for super root, only remove oneOffs
+PINE.pinefuncs.passed = {};  //for late commers
+
+
+for(var i in PINE.ops.order)  {
+		//
+	var opType = PINE.ops.order[i];
+
+	PINE.pinefuncs.all[ opType ] = [];
+	PINE.pinefuncs.queued[ opType ] = [];
+	PINE.pinefuncs.passed[ opType ] = [];
+}
+
+
+
+
+
+PINE.registerPineFunc = function(args)  {
+
+	var needle = args.needle;
+	var keyword = needle.keyword;
+	var opType = args.opType;
+	var userFn = args.fn;
+	
+	var isAsync = args.isAsync === true;
+	var isMultirun = args.isMultirun === true;
+
+	var pinefuncs = PINE.pinefuncs;
+
+
+	if(opType == null)
+		PINE.err("opType specified by needle '"+keyword+"' is undefined");
+
+	else if(userFn == null)  
+		PINE.err("function specified by needle '"+keyword+"' for opType "+opType+" is undefined");
+
+	else if(pinefuncs.all[opType] == null) 
+		PINE.err("operation of type '"+opType+"' specified by needle '"+keyword+"' does not exist");
+
+	else {
+		var addMe = new PINE.class.PineFunc(needle, opType, userFn, isAsync, isMultirun);
+		
+		pinefuncs.all[opType].push(addMe);
+		pinefuncs.queued[opType].push(addMe);
+
+		console.log(needle);
+
+		needle.pinefuncs[opType].push(addMe);
+	}
+}
+
+
+
+
+//<>Pinefunc
+PINE.class.PineFunc = function(needle, opType, userFn, isAsync, isMultirun)  {
+	var my = this;
+
+	my.id = PINE.class.PineFunc.counter++;
+
+	my.keyword = needle.keyword;
+	my.needle = needle;
+	my.opType = opType;
+		//
+	my.isAsync = isAsync;
+	my.runningAsyncs = [];
+
+	my.isMultirun = isMultirun;
+
+	
+	my.fn = function(domNode)  {
+
+		return U.Go( function( resolve, reject )  {
+			var pinefunc = my;
+			var history = domNode._pine_.pinefuncHistory;
+			var passed = history[my.id];
+
+			history[my.id] = true;
+			my.needle.uses += 1;
+
+			var onComplete = function() { 
+				if(my.isAsync == true) {
+					LOG("async", "completing async function for "+my.keyword);
+					my.runningAsyncs.shift();
+				}
+				resolve();
+			}
+
+
+			if(!passed || my.isMultirun) {
+				LOG("pinefunc", "running needle "+my.needle.keyword+my.opType+my.id+" at", domNode);
+
+				if(my.isAsync == false) {
+					userFn.call(my.needle, domNode);
+					onComplete();
+				}
+				else {
+					userFn.call(my.needle, domNode, onComplete);
+					my.runningAsyncs.push(domNode);
+				}
+			}
+			else {
+				LOG("pinefunc", my.needle.keyword+my.opType+my.id+" not being run a second time");
+				onComplete();
+			}
+		});
+	}
+}
+
+PINE.class.PineFunc.counter = 0;
 
 
 
@@ -388,42 +382,6 @@ PINE.getNodeFunction = function(domNode, funcName) {
 
 
 
-/**********************************
-*	 	NEEDLE HELPERS
-**********************************/
-
-
-
-
-
-
-// PINE.atFirstHtml = function(domNode, callback)  {
-
-// 	if(domNode.innerHTML.match(/.+/g))
-// 		callback(domNode);
-
-// 	else {
-// 		// create an observer instance
-// 		var observer = new MutationObserver(function(mutations) {
-// 			if(domNode.innerHTML.match(/.+/g)) {
-// 				observer.disconnect();
-// 				callback(domNode);
-// 			}
-// 		});
-		 
-// 		var config = { childList: true, subtree: true }; 
-// 		observer.observe(domNode, config);
-// 	}
-// }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -474,18 +432,9 @@ PINE.keyApplies = function(keyword, domNode)  {
 
 
 
-
-
-/******************************************
-*   ___   ___   __    ___
-*  |_ _| |   | |  \  |   |
-*   | |  | | | | | | | | |
-*   |_|  |___| |__/  |___|
-*
-*	Make holds and current step separate
-*
-********************************************/
-
+/**********************************
+*	 	          RUN
+**********************************/
 
 
 
@@ -513,24 +462,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		});
 
 
-		setTimeout(function() {
-			if(PINE.showRunningAsyncs) {
-				var opTypes = PINE.pinefuncs.all;
-
-				for(var op in opTypes) {
-					var funcs = opTypes[op];
-					for(var fu in funcs) {
-						var func = funcs[fu];
-
-						if(func.runningAsyncs.length) {
-							var output = "Unterminated async function for "+func.needle.keyword+" "+func.opType;
-							PINE.err(output);
-						}
-					}
-				}
-				
-			}
-		}, 5000)
+		setTimeout(PINE.Debug.showRunningAsyncs, 5000)
 
 	});
 
@@ -547,18 +479,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 PINE.loadResources = function() {
 
 	var promises = [];
-	// var heads = document.getElementsByTagName("head");
 
-	// for( var i_h = 0; i_h < heads.length; i_h++ ) {
-	// 	console.log(heads[i_h]);
+	var resources = document.getElementsByTagName("needle");
 
-		var resources = document.getElementsByTagName("needle");
-
-		for( var i_r = 0; i_r < resources.length; i_r++ ) {
-			promises.push(PINE.runResource(resources[i_r]));
-		}
-	// }
-
+	for( var i_r = 0; i_r < resources.length; i_r++ ) {
+		promises.push(PINE.runResource(resources[i_r]));
+	}
 
 	return U.Go.all(promises);	
 }
@@ -591,7 +517,6 @@ PINE.runResource = function(domNode) {
 }
 
 
-//TODO: make sure hold and steps are separated
 
 
 
@@ -670,9 +595,26 @@ PINE.initiate = function(root) {
 
 
 
+
+
+
+
+
+
+/******************************************
+*   ___   ___   ___   ___   _ _   ___
+*  |  _| | _ \ | _ \ |   | | | | |_ _|
+*  |_  | |  _/ |   / | | | | | |  | |
+*  |___| |_|   |_|\_\|___| |___|  |_|
+*
+*	Make holds and current step separate
+*
+********************************************/
+
+
+
+
 PINE.growingSprouts = [];
-
-
 
 //Sprout is a major function.  it applies all fuctions in queued ops to root
 //and it's children, moving them to passedOps when they are complete, and then
@@ -967,22 +909,13 @@ PINE.permeateChildren = function(root, opFuncs, layer, sproutState) {
 
 		if(branches && branches.length) {
 
-			// var childListCopy = [];
 			var childPermPromises = [];
 				//
 			for(var i = 0; i < branches.length; i++)  {
-				// childListCopy.push(branches[i]);
 				childPermPromises.push( PINE.permeate(branches[i], opFuncs, layer, sproutState) );
 			}
 
-			// console.log( layer + "child promises", childPermPromises )
 			U.Go.all(childPermPromises).then(resolve);
-
-
-			// var childCallback = PINE.createChildCallback(root, opFuncs, childListCopy, callbackParent);
-				//
-			// for(var i = 0; i < childListCopy.length; i++)  
-				// PINE.permeate2(childListCopy[i], opFuncs, childCallback);
 				
 		}
 		else resolve();
@@ -1153,6 +1086,27 @@ PINE.initDebug = function()  {
 
 	
 
+}
+
+
+PINE.Debug = {};
+PINE.Debug.showRunningAsyncs = function() {
+	if(PINE.showRunningAsyncs) {
+		var opTypes = PINE.pinefuncs.all;
+
+		for(var op in opTypes) {
+			var funcs = opTypes[op];
+			for(var fu in funcs) {
+				var func = funcs[fu];
+
+				if(func.runningAsyncs.length) {
+					var output = "Unterminated async function for "+func.needle.keyword+" "+func.opType;
+					PINE.err(output);
+				}
+			}
+		}
+		
+	}
 }
 
 
@@ -1356,38 +1310,6 @@ U.assertArray = function(start, keyString)  {
 }
 
 
-// U.clone = function(obj) {
-//     if (null == obj)  return obj;
-
-//     // console.log(typeof obj + "::");
-//     // console.log(obj);
-
-//     if("object" == typeof obj)  {
-//     	var copy;
-//     	try { copy = obj.constructor(); }
-//     	catch(e) {
-//     		PINE.err("Trynig to copy an object which references itself", e);
-
-//     		return;
-//     	}
-
-//     	// console.log("should not be last");
-
-// 	    for (var attr in obj) {
-// 	        if (obj.hasOwnProperty(attr)) {
-// 	        	copy[attr] = U.clone(obj[attr]);
-// 	        }
-//     	}
-//     }
-//     else if("array" == typeof obj)  {
-//     	// console.log("IN ARRAY");
-//     	PINE.err("U.clone array case unfinished");
-//     }
-//     else return obj;
-    
-//     return copy;
-// }
-
 
 U.initArray = function(val, size)  {
 	var out = [];
@@ -1397,36 +1319,6 @@ U.initArray = function(val, size)  {
 	return out;
 }
 
-
-
-// PINE.deepCloneNode = function(cloneMe)  {
-// 	// console.log("cloning:");
-// 	// console.log(cloneMe);
-
-// 	var out = cloneMe.cloneNode(true);
-// 	out._pine_ = U.clone(cloneMe._pine_);
-
-// 	return out;
-// }
-
-
-
-
-// U.ajax = function(url, callback){
-//     var xmlhttp;
-//     // compatible with IE7+, Firefox, Chrome, Opera, Safari
-//     xmlhttp = new XMLHttpRequest();
-//     xmlhttp.onreadystatechange = function(){
-//         if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
-//             callback(xmlhttp.responseText);
-//         }
-//         else {
-//         	console.log("error in U.ajax");
-//         }
-//     }
-//     xmlhttp.open("GET", url, true);
-//     xmlhttp.send();
-// }
 
 
 U.Ajax = {};
@@ -1776,10 +1668,8 @@ U.Async.prototype.run = function(resolve, reject) {
 var El = PINE.UTILITIES.ELEMENT = {};
 
 El.byId = function(id) {
-	return(document.getElementById(id));
+	return document.getElementById(id);
 }
-
-
 
 El.attr = function(domNode, name, value) {
 	if(domNode.attributes) {
@@ -1788,8 +1678,9 @@ El.attr = function(domNode, name, value) {
 		if(target == null){
 			if(value === undefined)
 				return undefined;
-			else return null;
-				//create the attribute and assign value
+			else {
+				domNode.setAttribute(name, value);
+			}
 		}
 		else {
 			if(value === undefined)

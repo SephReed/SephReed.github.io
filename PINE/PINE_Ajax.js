@@ -6,7 +6,7 @@
 *         | |    | | | |\  | | |__ 
 *         |_|    |_| |_| \_| |____|
 *
-*                 4.0       /\
+*                 4.2       /\
 *          by: Seph Reed   X  X
 *                           \/
 *
@@ -144,8 +144,8 @@ p_include.update = function(initMe, callback) {
 
 
 
-p_include.init = function(initMe, needle, pineFunc) {
-	p_include.update(initMe, pineFunc.complete);
+p_include.init = function(initMe, onComplete) {
+	p_include.update(initMe, onComplete);
 
 	PINE.addNodeFunction(initMe, "changeSrc", function(src, callback) {
 		// callback = callback || function(){};
@@ -158,8 +158,8 @@ p_include.init = function(initMe, needle, pineFunc) {
 
 
 p_include.addFunction({
-	step_type : PINE.ops.COMMON,
-	autoComplete : false,
+	opType : PINE.ops.COMMON,
+	isAsync : true,
 	fn: p_include.init
 });
 
@@ -183,11 +183,11 @@ INC.View = function(url) {
 var p_view = PINE.createNeedle("view");
 
 
-p_view.init = function(initMe, needle, pineFunc) {
+p_view.init = function(initMe, onComplete) {
 	initMe._pine_.views = {};
 	initMe._pine_.currentUrl = "unset";
 
-	p_view.update(initMe, pineFunc.complete);
+	p_view.update(initMe, onComplete);
 
 
 	PINE.addNodeFunction(initMe, "changeSrc", function(src, callback) {
@@ -300,8 +300,8 @@ p_view.update = function(initMe, callback) {
 }
 
 p_view.addFunction({
-	step_type : PINE.ops.COMMON,
-	autoComplete : false,
+	opType : PINE.ops.COMMON,
+	isAsync : true,
 	fn: p_view.init
 });
 
@@ -317,29 +317,19 @@ p_view.addFunction({
 
 
 var p_changeSrc = PINE.createNeedle("changeSrc");
-p_changeSrc.addFunction({
-	step_type : PINE.ops.COMMON,
-	fn: function(initMe, needle) {
+p_changeSrc.addFunction( function(initMe, needle) {
+
+	initMe.addEventListener("click", function(event) {
 		
+		var src = El.attr(initMe, "src");
 
-		// if (initMe.HACK_USED_changeSrc !== true) {
+		var target = El.attr(initMe, "target");
+		var domNode = document.getElementById(target);
 
-		initMe.addEventListener("click", function(event) {
-			
-			var src = El.attr(initMe, "src");
-
-			var target = El.attr(initMe, "target");
-			var domNode = document.getElementById(target);
-
-			if(domNode && domNode.FNS && domNode.FNS.changeSrc) {
-				// alert(src);
-				domNode.FNS.changeSrc(src);
-			}
-		});
-		// }
-
-		// initMe.HACK_USED_changeSrc = true;
-	}
+		if(domNode && domNode.FNS && domNode.FNS.changeSrc)
+			domNode.FNS.changeSrc(src);
+		
+	});
 });
 
 
@@ -355,9 +345,9 @@ p_changeSrc.addFunction({
 var p_needle = PINE.createNeedle("needle");
 
 p_needle.addFunction({
-	step_type : PINE.ops.INIT,
-	autoComplete : false,
-	fn: function(initMe, needle, pineFunc) {
+	opType : PINE.ops.INIT,
+	isAsync : true,
+	fn: function(initMe, onComplete) {
 		console.log("updating")
 
 
@@ -380,7 +370,7 @@ p_needle.addFunction({
 
 
 				// callback ? callback() : null
-				pineFunc.complete();
+				onComplete();
 			});
 		
 		} else {

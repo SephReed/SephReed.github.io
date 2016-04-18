@@ -6,7 +6,7 @@
 *         | |    | | | |\  | | |__ 
 *         |_|    |_| |_| \_| |____|
 *
-*                 4.0       /\
+*                 4.2       /\
 *          by: Seph Reed   X  X
 *                           \/
 *
@@ -21,49 +21,19 @@ var pnv = PINE.pnv = {};
 
 
 
-PINE.Needle('*').addFunction( {
-	step_type: PINE.ops.INIT, 
-	fn: function(initMe) {
-		// console.log("running PNV STUFF")
+PINE.Needle('*').addFunction( PINE.ops.INIT, function(initMe) {
+	
 
-		var childNodes = initMe.childNodes;
-		for(var ch in childNodes) {
-			var child = childNodes[ch];
-			if(child.nodeName == "#text")  
-				pnv.parseText(child);
-		}
-
-		
-		var pnvatt = initMe.attributes.pnvatt;
-
-		for(var i = 0; i < initMe.attributes.length; i++)  {
-			var att = initMe.attributes[i];
-
-			if(att != pnvatt)  {
-				var watched_vars = att.value.match( /{{.+?}}/g );
-				if(watched_vars)  {
-					// console.log(att);	
-
-					if(pnvatt == null)  {
-						pnvatt = document.createAttribute("pnvatt");
-						initMe.setAttributeNode(pnvatt);
-					}
-
-					if(pnvatt.value.length > 0)  {
-						//KLUDGE: fix me if you can
-						pnvatt.value += ":+:";
-					}
-
-					// pnvatt.value += att.name+"="+watched_vars[0];
-					pnvatt.value += att.name+"="+att.value;
-					att.value = "";
-
-				}
-			}
-			
-		}
-		
+	var childNodes = initMe.childNodes;
+	for(var ch in childNodes) {
+		var child = childNodes[ch];
+		if(child.nodeName == "#text")  
+			pnv.parseText(child);
 	}
+
+	pnv.parseAtts(initMe);
+	
+		
 });
 
 
@@ -103,21 +73,35 @@ PINE.pnv.parseText = function(initMe)  {
 
 
 PINE.pnv.parseAtts = function(initMe)  {
+	var pnvatt = initMe.attributes.pnvatt;
 
-	  return;
+	for(var i = 0; i < initMe.attributes.length; i++)  {
+		var att = initMe.attributes[i];
 
-	
+		if(att != pnvatt)  {
+			var watched_vars = att.value.match( /{{.+?}}/g );
+			if(watched_vars)  {
+				// console.log(att);	
 
-	// var branches = root.childNodes;
+				if(pnvatt == null)  {
+					pnvatt = document.createAttribute("pnvatt");
+					initMe.setAttributeNode(pnvatt);
+				}
 
-	// for(var i = 0; i < branches.length; i++)  {
-	// 	var branch = branches[i];
-	// 	var nodeName = branch.nodeName;
+				if(pnvatt.value.length > 0)  {
+					//KLUDGE: fix me if you can
+					pnvatt.value += ":+:";
+				}
 
-	// 	if(nodeName!="#text" && nodeName!="#comment")  {
-	// 		pnv.parseAtts(branch);
-	// 	}
-	// }
+				// pnvatt.value += att.name+"="+watched_vars[0];
+				pnvatt.value += att.name+"="+att.value;
+				att.value = "";
+
+			}
+		}
+		
+	}
+
 }
 
 
@@ -125,18 +109,13 @@ PINE.pnv.parseAtts = function(initMe)  {
 
 
 
-PINE.createNeedle("pnv").addFunction({
-	step_type : PINE.ops.STATIC,
-	fn : function(initMe, needle) {
-		var get = El.attr(initMe, "var");
+PINE.createNeedle("pnv").addFunction( PINE.ops.STATIC, function(initMe, needle) {
+	var get = El.attr(initMe, "var");
 
-		if(get != null)  {
-
-			PINE.var(get, initMe, function(val) {
-				initMe.innerHTML = val;	
-			});
-			
-		}
+	if(get != null)  {
+		PINE.var(get, initMe, function(val) {
+			initMe.innerHTML = val;	
+		});
 	}
 });
 
@@ -148,44 +127,42 @@ PINE.createNeedle("pnv").addFunction({
 
 
 
-PINE.createNeedle("[pnvatt]").addFunction({
-	step_type : PINE.ops.STATIC,
-	fn : function(initMe, needle) {
-		// console.log(initMe);
-		var rules = initMe.attributes["pnvatt"].value;
+PINE.createNeedle("[pnvatt]").addFunction( PINE.ops.STATIC, function(initMe, needle) {
+		//
+	var rules = initMe.attributes["pnvatt"].value;
 
-		//KLUDGE: fix me if you can
-		var pairs = rules.split(":+:");
-		for(var i_p in pairs)  {
+	//KLUDGE: fix me if you can
+	var pairs = rules.split(":+:");
+	for(var i_p in pairs)  {
 
-			// console.log(pairs[i_p]);
+		// console.log(pairs[i_p]);
 
-			var splitPoint = pairs[i_p].indexOf("=");
-			// var rule = pairs[i_p].split('=', 2);
+		var splitPoint = pairs[i_p].indexOf("=");
+		// var rule = pairs[i_p].split('=', 2);
 
-			// console.log(rule);
+		// console.log(rule);
 
-			var setAtt = pairs[i_p].substring(0, splitPoint);
-			var outVal = pairs[i_p].substring(splitPoint+1);
-			var matches = outVal.match(/{{.+?}}/g);
+		var setAtt = pairs[i_p].substring(0, splitPoint);
+		var outVal = pairs[i_p].substring(splitPoint+1);
+		var matches = outVal.match(/{{.+?}}/g);
 
-			for(var i_m in matches)  {
-				
-
-				var replaceMe = matches[i_m];
-
-				var key = matches[i_m].replace(/[{}]/g, '');
-				var addMe = pnv.getVarFrom(key, initMe); 
-
-				outVal = outVal.replace(replaceMe, addMe);
-
-			}
-
+		for(var i_m in matches)  {
 			
 
-			initMe.attributes[setAtt].value = outVal;
+			var replaceMe = matches[i_m];
+
+			var key = matches[i_m].replace(/[{}]/g, '');
+			var addMe = pnv.getVarFrom(key, initMe); 
+
+			outVal = outVal.replace(replaceMe, addMe);
+
 		}
+
+		
+
+		initMe.attributes[setAtt].value = outVal;
 	}
+	
 });
 
 
