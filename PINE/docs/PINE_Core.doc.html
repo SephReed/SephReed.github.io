@@ -203,7 +203,7 @@
 				<h1>PINE.Utilities</h1>
 				U = PINE.Utilities => object<br>
 				<br>
-				Utilities is a collection of functions which will probably some day become native functions.
+				Utilities is a collection of functions which should probably all be built into javascript by default but still are being managed by frameworks.
 
 				<funcDoc id="coreUAjax" index>
 					<h1>Utilities.Ajax</h1>
@@ -212,7 +212,7 @@
 					Ajax is a small set of common ajax functions.
 
 					<funcDoc id="coreUAjaxGet" index>
-						<h1>Ajax.get</h1>
+						<h1>Ajax.get()</h1>
 						U.Ajax.get(url, responseType) => Promise => XmlHTTPRequest (fulfilled)<br>
 						<br>
 						The common Ajax get.
@@ -224,19 +224,109 @@
 					</funcDoc>
 				</funcDoc>
 
-				<funcDoc id="coreULog" index>
-					<h1>Utilities.log</h1>
-					U.log(colorStyle, elements...)<br>
+				<funcDoc id="coreUColorLog" index>
+					<h1>Utilities.colorLog()</h1>
+					U.colorLog(colorStyle, elements...)<br>
 					<br>
-					Log is basically console.log but with coloring.
+					For most logging cases, you should just use LOG().  colorLog is basically console.log but with coloring.  The color choices are ["success", "error", "info", "light"]<br>
+
+					<pre pretifyCode="js">
+						U.colorLog("success", "something good happened in", window);  //output will be green and yellow in console
+					</pre>
 				</funcDoc>
 
 				<funcDoc id="coreUCookie" index>
-					<h1>Utilities.Cookie</h1>
-					U.getCookie(String cookieName [, String value])<br>
+					<h1>Utilities.cookie()</h1>
+					U.cookie(String cookieName) => String cookieVal
+					U.cookie(String cookieName, String value [, int days_till_expire])<br>
 					<br>
+					U.cookie either gets or sets cookies.  If day_till_expire is unset, the cookie will never expire.  <br>
+				</funcDoc>
+
+				<funcDoc id="coreUDeleteCookie" index>
+					<h1>Utilities.deleteCookie()</h1>
+					U.deleteCookie(String cookieName)<br>
+					<br>
+					<pre pretifyCode="js">
+						U.cookie("hat", "fez");
+						console.log(U.cookie("hat")); // => "fez"
+
+						U.deleteCookie("hat");
+						console.log(U.cookie("hat")); // => undefined
+					</pre>
 					
 				</funcDoc>
+
+				<funcDoc id="coreUElement" index>
+					<h1>Utilities.Element</h1>
+					El = PINE.Utilities.Element => object<br>
+					<br>
+					Element is a small collection of JQuery like functions which are mostly just shorter typed wrappers for built in vanilla functions.<br>
+
+					<funcDoc id="coreElById" index>
+						<h1>Element.byId()</h1>
+						El.byId(String id) => Element domNode<br>
+						<br>
+						This is just a short hand version of document.getElementById()<br>
+
+						<pre pretifyCode="js">
+							var target = "someTagName";
+							El.byId(target) == document.getElementById(target); //always true
+						</pre>
+					</funcDoc>
+
+					<funcDoc id="coreElByTag" index>
+						<h1>Element.byTag()</h1>
+						El.byTag(String tagName) => [Element domNode, ...]<br>
+						<br>
+						This is just a short hand version of domNode.getElementsByTagName("someTagName")<br>
+
+						<pre pretifyCode="js">
+							var domNode = El.byId("parent");
+							El.byTag(domNode, "children") == domNode.getElementsByTagName("children"); //always true
+						</pre>
+					</funcDoc>
+
+					<funcDoc id="coreElAttr" index>
+						<h1>Element.attr()</h1>
+						El.attr(Element domNode, String attribute, String value)<br>
+						El.attr(Element domNode, String attribute) => String attribute_value<br>
+						<br>
+						This is just a short hand getter and setter for Element.attributes["attribute"].value that checks if the attribute exists for you.<br>
+
+						<pre pretifyCode="js">
+							var target = El.byId("someTagName");
+							El.attr(target, "myHat", "fez");
+							console.log(El.attr(target, "myHat")) // =>"fez"
+						</pre>
+					</funcDoc>
+
+					<funcDoc id="coreElFirstsOfKey" index>
+						<h1>Element.firstsOfKey()</h1>
+						El.firstsOfKey(Element rootNode, String keyword [, boolean skipRoot]) => [Element match1, ...]<br>
+						<br>
+						Get's all of the first matches to a keyword within the children of root node.  If a match has more matches as children those child matches are not sought after.  If skipRoot is not set to false the root will not be returned if it matches the keyword.<br>
+
+						<pre pretifyCode="html" endpine>
+							<div id="parent">
+								<div id="child1"></div>
+								<div id="child2">
+									<div id="childOfChild"></div>								
+								</div>	
+							</div>
+
+							<script>
+								var parent = El.byId("parent");
+								console.log(El.firstsOfKey(parent, "div")); // => [child1, child2]
+								console.log(El.firstsOfKey(parent, "div", false)); // => [parent]
+							</script>
+							
+						</pre>
+					</funcDoc>
+
+				</funcDoc>
+
+				
 			</funcDoc>
 
 		</funcDoc>

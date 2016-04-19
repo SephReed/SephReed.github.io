@@ -1410,6 +1410,14 @@ U.log = function() {
 * 	Modded
 ***/
 
+U.cookie = function(name, value, days) {
+	if(value) 
+		U.setCookie(name, value, days);
+	
+	else
+		return U.getCookie(name);
+}
+
 U.setCookie = function(name, value, days) {
     var expires;
     if (days) {

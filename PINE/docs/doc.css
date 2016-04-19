@@ -40,7 +40,8 @@ html {
 	/*background: linear-gradient(#839984, #335434);*/
 	/*background: linear-gradient(#909F91, #3D503E);*/
 	/*background: linear-gradient(#909F91, #B9CCC7);*/
-	background: linear-gradient(#92AC87, #709063);
+	/*background: linear-gradient(#92AC87, #709063);*/
+	background: linear-gradient(#E1FFFD 50%, #6E9C5C);
 	font-family: arial;
 
 }
@@ -197,8 +198,8 @@ pre com {  color: #666; font-style: italic;  }
 	background-repeat: no-repeat;
 	background-position: center center;
 	/*background-color: #64864F;*/
-	/*background-color: #94AB7C;*/
-	background-color: #6EAC5A;
+	background-color: #5A894B;
+	/*background-color: #6EAC5A;*/
 	line-height: 100px;
 	/*height: 100px;*/
 	/*width: 100px;*/
