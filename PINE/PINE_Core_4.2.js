@@ -22,7 +22,15 @@
 
 
 
-var PINE = {};
+var PINE = function(arg1, arg2, arg3) {
+	if(typeof arg1 == "string") {
+		if(typeof arg2 == "string" && typeof arg3 == "function")
+			PINE.Needle(arg1).addFunction(arg2, arg3);
+		
+		else if (typeof arg2 == "function" && arg3 === undefined)
+			PINE.Needle(arg1).addFunction(arg2);
+	}
+}
 PINE.class = {};
 
 var U = PINE.UTILITIES = {};
@@ -296,7 +304,6 @@ PINE.class.PineFunc = function(needle, opType, userFn, isAsync, isMultirun)  {
 				resolve();
 			}
 
-
 			if(!passed || my.isMultirun) {
 				LOG("pinefunc", "running needle "+my.needle.keyword+my.opType+my.id+" at", domNode);
 
@@ -395,23 +402,7 @@ PINE.getNodeFunction = function(domNode, funcName) {
 *	 	RUN HELPERS
 **********************************/
 
-PINE.getFirstsOf = function(root, keyword)  {
-	if(PINE.keyApplies(keyword, root)) {
-		return root;
-	}
 
-	var out = [];
-
-	var branches = root.childNodes;
-	for(var i = 0; branches && i < branches.length; i++)  {
-		var matches = PINE.getFirstsOf(branches[i], keyword);
-		
-		if(matches != null)
-			out = out.concat(matches);
-	}
-
-	return (out.length > 0) ? out : null;
-}
 
 
 PINE.keyApplies = function(keyword, domNode)  {
@@ -419,7 +410,7 @@ PINE.keyApplies = function(keyword, domNode)  {
 		//
 	else if(keyword && domNode)  {
 		keyword = keyword.toUpperCase();
-		if(keyword.charAt(0) == '[')  {
+		if(domNode.attributes && keyword.charAt(0) == '[')  {
 			var att = keyword.replace(/\[|\]/g, '');
 			return domNode.attributes[att] != null;
 		}
@@ -532,7 +523,7 @@ PINE.run = function() {
 		}
 
 		var Pine_Forest = PINE.forest;
-		Pine_Forest.childNodes = PINE.getFirstsOf(document, "PINE");
+		Pine_Forest.childNodes = El.firstsOfKey(document, "PINE", false);
 
 		PINE.initiate(Pine_Forest);
 		PINE.sprout(Pine_Forest, {
@@ -896,7 +887,7 @@ PINE.permeateChildren = function(root, opFuncs, layer, sproutState) {
 		//
 	return U.Go( function(resolve, reject) {
 
-		if(El.attr(root, "PINEEND") !== undefined) {
+		if(El.attr(root, "ENDPINE") !== undefined) {
 			resolve();
 			return;
 		}
@@ -1669,6 +1660,29 @@ var El = PINE.UTILITIES.ELEMENT = {};
 
 El.byId = function(id) {
 	return document.getElementById(id);
+}
+
+El.byTag = function(domNode, tag) {
+	return domNode.getElementsByTagName(tag);
+}
+
+
+El.firstsOfKey = function(root, keyword, skipOnce)  {
+	if(skipOnce === false && PINE.keyApplies(keyword, root)) {
+		return root;
+	}
+
+	var out = [];
+
+	var branches = root.childNodes;
+	for(var i = 0; branches && i < branches.length; i++)  {
+		var matches = El.firstsOfKey(branches[i], keyword, false);
+		
+		if(matches != null)
+			out = out.concat(matches);
+	}
+
+	return (out.length > 0) ? out : null;
 }
 
 El.attr = function(domNode, name, value) {

@@ -39,12 +39,15 @@ html {
 	color: #444;
 	/*background: linear-gradient(#839984, #335434);*/
 	/*background: linear-gradient(#909F91, #3D503E);*/
-	background: linear-gradient(#909F91, #B9CCC7);
+	/*background: linear-gradient(#909F91, #B9CCC7);*/
+	background: linear-gradient(#92AC87, #709063);
 	font-family: arial;
 
 }
 
 funcdoc {
+	border-left: solid 4px white;
+	padding-left: 4px;
 	display: block;
 	margin-top: 30px;
 }
@@ -55,12 +58,21 @@ funcdoc h1 {
 	color: #63233A;
 }
 
+docs {
+	display: block;
+}
 
-content, header {
+docs, header {
+	border-radius: 2px;
 	margin-left: 5%;
 	margin-right: 5%;
 	padding: 30px;
+}
+
+index, docs, header {
 	background-color: rgba(234, 232, 206, 0.9);
+	/*background-color: rgba(230, 213, 190, 0.9);*/
+	box-shadow: 0px 0px 7px rgba(0,0,0,0.1)
 }
 
 header {
@@ -77,7 +89,7 @@ content {
     -moz-tab-size: 4;
     -o-tab-size:  4;
 
-    /*font-family: 'Source Code Pro', monospace;*/
+    /*font-family: 'Source Code Pro', monospace;
     /*font-family: 'Roboto Mono', monospace;*/
     font-family: monospace;
     font-size: 12px;
@@ -159,14 +171,14 @@ pre com {  color: #666; font-style: italic;  }
 }
 
 #tree_and_hill {
-	background-image: url('../public/images/Pine_hill_2.png');
+	background-image: url('../../public/images/Pine_hill_2.png');
 	background-repeat: no-repeat;	
 	bottom: -80px;
 	background-size: auto 80%;
 }
 
 #forest {
-	background-image: url('../public/images/treeline.png');
+	background-image: url('../../public/images/treeline.png');
 	background-repeat: repeat-x;	
 	bottom: -20px;
 	background-size: auto 14%;
@@ -180,12 +192,13 @@ pre com {  color: #666; font-style: italic;  }
 #pine {
 	display: inline-block;
 	font-size: 40px;
-	background-image: url('../public/images/Pine_tree_2.png');
+	background-image: url('../../public/images/Pine_tree_2.png');
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center center;
 	/*background-color: #64864F;*/
-	background-color: #94AB7C;
+	/*background-color: #94AB7C;*/
+	background-color: #6EAC5A;
 	line-height: 100px;
 	/*height: 100px;*/
 	/*width: 100px;*/

@@ -1,26 +1,50 @@
-<script src="PINE.Core.js"></script>
+<script src="SephReed.github.io/PINE/PINE_Core.js"></script>
 
 <script>
-var P_cUrl = PINE.createNeedle("currentUrl");
-P_cUrl.registerFunction({
-	step_type : PINE.ops.STATIC,  //PREPROCESS, STATIC, POPULATER, DEFINER, EVENTS
-	fn : function(initMe, needle) {
-		initMe.innerHTML = window.document.URL;
-	}	
+
+//this is the long way of registering a function
+var needleCurl = PINE.createNeedle("currentUrl");
+needleCurl.helloUrl = window.document.URL;
+needleCurl.addFunction(PINE.ops.STATIC, function(initMe) {
+	var needle = this;
+	initMe.innerHTML = needle.helloUrl;
 });
 
-PINE.createNeedle("currentTime").registerFunction({
-	step_type : PINE.ops.STATIC,
-	fn : function(initMe) {
-		initMe.innerHTML = new Date().toLocaleString();  }	
-});
+//this is the shortest possible way to register a needle and function
+PINE("currentTime", function(initMe) {
+	initMe.innerHTML = new Date().toLocaleString();
+})
+
+//short version PINE.Needle() either gets or creates needle.
+//brackets around a needle name signify attributes
+//opType is COMMON by default, but this shows how to set it
+//when async is set to true, an onComplete function is passed
+//child nodes do not run until onComplete() is called
+PINE.Needle("[tempHide]").addFunction({
+	opType: PINE.ops.COMMON,
+	isAsync: true,
+	fn: function(initMe, onComplete) {
+		initMe.style.display = "none";
+
+		//El.attr is a simple function for retreiving attributes
+		var waitTime = parseInt(El.attr(initMe, "tempHide"));
+		setTimeout(function() {
+			initMe.style.display = "inherit";
+			onComplete();
+		}, waitTime);
+	}
+}) 
 </script>
 
 <pine><center>
-		You're currently viewing:<br>
-		<currentUrl></currentUrl><br>
-		At:<br>
-		<currentTime></currentTime>
+	You're currently viewing:<br>
+	<currentUrl></currentUrl><br>
+	At:<br>
+	<currentTime></currentTime>
+	<div tempHide="5000">
+		5 seconds later: <currentTime></currentTime>
+		<div tempHide="2500">2.5 seconds later: <currentTime></currentTime></div>
+	</div>
 </center></pine>
 
 

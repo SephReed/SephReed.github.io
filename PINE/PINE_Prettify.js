@@ -6,17 +6,16 @@
 
 
 
-PINE.createNeedle("[pretifyCode]").registerFunction({
-	step_type : PINE.ops.PREPROCESS,
+PINE.createNeedle("[pretifyCode]").addFunction({
+	opType : PINE.ops.POLISH,
 	fn : function(initMe, needle) {
 		// console.log("HEY");
-		var codeType = initMe.attributes.pretifyCode.value || "html";
+		var codeType = El.attr(initMe, "pretifyCode") || "html";
 
 		console.log("codeType "+codeType);
 
-		PINE.atFirstHtml(initMe, function(domNode) {
-			domNode.innerHTML = pretifyCode(domNode.innerHTML, codeType);
-		});
+		initMe.innerHTML = pretifyCode(initMe.innerHTML, codeType);
+
 
 		// var innerHTML = initMe.innerHTML;
 

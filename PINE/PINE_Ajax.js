@@ -124,7 +124,8 @@ p_include.update = function(initMe, callback) {
 			if(url.indexOf(".html") != -1) {
 				initMe.innerHTML = response;
 
-				U.evalElementScripts2(initMe, url);
+				if(El.attr(initMe, "ENDPINE") === undefined)
+					U.evalElementScripts2(initMe, url);
 			}
 			else if(url.indexOf(".css") != -1) {
 				initMe.innerHTML = "<style>"+response+"</style>"
