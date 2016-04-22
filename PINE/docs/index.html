@@ -11,21 +11,13 @@
 <script src="../PINE_Core_4.2.js"></script>
 <!-- <script src="PINE.pnv.js"></script> -->
 <script src="../PINE_Needles.js"></script>
-<script src="../PINE_Ajax.js"></script>
+<script src="../PINE_Includes.js"></script>
 <script src="../needles/autoIndex.js"></script>
 <!-- <script src="../PINE_template.js"></script> -->
 
 <!-- PINE Pretify -->
 <script src="../PINE_prettify.js"></script>
 <link rel="stylesheet" type="text/css" href="../thumbz.pine.pretify.css" />
-
-
-
-<!-- Green Sock Animations -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenLite.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/CSSPlugin.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/ScrollToPlugin.min.js"></script>
-<!-- <script src="../public/js/on_page_link.tween.js"></script> -->
 
 
 
@@ -51,80 +43,96 @@
 
 
 <style>
+
 	html, body {
 		height: 100%;
 	}
 
-	index {
-		width: 20%;
+	sidebar {
+		width: 200px;
 	}
+
+	index {
+		display: block;
+		margin: 4px;
+		padding-bottom: 100px;
+		font-size: 13px;
+	}
+
+	index > a {
+		font-size: 20px;
+		font-weight: 500;
+	}
+
+	index > a, index > a:visited {
+		color: #354A3B;
+	}
+
+	index > div {
+		padding-bottom: 30px;
+	}
+
 	content {
-		left: 20%;
-		width: 80%;
+		left: 200px;
+		/*width: 80%;*/
 
 	}
-	content, index {
+	content, sidebar {
 		top: 0px;
+		display: block;
 		height: 100%;
-		position: fixed;
-		display: inline-block;
+		position: absolute;
+		/*display: inline-block;*/
 		overflow: scroll;
 	}
+
+	docs > include {
+		display: block;
+		padding-bottom: 100px;
+	}
+
+
 </style>
 
-<index id="mainIndex">
-</index>
-<content>
-	<br>
-	<header>
-		<div id="pine">PINE</div>
-		<i>Live a little:  Blur the line.</i>
-		<!-- <a href="#quicksell">What is it and why might one use it?</a> -->
-	</header>
-	<br>
-	<br>
+<div id="allContent">
+
+	<sidebar>
+		<index id="mainIndex"></index>
+	</sidebar>
+
+	<content>
+		<br>
+		<header>
+			<div class="pineLogo">PINE</div>
+			<i>Live a little:  Blur the line.</i>
+		</header>
+		<br>
+		<br>
 
 
-	<docs>
 		<pine>
-			<include src="PINE_Core.doc.html" autoIndex="mainIndex"></include>
-			<!-- <include src="PINE_pnv.doc.html"></include> -->
-			<include src="PINE_Template.doc.html" autoIndex="mainIndex"></include>
+			<docs>
+				<include src="PINE_Core.doc.html" autoIndex="mainIndex"></include>
+				<!-- <include src="PINE_pnv.doc.html"></include> -->
+				<!-- <include src="PINE_Template.doc.html" autoIndex="mainIndex"></include> -->
+				<include src="PINE_Includes.doc.html" autoIndex="mainIndex"></include>
+				<include src="PINE_Var.doc.html" autoIndex="mainIndex"></include>
+			</docs>
 		</pine>
-	</docs>
 
-	
+		
 
-	<!-- <div id="quicksell">
-		<h1>Overview</h1>
-		<b>What PINE is:</b><br>
-		PINE is an HTML extender.<br>
-		<br>
-		<b>Why one might use it:</b><br>
-		To make HTML more functional. -->
-	<!-- 	The best reason to use PINE is if you like its syntax.  PINE may some day become what JQuery now is (depreciated) but the syntax that JQuery introduced is still ubiquitous (see <a href="http://zeptojs.com/">Zepto</a>, <a href="https://github.com/mythz/jquip">JQuip</a>, or <a href="http://stackoverflow.com/questions/tagged/html+javascript">Stack Overflow</a>).  Another good reason is that PINE is dedicated to being open source, having no bloat, remaining open to new things, and treating people humanely.  Actually, it's just me.  I'm dedicated to those things (~Seph).<br>
-		<br>
-		<b>Why one might not:</b><br>
-		The best reason to not use PINE is if you're trying to support old or generally disfunctional browsers.  Another good reason would be if you need a lot of help with programming.  The code is pretty easy to peruse, and there will be comments to read, and these docs as well, but it's not popular enough to have a support community that you can <i>depend</i> on.<br>
-		<br>
-		<b>Why not to use AngularJS instead:</b><br>
-		AngularJS is what inspired this, but I abandoned it due to its stanky case of "<a href="https://en.wikipedia.org/wiki/Feature_creep">feature creep</a>."  It is still a great choice, though, for those who want something that is packaged with <a href="https://docs.angularjs.org/api">tons of features (all hail "ng")</a>, and is designed to work with the average GM and republican grandma in their campaign to not use the <a href="https://www.mozilla.org/en-US/firefox/all/#en-US">latest version of Firefox.</a><br>
-		<br>
-		<b>Why not to use React instead:</b><br>
-		React was made to be very fast and it is.  But it is also an <a href="https://facebook.github.io/react/#todoExample">eyesore of fragile and unimportant information</a> when it comes to desigining a GUI.  To elaborate, when designing a GUI, I think the things you see in your periphera should be indicative of what the user will see, rather than the completed functions you could have tucked away a long time ago.  Also, one should feel comfortable typing when working on a GUI, but being a few lines away from creating a compiling error tends to have the opposite effect on most people.  HTML in Javascript remains a bad idea. -->
-	<!-- </div> -->
+		<div id="footer">
+			<div class="pineLogo">PINE</div>
+		</div>
 
-	<div id="footer">
-		<div id="pine">PINE</div>
-	</div>
+		<center><a href="#content">Back to Top</a></center>
 
-	<center><a href="#content">Back to Top</a></center>
-
-</content>
+	</content>
 
 
 
-
+</div>
 
 
 </body>

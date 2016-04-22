@@ -87,7 +87,6 @@ INC.get = function(url, responseType) {
 
 
 			U.Ajax.get(url).then(success, failure)
-
 		}			
 
 		//if the url has been requested, but not yet resolved
@@ -125,7 +124,7 @@ p_include.update = function(initMe, callback) {
 				initMe.innerHTML = response;
 
 				if(El.attr(initMe, "ENDPINE") === undefined)
-					U.evalElementScripts2(initMe, url);
+					U.evalElementScripts(initMe, url);
 			}
 			else if(url.indexOf(".css") != -1) {
 				initMe.innerHTML = "<style>"+response+"</style>"
@@ -279,7 +278,7 @@ p_view.update = function(initMe, callback) {
 					//
 				if(url.indexOf(".html") != -1) {
 					initMe.innerHTML = response;
-					U.evalElementScripts2(initMe, url);
+					U.evalElementScripts(initMe, url);
 				}
 				else if(url.indexOf(".css") != -1) {
 					initMe.innerHTML = "<style>"+response+"</style>"
@@ -360,7 +359,7 @@ p_needle.addFunction({
 				if(url.indexOf(".html") != -1) {
 					initMe.innerHTML = response;
 
-					U.evalElementScripts2(initMe, url);
+					U.evalElementScripts(initMe, url);
 				}
 				else if(url.indexOf(".css") != -1) {
 					initMe.innerHTML = "<style>"+response+"</style>"
@@ -388,7 +387,13 @@ p_needle.addFunction({
 
 
 
-U.evalElementScripts2 = function(initMe, url) {
+/****************
+*    Utilities
+***************/
+
+
+
+U.evalElementScripts = function(initMe, url) {
 
 	var injects = [];
 
@@ -399,14 +404,10 @@ U.evalElementScripts2 = function(initMe, url) {
 
 	var scriptNodes = initMe.getElementsByTagName("script");
 
-	// console.log(scriptNodes);
-
 	var scripts = [];
 	for(var sc = 0; sc < scriptNodes.length; sc++) {
 		scripts[sc] = scriptNodes[sc].innerHTML;
 	}
-
-	// console.log(scripts);
 
 	var hack = U.hackScripts(scripts, injects);
 
@@ -600,7 +601,6 @@ U.hackScripts = function(scriptsArray, i_injects) {
 	}
 
 
-	
 
 	var scriptContexts = []
 

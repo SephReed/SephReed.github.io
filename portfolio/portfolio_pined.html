@@ -22,7 +22,7 @@
 	<script src="../PINE/PINE_Core_4.2.js"></script>
 	<script>PINE.disable(["PINE", "[SPAWNER]", "VIEW", "NEEDLE", "CHANGESRC"]);</script>
 	<script src="../PINE/PINE_Needles.js"></script>
-	<script src="../PINE/PINE_Ajax.js"></script>
+	<script src="../PINE/PINE_Includes.js"></script>
 
 	<!-- THREE JS -->
 	<script src="three.min.js"></script>
@@ -73,7 +73,7 @@
 
 	<script>
 	PINE.createNeedle("bgimg").addFunction({
-		step_type: PINE.ops.COMMON,
+		opType: PINE.ops.COMMON,
 		fn: function(initMe, needle) {
 
 			//POS
@@ -162,7 +162,7 @@
 
 	<script type="text/javascript">
 	PINE.createNeedle("overlay").addFunction({
-		step_type: PINE.ops.COMMON,
+		opType: PINE.ops.COMMON,
 		fn: function(initMe, needle) {
 
 			initMe.style.position = "fixed";

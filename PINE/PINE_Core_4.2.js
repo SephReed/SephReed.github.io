@@ -49,6 +49,8 @@ PINE.stopTags = [
 
 
 
+
+
 /**********************************
 *	 	PINE INTERFACE FUNCTIONS 
 **********************************/
@@ -89,6 +91,8 @@ PINE.disable = function(needles) {
 
 
 
+
+
 /**********************************
 *	 	ORDER OF OPERATIONS 
 **********************************/
@@ -122,6 +126,7 @@ PINE.ops.order = [
 * do they fulfill a need?
 * YES
 **********************************/
+
 PINE.needles = {};
 
 PINE.class.Needle = function(keyword) {
@@ -163,7 +168,6 @@ PINE.class.Needle.prototype.addFunction = function(arg1, arg2) {
 
 	PINE.registerPineFunc(args);
 }
-
 
 
 
@@ -210,6 +214,8 @@ PINE.Needle = function(keyword) {
 
 
 
+
+
 /**********************************
 *	 	<>PINEFUNC STUFF
 **********************************/
@@ -218,19 +224,6 @@ PINE.pinefuncs = {};
 PINE.pinefuncs.all = {};  //bookeeping
 PINE.pinefuncs.queued = {};  //for super root, only remove oneOffs
 PINE.pinefuncs.passed = {};  //for late commers
-
-
-for(var i in PINE.ops.order)  {
-		//
-	var opType = PINE.ops.order[i];
-
-	PINE.pinefuncs.all[ opType ] = [];
-	PINE.pinefuncs.queued[ opType ] = [];
-	PINE.pinefuncs.passed[ opType ] = [];
-}
-
-
-
 
 
 PINE.registerPineFunc = function(args)  {
@@ -266,7 +259,6 @@ PINE.registerPineFunc = function(args)  {
 		needle.pinefuncs[opType].push(addMe);
 	}
 }
-
 
 
 
@@ -325,6 +317,8 @@ PINE.class.PineFunc = function(needle, opType, userFn, isAsync, isMultirun)  {
 }
 
 PINE.class.PineFunc.counter = 0;
+
+
 
 
 
@@ -402,9 +396,6 @@ PINE.getNodeFunction = function(domNode, funcName) {
 *	 	RUN HELPERS
 **********************************/
 
-
-
-
 PINE.keyApplies = function(keyword, domNode)  {
 	if(keyword == '*') return true;
 		//
@@ -423,47 +414,47 @@ PINE.keyApplies = function(keyword, domNode)  {
 
 
 
+
+
 /**********************************
 *	 	          RUN
 **********************************/
 
-
-
 document.addEventListener("DOMContentLoaded", function(event) { 
+	PINE.debug.init();
 
 	PINE.loadResources().then( function() {
-		if(PINE.debugOn === true)
-	  		PINE.initDebug();
-
+		
+	  	
 
 		PINE.run().then(function() {
 			var listeners = PINE.eventListeners[PINE.events.load];
 
-			console.log("running READY listeners");
 			if(listeners) {
 				for(var i in listeners)
 					listeners[i]();
 			}
 
-			if(PINE.debugOn === true)
-	  			setTimeout(PINE.logDebugAnalysis, 2000);
 
 	  		PINE.loaded = true;
 	  		U.log("success", "PINE Run complete");
 		});
-
-
-		setTimeout(PINE.Debug.showRunningAsyncs, 5000)
-
 	});
-
-	// console.log(event)
-	// alert("content loaded")
-
-  	
-  	
-	
 });
+
+
+PINE.init = function() {
+	
+
+	for(var i in PINE.ops.order)  {
+			//
+		var opType = PINE.ops.order[i];
+
+		PINE.pinefuncs.all[ opType ] = [];
+		PINE.pinefuncs.queued[ opType ] = [];
+		PINE.pinefuncs.passed[ opType ] = [];
+	}
+}
 
 
 
@@ -972,14 +963,60 @@ PINE.updateAt = function(root, callback, passedOps) {
 /**********************************
 *	 	<>DEBUGGING
 **********************************/
-PINE.logErr = true;
-PINE.alertErr = false;
-PINE.debugOn = true;
-PINE.showUnusedNeedles = true;
-PINE.showRunningAsyncs = true;
+
+//<>LOG
+
+// U.showLog["all"] = true;  //
+// U.showLog["needle"] = true; //
+// U.showLog["permeate"] = true;
+// U.showLog["pnv"] = true;
+// U.showLog["initiate"] = true;
+// U.showLog["run"] = true;
+// U.showLog["sprout"] = true;  //
+// U.showLog["pinefunc"] = true;  //
+// U.showLog["opFunc"] = true;  //		
+// U.showLog["async"] = true;
+// U.showLog["FNS"] = true;
+
+U.showLog = [];
+var LOG = function()  {
+	var logType = arguments[0] || "all";
+
+	// console.log(logType);
+	if (U.showLog[logType]){
+
+		var callerLine = new Error().stack.split('\n');
+
+		var line = logType+"::"
+		line += callerLine[1].match(/([^\/])+?$/g)[0];
+
+		if(callerLine[2]) {
+			line += "....";
+			line += callerLine[2].match(/([^\/])+?$/g)[0];
+		}
+		
+		U.log("light", line);
+
+		var args = [];
+
+		for(var ar = 1; ar < arguments.length; ar++)
+			args[ar-1] = arguments[ar];
+
+		console.log.apply(console, args);
+	}
+}
+
+
+PINE.debug = {};
+PINE.debug.logErr = true;
+PINE.debug.disableLOG = false;
+PINE.debug.alertErr = false;
+PINE.debug.on = true;
+PINE.debug.showUnusedNeedles = true;
+PINE.debug.showRunningAsyncs = true;
 
 PINE.err = function(whatevers_the_problem) { //?
-	if(PINE.logErr)  {
+	if(PINE.debug.logErr)  {
 		var callerLine = new Error().stack.split('\n');
 		var line = callerLine[1].match(/([^\/])+?$/g)[0];
 		if(callerLine[2]) {
@@ -1000,108 +1037,37 @@ PINE.err = function(whatevers_the_problem) { //?
 		U.log.apply(this, args)
 		// console.log(new Error());
 	}
-	if(PINE.alertErr)  {
+	if(PINE.debug.alertErr)  {
 		alert("PINE error: "+whatevers_the_problem);
 	}
 }
 
 
 
-var LOG = function() { return; }
-U.showLog = [];
-
-//<>LOG
-
-// U.showLog["all"] = true;  //
-// U.showLog["needle"] = true; //
-// U.showLog["permeate"] = true;
-// U.showLog["pnv"] = true;
-// U.showLog["initiate"] = true;
-// U.showLog["run"] = true;
-// U.showLog["sprout"] = true;  //
-// U.showLog["pinefunc"] = true;  //
-// U.showLog["opFunc"] = true;  //		
-// U.showLog["async"] = true;
-// U.showLog["FNS"] = true;
 
 
-PINE.initDebug = function()  {
-
-	if(PINE.createMutateLogger == true) {
-		// select the target node
-		var target = document.querySelector('body');
-		 
-		// create an observer instance
-		var observer = new MutationObserver(function(mutations) {
-		  mutations.forEach(function(mutation) {
-		    console.log(mutation);
-		  });    
-		});
-		 
-		// configuration of the observer:
-		var config = { attributes: true, childList: true, characterData: true, subtree: true };
-		 
-		// pass in the target node, as well as the observer options
-		observer.observe(target, config);
-
-		console.log(observer);
- 	}
 
 
- 	LOG = function()  {
-		var logType = arguments[0] || "all";
 
-		// console.log(logType);
-		if (U.showLog[logType]){
 
-			var callerLine = new Error().stack.split('\n');
 
-			var line = logType+"::"
-			line += callerLine[1].match(/([^\/])+?$/g)[0];
 
-			if(callerLine[2]) {
-				line += "....";
-				line += callerLine[2].match(/([^\/])+?$/g)[0];
-			}
-			
-			U.log("light", line);
+PINE.debug.init = function()  {
 
-			var args = [];
-
-			for(var ar = 1; ar < arguments.length; ar++)
-				args[ar-1] = arguments[ar];
-
-			console.log.apply(console, args);
-		}
-	}
-
+	if(PINE.debug.disableLOG) 
+		LOG = function() {}
 	
-
-}
-
-
-PINE.Debug = {};
-PINE.Debug.showRunningAsyncs = function() {
-	if(PINE.showRunningAsyncs) {
-		var opTypes = PINE.pinefuncs.all;
-
-		for(var op in opTypes) {
-			var funcs = opTypes[op];
-			for(var fu in funcs) {
-				var func = funcs[fu];
-
-				if(func.runningAsyncs.length) {
-					var output = "Unterminated async function for "+func.needle.keyword+" "+func.opType;
-					PINE.err(output);
-				}
-			}
-		}
-		
+	if(PINE.debug.on) {
+		PINE.ready(PINE.debug.logAnalysis);
+		setTimeout(PINE.debug.showRunningAsyncs, 10000)		
 	}
 }
 
 
-PINE.logDebugAnalysis = function() {
+
+
+
+PINE.debug.logAnalysis = function() {
 
 	var output = "to stop seeing all debuging messages, set PINE.debugOn = false"; 
 	U.log("info", output);
@@ -1131,13 +1097,28 @@ PINE.logDebugAnalysis = function() {
 			U.log("success", "All needles used at least once.  Good job!");	
 		}
 	}
-
-	
-	
 }
 
 
 
+PINE.debug.showRunningAsyncs = function() {
+	if(PINE.showRunningAsyncs) {
+		var opTypes = PINE.pinefuncs.all;
+
+		for(var op in opTypes) {
+			var funcs = opTypes[op];
+			for(var fu in funcs) {
+				var func = funcs[fu];
+
+				if(func.runningAsyncs.length) {
+					var output = "Unterminated async function for "+func.needle.keyword+" "+func.opType;
+					PINE.err(output);
+				}
+			}
+		}
+		
+	}
+}
 
 
 
@@ -1720,5 +1701,5 @@ El.attr = function(domNode, name, value) {
 
 
 
-
+PINE.init();
 
