@@ -1,0 +1,22 @@
+
+
+.bg_choice {
+	color: #F0F;
+	text-shadow: -1px 0 #040c3a, 0 1px #040c3a, 1px 0 #13337c, 0 -1px #13337c, 1px 2px 5px #040c3a;
+}
+
+.bg_choice img {
+	border-radius: 4px;
+	height: 48px;
+	width: 48px;
+}
+
+
+
+
+#topbar {
+	background: linear-gradient(#730000, #530000 15%, #3f0000 70%);
+	box-shadow: 0px 2px 4px rgba(44, 51, 84, 0.41);
+	color: #b27d4f;
+	border-bottom: solid 1px #1d1e18;
+}

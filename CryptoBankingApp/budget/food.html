@@ -1,0 +1,134 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="../phone.css">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+<style>
+	.col_2_buttons div {
+		display: inline-block;
+		width: 135px;
+		border: solid 1px rgba(0,0,0,0.2);
+		margin: 10px;
+		border-radius: 4px;
+		text-align: center;
+		padding-top: 50px;
+		box-shadow: 0px 11px 4px rgba(0, 0, 0, 0.03);
+		background-color: rgba(120, 120, 120, 0.07);
+	}
+
+
+	#graph {
+		background-image: url("../icons/graph_placeholder.png");
+	    background-size: 198px auto;
+    	background-repeat: no-repeat;
+	    height: 142px;
+	}
+
+	#avg, #goal{
+		padding-left: 0px !important;
+		display: inline-block;
+		height: 12px;
+		width: 10px;
+		border: solid 1px rgba(0,0,0,0.2);
+		border-radius: 2px;
+	}
+
+	#avg {
+		background-color: #7AE1DE;
+	}
+
+	#goal {
+		background-color: #BFDE65;
+	}
+
+</style>
+
+</head>
+
+<img id="test" src="test/checking_test.png"/>
+
+<div id="phone">
+	<img src="iPhone_top_info.jpg" id="phone_top"/>
+	<div id="content">
+		<div id="topbar" class="whitebox">
+			<center>Category Overview</center>
+			<a href="budget.html"><div id="back_page"></div></a>
+			<a href="../home.html"><div id="top_right_button"></div></a>
+		</div>
+
+
+		<hr>
+		<div id="budget_bar" class="whitebox padleft right_arrow_div money_table_1_col">
+			<hr>
+			<div class="large_text">Food/Dining Budget</div>
+			<div><div id="graph" class="small_title">
+				<hr>
+				<span><div id="avg" class="border"></div> AVG...... -$5.00</span><br>
+				<span><div id="goal" class="border"></div> GOAL +$10.00</span>
+
+			</div></div>
+			<!-- <div class="history_snippet small_title">
+				<div class="bad">Today<span class="bad">-$2.00</span></div>
+				<div class="good">This Week<span class="good">$30.00</span></div>
+			</div> -->
+
+			<div><table class="history_snippet small_title">
+				<tr>
+					<td>Spent</td>					
+					<td>Goal</td>
+					<td>+/-</td>
+					<td>Avg</td>
+					<td>+/-</td>
+				</tr>
+				<tr>
+					<td>$150.10</td>
+					<td>$175.32</td>
+					<td class="good">+$25.20</td>
+					<td class="good">$144.40</td>
+					<td class="bad">-$5.70</td>
+				</tr>
+			</table></div>
+		</div>
+
+
+
+		<hr>
+		<a href="food_where.html"><div class="whitebox account right_arrow_div money_table_1_col">
+			<hr>
+			
+			<div class="small_title">Where's it going?</div>
+			<div class="history_snippet small_title">
+				Purchases Under 10$<span>$200.00</span><br>
+				H.E.B.<span>$90.00</span><br>
+				Al's BBQ<span>$55.00</span><br>
+			</div>
+			<hr>
+		</div></a>
+
+		<hr>
+		<a href="food_history.html"><div class="whitebox account right_arrow_div money_table_1_col">
+			<hr>
+			
+			<div class="small_title">Recent Purchases</div>
+			<div class="history_snippet small_title">
+				George's Restaurant<span>$4.00</span><br>
+				The Home Depot<span>$50.74</span><br>
+				Al's BBQ<span>$4.00</span><br>
+			</div>
+			<hr>
+		</div></a>
+
+
+		<!-- <hr>
+		<div class="col_2_buttons whitebox">
+			<hr>
+			<a href="food_history.html"><div id="history">History</div></a>
+			<a href="deposit.html"><div id="deposit">What if?</div></a>
+			<hr>
+		</div> -->
+
+	</div>
+</div>
+
+</html>
