@@ -25,72 +25,67 @@
 
 
 <script type="text/javascript">
-PINE.createNeedle("overlay").addFunction({
-	step_type: PINE.ops.STATIC,
-	fn: function(initMe, needle) {
+PINE("overlay", function(initMe, needle) {
 
-		initMe.style.position = "fixed";
+	initMe.style.position = "fixed";
 
-		var pos = initMe.attributes.pos ? initMe.attributes.pos.value : "center center";
-		var xy = pos.split(' ');
-		var x = xy[0] || "center";
-		var y = xy[1] || "center";
+	var pos = initMe.attributes.pos ? initMe.attributes.pos.value : "center center";
+	var xy = pos.split(' ');
+	var x = xy[0] || "center";
+	var y = xy[1] || "center";
 
 
-		var transform = "";
-		if(x == "center") {
-			$(initMe).css('left', "50%");
-			transform += "translateX(-50%) ";
-		}
-		else if(x == "left") $(initMe).css('left', "0%");
-		else if(x == "right") $(initMe).css('right', "0%");
-		else $(initMe).css('left', x);
-		
-
-		if(y == "center") {
-			$(initMe).css('top', "50%");
-			transform += "translateY(-50%) ";
-		}
-		else if(y == "top") $(initMe).css('top', "0%");
-		else if(y == "bottom") $(initMe).css('bottom', "0%");
-		else $(initMe).css('top', x);
-
-
-		if(transform != "")
-			$(initMe).css('transform', transform);
-
-
-
-
-		var fade = El.attr(initMe, "fade");
-
-		var exitOnOutClick = El.attr(initMe, "exitOnOutClick");
-
-		PINE.addFunctionToNode(initMe, "hide", function() {
-			initMe.style.display = "none";
-
-			if(fade) $(fade).hide();
-		});
-
-		PINE.addFunctionToNode(initMe, "show", function() {
-			initMe.style.display = "inherit";
-
-			console.log(fade);
-
-			if(fade) $(fade).show();
-
-			if(exitOnOutClick == "true") {
-				document.addEventListener('mouseup', function(event) {
-
-					if(initMe == event.target || initMe.contains(event.target)) return;	
-					initMe.FNS.hide();
-					this.removeEventListener('mouseup', arguments.callee, false);
-
-				});
-			}
-		});
-
-		
+	var transform = "";
+	if(x == "center") {
+		initMe.style.left = "50%";
+		transform += "translateX(-50%) ";
 	}
+	else if(x == "left") initMe.style.left = "0%";
+	else if(x == "right") initMe.style.right = "0%";
+	else initMe.style.left = x;
+	
+
+	if(y == "center") {
+		initMe.style.top = "50%";
+		transform += "translateY(-50%) ";
+	}
+	else if(y == "top") initMe.style.top = "0%";
+	else if(y == "bottom") initMe.style.bottom = "0%";
+	else initMe.style.top = y;
+
+
+	if(transform != "")
+		initMe.style.transform = transform;
+
+
+
+
+	var fade = El.attr(initMe, "fade");
+
+	var exitOnOutClick = El.attr(initMe, "exitOnOutClick");
+
+	PINE.addFunctionToNode(initMe, "hide", function() {
+		initMe.style.display = "none";
+
+		if(fade) fade.style.display = "none";
+	});
+
+	PINE.addFunctionToNode(initMe, "show", function() {
+		initMe.style.display = "inherit";
+
+		console.log(fade);
+
+		if(fade) fade.style.display = "inherit";
+
+		if(exitOnOutClick == "true") {
+			document.addEventListener('mouseup', function(event) {
+
+				if(initMe == event.target || initMe.contains(event.target)) return;	
+				initMe.FNS.hide();
+				this.removeEventListener('mouseup', arguments.callee, false);
+
+			});
+		}
+	});
 });
 </script>

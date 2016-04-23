@@ -1,29 +1,40 @@
 <script type="text/javascript">
 	El.byId("header_title").innerHTML = "Make Payment";
+
+	function showSpriteInput() {
+		El.byId("type_chooser").style.display = "inherit";
+	}
 </script>
 
 <style>
-#view_account changesrc {
-	display: inline-block;
-	padding: 20px;
-	border: solid 1px rgba(0,0,0,0.1);
-	background: #FEFEFE;
-}
 </style>
 
 
 
 
-<div id="view_pay">
-	Type: Amount: <br>
-	Add another currency<br>
-	Reciever:<br>
-	<select>
-		<option>BTC</option>
-		<option>Factoid</option>
-	</select>
-	
+<div id="view_pay" class="columns">
+	<colItem>
+		<div>
+			Type: <spriteInput onclick="showSpriteInput()">lalal</spriteInput> 
+			Amount: <br>
+			Add another currency<br>
+			Reciever:<br>
+			<select>
+				<option>BTC</option>
+				<option>Factoid</option>
+			</select>
+		</div>		
+	</colItem>
 </div>
+
+<overlay id="type_chooser" style="display: none">
+			
+</overlay>
+
+
+
+
+
 
 
 

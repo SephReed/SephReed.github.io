@@ -3,44 +3,48 @@
 </script>
 
 <style>
-#view_account changesrc {
+
+.halfButtons > * {
 	display: inline-block;
+	width: calc(50% - 10px);
+	margin: 5px;
 	padding: 20px;
-	border: solid 1px rgba(0,0,0,0.1);
-	background: #FEFEFE;
 }
+
 </style>
 
 
 
 
-<div id="view_account">
-	<span class="moneyLogs">
-		<changesrc src="views/pay.html?acct=spending">
+<div id="view_account" class="columns">
+	<colItem class="moneyLogs">
+		<changesrc src="views/account_history.html?acct=spending">
 			<entries>
-				<r><d>Spending Account</d>	<d>100</d></r>
-				<r><d>place</d>				<d>100</d></r>
-				<r><d>place</d>				<d>100</d></r>
-				<r><d>place</d>				<d>100</d></r>
+				<r><d>Spending Account</d>					<d>100</d></r>
+				<r class="underline"><d>#90494094094094</d>	<d></d></r>
+				<r><d>place</d>								<d>100</d></r>
+				<r><d>place</d>								<d>100</d></r>
+				<r><d>place</d>								<d>100</d></r>
 			</entries>
+			<br>
+			Show Full History
 		</changesrc>
-	</span><br>
+	</colItem>
 
-	<changesrc src="views/pay.html?acct=spending">
-		Pay
-	</changesrc>
+	<colItem class="halfButtons">
+		<changesrc src="views/pay.html?acct=spending">
+			Pay
 
-	<changesrc src="views/pay.html?acct=spending">
-		Transfer
-	</changesrc>
+		</changesrc><changesrc src="views/pay.html?acct=spending">
+			Transfer
 
-	<changesrc src="views/pay.html?acct=spending">
-		Deposit
-	</changesrc>
+		</changesrc><changesrc src="views/pay.html?acct=spending">
+			Deposit
 
-	<changesrc src="views/pay.html?acct=spending">
-		History
-	</changesrc>
+		</changesrc><changesrc src="views/pay.html?acct=spending">
+			Share
+		</changesrc>
+	</colItem>
 	
 </div>
 
