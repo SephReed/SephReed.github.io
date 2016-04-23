@@ -348,8 +348,17 @@ PINE.class.NodeFunc = function(domNode, func) {
 			me.post_fns[po].apply(me.domNode, args);
 	}
 
-	this.fn.add = function(func, beforeOrAfter) {
-		beforeOrAfter == beforeOrAfter ? beforeOrAfter.toLowerCase() : "after"
+	this.fn.add = function(arg1, arg2) {
+		var beforeOrAfter;
+		var func;
+		if(typeof arg1 == "function") {
+			beforeOrAfter = "after";
+			func = arg1;
+		}
+		else {
+			beforeOrAfter = arg1.toLowerCase();
+			func = arg2;	
+		}
 
 		if(beforeOrAfter == "after") me.post_fns.push(func);
 		else if(beforeOrAfter == "before") me.pre_fns.push(func);

@@ -8,14 +8,160 @@
 	<script src="../PINE/PINE_Needles.js"></script>
 	<script src="../PINE/PINE_Includes.js"></script>
 
+	<script type="text/javascript">
+		PINE.Include.setDefaultChangeSrcTarget("main_content");
+	</script>
+
 
 
 	<style>
-		header {
-			display: block;
-			height: 30px;
-			background: 
+		html {
+		  	box-sizing: border-box;
 		}
+
+		*, *:before, *:after {
+		  	box-sizing: inherit;
+		  	margin: 0px;
+			padding: 0px;
+		}
+
+		html, body {
+			height: 100%;
+		}
+
+
+		body {
+			font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			position: relative;
+			background: #F3E6D2;
+			/*background: #232427;*/
+			/*background: #27272A;*/
+			/*background: linear-gradient(#313329, #262720 6px);	*/
+			color: #333;
+			font-size: 15px;
+		}
+
+		header {
+			position: fixed;
+			width: 100%;
+			top: 0px;
+			display: block;
+			height: 40px;
+			color: rgb(204, 144, 92);
+			background: linear-gradient(#5F1F24, #481A21 6px);
+			opacity: 0.95;
+			border-bottom: solid 1px #1d1e18;
+		}
+
+		header, sidebar {
+			box-shadow: 0px 0px 15px rgba(0,0,0,0.5);
+		}
+
+		sidebar {
+			display: block;
+			bottom: 0px;
+			top: 40px;
+			position: fixed;
+			width: 200px;
+			/*background: linear-gradient(#313329, #262720 6px);*/
+			background: linear-gradient(#352F1F, #272520 6px);
+			/*background: #F3E6D2;*/
+		}
+
+		sidebar imgHolder {
+			padding: 20px;
+			margin: 20px;
+			border: 1px solid black;
+			border-radius: 5px;
+			background: #375B65;
+		}
+
+
+		imgHolder {
+			display: block;
+		}
+
+		imgHolder img {
+			max-width: 100%;
+			max-height: 100%;
+		}
+
+
+
+		content {
+			display: block;
+			position: fixed;
+			max-width: 100%;
+			bottom: 0px;
+			right: 0px;
+			top: 40px;
+			left: 200px;
+			overflow: scroll;
+		}
+
+
+		
+
+		changeSrc {
+			cursor: pointer;
+		}
+
+		changeSrc[backButton] {
+			display: block;
+			position: fixed;
+			padding: 10px;
+			top: -13px;
+			font-size: 30px;
+			font-weight: bolder;
+		}
+
+
+
+		.moneyLogs changeSrc {
+			display: inline-block;
+			/*padding: 10px;*/
+			min-width: 300px;
+			background: #FEFEFE;
+			/*background: #F3E6D2;*/
+			/*background: #27272A;*/
+			/*color: #DDD;*/
+			margin: 5px;
+			padding: 10px 0px 10px 0px;
+			color: #333;
+			border-radius: 5px;
+			box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+		}
+
+		.moneyLogs changeSrc entries {
+			position: relative;
+			display: block;
+			/*padding: 0px 20px 5px 20px;*/
+		}
+
+		.moneyLogs changeSrc entries d:nth-child(2n) {
+			position: absolute;
+			display: inline-block;
+			right: 5px;
+		}
+
+		.moneyLogs changeSrc entries>r:first-child {
+			border-bottom: 1px solid rgba(0,0,0,0.1);
+			padding: 00px 10px 0px 10px;
+			font-size: 20px;
+		}
+
+		.moneyLogs changeSrc entries r:nth-child(n+2) {
+			padding-left: 20px; 
+		}
+
+		entries r {
+			position: relative;
+			display: block;
+		}
+
+
+
+
 	</style>
 
 
@@ -25,12 +171,19 @@
 <body>
 <pine>
 	<header>
+		<changeSrc backButton>&lt;</changeSrc><center><h1 id="header_title"></h1></center>
 	</header>
 
 	<sidebar>
+		<imgHolder>
+		<!-- <img src="public/images/stash-logo-500.png"> -->
+			<img src="public/images/LittleBigmoney.png">
+		</imgHolder>
+	
 	</sidebar>
 
 	<content>
+		<view id="main_content" src="views/all_accounts.html"></view>
 	</content>
 </pine>
 </body>

@@ -26,6 +26,8 @@ INC.BYROOT = "byroot";    	//byroot will equate [place.com, place.com?hat=fez, a
 INC.NORMAL = "normal";		//normal will let the browser figure out all equally cachable pages
 INC.default = INC.default || INC.NORMAL;
 
+INC.defaultChangeSrcTarget = undefined;
+
 
 PINE.Include.setCachingDefault = function(i_default) {
 	INC.default = i_default;
@@ -33,6 +35,11 @@ PINE.Include.setCachingDefault = function(i_default) {
 
 PINE.Include.setUrlCachingStyle = function(url, cacheOp) {
 	INC.cacheSettings[url] = cacheOp;
+}
+
+
+PINE.Include.setDefaultChangeSrcTarget = function(target) {
+	INC.defaultChangeSrcTarget = target;
 }
 
 
@@ -323,7 +330,7 @@ p_changeSrc.addFunction( function(initMe, needle) {
 		
 		var src = El.attr(initMe, "src");
 
-		var target = El.attr(initMe, "target");
+		var target = El.attr(initMe, "target") || INC.defaultChangeSrcTarget;
 		var domNode = document.getElementById(target);
 
 		if(domNode && domNode.FNS && domNode.FNS.changeSrc)
@@ -332,6 +339,47 @@ p_changeSrc.addFunction( function(initMe, needle) {
 	});
 });
 
+
+
+
+
+/****************
+*   [backButton]
+***************/
+
+
+PINE("[backButton]", PINE.ops.POLISH, function(initMe, needle) {
+
+	var target = El.attr(initMe, "backButton") || INC.defaultChangeSrcTarget;
+	var domNode = document.getElementById(target);
+	var backHistory = initMe._pine_.backHistory = [];
+
+	if(domNode && domNode.FNS && domNode.FNS.changeSrc) {
+		console.log("BACK BTN aadd" )
+		domNode.FNS.changeSrc.add("before", function(src) {
+
+			var oldSrc = El.attr(domNode, "src");
+
+			if(src == oldSrc) return;
+
+			var goingBack = false;
+			for(var ba in backHistory) {
+				var item = backHistory[ba];
+				if(item == src) {
+					goingBack = true;
+					while(ba < backHistory.length) {
+						backHistory.pop();
+					}
+				}	
+			}
+
+			if(goingBack == false)
+				backHistory.push(oldSrc);
+			
+			El.attr(initMe, "src", backHistory[backHistory.length-1]);
+		});
+	}
+});
 
 
 
