@@ -1,9 +1,6 @@
 <script type="text/javascript">
 	El.byId("header_title").innerHTML = "Make Payment";
 
-	function showSpriteInput() {
-		El.byId("type_chooser").style.display = "inherit";
-	}
 </script>
 
 <style>
@@ -15,22 +12,35 @@
 <div id="view_pay" class="columns">
 	<colItem>
 		<div>
-			Type: <spriteInput onclick="showSpriteInput()">lalal</spriteInput> 
-			Amount: <br>
-			Add another currency<br>
-			Reciever:<br>
+			Type: 
 			<select>
 				<option>BTC</option>
 				<option>Factoid</option>
 			</select>
+
+			Amount: 
+			<input type="textarea"></input>
+			<br>
+			Add another currency<br>
+			To:<br>
+			<show group="reciever" target="#pay_contact" selected>Contacts</show>
+			<show group="reciever" target="#pay_transfer">My Account</show>
+			<show group="reciever" target="#pay_address">Address</show>
+			
+			<div id="pay_contact">
+				noenaoena
+			</div>
+
+			<div id="pay_transfer">
+				dsoetanhdsntad;sb
+			</div>
+
+			<div id="pay_address">
+				ds;tbnuadnbsuats
+			</div>
 		</div>		
 	</colItem>
 </div>
-
-<overlay id="type_chooser" style="display: none">
-			
-</overlay>
-
 
 
 

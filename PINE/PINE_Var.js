@@ -22,8 +22,6 @@ var pnv = PINE.pnv = {};
 
 
 PINE.Needle('*').addFunction( PINE.ops.INIT, function(initMe) {
-	
-
 	var childNodes = initMe.childNodes;
 	for(var ch in childNodes) {
 		var child = childNodes[ch];
@@ -31,9 +29,7 @@ PINE.Needle('*').addFunction( PINE.ops.INIT, function(initMe) {
 			pnv.parseText(child);
 	}
 
-	pnv.parseAtts(initMe);
-	
-		
+	pnv.parseAtts(initMe);	
 });
 
 

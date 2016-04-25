@@ -390,42 +390,42 @@ PINE("[backButton]", PINE.ops.POLISH, function(initMe, needle) {
 *    needle
 ***************/
 
-var p_needle = PINE.createNeedle("needle");
+// var p_needle = PINE.createNeedle("needle");
 
-p_needle.addFunction({
-	opType : PINE.ops.INIT,
-	isAsync : true,
-	fn: function(initMe, onComplete) {
-		console.log("updating")
+// p_needle.addFunction({
+// 	opType : PINE.ops.INIT,
+// 	isAsync : true,
+// 	fn: function(initMe, onComplete) {
+// 		console.log("updating")
 
 
-		var url = El.attr(initMe, "src");
+// 		var url = El.attr(initMe, "src");
 			
-		if(url) {
-			INC.get(url).then(function(response) {
+// 		if(url) {
+// 			INC.get(url).then(function(response) {
 
-				if(url.indexOf(".html") != -1) {
-					initMe.innerHTML = response;
+// 				if(url.indexOf(".html") != -1) {
+// 					initMe.innerHTML = response;
 
-					U.evalElementScripts(initMe, url);
-				}
-				else if(url.indexOf(".css") != -1) {
-					initMe.innerHTML = "<style>"+response+"</style>"
-				}
-				else {
-					PINE.err("file is neither .html or .css");
-				}
+// 					U.evalElementScripts(initMe, url);
+// 				}
+// 				else if(url.indexOf(".css") != -1) {
+// 					initMe.innerHTML = "<style>"+response+"</style>"
+// 				}
+// 				else {
+// 					PINE.err("file is neither .html or .css");
+// 				}
 
 
-				// callback ? callback() : null
-				onComplete();
-			});
+// 				// callback ? callback() : null
+// 				onComplete();
+// 			});
 		
-		} else {
-			PINE.err("include src for "+initMe+" in not set");
-		}
-	}
-});
+// 		} else {
+// 			PINE.err("include src for "+initMe+" in not set");
+// 		}
+// 	}
+// });
 
 
 
