@@ -125,28 +125,31 @@ p_include.update = function(initMe, callback) {
 	var url = El.attr(initMe, "src");
 		
 	if(url) {
-		INC.get(url).then(function(response) {
+		if(url == "nosrc") 
+			callback();
+		
+		else {
+			INC.get(url).then(function(response) {
 
-			if(url.indexOf(".html") != -1) {
-				initMe.innerHTML = response;
+				if(url.indexOf(".html") != -1) {
+					initMe.innerHTML = response;
 
-				if(El.attr(initMe, "ENDPINE") === undefined)
-					U.evalElementScripts(initMe, url);
-			}
-			else if(url.indexOf(".css") != -1) {
-				initMe.innerHTML = "<style>"+response+"</style>"
-			}
-			else {
-				PINE.err("file is neither .html or .css");
-			}
+					if(El.attr(initMe, "ENDPINE") === undefined)
+						U.evalElementScripts(initMe, url);
+				}
+				else if(url.indexOf(".css") != -1) {
+					initMe.innerHTML = "<style>"+response+"</style>"
+				}
+				else {
+					PINE.err("file is neither .html or .css");
+				}
 
 
-			callback ? callback() : null
-		});
-	
+				callback ? callback() : null
+			});
+		}
 	} else {
-		// PINE.err("include src for "+initMe+" in not set");
-		callback();
+		PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
 	}
 }
 
