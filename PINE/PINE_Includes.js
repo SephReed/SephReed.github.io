@@ -125,31 +125,34 @@ p_include.update = function(initMe, callback) {
 	var url = El.attr(initMe, "src");
 		
 	if(url) {
-		if(url == "nosrc") 
+		if(url == "nosrc") {
 			callback();
-		
-		else {
-			INC.get(url).then(function(response) {
-
-				if(url.indexOf(".html") != -1) {
-					initMe.innerHTML = response;
-
-					if(El.attr(initMe, "ENDPINE") === undefined)
-						U.evalElementScripts(initMe, url);
-				}
-				else if(url.indexOf(".css") != -1) {
-					initMe.innerHTML = "<style>"+response+"</style>"
-				}
-				else {
-					PINE.err("file is neither .html or .css");
-				}
-
-
-				callback ? callback() : null
-			});
+			return;
 		}
+		
+		
+		INC.get(url).then(function(response) {
+
+			if(url.indexOf(".html") != -1) {
+				initMe.innerHTML = response;
+
+				if(El.attr(initMe, "ENDPINE") === undefined)
+					U.evalElementScripts(initMe, url);
+			}
+			else if(url.indexOf(".css") != -1) {
+				initMe.innerHTML = "<style>"+response+"</style>"
+			}
+			else {
+				PINE.err("file is neither .html or .css");
+			}
+
+
+			callback ? callback() : null
+		});	
+		
 	} else {
 		PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
+		callback();
 	}
 }
 
@@ -247,6 +250,11 @@ p_view.update = function(initMe, callback) {
 	var url = El.attr(initMe, "src");
 		
 	if(url) {
+		if(url == "nosrc"){
+			callback();
+			return;
+		}
+
 		var currentUrl = initMe._pine_.currentUrl;
 
 		if(url == currentUrl) return;
@@ -306,7 +314,8 @@ p_view.update = function(initMe, callback) {
 		initMe._pine_.currentUrl = url;
 	
 	} else {
-		PINE.err("include src for "+initMe+" in not set");
+		PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
+		callback();
 	}
 }
 
