@@ -86,7 +86,7 @@ INC.get = function(url, responseType) {
 			var failure = function(result) {
 				reject(result)
 
-			  	for(i in cache.rejectQueue)
+			  	for(var i in cache.rejectQueue)
 			    	cache.rejectQueue[i](result);
 
 				cache.rejectQueue = [];
