@@ -145,7 +145,8 @@ p_include.update = function(initMe, callback) {
 		});
 	
 	} else {
-		PINE.err("include src for "+initMe+" in not set");
+		// PINE.err("include src for "+initMe+" in not set");
+		callback();
 	}
 }
 
