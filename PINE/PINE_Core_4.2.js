@@ -370,7 +370,7 @@ PINE.class.NodeFunc = function(domNode, func) {
 
 
 PINE.addFunctionToNode = function(domNode, funcName, func) {
-	PINE.err("depreaciated add function to node");
+	// PINE.err("depreaciated add function to node");
 	PINE.addNodeFunction(domNode, funcName, func);
 }
 

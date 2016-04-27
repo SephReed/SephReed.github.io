@@ -71,18 +71,16 @@ PINE("overlay", function(initMe, needle) {
 	PINE.addFunctionToNode(initMe, "show", function() {
 		initMe.style.display = "inherit";
 
-		console.log(fade);
-
 		if(fade) fade.style.display = "inherit";
 
 		if(exitOnOutClick != "false") {
-			document.addEventListener('mouseup', function(event) {
-
+			var mouseupFunc = function(event) {
 				if(initMe == event.target || initMe.contains(event.target)) return;	
 				initMe.FNS.hide();
-				this.removeEventListener('mouseup', arguments.callee, false);
+				this.removeEventListener('mouseup', mouseupFunc, false);
+			}
 
-			});
+			document.addEventListener('mouseup', mouseupFunc);
 		}
 	});
 });
