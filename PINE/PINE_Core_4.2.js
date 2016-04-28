@@ -434,8 +434,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	PINE.loadResources().then( function() {
 		
-	  	
-
 		PINE.run().then(function() {
 			var listeners = PINE.eventListeners[PINE.events.load];
 
@@ -1026,22 +1024,22 @@ PINE.debug.showRunningAsyncs = true;
 
 PINE.err = function(whatevers_the_problem) { //?
 	if(PINE.debug.logErr)  {
-		var callerLine = new Error().stack.split('\n');
-		var line = callerLine[1].match(/([^\/])+?$/g)[0];
-		if(callerLine[2]) {
-			line += "....";
-			line += callerLine[2].match(/([^\/])+?$/g)[0];	
-		}
+		// var callerLine = new Error().stack.split('\n');
+		// var line = callerLine[1].match(/([^\/])+?$/g)[0];
+		// if(callerLine[2]) {
+		// 	line += "....";
+		// 	line += callerLine[2].match(/([^\/])+?$/g)[0];	
+		// }
 
-		var args = [];
+		// var args = [];
 
-		for(var ar in arguments)
-			args[ar] = arguments[ar];
+		// for(var ar in arguments)
+		// 	args[ar] = arguments[ar];
 		
 		args.unshift("PINE error: ");
 		args.unshift("error");
 
-		U.log("light", line);
+		U.log("light", new Error().stack);
 
 		U.log.apply(this, args)
 		// console.log(new Error());
