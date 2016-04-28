@@ -1039,7 +1039,7 @@ PINE.err = function(whatevers_the_problem) { //?
 		args.unshift("PINE error: ");
 		args.unshift("error");
 
-		U.log("light", new Error().stack);
+		U.log("light", new Error().stack.split('\n'));
 
 		U.log.apply(this, args)
 		// console.log(new Error());
