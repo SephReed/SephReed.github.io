@@ -125,10 +125,10 @@ spawner.update = function(initMe) {
 
 		var indexer = initMe._pine_.spawner.indexer;
 		var setpvar = El.attr(initMe, "setpvar");
+		var i_pvars = {};
 
 		if(setpvar) {
 			setpvar = setpvar.split(/[;=]/g);
-			var i_pvars = {};
 			for(var i_s = 0; i_s < setpvar.length; i_s+=2) {
 				i_pvars[setpvar[i_s]] = setpvar[i_s+1];
 			}
