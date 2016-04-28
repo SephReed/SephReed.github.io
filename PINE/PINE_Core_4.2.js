@@ -1031,10 +1031,10 @@ PINE.err = function(whatevers_the_problem) { //?
 		// 	line += callerLine[2].match(/([^\/])+?$/g)[0];	
 		// }
 
-		// var args = [];
+		var args = [];
 
-		// for(var ar in arguments)
-		// 	args[ar] = arguments[ar];
+		for(var ar in arguments)
+			args[ar] = arguments[ar];
 		
 		args.unshift("PINE error: ");
 		args.unshift("error");
