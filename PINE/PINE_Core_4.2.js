@@ -493,7 +493,7 @@ PINE.runResource = function(domNode) {
 			U.Ajax.get(src).then( function(request) {
 				domNode.innerHTML = request.response;
 
-				var scripts = document.getElementsByTagName("script");
+				var scripts = domNode.getElementsByTagName("script");
 				for(var sc = 0; sc < scripts.length; sc++ ) {
 					eval(scripts[sc].innerHTML);
 				}
