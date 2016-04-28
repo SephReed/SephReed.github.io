@@ -49,7 +49,7 @@ PINE.createNeedle("[trigger]").addFunction( function(initMe) {
 
 var spawner = PINE.createNeedle("[spawner]");
 
-spawner.addFunction( PINE.ops.STATIC, function(initMe) {
+spawner.addFunction( PINE.ops.COMMON, function(initMe) {
 
 	var indexer = El.attr(initMe, "indexer") || "i";
 
@@ -124,7 +124,11 @@ spawner.update = function(initMe) {
 		}
 
 		var indexer = initMe._pine_.spawner.indexer;
-
+		var setpvar = El.attr(initMe, "setpvar").split(/[;=]/g);
+		var i_pvars = {};
+		for(var i_s = 0; i_s < setpvar.length; i_s+=2) {
+			i_pvars[setpvar[i_s]] = setpvar[i_s+1];
+		}
 
 		for(var i = 0; i < count; i++)  {
 			var i = i;
@@ -137,6 +141,14 @@ spawner.update = function(initMe) {
 
 			initMe.appendChild(addMe);
 
+			for(var i_p in i_pvars) {
+				console.log("searching for ", i_pvars[i_p], addMe);
+				addMe.PVARS[i_p] = pnv.getVarFrom(i_pvars[i_p], addMe);
+				// PINE.var(i_pvars[i_p], addMe, function(result) {
+				// 	console.log("result ", result);
+				// 	addMe.PVARS[i_p] = result;
+				// });
+			}
 		}
 
 

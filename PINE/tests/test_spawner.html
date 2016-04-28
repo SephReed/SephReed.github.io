@@ -1,14 +1,14 @@
 <script type="text/javascript">
 	var hats = ["fez", "beanie", "fedora"];
 
-	PINE.ready(function() {
-		hats.push("cap");
-		El.byId("test").FNS.update();
-		console.log("ready!!");
-	});
+	// PINE.ready(function() {
+	// 	hats.push("cap");
+	// 	El.byId("test").FNS.update();
+	// 	console.log("ready!!");
+	// });
 </script>
 
-<div id="test" spawner="hats">
+<div id="test" spawner="hats" setpvar="hat=hats[i]">
 	<div>Always at Top</div>
-	<div spawn>{{hats[i]}}</div>
+	<div spawn>{{hat}}</div>
 </div>
