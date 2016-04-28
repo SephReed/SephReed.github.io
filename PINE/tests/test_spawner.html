@@ -1,5 +1,7 @@
 <script type="text/javascript">
-	var hats = ["fez", "beanie", "fedora"];
+	
+	LOOT.hats = ["fez", "beanie", "fedora"];
+	var order = [1, 2, 0];
 
 	// PINE.ready(function() {
 	// 	hats.push("cap");
@@ -8,7 +10,7 @@
 	// });
 </script>
 
-<div id="test" spawner="hats" setpvar="hat=hats[i]">
+<div id="test" spawner="order" setpvar="hat=LOOT.hats[order[i]]">
 	<div>Always at Top</div>
 	<div spawn>{{hat}}</div>
 </div>

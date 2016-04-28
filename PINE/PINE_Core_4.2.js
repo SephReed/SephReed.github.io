@@ -1196,6 +1196,9 @@ U.getnit = function(start, keyString, init, bracketsCase)  {
 	if(keyString === undefined)
 		return start;
 
+	if(keyString.charAt(0) == '.')
+		keyString = keyString.substr(1);
+
 	var bracketsCase = bracketsCase || U.get;
 
 	// console.log("getting"+keyString)
@@ -1238,7 +1241,7 @@ U.getnit = function(start, keyString, init, bracketsCase)  {
 		for(var i in keyArray)  {
 			var key = keyArray[i];
 
-			// console.log("IN"+key);
+			console.log("IN"+key);
 
 			//if this is a brackets match, remove the outermost brackets
 			if(key.charAt(0) == '[') {

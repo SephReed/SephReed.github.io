@@ -192,12 +192,13 @@ pnv.getVarFrom = function(varName, domNode)  {
 		rootVar = pnv.searchForPinevar(varName, domNode);
 	}
 
-	LOG("pnv", "root and extension ", rootVar, extension);
+	
 
 	if(extension) {
+		LOG("pnv", "root and extension ", rootVar, extension);
 		return U.get(rootVar, extension, function(start, varName){
-			// console.log("WOO");
-			// console.log(varName);
+			console.log("WOO");
+			console.log(varName);
 			return pnv.getVarFrom(varName, domNode);
 		});
 	}
@@ -213,16 +214,19 @@ pnv.searchForPinevar = function(varName, domNode)  {
 
 	var scope = (domNode && domNode.PVARS) ? domNode : window;
 	
-	console.log("getting "+varName+" from:"); 
-	console.log(scope);
+	// console.log("getting "+varName+" from:"); 
+	// console.log(scope);
 
-	if(scope.PVARS && scope.PVARS[varName] !== undefined)
+	if(scope.PVARS && scope.PVARS.hasOwnProperty(varName))
 		return scope.PVARS[varName];
 
 	if(scope.parentNode)
 		return pnv.getVarFrom(varName, scope.parentNode);
 
-	else return scope[varName];
+	else {
+		console.log(scope, varName, scope[varName]);
+		return scope[varName];
+	}
 }
 
 
