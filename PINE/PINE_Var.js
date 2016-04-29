@@ -222,7 +222,7 @@ pnv.searchForPinevar = function(varName, domNode)  {
 		return pnv.getVarFrom(varName, scope.parentNode);
 
 	else {
-		console.log(scope, varName, scope[varName]);
+		// console.log(scope, varName, scope[varName]);
 		return scope[varName];
 	}
 }

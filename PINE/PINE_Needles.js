@@ -146,7 +146,7 @@ spawner.update = function(initMe) {
 			initMe.appendChild(addMe);
 
 			for(var i_p in i_pvars) {
-				console.log("searching for ", i_pvars[i_p], addMe);
+				// console.log("searching for ", i_pvars[i_p], addMe);
 				addMe.PVARS[i_p] = pnv.getVarFrom(i_pvars[i_p], addMe);
 				// PINE.var(i_pvars[i_p], addMe, function(result) {
 				// 	console.log("result ", result);
