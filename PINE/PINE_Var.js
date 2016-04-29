@@ -197,8 +197,6 @@ pnv.getVarFrom = function(varName, domNode)  {
 	if(extension) {
 		LOG("pnv", "root and extension ", rootVar, extension);
 		return U.get(rootVar, extension, function(start, varName){
-			console.log("WOO");
-			console.log(varName);
 			return pnv.getVarFrom(varName, domNode);
 		});
 	}

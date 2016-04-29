@@ -4,6 +4,47 @@
 </script>
 
 <style>
+.currencytype option {
+	height: 30px;
+	padding-left: 35px;
+	background-position: left center;
+	padding-top: 7px;
+
+	/*font-size: 20px;*/
+}
+
+showChoices {
+	display: inline-block;
+	border: 1px solid rgba(10,0,10,0.4);
+	border-radius: 4px;
+}
+
+showChoices show {
+	display: inline-block;
+	cursor: pointer;
+	
+	color: #FAFAFA;
+	background-color: #163B47;
+	
+	padding: 10px;
+}
+
+showChoices show[selected] {
+	box-shadow: inset 0px 0px 5px rgba(0,0,0,0.3);
+	background-color: #1E5A6B;	
+}
+
+showChoices show:hover {
+	background-color: #1E5A6B;	
+}
+
+showChoices show:active {
+	box-shadow: inset 0px 0px 5px rgba(0,0,0,0.7);
+}
+
+showChoices show:nth-child(n+2) {
+	border-left: 1px solid rgba(10,0,10,0.4);
+}
 </style>
 
 
@@ -12,31 +53,68 @@
 <div id="view_pay" class="columns">
 	<colItem>
 		<div>
-			Type: 
+			<h1>Transfer From:</h1>
 			<select>
-				<option>BTC</option>
-				<option>Factoid</option>
+				<option>Savings</option>
+				<option>Checking</option>
 			</select>
 
-			Amount: 
-			<input type="textarea"></input>
-			<br>
-			Add another currency<br>
-			To:<br>
-			<show group="reciever" target="#pay_contact" selected>Contacts</show>
-			<show group="reciever" target="#pay_transfer">My Account</show>
-			<show group="reciever" target="#pay_address">Address</show>
-			
-			<div id="pay_contact">
-				noenaoena
+			<center>
+				<h1>Amount:</h1>
+				<showChoices>
+					<show showGroup="pay_difficulty" target="pay_beginner" selected>Beginner
+					</show><show showGroup="pay_difficulty" target="pay_advanced" selected>Advanced</show>
+				</showChoices>
+			</center> 
+
+			<div id="pay_beginner">
+				Dollar Amount: 
+				$<input type="textarea"></input>
+				<br>
+				Currency:
+				<select class="currencytype">
+					<option class="dogecoin" value="DOGE">Dogecoin</option>
+					<option class="bitcoin">Bitcoin</option>
+					<option class="factoid">Factoid</option>
+				</select>
 			</div>
 
+			<div id="pay_advanced">
+				Currency:
+				<select class="currencytype">
+					<option class="dogecoin" value="DOGE">Dogecoin</option>
+					<option class="bitcoin">Bitcoin</option>
+					<option class="factoid">Factoid</option>
+				</select>
+				<br>
+				Amount: 
+				<input type="textarea"></input>
+			</div>
+			
+			
+
+			<center>
+				<h1>Transfer To:</h1>
+				<showChoices id="reciever_choices">
+					<show showGroup="reciever" target="pay_contact" selected>Contacts
+					</show><show showGroup="reciever" target="pay_transfer">My Account
+					</show><show showGroup="reciever" target="pay_address">Address</show>
+				</showChoices>
+			</center>
+		
+			<include id="pay_contact" src="views/contact_chooser.html">
+			</include>
+
 			<div id="pay_transfer">
-				dsoetanhdsntad;sb
+				<select>
+					<option>Savings</option>
+					<option>Checking</option>
+				</select>
 			</div>
 
 			<div id="pay_address">
-				ds;tbnuadnbsuats
+				Wallet address: <input type="textarea"></input>
+				QR CODE
 			</div>
 		</div>		
 	</colItem>

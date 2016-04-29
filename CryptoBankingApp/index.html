@@ -4,9 +4,11 @@
 <head>
 	<meta charset="utf-8"/>
 	<link rel="stylesheet" type="text/css" href="stash.css" />
+	<link rel="stylesheet" type="text/css" href="public/themes/default.css" />
 	<script src="../PINE/PINE_Core_4.2.js"></script>
 	<script src="../PINE/PINE_Needles.js"></script>
 	<script src="../PINE/PINE_Includes.js"></script>
+	<script src="../PINE/PINE_Var.js"></script>
 	<!-- <needle src="http://sephreed.github.io/PINE/needles/overlay.html"></needle> -->
 
 	<script type="text/javascript">
@@ -24,6 +26,9 @@
 		  	box-sizing: inherit;
 		  	margin: 0px;
 			padding: 0px;
+			background-size: contain;
+			background-position: center;
+			background-repeat: no-repeat;
 		}
 
 		html, body {
@@ -255,16 +260,37 @@
 			}
 		}
 
+		@media all and (max-width: 660px) {
+			adbar {
+				display: none;
+			}
 
-		@media all and (max-width: 500px) {
+			content {
+				right: 0px;
+			}
+		}
 
+
+		@media all and (max-width: 510px) {
+			sidebar {
+				display: none;
+			}
+
+			content {
+				left: 0px;
+			}
 		}
 
 
 
 	</style>
 
+	<script>
+	U.showLog["ajax"] = true;
+	</script>
 
+	<needle src="needles/show.html"></needle>
+	<needle src="needles/filter.html"></needle>
 </head>
 
 
