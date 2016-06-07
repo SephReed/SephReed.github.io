@@ -531,7 +531,7 @@
 			"file": "phone.css",
 			"settings":
 			{
-				"buffer_size": 6620,
+				"buffer_size": 6790,
 				"line_ending": "Unix"
 			}
 		},
@@ -548,6 +548,14 @@
 			"settings":
 			{
 				"buffer_size": 69,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 5888,
 				"line_ending": "Unix"
 			}
 		},
@@ -569,9 +577,14 @@
 		}
 	],
 	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
 	"command_palette":
 	{
 		"height": 392.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[
@@ -587,7 +600,10 @@
 	},
 	"console":
 	{
-		"height": 126.0
+		"height": 126.0,
+		"history":
+		[
+		]
 	},
 	"distraction_free":
 	{
@@ -598,6 +614,10 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp"
+	],
 	"file_history":
 	[
 		"/Users/seph/Code/Web/BankingAppGui/budget/food.html",
@@ -876,12 +896,13 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 4,
 			"sheets":
 			[
 				{
 					"buffer": 0,
 					"file": "budget/food_where.html",
+					"semi_transient": false,
 					"settings":
 					{
 						"buffer_size": 3334,
@@ -904,22 +925,24 @@
 						"translation.y": 220.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
 					"file": "phone.css",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6620,
+						"buffer_size": 6790,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1201,
-								1201
+								0,
+								0
 							]
 						],
 						"settings":
@@ -931,11 +954,13 @@
 						"translation.y": 702.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
 					"file": "budget/budget.html",
+					"semi_transient": false,
 					"settings":
 					{
 						"buffer_size": 7591,
@@ -958,11 +983,13 @@
 						"translation.y": 2876.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
 					"file": "/Users/seph/Code/golang/src/github.com/SephReed/streak/streak.go",
+					"semi_transient": false,
 					"settings":
 					{
 						"buffer_size": 69,
@@ -984,11 +1011,42 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 4,
+					"file": "index.html",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 5888,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								596,
+								596
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
 					"file": "budget/food.html",
+					"semi_transient": false,
 					"settings":
 					{
 						"buffer_size": 3115,
@@ -1011,11 +1069,13 @@
 						"translation.y": 1143.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 6,
 					"file": "banking/checking.html",
+					"semi_transient": false,
 					"settings":
 					{
 						"buffer_size": 1576,
@@ -1038,6 +1098,7 @@
 						"translation.y": 31.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 6,
 					"type": "text"
 				}
 			]
@@ -1078,6 +1139,8 @@
 	{
 		"height": 0.0
 	},
+	"pinned_build_system": "",
+	"project": "bankingAppGui.sublime-project",
 	"replace":
 	{
 		"height": 76.0
@@ -1086,6 +1149,7 @@
 	"select_file":
 	{
 		"height": 0.0,
+		"last_filter": "",
 		"selected_items":
 		[
 		],
@@ -1094,15 +1158,32 @@
 	"select_project":
 	{
 		"height": 0.0,
+		"last_filter": "",
 		"selected_items":
 		[
 		],
 		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
 	},
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
 	"side_bar_width": 222.0,
-	"status_bar_visible": true
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
 }

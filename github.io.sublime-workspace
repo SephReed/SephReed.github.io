@@ -4,526 +4,574 @@
 		"selected_items":
 		[
 			[
-				"char",
-				"charAt"
+				"chi",
+				"children"
 			],
 			[
-				"text",
-				"textToEval"
+				"fi",
+				"filter"
 			],
 			[
-				"sp",
-				"spawn"
+				"ta",
+				"tagsAtt"
+			],
+			[
+				"fil",
+				"filterTags"
+			],
+			[
+				"tar",
+				"target"
+			],
+			[
+				"targe",
+				"targetAtt"
+			],
+			[
+				"show",
+				"showChoices"
+			],
+			[
+				"pa",
+				"padding-top"
+			],
+			[
+				"fon",
+				"font-size"
+			],
+			[
+				"back",
+				"background-position"
+			],
+			[
+				"pad",
+				"padding-left"
+			],
+			[
+				"i",
+				"inset"
+			],
+			[
+				"box",
+				"box-shadow"
+			],
+			[
+				"co",
+				"columns"
+			],
+			[
+				"bo",
+				"border"
+			],
+			[
+				"s",
+				"selected"
+			],
+			[
+				"sel",
+				"selected"
 			],
 			[
 				"in",
 				"initMe"
 			],
 			[
-				"init",
-				"initMe"
-			],
-			[
-				"su",
-				"submitFn"
-			],
-			[
-				"sub",
-				"submitFn"
-			],
-			[
-				"sum",
-				"submitFn"
-			],
-			[
-				"u",
-				"undefined"
+				"get",
+				"getVarFrom"
 			],
 			[
 				"roo",
 				"rootVar"
 			],
 			[
-				"key",
-				"keyString"
-			],
-			[
-				"dom",
-				"domNode"
-			],
-			[
-				"getF",
-				"getVarFrom2"
-			],
-			[
-				"bracke",
-				"bracketsCase"
-			],
-			[
-				"brac",
-				"bracketsCase"
-			],
-			[
-				"getV",
-				"getVarFrom"
-			],
-			[
-				"root",
-				"rootVar"
-			],
-			[
-				"open",
-				"openBrackets"
-			],
-			[
-				"last",
-				"lastStop"
-			],
-			[
-				"get",
-				"getnit"
-			],
-			[
-				"call",
-				"callback"
-			],
-			[
-				"bor",
-				"border-bottom"
-			],
-			[
-				"wi",
-				"width"
-			],
-			[
-				"out",
-				"outerHTML"
-			],
-			[
-				"i",
-				"innerHTML"
-			],
-			[
-				"add",
-				"addMe"
-			],
-			[
-				"st",
-				"styles"
-			],
-			[
-				"do",
-				"doInclude"
-			],
-			[
-				"ic",
-				"includeBank"
-			],
-			[
-				"stop",
-				"stopTags"
-			],
-			[
-				"pd",
-				"padNum"
-			],
-			[
-				"M",
-				"MDI_seleced_track"
-			],
-			[
-				"track",
-				"trackOctaveOffsets"
-			],
-			[
-				"midi",
-				"midiNum"
-			],
-			[
-				"MD",
-				"MDI_noteIn"
-			],
-			[
-				"send",
-				"sendButtonHitToBitwig"
-			],
-			[
-				"mid",
-				"midiNum"
-			],
-			[
-				"d",
-				"data2"
-			],
-			[
-				"nu",
-				"numKeys"
-			],
-			[
-				"da",
-				"data1"
-			],
-			[
-				"bu",
-				"buttonNum"
-			],
-			[
-				"b",
-				"buttonNum"
-			],
-			[
-				"num",
-				"numToMidi"
-			],
-			[
-				"qu",
-				"queuedTrack"
-			],
-			[
-				"rec",
-				"recStatus"
-			],
-			[
-				"q",
-				"queuedTrack"
-			],
-			[
-				"tr",
-				"track"
-			],
-			[
-				"ne",
-				"nextTrack"
-			],
-			[
-				"background",
-				"background-image"
-			],
-			[
-				"bg",
-				"bg_choice"
-			],
-			[
-				"tex",
-				"text-align"
-			],
-			[
-				"bo",
-				"border-radius"
-			],
-			[
-				"te",
-				"text-align"
-			],
-			[
-				"marg",
-				"margin-right"
-			],
-			[
-				"bacg",
-				"background-size"
-			],
-			[
-				"backg",
-				"background-image"
-			],
-			[
-				"debu",
-				"debug_mode"
-			],
-			[
-				"sc",
-				"scene	(?)"
+				"var",
+				"varName"
 			],
 			[
 				"re",
-				"recStatus	(?)"
+				"result"
 			],
 			[
-				"create",
-				"createRecordingForLiveTrack(trackNum)"
+				"i_",
+				"i_pvars"
 			],
 			[
-				"createRe",
-				"createRecordingForCurrentLiveTrack()"
+				"r",
+				"resolve"
 			],
 			[
-				"HAS",
-				"HAS_REC_QUEUED	(?)"
+				"te",
+				"textarea	Tag"
 			],
 			[
-				"cearte",
-				"createRecordingForCurrentLiveTrack()"
+				"b",
+				"border"
 			],
 			[
-				"MDI_in",
-				"MDI_initializeRecordingFunctionality()"
+				"h",
+				"height"
 			],
 			[
-				"LIV",
-				"LIVE_BANK_HEIGHT	(num)"
+				"col",
+				"colItem"
 			],
 			[
-				"L",
-				"LIVE_BANK_HEIGHT	(num)"
+				"img",
+				"imgHolder"
 			],
 			[
-				"ST",
-				"STATUS_NOTE_ON	(num)"
-			],
-			[
-				"live",
-				"MDI_liveBankPosition"
-			],
-			[
-				"MDI",
-				"MDI_liveBankPosition	(num)"
-			],
-			[
-				"a",
-				"availableTracks	(num)"
-			],
-			[
-				"N",
-				"NUM_BTNS	(?)"
-			],
-			[
-				"m",
-				"macroBank	(?)"
-			],
-			[
-				"s",
-				"status	(num)"
-			],
-			[
-				"c",
-				"currentPage	(str)"
-			],
-			[
-				"mi",
-				"midiOut	(num)"
-			],
-			[
-				"tra",
-				"trackIndex"
-			],
-			[
-				"trackN",
-				"trackIndex	(?)"
-			],
-			[
-				"setT",
-				"setTrackOctave(trackIndex, octave)"
-			],
-			[
-				"t",
-				"target	(num)"
-			],
-			[
-				"fi",
-				"findMatchingLinkIndex(url, list)"
-			],
-			[
-				"g",
-				"rgba()"
-			],
-			[
-				"set",
-				"setClipLED(index, color)"
-			],
-			[
-				"sho",
-				"showSend(trackNum, sendNum)"
-			],
-			[
-				"sh",
-				"showVolume(trackNum)"
-			],
-			[
-				"S",
-				"SELECTED_TRACK	(num)"
-			],
-			[
-				"crea",
-				"createDeviceControlObserver(track)"
-			],
-			[
-				"setTrac",
-				"setTrackSelectLED(track, value)"
-			],
-			[
-				"cr",
-				"createSelectObserver(track)"
-			],
-			[
-				"V",
-				"VERT_ARROW_2_UP	(num)"
-			],
-			[
-				"data",
-				"data2	(?)"
-			],
-			[
-				"D",
-				"DRUM_PAGE	(num)"
-			],
-			[
-				"pa",
-				"pageAutoSwitch	(?)"
-			],
-			[
-				"IS",
-				"IS_RECORDING	(?)"
-			],
-			[
-				"RO",
-				"RIGHT_ROTARY	(num)"
-			],
-			[
-				"curr",
-				"currentPage	(num)"
-			],
-			[
-				"ba",
-				"bankMoved	(bool)"
-			],
-			[
-				"to",
-				"topTrackInBank	(num)"
-			],
-			[
-				"T",
-				"TRACK_BANKS	[]"
-			],
-			[
-				"cur",
-				"cursorTrack	(?)"
-			],
-			[
-				"se",
-				"scene	(num)"
-			],
-			[
-				"id",
-				"index	(?)"
-			],
-			[
-				"cu",
-				"currentHeldPads	[]"
-			],
-			[
-				"dat",
-				"data2"
-			],
-			[
-				"cor",
-				"cornerOutVal	(?)"
-			],
-			[
-				"corn",
-				"cornerRelationships"
-			],
-			[
-				"ma",
-				"maxCorner	(num)"
+				"op",
+				"option	Tag"
 			],
 			[
 				"max",
-				"maxValue	(?)"
+				"max-height"
 			],
 			[
-				"note",
-				"noteNum	(num)"
-			],
-			[
-				"not",
-				"noteNum	(num)"
-			],
-			[
-				"statu",
-				"statusBank"
-			],
-			[
-				"SW",
-				"SWCol"
-			],
-			[
-				"p",
-				"padNumFromNW"
-			],
-			[
-				"n",
-				"noteNum"
-			],
-			[
-				"tem",
-				"tempoChange"
-			],
-			[
-				"oc",
-				"octave"
-			],
-			[
-				"dr",
-				"drumChunk"
-			],
-			[
-				"is",
-				"isDrumPadNote"
-			],
-			[
-				"fun",
-				"function"
-			],
-			[
-				"bl",
-				"black_list"
-			],
-			[
-				"l",
-				"link"
-			],
-			[
-				"up",
-				"updateBlam"
-			],
-			[
-				"bla",
-				"black_list"
-			],
-			[
-				"rg",
-				"rgba()"
-			],
-			[
-				"fo",
+				"font",
 				"font-weight"
 			],
 			[
-				"fu",
-				"function"
+				"goin",
+				"goingBack"
 			],
 			[
-				"butt",
-				"button"
+				"goi",
+				"goingBack"
 			],
 			[
 				"con",
 				"console"
 			],
 			[
-				"ac",
-				"activeTab"
+				"bac",
+				"backHistory"
+			],
+			[
+				"er",
+				"eraseMode"
+			],
+			[
+				"fun",
+				"func"
+			],
+			[
+				"ar",
+				"arg1"
+			],
+			[
+				"po",
+				"position"
+			],
+			[
+				"p",
+				"padding"
+			],
+			[
+				"ba",
+				"background"
+			],
+			[
+				"fo",
+				"font-weight"
+			],
+			[
+				"disa",
+				"disableLOG"
+			],
+			[
+				"first",
+				"firstsOfKey"
+			],
+			[
+				"bor",
+				"border-left"
+			],
+			[
+				"func",
+				"funcDoc"
+			],
+			[
+				"doc",
+				"docNodes"
+			],
+			[
+				"ad",
+				"addToMe"
+			],
+			[
+				"add",
+				"addToMe"
+			],
+			[
+				"arg",
+				"arg3"
+			],
+			[
+				"cu",
+				"currentUrl"
+			],
+			[
+				"type",
+				"typeof"
+			],
+			[
+				"typ",
+				"typeof"
+			],
+			[
+				"inlin",
+				"inline-block"
+			],
+			[
+				"border-r",
+				"border-radius"
+			],
+			[
+				"is",
+				"isMultirun"
+			],
+			[
+				"sc",
+				"scrollTop"
+			],
+			[
+				"key",
+				"keyword"
+			],
+			[
+				"par",
+				"parseAtts"
+			],
+			[
+				"step",
+				"step_type"
+			],
+			[
+				"paren",
+				"parentNode"
+			],
+			[
+				"creat",
+				"createNeedle"
+			],
+			[
+				"crea",
+				"createNeedle"
+			],
+			[
+				"P",
+				"PINE"
+			],
+			[
+				"pro",
+				"promises"
+			],
+			[
+				"added",
+				"addedResources"
+			],
+			[
+				"su",
+				"success"
+			],
+			[
+				"res",
+				"resources"
+			],
+			[
+				"load",
+				"loadResources"
+			],
+			[
+				"vi",
+				"views"
+			],
+			[
+				"vie",
+				"view"
+			],
+			[
+				"I",
+				"INC"
+			],
+			[
+				"init",
+				"initMe"
+			],
+			[
+				"ca",
+				"cacheOp"
+			],
+			[
+				"d",
+				"default"
+			],
+			[
+				"no",
+				"noQueryUrl"
+			],
+			[
+				"rep",
+				"replace"
+			],
+			[
+				"cache",
+				"cacheOp"
+			],
+			[
+				"cach",
+				"cacheOp"
+			],
+			[
+				"pin",
+				"pinefunc"
+			],
+			[
+				"up",
+				"updates"
+			],
+			[
+				"app",
+				"appendingString"
+			],
+			[
+				"spli",
+				"splice"
+			],
+			[
+				"color",
+				"coloring"
+			],
+			[
+				"sprout",
+				"sproutState"
+			],
+			[
+				"att",
+				"attributes"
+			],
+			[
+				"initi",
+				"initiation"
+			],
+			[
+				"spro",
+				"sproutState"
+			],
+			[
+				"pas",
+				"passed"
+			],
+			[
+				"queu",
+				"queuedOps"
+			],
+			[
+				"PI",
+				"PINE"
+			],
+			[
+				"runnin",
+				"runningAsyncs"
+			],
+			[
+				"runn",
+				"runningAsyncs"
+			],
+			[
+				"unsen",
+				"unsentOps"
+			],
+			[
+				"inc",
+				"incompleteOps"
+			],
+			[
+				"PINE",
+				"PINEFUNC"
+			],
+			[
+				"one",
+				"oneOff"
+			],
+			[
+				"dom",
+				"domNode"
+			],
+			[
+				"will",
+				"willSprout"
+			],
+			[
+				"check",
+				"checkRollCall"
+			],
+			[
+				"wait",
+				"waitForMe"
+			],
+			[
+				"call",
+				"callbackReturn"
+			],
+			[
+				"then",
+				"thenables"
+			],
+			[
+				"as",
+				"async"
+			],
+			[
+				"per",
+				"permeatePromises"
+			],
+			[
+				"log",
+				"logDone"
+			],
+			[
+				"comp",
+				"complete"
+			],
+			[
+				"wid",
+				"width"
+			],
+			[
+				"ic",
+				"icon_id"
+			],
+			[
+				"icon",
+				"icon_chooser"
+			],
+			[
+				"backgro",
+				"background-size"
+			],
+			[
+				"wi",
+				"width"
+			],
+			[
+				"spa",
+				"spawnerSource"
+			],
+			[
+				"cou",
+				"countAtt"
+			],
+			[
+				"count",
+				"countAtt"
+			],
+			[
+				"di",
+				"display"
+			],
+			[
+				"wall",
+				"wall_lng"
+			],
+			[
+				"top",
+				"topic_tag"
+			],
+			[
+				"backgr",
+				"background-position"
+			],
+			[
+				"styl",
+				"style_include"
+			],
+			[
+				"sty",
+				"style_include"
+			],
+			[
+				"index",
+				"indexOf"
+			],
+			[
+				"rg",
+				"rgba()"
+			],
+			[
+				"background",
+				"background-color"
+			],
+			[
+				"backg",
+				"background-color"
+			],
+			[
+				"m",
+				"map"
+			],
+			[
+				"befo",
+				"beforeOrAfter"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "handle_chooser/PINE_Needles.js",
+			"file": "CryptoBankingApp/views/share.html",
 			"settings":
 			{
-				"buffer_size": 8370,
+				"buffer_size": 126,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "CryptoBankingApp/index.html",
+			"settings":
+			{
+				"buffer_size": 5888,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PINE/PINE_Needles.js",
+			"settings":
+			{
+				"buffer_size": 3334,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PINE/needles/overlay.html",
+			"settings":
+			{
+				"buffer_size": 1735,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PINE/PINE_Core_4.2.js",
+			"settings":
+			{
+				"buffer_size": 33956,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PINE/PINE_Var.js",
+			"settings":
+			{
+				"buffer_size": 4964,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "CryptoBankingApp/views/pay.html",
+			"settings":
+			{
+				"buffer_size": 2555,
 				"line_ending": "Unix"
 			}
 		}
@@ -569,24 +617,105 @@
 	"expanded_folders":
 	[
 		"/Users/seph/Code/Web/SephReed.github.io",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/public"
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/needles",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/public",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/public/images",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/public/themes",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views"
 	],
 	"file_history":
 	[
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/needles/filter.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/contact_chooser.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/pay.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/account.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/share.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/public/themes/default.css",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.2.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/needles/show.html",
+		"/Users/seph/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test_spawner.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Var.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/peephole.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/bgimg.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Includes.doc.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Includes.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/overlay.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Var.doc.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/all_accounts.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/account_history.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/home.html",
+		"/Users/seph/Code/Web/SephReed.github.io/BankingAppGui/home.html",
+		"/Users/seph/Code/Web/SephReed.github.io/BankingAppGui/phone.css",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/doc.css",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Core.doc.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/autoIndex.js",
+		"/Users/seph/Code/Web/SephReed.github.io/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Core.QRE.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Prettify.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Ajax.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/test.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/helloplace.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/space.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.0.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_contact.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/test5.html",
+		"/Users/seph/Code/Web/RealmeChat.github.io/PINE_Core_4.0.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/test_spawner.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/PINE_Var_3.0.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/PINE_Needles_3.0.js",
+		"/Users/seph/Code/Web/RealmeChat.github.io/public/PINE_Core_4.0.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_3.0.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/paradox.html",
+		"/Users/seph/Code/Web/SephReed.github.io/anonchat.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/fallback.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/map.html",
+		"/Users/seph/Downloads/earthquakes.geojson",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/posts.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/testmap.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/test.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/modWall.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/wallTopics.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/createWall.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/settings.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/commandLine.css",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/app.html",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/needles/overlay.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/needles/Needle_CommentBox.html",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Core.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/testing.css",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/retroHacker.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/needles/peephole.html",
+		"/Users/seph/Code/Web/SephReed.github.io/walkscape/fps.js",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/evalParseTester.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/test.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/wallView.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/topicView.html",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/test.html",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Var.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_artisan.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/test.html",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/doc.html",
+		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Core.doc.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/streak.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/commentView.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/server.js",
 		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/nodemysql.js",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Core.js",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Var.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/app.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/commentView.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Needles.js",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_needles.js",
 		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/Needle_CommentBox.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/test.html",
 		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/helloplace.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.css",
 		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/overlay_needle.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/zepto.js",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/overlay_needle.html",
@@ -624,84 +753,7 @@
 		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/12_Step/StepConstants.js",
 		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/12_Step/12Step_init.js",
 		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/BitwigObservers.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/ClipPage.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/ConductorPage.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/DeviceControls.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/QuneoConstants.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Shared/BitwigConstants.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/eImprov_12Step.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/DrumPage.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Keys/Keys_init.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/eImprov_Keys.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/Keys/MultiDeviceInterface.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/12_Step/eImprov_Keys.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/Quneo/OctaveHandler.js",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/black_lister.css",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/black_list.js",
-		"/Users/sjaromin/Desktop/morning.sh",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/Quneo/QUNEO_init.js",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/BlackLister.sublime-project",
-		"/Users/sjaromin/Downloads/pifm/pifm.c",
-		"/Users/sjaromin/Documents/Bitwig Studio/Set Aside Controller Scripts/QUNEO_Script/QUNEO_clips.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/Quneo/ClipPage.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/Quneo/DrumPage.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/Quneo/DeviceControls.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/Quneo/ImprovPlugin.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/ImprovPlugin.sublime-project",
-		"/Users/sjaromin/Documents/Bitwig Studio/Set Aside Controller Scripts/QUNEO_Script/QUNEO_notes.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/Tests/volumeControlTest.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Set Aside Controller Scripts/QUNEO_Script/QUNEO.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/DrumPage.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Set Aside Controller Scripts/QUNEO_Script/QUNEO_functions.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/12Step_init.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/QUNEO_Script/QUNEO_notes.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/QUNEO_Script/QUNEO.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/QUNEO_Script/QUNEO_parameterPage.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/QUNEO_Script/QUNEO_clips.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Set Aside Controller Scripts/ImprovisationPlugin/ImprovPlugin.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Set Aside Controller Scripts/ImprovisationPlugin/QUNEO_init.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Set Aside Controller Scripts/ImprovisationPlugin/12Step_init.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/QUNEO_Script/QUNEO_functions.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/QUNEO_init.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Set Aside Controller Scripts/QUNEO_Script/QUNEO_pages.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/ImprovPlugin.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/ImprovPlugin12Step.control.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Set Aside Controller Scripts/QUNEO_Script/QUNEO_parameterPage.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/ImprovisationPlugin/SephReed-ImprovPlugin.js",
-		"/Users/sjaromin/Projects/Code/Web/ImprovisationPlugin/SephReed-ImprovPlugin.js",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/bg.js",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/black_list.html",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/popup.html",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/popup.js",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/modify_css.js",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/manifest.json",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/popup.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/options.js",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/manifest.json",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/big_options.html",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/popup.js",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/bg.js",
-		"/Users/sjaromin/Projects/Code/Web/The Dark Side/hack_colors.js",
-		"/Users/sjaromin/Projects/Code/Web/The Dark Side/manifest.json",
-		"/Users/sjaromin/Projects/Code/Web/Black Lister/test.css",
-		"/Users/sjaromin/Projects/Code/Web/Maintain Focus/Options.html",
-		"/Applications/My Apps/Programming/Sublime Text.app/Contents/MacOS/changelog.txt",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/initialize_theme_list.js",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/modify_css.js",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/finalize.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/options.html",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/mob.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/clean.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/gothic.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/hotel_lima.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/playa_prince.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/marbles.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/calm_city.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/fakebook.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/moose_knuckle.css",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/hidden_elements.html",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/hidden_elements.js",
-		"/Users/sjaromin/Projects/Code/Web/fakebook/defaults_css/lol.css"
+		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/ClipPage.js"
 	],
 	"find":
 	{
@@ -709,7 +761,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 93.0,
 		"where_history":
 		[
 			""
@@ -717,9 +769,102 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": true,
+		"case_sensitive": false,
 		"find_history":
 		[
+			"conso",
+			"#reciever_choices",
+			"$",
+			"needle",
+			"i ",
+			"for(",
+			"$",
+			".account",
+			"step_type",
+			"evalElementScripts2",
+			"index>",
+			"PINE.getFirstsOf",
+			"endpine",
+			"getEleme",
+			"pinefuncHist",
+			"needle",
+			"needle.",
+			"needle",
+			" needle,",
+			"needle",
+			", needle)",
+			"needle",
+			"Complete",
+			"complete",
+			".compl",
+			"getVar",
+			"COMMON",
+			" a ",
+			"a ",
+			"INITIALIZER",
+			"addFunctionToNode",
+			"step_t",
+			"addFunctionToNode",
+			"root",
+			"registerFunction",
+			"registerFunction2",
+			"U.attr",
+			"domNode",
+			"for(",
+			"LOG",
+			"\"info\"",
+			"U.attr",
+			"async\"",
+			"false",
+			"PINE.err =",
+			"permeate =",
+			"for(",
+			"searchFor",
+			"newVar",
+			"PINE.var",
+			"getVarFrom",
+			"$",
+			"parseTex",
+			"permeate",
+			">L",
+			">P",
+			"include",
+			">D",
+			"pinefunc = ",
+			"debug",
+			"updateAt = ",
+			"pop()",
+			"push",
+			".useCallback",
+			"completed",
+			"my",
+			"applyOpFu",
+			"\"run\"",
+			"PINE.sprout",
+			"callback",
+			"lat",
+			" lat",
+			"lat",
+			"testing",
+			"_pine>",
+			"_pine_",
+			"changeSrc",
+			"changesrc",
+			"setsrc",
+			"addFunc",
+			"alert",
+			"INC.init",
+			"INC.upda",
+			"evalEl",
+			"pause",
+			"PINE.",
+			"bank",
+			"registerFu",
+			"run",
+			"run2",
+			"initiate",
+			"permeate2",
+			"sprout",
 			"registerFunction",
 			"LOG",
 			"trigger",
@@ -754,95 +899,7 @@
 			"armSin",
 			"128",
 			"127",
-			"liveB",
-			"queue",
-			"releaseS",
-			"stalledButtonHits",
-			"currentlyStallingButtonHit",
-			"sendPadHit",
-			"tryReleas",
-			"update",
-			"BITWIG_UPDATE_LAG",
-			"BITWIG",
-			"beatPos",
-			"noteIn",
-			"padSta",
-			"tryRelea",
-			"stalled",
-			"select(",
-			"selectTr",
-			"select",
-			"arm",
-			"queuedTrack",
-			"Queue Rec",
-			"Quere Rec",
-			"pageAuto",
-			"pageA",
-			"queued",
-			"till",
-			"libusb_open",
-			"hotplug_ca",
-			"add_adapter",
-			"0x",
-			"Error",
-			"0x",
-			"error",
-			"armSi",
-			"MAX_SCENES",
-			"createRecordin",
-			"MAX_TRACKS",
-			"numScenes",
-			"MAX_SCENES",
-			"totalSc",
-			"numT",
-			"TRACK_BANKS",
-			"MAX_TRACKS",
-			"MDIBank",
-			"masterName",
-			"update",
-			"topTrackInBank",
-			"topTra",
-			"selectedTrack",
-			" masterName",
-			"masterName",
-			"selectedTrack",
-			"setPage(",
-			"setPage",
-			"sendNote",
-			"padState",
-			"new Sta",
-			"stalledPadHit",
-			"stalledPad",
-			"octave",
-			"relightAllTrackControls",
-			"print",
-			" \n",
-			"{\n",
-			";\n",
-			"var spinner = value - value%64;  ",
-			"		\n",
-			"46",
-			"}\n",
-			" \n",
-			"value",
-			"getGridObserverFunc",
-			"padNumFromNW\n",
-			"}\n",
-			"play",
-			"== ",
-			"quneoPortNames\nquneoPortNames\nportNames",
-			"}\n",
-			"need",
-			"5px             \n",
-			"                \n",
-			"                    \n",
-			"muta",
-			"ufiad",
-			"background-im",
-			"isChecked",
-			"transa",
-			"transient",
-			"colmap"
+			"liveB"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -850,6 +907,30 @@
 		"regex": false,
 		"replace_history":
 		[
+			"showChoices",
+			"bubbleSelect",
+			".moneyLog",
+			"opType",
+			"evalElementScripts",
+			"aIndex>",
+			"El.firstsOfKey",
+			"El.firstsOfTag",
+			"",
+			")",
+			"this",
+			"COMMON",
+			"addNodeFunction",
+			"initMe",
+			"registerFunction",
+			"El.attr",
+			"U",
+			"El.attr",
+			"true",
+			".isAsync",
+			"passed",
+			"this",
+			"cache",
+			"addFu",
 			"addFunction",
 			"evalElementScripts",
 			"MDI_focusedLiveTrack",
@@ -882,24 +963,81 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "handle_chooser/PINE_Needles.js",
-					"semi_transient": true,
+					"file": "CryptoBankingApp/views/share.html",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8370,
+						"buffer_size": 126,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3814,
-								3145
+								107,
+								107
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "CryptoBankingApp/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5888,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4931,
+								4931
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4167.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "PINE/PINE_Needles.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3334,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3081,
+								3081
 							]
 						],
 						"settings":
@@ -908,10 +1046,126 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2643.0,
+						"translation.y": 1857.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "PINE/needles/overlay.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1735,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								39,
+								39
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "PINE/PINE_Core_4.2.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 33956,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								25665,
+								25665
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 18281.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "PINE/PINE_Var.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4964,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4452,
+								4452
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3191.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "CryptoBankingApp/views/pay.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2555,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								854,
+								808
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 594.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -919,11 +1173,11 @@
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 34.0
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 31.0
 	},
 	"layout":
 	{
@@ -966,24 +1220,220 @@
 		"selected_items":
 		[
 			[
-				"pnv",
-				"handle_chooser/PINE_Var.js"
-			],
-			[
-				"nee",
-				"handle_chooser/PINE_Needles.js"
+				"var",
+				"PINE/PINE_Var.js"
 			],
 			[
 				"core",
-				"handle_chooser/PINE_Core.js"
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"over",
+				"PINE/needles/overlay.html"
+			],
+			[
+				"nee",
+				"PINE/PINE_Needles.js"
+			],
+			[
+				"pa",
+				"CryptoBankingApp/views/pay.html"
+			],
+			[
+				"sha",
+				"CryptoBankingApp/views/share.html"
+			],
+			[
+				"pay",
+				"CryptoBankingApp/views/pay.html"
+			],
+			[
+				"ind",
+				"CryptoBankingApp/index.html"
+			],
+			[
+				"contact_ch",
+				"CryptoBankingApp/views/contact_chooser.html"
+			],
+			[
+				"need",
+				"PINE/PINE_Needles.js"
+			],
+			[
+				"pine_var",
+				"PINE/PINE_Var.js"
+			],
+			[
+				"test_sp",
+				"PINE/tests/test_spawner.html"
+			],
+			[
+				"test",
+				"PINE/tests/test.html"
+			],
+			[
+				"peepo",
+				"PINE/needles/peephole.html"
+			],
+			[
+				"includes",
+				"PINE/PINE_Includes.js"
+			],
+			[
+				"doc/in",
+				"PINE/docs/index.html"
+			],
+			[
+				"docs/in",
+				"PINE/docs/index.html"
+			],
+			[
+				"accoun",
+				"CryptoBankingApp/views/account.html"
+			],
+			[
+				"pine_inclu",
+				"PINE/PINE_Includes.js"
+			],
+			[
+				"pine_co",
+				"PINE/PINE_Core_4.2.js"
 			],
 			[
 				"pined",
 				"portfolio/portfolio_pined.html"
 			],
 			[
+				"inclu",
+				"PINE/PINE_Include.js"
+			],
+			[
+				"4.2",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"doc.",
+				"PINE/docs/doc.css"
+			],
+			[
+				"aja",
+				"PINE/PINE_Ajax.js"
+			],
+			[
+				"va",
+				"PINE/PINE_Var.js"
+			],
+			[
+				"aj",
+				"PINE/PINE_Ajax.js"
+			],
+			[
+				"4.0",
+				"PINE/PINE_Core_4.0.js"
+			],
+			[
+				"ne",
+				"PINE/PINE_Needles.js"
+			],
+			[
+				"",
+				"PINE/PINE_Core_4.0.js"
+			],
+			[
 				"pine",
 				"portfolio/portfolio_pined.html"
+			],
+			[
+				"pos",
+				"Anonchat/views/posts.html"
+			],
+			[
+				"cor",
+				"PINE/PINE_Core.js"
+			],
+			[
+				"fa",
+				"Anonchat/public/styles/fallback.css"
+			],
+			[
+				"a",
+				"anonchat.html"
+			],
+			[
+				"map",
+				"Anonchat/views/map.html"
+			],
+			[
+				"fall",
+				"Anonchat/public/styles/fallback.css"
+			],
+			[
+				"an",
+				"anonchat.html"
+			],
+			[
+				"mod",
+				"Anonchat/views/modWall.html"
+			],
+			[
+				"top",
+				"Anonchat/views/wallTopics.html"
+			],
+			[
+				"post",
+				"Anonchat/views/posts.html"
+			],
+			[
+				"c",
+				"PINE/PINE_Core.js"
+			],
+			[
+				"crea",
+				"Anonchat/views/createWall.html"
+			],
+			[
+				"ano",
+				"anonchat.html"
+			],
+			[
+				"wall",
+				"Anonchat/views/wallTopics.html"
+			],
+			[
+				"sett",
+				"Anonchat/views/settings.html"
+			],
+			[
+				"app",
+				"Anonchat/app.html"
+			],
+			[
+				"posts",
+				"Anonchat/views/posts.html"
+			],
+			[
+				"por",
+				"portfolio/portfolio.html"
+			],
+			[
+				"co",
+				"handle_chooser/PINE_Core.js"
+			],
+			[
+				"com",
+				"Anonchat/public/styles/commandLine.css"
+			],
+			[
+				"testing",
+				"Anonchat/public/styles/testing.css"
+			],
+			[
+				"pnv",
+				"handle_chooser/PINE_Var.js"
+			],
+			[
+				"pineva",
+				"handle_chooser/PINE_Var.js"
 			],
 			[
 				"zep",
