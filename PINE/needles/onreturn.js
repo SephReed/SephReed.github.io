@@ -1,7 +1,7 @@
 
 
 
-PINE("onreturn", function(initMe) {
+PINE("[onreturn]", function(initMe) {
 	
 	PINE.addFunctionToNode(initMe, "return", function() {
 		var submitFn = El.attr(initMe, "onreturn");
