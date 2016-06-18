@@ -342,7 +342,7 @@ PINE.class.NodeFunc = function(domNode, func) {
 		for(var pr in me.pre_fns)
 			me.pre_fns[pr].apply(me.domNode, args);
 
-		func.apply(me.domNode, args);
+		return func.apply(me.domNode, args);
 
 		for(var po in me.post_fns)
 			me.post_fns[po].apply(me.domNode, args);
