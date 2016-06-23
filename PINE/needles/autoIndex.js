@@ -1,3 +1,7 @@
+// PINE("[autoIndex]", function(initMe) {
+	
+// }
+
 PINE("[autoIndex]", "polish", function(initMe) {
 
 	var addToMe = El.byId(El.attr(initMe, "autoIndex"));
@@ -30,9 +34,6 @@ PINE("[autoIndex]", "polish", function(initMe) {
 		PINE.updateAt(addToMe);
 
 	}
-
-	
-
 });
 
 
