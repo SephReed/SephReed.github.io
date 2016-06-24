@@ -52,9 +52,10 @@ PINE.pnv.parseText = function(initMe)  {
 		var get = varTextNode.data.replace(/[{}]/g, '');
 
 		var pineVar = document.createElement("pnv");
-		var getAtt = document.createAttribute("var");
-		getAtt.value = get;
-		pineVar.setAttributeNode(getAtt);
+		El.attr(pineVar, "var", get);
+		// var getAtt = document.createAttribute("var");
+		// getAtt.value = get;
+		// pineVar.setAttributeNode(getAtt);
     	// pineVar.appendChild(varTextNode);
     	varTextNode.remove();
 
