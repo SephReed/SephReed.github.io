@@ -57,9 +57,12 @@ spawner.addFunction( PINE.ops.COMMON, function(initMe) {
 	initMe._pine_.spawner.indexer = indexer;
 
 	//
-	var emptyHolders = initMe._pine_.spawner.empty_placeholders = El.byTag(initMe, "spawnerEmpty") || [];
-	while (emptyHolders.length > 0)
-		emptyHolders[0].remove();
+	var nospawnCollection = El.byTag(initMe, "nospawn");
+	var emptyHolders = [];
+	if(nospawnCollection.length > 0)
+		emptyHolders = [].slice.call(nospawnCollection);
+	initMe._pine_.spawner.empty_placeholders = emptyHolders;
+	
 	
 	
 	var branches = initMe.childNodes;
@@ -77,6 +80,10 @@ spawner.addFunction( PINE.ops.COMMON, function(initMe) {
 	if(spawn)  {
 		initMe._pine_.spawner.spawn = spawn;
 		initMe.removeChild(spawn);
+
+		for(var i = 0; i < emptyHolders.length; i++)
+			emptyHolders[i].remove(); 
+			
 	}
 
 
@@ -140,6 +147,7 @@ spawner.update = function(initMe) {
 			}
 		}
 
+		console.log("spawner count", count);
 		if(count <= 0) {
 			var addUs = initMe._pine_.spawner.empty_placeholders;
 			for(var i = 0; i < addUs.length; i++) {

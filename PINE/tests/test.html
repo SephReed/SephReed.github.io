@@ -11,8 +11,9 @@
 	<script type="text/javascript">
 		LOOT = {};
 		// U.showLog["include"] = true;
-		U.showLog["pnv"] = true;
+		// U.showLog["pnv"] = true;
 		// hat = "fez"
+		test_list = [];//[1, 2, 3]
 	</script>
 	<!-- <needle src="needles/overlay.html"></needle> -->
 </head>
@@ -20,10 +21,20 @@
 
 
 <pine>
-	<view id="viewChange" src="test_spawner.html"></view>
+	<!-- <view id="viewChange" src="test_spawner.html"></view> -->
 	<!-- <include src="helloplace.html"></include> -->
-
+<!-- 
 	<changeSrc target="viewChange" src="helloplace.html">Say Hello</changeSrc>
 	<changeSrc target="viewChange" src="test_spawner.html">Show Spawn</changeSrc>
+ -->
+
+
+	<br>
+	<br>
+	NEXT TEST<br>
+	<div spawner="test_list">
+		<div spawn>{{test_list[i]}}</div>
+		<nospawn>no items</nospawn>
+	</div>
 </pine>
 
