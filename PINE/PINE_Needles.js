@@ -142,7 +142,7 @@ spawner.update = function(initMe) {
 
 		if(count <= 0) {
 			var addUs = initMe._pine_.spawner.empty_placeholders;
-			for(var i in addUs) {
+			for(var i = 0; i < addUs.length; i++) {
 				initMe.appendChild(addUs[i]);
 			}
 		}
