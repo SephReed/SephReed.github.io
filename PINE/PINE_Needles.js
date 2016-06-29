@@ -55,6 +55,12 @@ spawner.addFunction( PINE.ops.COMMON, function(initMe) {
 
 	U.assertKey(initMe, "_pine_.spawner");
 	initMe._pine_.spawner.indexer = indexer;
+
+	//
+	var emptyHolders = initMe._pine_.spawner.empty_placeholders = El.byTag(initMe, "spawnerEmpty") || [];
+	while (emptyHolders.length > 0)
+		emptyHolders[0].remove();
+	
 	
 	var branches = initMe.childNodes;
 	var spawn = null;
@@ -131,6 +137,13 @@ spawner.update = function(initMe) {
 			setpvar = setpvar.split(/[;=]/g);
 			for(var i_s = 0; i_s < setpvar.length; i_s+=2) {
 				i_pvars[setpvar[i_s]] = setpvar[i_s+1];
+			}
+		}
+
+		if(count <= 0) {
+			var addUs = initMe._pine_.spawner.empty_placeholders;
+			for(var i in addUs) {
+				initMe.appendChild(addUs[i]);
 			}
 		}
 
