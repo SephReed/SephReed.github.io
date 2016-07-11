@@ -1,5 +1,7 @@
 
 
+
+
 var applyPhysics = (function() {
 	var timeStep = 5;
 	var timeLeft = timeStep + 1;
@@ -15,6 +17,12 @@ var applyPhysics = (function() {
 	var angles = new THREE.Vector3();
 	var displacement = new THREE.Vector3();
 
+	var last_position;
+	var last_vel = player.motion.velocity;
+	var collisionTimer;
+
+	console.log("PLAYER", player);
+
 	return function( dt ) {
 		// var platform = scene.getObjectByName( "platform", true );
 
@@ -27,9 +35,11 @@ var applyPhysics = (function() {
 			dt = 5;
 			while( timeLeft >= dt ) {
 
+				var vel = player.motion.velocity
+				var velocity_unchanged = (vel.x == last_vel.x) && (vel.y == last_vel.y) && (vel.z == last_vel.z);
 
 
-				if(!player.motion.flymode) {
+				if(velocity_unchanged && !player.motion.flymode) {
 					vel_raycast.ray.direction.copy( player.motion.velocity );
 					vel_raycast.ray.direction.normalize();
 					vel_raycast.ray.origin.copy( player.motion.position );

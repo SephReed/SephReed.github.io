@@ -1,0 +1,91 @@
+
+
+<!-- <script src="three.min.js"></script> -->
+<!-- <script src="cannon.min.js"></script> -->
+<script src="3dHTML.js"></script>
+<script src="n_threeFunctionTranslater.js"></script>
+<script src="n_cannonPhysics.js"></script>
+<script src="n_perlin.js"></script>
+
+
+<script type="text/javascript">
+	function openCloseDoor(openNotClose) {
+
+	}
+
+	function rotateSphere(deg) {
+		
+	}
+</script>
+
+
+
+<3d id="testWorld" framework="THREE_translater">
+	<scene cannonPhysics="gravity collision">
+		<skybox></skybox>
+		<perlin id="ground" seed="love"></perlin>
+		<plane id="ocean"></plane>
+
+		<div id="floating_island">
+			<obj src="unreal_level.obj">
+				<sphere id="rotatableSphere" onInteract="rotateSphere(15)"></sphere>
+			</obj>
+			<camera position="x:10" controlCamera="WASD" projectTo="testWorld"></camera>
+		</div>
+
+		<div translate="x:-400;z:-800" setAtop="ground">
+			<obj src="house.obj">
+				<rectangle dimensions="z:1.4;x=0.1;y=0.5" onInteract="openCloseDoor()"></rectangle>
+			</obj>
+		</div>
+
+		<!-- <2d>  At some point, it would be nice to be able to include 2d html
+			<div style="height:50px; width:50px; background:red">Hello World</div>
+		</2d> -->
+	</scene>
+</3d>
+
+
+
+
+
+
+
+
+
+<style>
+scene { display: none; }
+
+skybox {
+	skybox-src: 'image_assets/skybox/in_the_clouds/px.jpg', 
+		'image_assets/skybox/in_the_clouds/nx.jpg', 
+		'image_assets/skybox/in_the_clouds/py.jpg', 
+		'image_assets/skybox/in_the_clouds/ny.jpg', 
+		'image_assets/skybox/in_the_clouds/pz.jpg', 
+		'image_assets/skybox/in_the_clouds/nz.jpg';
+}
+
+#ground {
+	position: absolute;
+	translate: z:-30;
+	texture: #4A4;
+	texture-scale: 50%;
+}
+
+#ocean {
+	texture: #45A;
+	texture-opacity: 0.9;
+}
+
+#floating_island {
+	translate: x:50, z:100;
+}
+
+#rotatableSphere {
+	position: absolute;
+	translate: x:center, z:center, y:-20;
+	/*translate-y: -20;*/
+	texture: normals;
+	width: 20;
+}
+</style>
