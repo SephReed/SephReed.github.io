@@ -525,6 +525,11 @@ PINE.run = function() {
 		var Pine_Forest = PINE.forest;
 		Pine_Forest.childNodes = El.firstsOfKey(document, "PINE", false);
 
+		//default to using body if "PINE" tag is never used
+		if(Pine_Forest.childNodes == null)
+			Pine_Forest.childNodes = [document.body];
+		
+
 		PINE.initiate(Pine_Forest);
 		PINE.sprout(Pine_Forest, {
 			// PINE.pinefuncs.queued, PINE.pinefuncs.passed, true

@@ -1,0 +1,274 @@
+
+<script type="text/javascript">
+
+
+var p_sugg = PINE.Needle("[suggestions]");	
+p_sugg.addFunction(PINE.ops.COMMON, function(initMe) {
+
+	var sugg = initMe._pine_.sugg = {};
+
+	//get all variables
+	var sugg_out_att = El.attr(initMe, "suggOut");
+	var sugg_out = window[sugg_out_att];
+	// sugg_out = [];
+
+	var potential_matches_att = El.attr(initMe, "suggestions");
+	var potential_matches = window[potential_matches_att];
+
+	var searchable_subObject = El.attr(initMe, "suggSubObject");
+
+	var target_input = initMe;
+
+	var sugg_spawner_att = El.attr(initMe, "suggSpawner");
+	var sugg_spawner = El.byId(sugg_spawner_att);
+
+	var selectable_list_att = El.attr(initMe, "suggSelectableList");
+	var selectable_list = selectable_list_att ? El.byId(selectable_list_att) : sugg_spawner;
+
+	var limit_att = El.attr(initMe, "suggLimit");
+	var limit = limit_att ? parseInt(limit_att) : 10;
+
+
+	var lastStopIndex = undefined;
+
+
+	//check that there are matches to look through, an input, and an output
+	if(potential_matches == undefined) {
+		PINE.err("needle suggestions has no array to search")
+	}
+	else if(potential_matches.length && typeof potential_matches[0] != "string" && searchable_subObject === undefined) {
+		PINE.err("supplied suggestion array is not an array of strings.  Use suggSubObject if the strings are a sub object of aray items");
+	}
+	else if(target_input == undefined) {
+		PINE.err("needle suggestions has no input")
+	}
+	else if(sugg_out == undefined) {
+		PINE.err("needle suggestions has no output")
+	}
+
+
+
+	else {
+
+		var current_matches = potential_matches.slice();
+
+		target_input.addEventListener("keyup", function(event) {
+			keypress(event.key);
+		});
+
+
+
+		var temp_disable_unselect_on_mouseleave = false;
+		if(sugg_spawner != undefined) {
+			target_input.addEventListener("focus", function(event) {
+				if(sugg_out.length > 0) 
+					sugg_spawner.style.display = "inherit";			
+			});
+
+
+			document.addEventListener('mouseup', function(event) {
+				if(initMe == event.target || initMe.contains(event.target)) {
+					if(sugg_out.length > 0) 
+						sugg_spawner.style.display = "inherit";	
+				}
+				else if (sugg_spawner == event.target || sugg_spawner.contains(event.target)) {
+					temp_disable_unselect_on_mouseleave = true;
+					sugg_spawner.style.display = "none";
+				}
+				
+				else 
+					sugg_spawner.style.display = "none";
+			});
+		}
+
+
+
+		var last_typed_entry = target_input.value;
+		initMe._pine_.sugg = {};
+		initMe._pine_.sugg.onPolish = function() {
+			if(selectable_list != undefined) {
+				// console.log(selectable_list);
+				selectable_list.FNS.setSelected.add(function() {
+					if(temp_disable_unselect_on_mouseleave == false){
+						var currentlySelected = selectable_list.FNS.getSelected();
+						var domNode = currentlySelected && currentlySelected.length > 0 ? currentlySelected[0] : undefined;
+
+						if(domNode != undefined)
+							target_input.value = El.attr(domNode, "value");
+
+						else
+							target_input.value = last_typed_entry;
+					}
+					else 
+						temp_disable_unselect_on_mouseleave = false;
+				});
+			}
+		}
+
+
+		
+
+
+
+		var keypress = function(key) {
+			var targetText = target_input.value;
+
+			if (key == "Escape" || key == "Enter") {
+				if(sugg_spawner != undefined)
+					sugg_spawner.style.display = "none";
+			}
+			else {
+				if(sugg_spawner != undefined && sugg_out.length > 0) 
+					sugg_spawner.style.display = "inherit";	
+
+				if(selectable_list != undefined) 
+					selectable_list.FNS.keypress(key);
+
+				var input_changed = false
+				if(key == "Backspace") {
+					input_changed = true;
+					if(target_input.value == "") 
+						current_matches = potential_matches.slice();
+					
+					else 
+						current_matches = searchPotentials(targetText);
+				}
+				else if(key.length == 1) {
+					input_changed = true;
+					filterCurrents(targetText);
+				}
+
+				if(input_changed) {
+					updateSuggestions(targetText);
+					last_typed_entry = targetText;
+					updateWatchers();	
+				}
+			}
+		}
+
+		var updateWatchers = function() {
+			if(sugg_spawner != undefined) {
+				if(sugg_out.length < 1) 
+					sugg_spawner.style.display = "none";
+
+				else {
+					if(sugg_out.length > 0)
+						sugg_spawner.style.display = "inherit";					
+					
+					sugg_spawner.FNS.update();
+				}
+			}
+		}
+
+
+		var searchPotentials = function(targetText) {
+			var out = [];
+
+			for(var i in potential_matches) {
+				var checkMe = potential_matches[i];
+				var checkText = checkMe;
+
+				if(suggSubObject)
+					checkText = checkMe[suggSubObject];
+
+				//if the item contains the text and more
+				if(checkText.indexOf(targetText) != -1 && checkText.length > targetText.length) {
+					// out.push(checkMe);
+					out.push(checkText);
+				}
+			}
+			return out;
+		}
+
+
+
+		var filterCurrents = function(filter) {
+			for(var i = 0; i < current_matches.length; i++) {
+				var checkMe = current_matches[i];
+				var checkText = checkMe;
+				
+				if(suggSubObject)
+					checkText = checkMe[suggSubObject];
+
+				if(checkText.indexOf(filter) == -1 || checkText.length == filter.length) {
+					current_matches.splice(i, 1);
+					i = i-1;
+				}
+			}
+		}
+
+
+		var updateSuggestions = function(targetText) {
+			sugg_out.length = 0;
+
+			for(var i in current_matches) 
+				sugg_out.push(convertTextToSuggestion(current_matches[i], targetText));
+		}
+		
+
+		var convertTextToSuggestion = function(convertMe, targetText) {
+			var targetIndex = convertMe.indexOf(targetText);
+
+			if(targetIndex != -1 && targetText != "") {
+				var match = {};
+				match.text = convertMe;
+				match.parts = [];
+
+				var matching_text = {};
+				matching_text.text = targetText;
+				matching_text.isTarget = true;
+
+				var lastIndex = 0;
+
+				while(targetIndex != -1) {
+					if(targetIndex != lastIndex) {
+						var part = {};
+						part.text = convertMe.substring(lastIndex, targetIndex);
+						part.isTarget = false;
+						match.parts.push(part);
+						lastIndex = targetIndex;
+					}
+
+					match.parts.push(matching_text);
+					lastIndex += targetText.length;
+					
+					targetIndex = convertMe.indexOf(targetText, lastIndex);
+				}
+
+				if(lastIndex < convertMe.length) {
+					var part = {};
+					part.text = convertMe.substring(lastIndex);
+					part.isTarget = false;
+					match.parts.push(part);
+				}
+
+				return match;
+			}
+
+			else {
+				var match = {};
+				match.text = convertMe;
+				match.parts = [];
+
+				var part = {};
+				part.text = convertMe;
+				part.isTarget = false;
+
+				match.parts.push(part);
+
+				return match;
+			}
+
+		}
+
+		current_matches = searchPotentials(last_typed_entry);
+		updateSuggestions(last_typed_entry);
+	}
+	
+});
+
+p_sugg.addFunction(PINE.ops.POLISH, function(initMe) {
+	initMe._pine_.sugg.onPolish();
+});
+
+</script>

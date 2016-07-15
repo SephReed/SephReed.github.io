@@ -3,11 +3,12 @@
 
 <head>
 	<meta charset="utf-8"/>
+	<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 
 	<style>
 
 		html {
-			font-family: monospace;
+			font-family: 'Oswald', sans-serif;
 		}
 
 		overlay {  
@@ -44,6 +45,7 @@
 		body a {
 			margin: 10px 20px 0px 0px;
 			display: inline-block;
+			padding: 10px;
 			height: 370px;
 			width: 300px;
 			text-align: center;
@@ -55,13 +57,25 @@
 		}
 
 		.img {
+			position: relative;
 			height: 300px;
 			background-position: center center;
 			background-size: cover;
-			border: 1px solid #333;
-			box-shadow: 1px 1px 5px rgba(0,0,0,0.3);
-			border-radius: 6px;
+			border: 3px solid #333;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.5);
+			border-radius: 8px;
 			margin-bottom: 10px;
+			overflow: hidden;
+		}
+
+		.img:before {  
+			display: block; 
+			content: " ";
+			position: absolute; 
+			height: 100%;
+			width: 100%;
+			top: 0px;
+			box-shadow: inset 0px 0px 40px rgba(20,20,20,0.6);
 		}
 
 
@@ -81,10 +95,6 @@
 	<overlay id="lines"></overlay>
 
 	<h1> You're probably here for one of these: </h1>
-	<!-- <a href="portfolio/thumbz_test.html">Hey</a> -->
-	<!-- <a href="portfolio/portfolio_pined.html">Click here to see my super rad Portfolio</a> -->
-
-	<!-- Eventually something that is not a portfolio will occupy this space. -->
 
 	<content>
 		<a id="portfolio" href="portfolio/portfolio_pined.html">
