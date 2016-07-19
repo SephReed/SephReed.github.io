@@ -12,14 +12,12 @@ var MARKET_TREE = {
 									"heirloom tomato" : undefined,
 									"baby tomato" : null
 								}
-							},
-							"tea flavors" : {
-
 							}
 						},
 						"prepared" : {
 							"meals" : {
-								"pizza" : null
+								"pizza" : null,
+								"tamales" : null
 							},
 							"ingredients" : {
 								"vegetables" : {
@@ -231,9 +229,7 @@ var MARKET_TREE = {
 
 var treeToList = function(root, addToMe) {
 	if(addToMe === undefined) 
-		addToMe = [];
-
-	
+		addToMe = [];	
 
 	for(var key in root) {
 		var addMe = {};

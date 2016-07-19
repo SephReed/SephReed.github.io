@@ -41,6 +41,8 @@ PINE.createNeedle("[trigger]").addFunction( function(initMe) {
 
 /****************
 *    spawner
+*
+*	Spawner is the ultimate multi tool for arrays and repeatable html elements
 ***************/
 
 
@@ -137,17 +139,25 @@ spawner.update = function(initMe) {
 		}
 
 		var indexer = initMe._pine_.spawner.indexer;
-		var setpvar = El.attr(initMe, "setpvar");
+		var setpvar = El.attr(initMe, "spawnerSetPvar");
 		var i_pvars = {};
 
+		//TODO: this should probably be a function of PINE_Var.js
 		if(setpvar) {
 			setpvar = setpvar.split(/[;=]/g);
 			for(var i_s = 0; i_s < setpvar.length; i_s+=2) {
 				i_pvars[setpvar[i_s]] = setpvar[i_s+1];
 			}
+			// setpvar = setpvar.split(/[;=]/g);
+			// var pvarSettings = setpvar.split(';');
+			// for(var i_p in pvarSettings) {
+			// 	var setMe = 
+			// 	for(var i_s = 0; i_s < setpvar.length; i_s+=2) {
+			// 		i_pvars[setpvar[i_s]] = setpvar[i_s+1];
+			// 	}	
+			// }
 		}
 
-		console.log("spawner count", count);
 		if(count <= 0) {
 			var addUs = initMe._pine_.spawner.empty_placeholders;
 			for(var i = 0; i < addUs.length; i++) {
@@ -158,7 +168,6 @@ spawner.update = function(initMe) {
 		for(var i = 0; i < count; i++)  {
 			var i = i;
 
-			// var addMe = PINE.deepCloneNode(spawn);
 			var addMe = spawn.cloneNode(true);
 			U.getnit(addMe, "PVARS."+indexer, i);
 			
@@ -166,13 +175,9 @@ spawner.update = function(initMe) {
 
 			initMe.appendChild(addMe);
 
-			for(var i_p in i_pvars) {
-				// console.log("searching for ", i_pvars[i_p], addMe);
+			//for each of the set vars in spawnerSetPvar attribute, set she pvar to it's value relative to domNode
+			for(var i_p in i_pvars) { 
 				addMe.PVARS[i_p] = pnv.getVarFrom(i_pvars[i_p], addMe);
-				// PINE.var(i_pvars[i_p], addMe, function(result) {
-				// 	console.log("result ", result);
-				// 	addMe.PVARS[i_p] = result;
-				// });
 			}
 		}
 
@@ -180,6 +185,112 @@ spawner.update = function(initMe) {
 		PINE.updateAt(initMe);
 	}
 }
+
+
+
+
+
+
+
+
+
+var treeSpawner = PINE.createNeedle("[treeSpawner]");
+
+treeSpawner.getArgs = function(initMe) {
+	var out = {};
+
+	var spawnFrom_att = El.attr(initMe, "treeSpawner");
+	if(spawnFrom_att)
+		spawnFrom_att = "'"+spawnFrom_att+"'"
+	out.spawnFrom = pnv.getVarFrom(spawnFrom_att, initMe);
+
+	var spawnDepthLimit_att = El.attr(initMe, "tSpawnDepthLimit");
+	if(spawnDepthLimit_att === undefined)
+		out.spawnDepthLimit = -1;
+	else 
+		out.spawnDepthLimit = parseInt(spawnDepthLimit_att);
+
+	out.spawnDepthLimit = Math.max(-1, out.spawnDepthLimit);
+
+	if(out.spawnFrom === undefined) 
+		return PINE.err("tree spawner has no root object to spawn from", initMe, spawnFrom_att);
+
+	return out;
+}
+
+
+var countQuit = 0;
+
+treeSpawner.addFunction( PINE.ops.COMMON, function(initMe) {
+
+	var treeSpawn = initMe.cloneNode(true);
+	var spawnInsertLocation;
+	for(var i = 0; !spawnInsertLocation && i < initMe.childNodes.length; i++) {
+		var child = initMe.childNodes[i];
+		if(child.tagName == "TREESPAWNS")
+			spawnInsertLocation = child;
+	}
+
+	if(!spawnInsertLocation) 
+		return PINE.err("tree spawner has no treeSpawns sub element '<treeSpawns></treeSpawns>'");
+
+	
+	PINE.addNodeFunction(initMe, "tSpawnUpdate", function() {
+		countQuit++;
+
+		if(countQuit > 1000)
+			return;
+			//
+		for(var i = 0; i < initMe.childNodes; i++) {
+			var child = initMe.childNodes[i];
+			if(El.attr(child, "treeSpawn") !== undefined) {
+				child.remove();
+				i--;
+			}
+		}
+
+		var args = treeSpawner.getArgs(initMe);
+
+		if(args) {
+			var spawnFrom = args.spawnFrom;
+			var depthLimit = args.spawnDepthLimit;
+
+			// if(depthLimit == -1 || depthLimit > 0) {
+			var correctType = typeof spawnFrom != "string";
+			var correctDepthing = depthLimit == -1 || depthLimit > 0;
+
+			if(correctType && correctDepthing) {	
+				depthLimit > 0 ? depthLimit-- : null;
+
+				for(var key in spawnFrom) {
+					var addMe = treeSpawn.cloneNode(true);
+					El.attr(addMe, "treeSpawner", key);
+					El.attr(addMe, "treeSpawn", '');
+					El.attr(addMe, "tSpawnDepthLimit", depthLimit);
+					if(addMe.PVARS === undefined)
+						addMe.PVARS = {};
+					addMe.PVARS[key] = spawnFrom[key];
+					addMe.PVARS.key = key;
+
+					initMe.insertBefore(addMe, spawnInsertLocation);
+				}
+			}
+		}
+
+		PINE.updateAt(initMe);
+	});
+
+	initMe.FNS.tSpawnUpdate();
+	
+});
+
+
+
+
+
+
+
+
 
 
 

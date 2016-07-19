@@ -610,7 +610,7 @@ PINE.initiate = function(root) {
 
 
 
-PINE.growingSprouts = [];
+// PINE.growingSprouts = [];
 
 //Sprout is a major function.  it applies all fuctions in queued ops to root
 //and it's children, moving them to passedOps when they are complete, and then
@@ -724,7 +724,7 @@ PINE.sprout = function( root, args)  {
 		}).then(resolve);
 	});
 	
-	PINE.growingSprouts.push(willSprout);
+	// PINE.growingSprouts.push(willSprout);
 	return willSprout;
 }
 
@@ -1166,6 +1166,64 @@ U.get = function(start, keyString, bracketsCase)  {
 }
 
 
+U.stringToVariableLayers = function(keyString) {
+	if(keyString === undefined)
+		return;
+
+	if(keyString.charAt(0) == '.')
+		keyString = keyString.substr(1);
+
+	if(keyString.charAt(0) == '[' && keyString.charAt(keyString.length-1) == ']')
+		keyString = keyString.substr(1, keyString.length-2);
+
+
+	var keyArray = [];
+	var lastStop = 0;
+	var openBrackets = 0;
+
+	//go through string splitting at 0 depth end brackets (ie [[this]] [[notthis])
+	//also split at dots
+	//eg. exam.tests[lala.go["hey"]] == ["exam", "tests", "[lala.go['hey']]"];
+	//eg. test['[test]'] == ["test", "['test']"]
+	for(var c = 0; c < keyString.length; c++) {
+		var char = keyString.charAt(c);
+
+		if(char == '[') { 
+			if(openBrackets == 0 && c != 0) {
+				keyArray.push(keyString.substring(lastStop, c));
+				lastStop = c;	
+			}
+			openBrackets++; 
+		}
+		else if(char == ']') {  openBrackets--;  }
+
+		else if(openBrackets == 0 && char == '.') {
+			keyArray.push(keyString.substring(lastStop, c));
+			lastStop = c+1;	
+		}
+	}
+	keyArray.push(keyString.substring(lastStop));
+
+
+
+
+	var out = [];
+
+	for(var i in keyArray) {
+		var key = keyArray[i];
+		if(key.charAt(0) == '[') 
+			out.push(U.stringToVariableLayers(key))
+		
+		else
+			out.push(key);
+	}
+
+	return out;
+}
+//go.for.it[try.again["begin"]] = ["go", "for", "it", ["try", "again", "begin"]]
+//
+
+
 
 U.assertVar = function(start, keyString, keyNotArray)  {
 	var keyArray = keyString.match(/[\w\d]+/g)
@@ -1196,9 +1254,6 @@ U.assertVar = function(start, keyString, keyNotArray)  {
 
 //mix between get and init.
 U.getnit = function(start, keyString, init, bracketsCase)  {
-	// console.log("case");
-	// console.log(bracketsCase);
-	// console.log(keyString);
 
 	if(keyString === undefined)
 		return start;
@@ -1214,12 +1269,17 @@ U.getnit = function(start, keyString, init, bracketsCase)  {
 	var pos = start;
 
 	
-	//if there is a starting point
+	//there should be a starting point
 	if(start) {
 			//
 		var keyArray = [];
 		var lastStop = 0;
 		var openBrackets = 0;
+
+		//go through string splitting at 0 depth end brackets (ie [[this]] [[notthis])
+		//also split at dots
+		//eg. exam.tests[lala.go["hey"]] == ["exam", "tests", "[lala.go['hey']]"];
+		//eg. test['[test]'] == ["test", "['test']"]
 		for(var c = 0; c < keyString.length; c++) {
 			var char = keyString.charAt(c);
 
@@ -1244,7 +1304,6 @@ U.getnit = function(start, keyString, init, bracketsCase)  {
 
 		//match any brackets, or any string of digits and characters
 		//KLUDGE: very little error handling
-		// var keyArray = keyString.match(/(\[.+?\])|([\w\d]+)/g)
 		for(var i in keyArray)  {
 			var key = keyArray[i];
 

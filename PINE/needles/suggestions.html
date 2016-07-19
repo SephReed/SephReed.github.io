@@ -23,7 +23,11 @@ p_sugg.addFunction(PINE.ops.COMMON, function(initMe) {
 	var sugg_spawner = El.byId(sugg_spawner_att);
 
 	var selectable_list_att = El.attr(initMe, "suggSelectableList");
-	var selectable_list = selectable_list_att ? El.byId(selectable_list_att) : sugg_spawner;
+	var selectable_list;
+	if(selectable_list_att)
+		selectable_list = El.byId(selectable_list_att);
+	else if (PINE.get("[selectableList]") && El.attr(sugg_spawner, "selectableList") !== undefined)
+		selectable_list = sugg_spawner;
 
 	var limit_att = El.attr(initMe, "suggLimit");
 	var limit = limit_att ? parseInt(limit_att) : 10;
@@ -37,18 +41,20 @@ p_sugg.addFunction(PINE.ops.COMMON, function(initMe) {
 		PINE.err("needle suggestions has no array to search")
 	}
 	else if(potential_matches.length && typeof potential_matches[0] != "string" && searchable_subObject === undefined) {
-		PINE.err("supplied suggestion array is not an array of strings.  Use suggSubObject if the strings are a sub object of aray items");
+		PINE.err("supplied suggestion array is not an array of strings.  Use searchable_subObject if the strings are a sub object of aray items");
 	}
 	else if(target_input == undefined) {
-		PINE.err("needle suggestions has no input")
+		PINE.err("needle suggestions has no input.  Either use this as an attribute for an input element or...")
 	}
 	else if(sugg_out == undefined) {
-		PINE.err("needle suggestions has no output")
+		PINE.err("needle suggestions has no output, you must set the suggOut attribute")
 	}
 
 
 
 	else {
+		if(sugg_spawner == undefined)
+			PINE.err("no spawner for suggestion list exists")
 
 		var current_matches = potential_matches.slice();
 
@@ -168,8 +174,8 @@ p_sugg.addFunction(PINE.ops.COMMON, function(initMe) {
 				var checkMe = potential_matches[i];
 				var checkText = checkMe;
 
-				if(suggSubObject)
-					checkText = checkMe[suggSubObject];
+				if(searchable_subObject)
+					checkText = checkMe[searchable_subObject];
 
 				//if the item contains the text and more
 				if(checkText.indexOf(targetText) != -1 && checkText.length > targetText.length) {
@@ -187,8 +193,8 @@ p_sugg.addFunction(PINE.ops.COMMON, function(initMe) {
 				var checkMe = current_matches[i];
 				var checkText = checkMe;
 				
-				if(suggSubObject)
-					checkText = checkMe[suggSubObject];
+				if(typeof checkMe == "object" && searchable_subObject) 
+					checkText = checkMe[searchable_subObject];
 
 				if(checkText.indexOf(filter) == -1 || checkText.length == filter.length) {
 					current_matches.splice(i, 1);
@@ -201,8 +207,15 @@ p_sugg.addFunction(PINE.ops.COMMON, function(initMe) {
 		var updateSuggestions = function(targetText) {
 			sugg_out.length = 0;
 
-			for(var i in current_matches) 
-				sugg_out.push(convertTextToSuggestion(current_matches[i], targetText));
+			for(var i = 0; i < current_matches.length && i < limit; i++) {
+
+				var matchItemText = current_matches[i]
+					//
+				if(typeof matchItemText == "object" && searchable_subObject) 
+					matchItemText = current_matches[i][searchable_subObject];
+
+				sugg_out.push(convertTextToSuggestion(matchItemText, targetText));
+			}
 		}
 		
 

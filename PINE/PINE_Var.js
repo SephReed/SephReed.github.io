@@ -53,13 +53,7 @@ PINE.pnv.parseText = function(initMe)  {
 
 		var pineVar = document.createElement("pnv");
 		El.attr(pineVar, "var", get);
-		// var getAtt = document.createAttribute("var");
-		// getAtt.value = get;
-		// pineVar.setAttributeNode(getAtt);
-    	// pineVar.appendChild(varTextNode);
     	varTextNode.remove();
-
-    	// PINE.initiate(pineVar);
 
     	initMe.parentNode.insertBefore(pineVar, postVarTextNode);
 	}
@@ -78,8 +72,6 @@ PINE.pnv.parseAtts = function(initMe)  {
 		if(att != pnvatt)  {
 			var watched_vars = att.value.match( /{{.+?}}/g );
 			if(watched_vars)  {
-				// console.log(att);	
-
 				if(pnvatt == null)  {
 					pnvatt = document.createAttribute("pnvatt");
 					initMe.setAttributeNode(pnvatt);
@@ -144,19 +136,15 @@ PINE.createNeedle("[pnvatt]").addFunction( PINE.ops.STATIC, function(initMe, nee
 		var matches = outVal.match(/{{.+?}}/g);
 
 		for(var i_m in matches)  {
-			
-
 			var replaceMe = matches[i_m];
 
 			var key = matches[i_m].replace(/[{}]/g, '');
 			var addMe = pnv.getVarFrom(key, initMe); 
 
 			outVal = outVal.replace(replaceMe, addMe);
-
 		}
 
 		
-
 		initMe.attributes[setAtt].value = outVal;
 	}
 	
@@ -170,6 +158,7 @@ PINE.createNeedle("[pnvatt]").addFunction( PINE.ops.STATIC, function(initMe, nee
 
 
 pnv.getVarFrom = function(varName, domNode)  {
+
 	var scope = domNode;
 	if(!domNode || !domNode.PVARS)
 		scope = window;
