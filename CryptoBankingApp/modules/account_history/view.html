@@ -1,0 +1,78 @@
+<script type="text/javascript">
+	El.byId("header_title").innerHTML = "Account History";
+
+	var url = INCLUDED ? INCLUDED.url : window.location;
+	var account_arg = U.getHttpArg("acct", url);
+	var account = getAccount(account_arg);
+</script>
+
+<style>
+	#history {
+		position: relative;
+		max-height: 500px;
+		overflow: scroll;
+	}
+
+	#history entries {
+		position: absolute;
+		display: block;
+		width: 100%;
+		top: 55px;
+		bottom: 10px;
+		overflow-y: scroll;
+		padding: 10px;
+	}
+
+	#history entries:after {
+		content: " ";
+		display: block;
+		height: 50px;
+	}
+
+	#history fadeOut {
+		position: absolute;
+		height: 25px;
+		width: 100%;
+		bottom: 10px;
+		left: 0px;
+		background: linear-gradient(transparent, #FAFAFA 95%);
+	}
+</style>
+
+
+
+
+<div id="view_account_history" class="columns">
+	<colItem>
+		<div id="history">
+			<h1>History</h1>
+			&lt;April  May June&gt;
+
+			<entries spawner="account.transactions" spawnerSetPvar="item=account.transactions[i]">
+				<r spawn><d>{{item.place}}</d>									<d>{{item.amount}}</d></r>
+			</entries>
+			
+			<fadeOut></fadeOut>
+		</div>
+	</colItem>
+
+	
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

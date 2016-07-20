@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	El.byId("header_title").innerHTML = "All Accounts";
+	El.byId("header_title").innerHTML = "All Accounts";		
 </script>
 
 
@@ -18,26 +18,10 @@ changeSrc[backButton] {
 </style>
 
 
-<div class="moneyLogs columns">
-	<colItem>
-		<changesrc class="moneyLog" src="views/account.html?acct=spending">
-			<entries>
-				<r class="underline"><d>Spending Account</d>	<d>100</d></r>
-				<r><d>place</d>									<d>100</d></r>
-				<r><d>place</d>									<d>100</d></r>
-				<r><d>place</d>									<d>100</d></r>
-			</entries>
-		</changesrc>
-	</colItem>
-
-	<colItem>
-		<changesrc class="moneyLog" src="views/account.html?acct=spending">
-			<entries>
-				<r class="underline"><d>Saving Account</d>	<d>100</d></r>
-				<r><d>place</d>									<d>100</d></r>
-				<r><d>place</d>									<d>100</d></r>
-				<r><d>place</d>									<d>100</d></r>
-			</entries>
+<div class="moneyLogs columns" spawner="ACCOUNTS" spawnerSetPvar="account=ACCOUNTS[i]">
+	<colItem spawn>
+		<changesrc class="moneyLog" src="modules/account/view.html?acct={{account.name}}">
+			<include src="modules/account/mini.html?acct={{account.name}}"></include>
 		</changesrc>
 	</colItem>
 </div>

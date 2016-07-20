@@ -54,9 +54,7 @@ var spawner = PINE.createNeedle("[spawner]");
 spawner.addFunction( PINE.ops.COMMON, function(initMe) {
 
 	var indexer = El.attr(initMe, "indexer") || "i";
-
-	U.assertKey(initMe, "_pine_.spawner");
-	initMe._pine_.spawner.indexer = indexer;
+	U.set(initMe, "_pine_.spawner.indexer", indexer);
 
 	//
 	var nospawnCollection = El.byTag(initMe, "nospawn");
@@ -200,9 +198,10 @@ treeSpawner.getArgs = function(initMe) {
 	var out = {};
 
 	var spawnFrom_att = El.attr(initMe, "treeSpawner");
-	if(spawnFrom_att)
-		spawnFrom_att = "'"+spawnFrom_att+"'"
-	out.spawnFrom = pnv.getVarFrom(spawnFrom_att, initMe);
+	// if(spawnFrom_att)
+		// spawnFrom_att = "'"+spawnFrom_att+"'"
+	// out.spawnFrom = pnv.getVarFrom(spawnFrom_att, initMe);
+	out.spawnFrom = PINE.nodeScopedVar(initMe, spawnFrom_att);
 
 	var spawnDepthLimit_att = El.attr(initMe, "tSpawnDepthLimit");
 	if(spawnDepthLimit_att === undefined)

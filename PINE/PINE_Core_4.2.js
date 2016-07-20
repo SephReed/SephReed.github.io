@@ -253,9 +253,6 @@ PINE.registerPineFunc = function(args)  {
 		
 		pinefuncs.all[opType].push(addMe);
 		pinefuncs.queued[opType].push(addMe);
-
-		console.log(needle);
-
 		needle.pinefuncs[opType].push(addMe);
 	}
 }
@@ -1046,7 +1043,12 @@ PINE.err = function(whatevers_the_problem) { //?
 		args.unshift("PINE error: ");
 		args.unshift("error");
 
-		U.log("light", new Error().stack.split('\n'));
+		var stack = {};
+		stack.errorStack = new Error().stack.split('\n');
+		var badLine = stack.errorStack[1];
+
+
+		U.log("light", badLine, stack);
 
 		U.log.apply(this, args)
 		// console.log(new Error());
@@ -1161,20 +1163,63 @@ PINE.debug.showRunningAsyncs = function() {
 
 
 
-U.get = function(start, keyString, bracketsCase)  {
-	return U.getnit(start, keyString, undefined, bracketsCase);
+U.get = function(start, keyArrayOrString, bracketsCase)  {
+	return U.getnit(start, keyArrayOrString, undefined, bracketsCase);
+}
+
+U.init = function(start, keyArrayOrString, init, bracketsCase)  {
+	return U.getnit(start, keyArrayOrString, init, bracketsCase);
+}
+
+U.set = function(start, keyArrayOrString, init, bracketsCase)  {
+	return U.getnit(start, keyArrayOrString, init, bracketsCase, true);
 }
 
 
-U.stringToVariableLayers = function(keyString) {
+U.assertKey = U.assertArray = U.assertVar = function() {
+	alert("USE u.get or u.init!!");
+	PINE.err("USE u.get or u.init!!");
+}
+
+
+
+
+
+
+// U.assertVar = function(start, keyString, keyNotArray)  {
+// 	var keyArray = keyString.match(/[\w\d]+/g)
+// 	var pos = start;
+
+// 	var noNeed = true;
+
+// 	if(start) {
+// 		for(var i in keyArray)  {
+// 			var key = keyArray[i];
+// 			if(pos[key] == null) {
+// 				pos[key] = {};
+// 				noNeed = false;
+// 			}
+// 			pos = pos[key];
+// 		}
+// 	}
+// 	else noNeed = false;
+
+// 	if(keyNotArray == false && noNeed == false){
+// 		pos = [];
+// 	}
+
+// 	return noNeed;
+// }
+
+U.stringToVariableLayers = function(keyString, rootLess) {
 	if(keyString === undefined)
 		return;
 
 	if(keyString.charAt(0) == '.')
 		keyString = keyString.substr(1);
 
-	if(keyString.charAt(0) == '[' && keyString.charAt(keyString.length-1) == ']')
-		keyString = keyString.substr(1, keyString.length-2);
+	// if(keyString.charAt(0) == '[' && keyString.charAt(keyString.length-1) == ']')
+	// 	keyString = keyString.substr(1, keyString.length-2);
 
 
 	var keyArray = [];
@@ -1211,8 +1256,11 @@ U.stringToVariableLayers = function(keyString) {
 
 	for(var i in keyArray) {
 		var key = keyArray[i];
-		if(key.charAt(0) == '[') 
-			out.push(U.stringToVariableLayers(key))
+		var rootLessBracketCase = (i == 0 && rootLess == true); 
+		if(!rootLessBracketCase && key.charAt(0) == '[') {
+			key = key.substr(1, key.length-2);
+			out.push(U.stringToVariableLayers(key));
+		}
 		
 		else
 			out.push(key);
@@ -1220,125 +1268,49 @@ U.stringToVariableLayers = function(keyString) {
 
 	return out;
 }
-//go.for.it[try.again["begin"]] = ["go", "for", "it", ["try", "again", "begin"]]
-//
-
-
-
-U.assertVar = function(start, keyString, keyNotArray)  {
-	var keyArray = keyString.match(/[\w\d]+/g)
-	var pos = start;
-
-	var noNeed = true;
-
-	if(start) {
-		for(var i in keyArray)  {
-			var key = keyArray[i];
-			if(pos[key] == null) {
-				pos[key] = {};
-				noNeed = false;
-			}
-			pos = pos[key];
-		}
-	}
-	else noNeed = false;
-
-	if(keyNotArray == false && noNeed == false){
-		pos = [];
-	}
-
-	return noNeed;
-}
 
 
 
 //mix between get and init.
-U.getnit = function(start, keyString, init, bracketsCase)  {
-
-	if(keyString === undefined)
-		return start;
-
-	if(keyString.charAt(0) == '.')
-		keyString = keyString.substr(1);
-
-	var bracketsCase = bracketsCase || U.get;
-
-	// console.log("getting"+keyString)
-	// console.log(start);
-	
+U.getnit = function(start, keyArrayOrString, init, bracketsCase, forceSet)  {
+		//
 	var pos = start;
 
-	
+	var keyArray;
+	if(typeof keyArrayOrString == "string")
+		keyArray = U.stringToVariableLayers(keyArrayOrString);
+	else
+		keyArray = keyArrayOrString;
+
 	//there should be a starting point
-	if(start) {
+	if(start && keyArray) {
 			//
-		var keyArray = [];
-		var lastStop = 0;
-		var openBrackets = 0;
-
-		//go through string splitting at 0 depth end brackets (ie [[this]] [[notthis])
-		//also split at dots
-		//eg. exam.tests[lala.go["hey"]] == ["exam", "tests", "[lala.go['hey']]"];
-		//eg. test['[test]'] == ["test", "['test']"]
-		for(var c = 0; c < keyString.length; c++) {
-			var char = keyString.charAt(c);
-
-			if(char == '[') { 
-				if(openBrackets == 0 && c != 0) {
-					keyArray.push(keyString.substring(lastStop, c));
-					lastStop = c;	
-				}
-				openBrackets++; 
-			}
-			else if(char == ']') {  openBrackets--;  }
-
-			else if(openBrackets == 0 && char == '.') {
-				keyArray.push(keyString.substring(lastStop, c));
-				lastStop = c+1;	
-			}
-		}
-		keyArray.push(keyString.substring(lastStop));
-
-		// console.log(keyArray);
-
-
-		//match any brackets, or any string of digits and characters
-		//KLUDGE: very little error handling
+		
 		for(var i in keyArray)  {
 			var key = keyArray[i];
 
-			// console.log("IN"+key);
+			if(typeof key == "object") {
+				if(bracketsCase)
+					key = bracketsCase(key);
 
-			//if this is a brackets match, remove the outermost brackets
-			if(key.charAt(0) == '[') {
-				key = key.replace(/(^\[|\]$)/g, '');
-
-				//if the new first char not a quote it is it's own variable
-				if (key.charAt(0) != "'" && key.charAt(0) != '"') {
-					// console.log("HEYHE");
-					key = bracketsCase(start, key, bracketsCase);
-					// console.log("SPECIAL CASE"+key);
-				}
-
-				//otherwise, replace the quotes
-				else {
-					key = key.replace(/['"]/g, '');
-				}
+				else
+					key = getnit(window, key);
 			}
 			
-
-			// console.log("OUT"+key);
+			var atEnd = i >= keyArray.length - 1;
 
 			if(pos[key] === undefined) {
 				if(init === undefined)
 					return undefined;
 
-				//last one
-				else if(i < keyArray.length - 1)
+				else if(!atEnd)
 					pos[key] = {};
 
 				else pos[key] = init;
 			}
+			else if(forceSet && atEnd)
+				pos[key] = init;
+
 			pos = pos[key];
 		}
 	}
@@ -1349,13 +1321,113 @@ U.getnit = function(start, keyString, init, bracketsCase)  {
 
 
 
-U.assertKey = function(start, keyString)  {
-	U.assertVar(start, keyString, true);
-}
 
-U.assertArray = function(start, keyString)  {
-	U.assertVar(start, keyString, false);
-}
+
+
+// //mix between get and init.
+// U.getnit = function(start, keyString, init, bracketsCase)  {
+
+// 	if(keyString === undefined)
+// 		return start;
+
+// 	if(keyString.charAt(0) == '.')
+// 		keyString = keyString.substr(1);
+
+// 	var bracketsCase = bracketsCase || U.get;
+
+// 	// console.log("getting"+keyString)
+// 	// console.log(start);
+	
+// 	var pos = start;
+
+	
+// 	//there should be a starting point
+// 	if(start) {
+// 			//
+// 		var keyArray = [];
+// 		var lastStop = 0;
+// 		var openBrackets = 0;
+
+// 		//go through string splitting at 0 depth end brackets (ie [[this]] [[notthis])
+// 		//also split at dots
+// 		//eg. exam.tests[lala.go["hey"]] == ["exam", "tests", "[lala.go['hey']]"];
+// 		//eg. test['[test]'] == ["test", "['test']"]
+// 		for(var c = 0; c < keyString.length; c++) {
+// 			var char = keyString.charAt(c);
+
+// 			if(char == '[') { 
+// 				if(openBrackets == 0 && c != 0) {
+// 					keyArray.push(keyString.substring(lastStop, c));
+// 					lastStop = c;	
+// 				}
+// 				openBrackets++; 
+// 			}
+// 			else if(char == ']') {  openBrackets--;  }
+
+// 			else if(openBrackets == 0 && char == '.') {
+// 				keyArray.push(keyString.substring(lastStop, c));
+// 				lastStop = c+1;	
+// 			}
+// 		}
+// 		keyArray.push(keyString.substring(lastStop));
+
+// 		// console.log(keyArray);
+
+
+// 		//match any brackets, or any string of digits and characters
+// 		//KLUDGE: very little error handling
+// 		for(var i in keyArray)  {
+// 			var key = keyArray[i];
+
+// 			// console.log("IN"+key);
+
+// 			//if this is a brackets match, remove the outermost brackets
+// 			if(key.charAt(0) == '[') {
+// 				key = key.replace(/(^\[|\]$)/g, '');
+
+// 				//if the new first char not a quote it is it's own variable
+// 				if (key.charAt(0) != "'" && key.charAt(0) != '"') {
+// 					// console.log("HEYHE");
+// 					key = bracketsCase(start, key, bracketsCase);
+// 					// console.log("SPECIAL CASE"+key);
+// 				}
+
+// 				//otherwise, replace the quotes
+// 				else {
+// 					key = key.replace(/['"]/g, '');
+// 				}
+// 			}
+			
+
+// 			// console.log("OUT"+key);
+
+// 			if(pos[key] === undefined) {
+// 				if(init === undefined)
+// 					return undefined;
+
+// 				//last one
+// 				else if(i < keyArray.length - 1)
+// 					pos[key] = {};
+
+// 				else pos[key] = init;
+// 			}
+// 			pos = pos[key];
+// 		}
+// 	}
+
+// 	return pos;
+// }
+
+
+
+
+// U.assertKey = function(start, keyString)  {
+// 	U.assertVar(start, keyString, true);
+// }
+
+// U.assertArray = function(start, keyString)  {
+// 	U.assertVar(start, keyString, false);
+// }
 
 
 
@@ -1467,47 +1539,61 @@ U.log = function() {
 * 	Modded
 ***/
 
-U.cookie = function(name, value, days) {
-	if(value) 
-		U.setCookie(name, value, days);
+U.cookie = U.setCookie = U.getCookie = U.deleteCookie = function() {
+	alert("DON'T USE COOKIES, USE LOCAL STORAGE");
+	PINE.err("cookies no longer supported");
+}
+
+
+// U.cookie = function(name, value, days) {
+// 	if(value) 
+// 		U.setCookie(name, value, days);
 	
-	else
-		return U.getCookie(name);
+// 	else
+// 		return U.getCookie(name);
+// }
+
+// U.setCookie = function(name, value, days) {
+//     var expires;
+//     if (days) {
+//         var date = new Date();
+//         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+//         expires = "; expires=" + date.toGMTString();
+//     }
+//     else {
+//         expires = "";
+//     }
+//     document.cookie = name + "=" + value + expires + "; path=/";
+// }
+
+// U.getCookie = function(c_name) {
+//     if (document.cookie.length > 0) {
+//         var c_start = document.cookie.indexOf(c_name + "=");
+//         if (c_start != -1) {
+//             c_start = c_start + c_name.length + 1;
+//             var c_end = document.cookie.indexOf(";", c_start);
+//             if (c_end == -1) {
+//                 c_end = document.cookie.length;
+//             }
+//             return unescape(document.cookie.substring(c_start, c_end));
+//         }
+//     }
+//     return "";
+// }
+
+// U.deleteCookie = function(varName) {
+//   	document.cookie = varName + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+// }
+
+
+U.getHttpArg = function(varName, url){
+   	// if(varName=(new RegExp('[?&]'+encodeURIComponent(varName)+'=([^&]*)')).exec(url))
+    //     return decodeURIComponent(varName[1]);
+    if(varName = (new RegExp('[?&]'+varName+'=([^&]*)')).exec(url))
+        return varName[1];
+
+    else return undefined;
 }
-
-U.setCookie = function(name, value, days) {
-    var expires;
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toGMTString();
-    }
-    else {
-        expires = "";
-    }
-    document.cookie = name + "=" + value + expires + "; path=/";
-}
-
-U.getCookie = function(c_name) {
-    if (document.cookie.length > 0) {
-        var c_start = document.cookie.indexOf(c_name + "=");
-        if (c_start != -1) {
-            c_start = c_start + c_name.length + 1;
-            var c_end = document.cookie.indexOf(";", c_start);
-            if (c_end == -1) {
-                c_end = document.cookie.length;
-            }
-            return unescape(document.cookie.substring(c_start, c_end));
-        }
-    }
-    return "";
-}
-
-U.deleteCookie = function(varName) {
-  	document.cookie = varName + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
-
-
 
 
 

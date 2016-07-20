@@ -153,45 +153,97 @@ PINE.createNeedle("[pnvatt]").addFunction( PINE.ops.STATIC, function(initMe, nee
 
 
 
+PINE.nodeScopedVar = function(domNode, varName) {
+	return pnv.getVarFrom(varName, domNode);
+}
 
 
+pnv.getVarFrom = function(keyArrayOrName, currentNode, superRoot)  {
+		//
+	//set pvars locations and default currentNode to window if outside the scope of PINE Vars
+	var pvars;
+	if(!currentNode || !currentNode.PVARS)
+		pvars = currentNode = window;
+	else
+		pvars = currentNode.PVARS;
 
+	//if there is no super root, set it to this node.  All nested variables ie not_nested[nested] will be
+	//searched for from this root
+	if(superRoot === undefined)
+		superRoot = currentNode;
 
-pnv.getVarFrom = function(varName, domNode)  {
+	//if a string was given instead of a keyarray, convert the string
+	var keyArray;
+	if(typeof keyArrayOrName == "string")
+		keyArray = U.stringToVariableLayers(keyArrayOrName, true);
+	else
+		keyArray = keyArrayOrName;
 
-	var scope = domNode;
-	if(!domNode || !domNode.PVARS)
-		scope = window;
+	LOG("pnv", currentNode, keyArray);
 
+	//if the keyArray is not null
+	//check that the first entry is in fact a string, err if not
+	//check if this node has the string as a property.  if it does, go for it
+	//if this object does not have the property and there is a parent, check the parent
+	//in all fail cases return undefined
+	if(keyArray.length > 0) {
+		if(typeof keyArray[0] != "string") 
+			PINE.err("first attribute of "+keyarray+" is not a string");
 
-	LOG("pnv", varName, domNode, domNode.PVARS);
+		if(pvars.hasOwnProperty(keyArray[0])) {
+			return U.getnit(pvars, keyArray, undefined, function(keyArray) {
+				return pnv.getVarFrom(keyArray, superRoot);
+			});
+		}
 
-	var rootVar;
-	var extension;
-	for(var c = 0; rootVar == null && c < varName.length; c++) {
-		var char = varName.charAt(c);
-
-		if(char == '[' || char == '.') {
-			var rootVarName = varName.substring(0, c);
-			var extension = varName.substring(c);
-			rootVar = pnv.searchForPinevar(rootVarName, domNode);
-		} 
+		else if(currentNode.parentNode !== undefined) {
+			return pnv.getVarFrom(keyArray, currentNode.parentNode, superRoot);
+		}
 	}
 
-	if(rootVar == undefined) {
-		rootVar = pnv.searchForPinevar(varName, domNode);
-	}
+	return undefined;
+}
+
+
+
+// pnv.getVarFrom = function(varName, domNode)  {
+
+// 	var scope = domNode;
+// 	if(!domNode || !domNode.PVARS)
+// 		scope = window;
+
+
+// 	LOG("pnv", varName, domNode, domNode.PVARS);
+
+// 	var rootVar;
+// 	var extension;
+// 	for(var c = 0; rootVar == null && c < varName.length; c++) {
+// 		var char = varName.charAt(c);
+
+// 		if(char == '[' || char == '.') {
+// 			var rootVarName = varName.substring(0, c);
+// 			var extension = varName.substring(c);
+// 			rootVar = pnv.searchForPinevar(rootVarName, domNode);
+// 		} 
+// 	}
+
+// 	if(rootVar == undefined) {
+// 		rootVar = pnv.searchForPinevar(varName, domNode);
+// 	}
 
 	
 
-	if(extension) {
-		LOG("pnv", "root and extension ", rootVar, extension);
-		return U.get(rootVar, extension, function(start, varName){
-			return pnv.getVarFrom(varName, domNode);
-		});
-	}
-	else return rootVar;
-}
+// 	if(extension) {
+// 		LOG("pnv", "root and extension ", rootVar, extension);
+// 		return U.get(rootVar, extension, function(start, varName){
+// 			return pnv.getVarFrom(varName, domNode);
+// 		});
+// 	}
+// 	else return rootVar;
+// }
+
+
+
 
 pnv.searchForPinevar = function(varName, domNode)  {
 	// var scope = domNode;

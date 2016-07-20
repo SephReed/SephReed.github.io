@@ -1,0 +1,13 @@
+<script type="text/javascript">
+	var url = INCLUDED ? INCLUDED.url : window.location;
+	var account_arg = U.getHttpArg("acct", url);
+	var account = getAccount(account_arg);
+</script>
+
+
+
+
+<entries spawner="account.transactions" spawnerSetPvar="item=account.transactions[i]">
+	<r class="underline"><d>{{account.name}} Account</d>			<d>{{account.total}}</d></r>
+	<r spawn><d>{{item.place}}</d>									<d>{{item.amount}}</d></r>
+</entries>

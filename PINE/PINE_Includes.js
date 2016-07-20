@@ -368,7 +368,6 @@ PINE("[backButton]", PINE.ops.POLISH, function(initMe, needle) {
 	var backHistory = initMe._pine_.backHistory = [];
 
 	if(domNode && domNode.FNS && domNode.FNS.changeSrc) {
-		console.log("BACK BTN aadd" )
 		domNode.FNS.changeSrc.add("before", function(src) {
 
 			var oldSrc = El.attr(domNode, "src");
@@ -463,6 +462,10 @@ U.evalElementScripts = function(initMe, url) {
 	fakeLoc.search = search ? search[0] : "";
 	injects.push({var_name: "window.location", addMe: fakeLoc});
 
+	var INCLUDED = {};
+	INCLUDED.url = url;
+	injects.push({var_name: "INCLUDED", addMe: INCLUDED});
+
 	var scriptNodes = initMe.getElementsByTagName("script");
 
 	var scripts = [];
@@ -476,13 +479,25 @@ U.evalElementScripts = function(initMe, url) {
 
 	for(var sc in hack.scripts) {
 		// console.log(hack.scripts[sc]);
-		// try {
+		try {
 			console.log("trying eval for "+url);
+
+			// var fullyHackedScript = "try { \n" + hack.scripts[sc] + "\n} catch(e) { "
+			// fullyHackedScript += "console.log('Eval Error In "+url+"', e); }";
+
+
+			// eval(fullyHackedScript);
+			// console.log(fullyHackedScript);
 			eval(hack.scripts[sc]);
-		// }
-		// catch(e) {
-		// 	PINE.err("eval error in file "+url);
-		// }
+
+		}
+		catch(e) {
+			var lineNumber = e.lineNumber ? e.lineNumber : -1;
+			var errorOut = {};
+			errorOut.viewScript = hack.scripts[sc];
+
+			PINE.err("eval error in file "+url+" line: "+lineNumber+" of script: ", errorOut);
+		}
 	}
 
 	return hack;
@@ -698,9 +713,6 @@ U.hackScripts = function(scriptsArray, i_injects) {
 	for(var i in injects) {
 		injects[i].rex = RegExp("([^\\.\\w\\d]|^)"+injects[i].var_name+"(?!( *:|[\\w\\d]))", "g");
 	}
-
-	// console.log(scriptContexts);
-	console.log(injects);
 
 	var scriptsOut = [];
 
