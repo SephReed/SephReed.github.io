@@ -43,6 +43,17 @@ PINE.Include.setDefaultChangeSrcTarget = function(target) {
 }
 
 
+PINE("[defaultChangeSrcTarget]", function(initMe) {
+	if(INC.defaultChangeSrcTarget) {
+		PINE.err("default change src target already set to ", INC.defaultChangeSrcTarget, 
+			" use PINE.Include.setDefaultChangeSrcTarget() if you want to change it mid site execution")
+	}
+
+	else 
+		INC.setDefaultChangeSrcTarget(initMe);
+});
+
+
 
 
 //TODO remove caching.

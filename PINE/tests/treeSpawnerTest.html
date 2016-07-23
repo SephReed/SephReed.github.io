@@ -11,12 +11,22 @@
 	<script src="../PINE_Needles.js"></script>
 	<script type="text/javascript">
 		// U.showLog["pnv"] = true;
+		var hats = ["fez", "beanie", "burka"];
+
+
 	</script>
 </head>
 <body>
 
-<div treeSpawner="PINE" tSpawnDepthLimit="4">
-	{{key}}:<br>
+<!-- <div spawner="hats">
+	<div spawn pvars="myhat=hats[i]">
+		{{myhat}}
+	</div>
+</div> -->
+
+
+<div treeSpawner="PINE" tSpawnDepthLimit="4" pvars="title=key">
+	{{title}}:<br>
 	<treeSpawns></treeSpawns>
 </div>
 </body>

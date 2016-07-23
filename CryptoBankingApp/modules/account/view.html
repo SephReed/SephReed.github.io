@@ -23,10 +23,11 @@
 <div id="view_account" class="columns">
 	<colItem class="moneyLogs">
 		<changesrc src="modules/account_history/view.html?acct={{account.name}}">
-			<entries spawner="account.transactions" spawnerSetPvar="item=account.transactions[i]">
+			<entries spawner="account.transactions">
 				<r><d>{{account.name}} Account</d>								<d>{{account.total}}</d></r>
 				<r class="underline"><d>#90494094094094</d>						<d></d></r>
-				<r spawn><d>{{item.place}}</d>									<d>{{item.amount}}</d></r>
+				<r spawn pvars="item=account.transactions[i]">
+					<d>{{item.place}}</d>									<d>{{item.amount}}</d></r>
 			</entries>
 			<br>
 			Show Full History

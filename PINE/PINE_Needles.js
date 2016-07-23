@@ -142,6 +142,8 @@ spawner.update = function(initMe) {
 
 		//TODO: this should probably be a function of PINE_Var.js
 		if(setpvar) {
+			PINE.err("spawnerSetPvar is deprecated!!  Use  <... spawn pvars='"+setpvar+"'> instead.", initMe);
+
 			setpvar = setpvar.split(/[;=]/g);
 			for(var i_s = 0; i_s < setpvar.length; i_s+=2) {
 				i_pvars[setpvar[i_s]] = setpvar[i_s+1];
@@ -197,28 +199,33 @@ var treeSpawner = PINE.createNeedle("[treeSpawner]");
 treeSpawner.getArgs = function(initMe) {
 	var out = {};
 
+	//spawn source
 	var spawnFrom_att = El.attr(initMe, "treeSpawner");
-	// if(spawnFrom_att)
-		// spawnFrom_att = "'"+spawnFrom_att+"'"
-	// out.spawnFrom = pnv.getVarFrom(spawnFrom_att, initMe);
 	out.spawnFrom = PINE.nodeScopedVar(initMe, spawnFrom_att);
+		//
+	if(out.spawnFrom === undefined) 
+		return PINE.err("tree spawner has no root object to spawn from", initMe, spawnFrom_att);
 
+
+	//depth limit
 	var spawnDepthLimit_att = El.attr(initMe, "tSpawnDepthLimit");
 	if(spawnDepthLimit_att === undefined)
 		out.spawnDepthLimit = -1;
 	else 
 		out.spawnDepthLimit = parseInt(spawnDepthLimit_att);
-
+			//
 	out.spawnDepthLimit = Math.max(-1, out.spawnDepthLimit);
 
-	if(out.spawnFrom === undefined) 
-		return PINE.err("tree spawner has no root object to spawn from", initMe, spawnFrom_att);
+
+	//childNodes rule
+	out.childNodesKey = El.attr(initMe, "tSpawnChildNodesKey");
+
 
 	return out;
 }
 
 
-var countQuit = 0;
+// var countQuit = 0;
 
 treeSpawner.addFunction( PINE.ops.COMMON, function(initMe) {
 
@@ -231,14 +238,14 @@ treeSpawner.addFunction( PINE.ops.COMMON, function(initMe) {
 	}
 
 	if(!spawnInsertLocation) 
-		return PINE.err("tree spawner has no treeSpawns sub element '<treeSpawns></treeSpawns>'");
+		return PINE.err("tree spawner has no treeSpawns sub element '<treeSpawns></treeSpawns>'", initMe);
 
 	
 	PINE.addNodeFunction(initMe, "tSpawnUpdate", function() {
-		countQuit++;
+		// countQuit++;
 
-		if(countQuit > 1000)
-			return;
+		// if(countQuit > 1000)
+		// 	return;
 			//
 		for(var i = 0; i < initMe.childNodes; i++) {
 			var child = initMe.childNodes[i];
@@ -252,6 +259,10 @@ treeSpawner.addFunction( PINE.ops.COMMON, function(initMe) {
 
 		if(args) {
 			var spawnFrom = args.spawnFrom;
+
+			if(spawnFrom && args.childNodesKey)
+				spawnFrom = spawnFrom[args.childNodesKey];
+
 			var depthLimit = args.spawnDepthLimit;
 
 			// if(depthLimit == -1 || depthLimit > 0) {
@@ -266,9 +277,17 @@ treeSpawner.addFunction( PINE.ops.COMMON, function(initMe) {
 					El.attr(addMe, "treeSpawner", key);
 					El.attr(addMe, "treeSpawn", '');
 					El.attr(addMe, "tSpawnDepthLimit", depthLimit);
+
+					// if(arg.childNodesKey)
+						// El.attr(addMe, "tSpawnChildNodesKey", arg.childNodesKey);
+
 					if(addMe.PVARS === undefined)
 						addMe.PVARS = {};
-					addMe.PVARS[key] = spawnFrom[key];
+
+					if(args.childNodesKey)
+						addMe.PVARS[args.childNodesKey] = spawnFrom;
+
+					addMe.PVARS[key] = spawnFrom[key];	
 					addMe.PVARS.key = key;
 
 					initMe.insertBefore(addMe, spawnInsertLocation);

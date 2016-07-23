@@ -7,7 +7,12 @@
 
 
 
-<entries spawner="account.transactions" spawnerSetPvar="item=account.transactions[i]">
-	<r class="underline"><d>{{account.name}} Account</d>			<d>{{account.total}}</d></r>
-	<r spawn><d>{{item.place}}</d>									<d>{{item.amount}}</d></r>
+<entries spawner="account.transactions" >
+	<r class="underline">
+		<d>{{account.name}} Account</d>			<d>{{account.total}}</d>
+	</r>
+	
+	<r spawn pvars="item=account.transactions[i]">
+		<d>{{item.place}}</d>									<d>{{item.amount}}</d>
+	</r>
 </entries>

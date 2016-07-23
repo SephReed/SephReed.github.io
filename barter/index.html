@@ -2,8 +2,8 @@
 <html>
 <head>
 
-	<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
-	 <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet"> 
+	<!-- <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet"> -->
+	 <!-- <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">  -->
 
 	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
 	<script type="text/javascript" src="SephMarketTree.js"></script>
@@ -55,29 +55,51 @@
 		
 	</div>
 
-	<marketableTree treeSpawner="MARKET_TREE">
-		<marketable treeSpawn>{{key}}</marketable>
-	</marketableTree>
-	
+	<sidebarcontent>
 
-	<waypointList spawner="TEST_WAYPOINTS" spawnerSetPvar="waypoint=TEST_WAYPOINTS[i]">
-		<h1>Waypoints in your area:</h1>
-		<waypoint spawn>
-			<h1>{{waypoint.title}}</h1>
-			<!-- <offerGroupList>
-				<offerGroup>
-					<h1>Tamales</h1>
-					<offerList>
-						<offer>pork</offer>
-						<offer>chicken</offer>
-						<offer>beef</offer>
-						<offer>spicy beef</offer>
-						<offer>cheese chicken</offer>
-					</offerList>
-				</offerGroup>
-			</offerGroupList> -->
-		</waypoint>
-	</waypointList>
+
+		<!-- <marketableTree treeSpawner="MARKET_TREE">
+			{{key}}
+			<treeSpawns></treeSpawns>
+		</marketableTree> -->
+		
+
+		<waypointList spawner="TEST_WAYPOINTS">
+			<h1>Waypoints in your area:</h1>
+			<waypoint spawn pvars="waypoint=TEST_WAYPOINTS[i]">
+				<h1>{{waypoint.title}}</h1>
+				<offer treeSpawner="waypoint" 
+					tSpawnChildNodesKey="offerings" 
+					pvars="offer=offerings[key].title">
+					<h1>{{offer}}</h1>
+					<treeSpawns></treeSpawns>
+					<!-- <offerGroup treeSpawns> -->
+						<!-- <h1>Tamales{{key}}</h1> -->
+						<!-- <offerList>
+							<offer>pork</offer>
+							<offer>chicken</offer>
+							<offer>beef</offer>
+							<offer>spicy beef</offer>
+							<offer>cheese chicken</offer>
+						</offerList> -->
+					<!-- </offerGroup> -->
+				</offer>
+				<!-- <offerGroupList>
+					<offerGroup>
+						<h1>Tamales</h1>
+						<offerList>
+							<offer>pork</offer>
+							<offer>chicken</offer>
+							<offer>beef</offer>
+							<offer>spicy beef</offer>
+							<offer>cheese chicken</offer>
+						</offerList>
+					</offerGroup>
+				</offerGroupList> -->
+			</waypoint>
+		</waypointList>
+
+	</sidebarcontent>
 
 </sidebar><content>
 	<map></map>
@@ -92,6 +114,19 @@
 
 
 <style>
+@font-face {
+	font-family: 'PT Sans Narrow';
+  	src:  url('public/fonts/PT_Sans_Narrow/PT_Sans-Narrow-Web-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'PT Sans Narrow';
+  	src:  url('public/fonts/PT_Sans_Narrow/PT_Sans-Narrow-Web-Bold.ttf') format('truetype');
+  	font-weight: bold;
+}
+
+
+
 body {
 	/*font-family: arial;*/
     /*font-family: 'Ubuntu', sans-serif;*/
@@ -157,33 +192,51 @@ sidebar {
 			background: #33383380;
 		}
 
-	waypointList {
+	sidebarcontent {
 		display: block;
 		position: absolute;
 		top: 40px;
 		bottom: 0px;
 		width: 100%;
+		overflow: scroll;
 	}
-		waypointList h1{
-			font-size: 20px;
-			font-weight: normal;
-		}
 
-		waypoint {
+		marketableTree {
 			display: block;
-			background: #815555;
-			width: 100%;
-			padding: 2px;
+			margin-left: 8px;
+			padding-left: 3px;
 		}
-			waypoint h1 {
-				/*font-size: 13px;*/
+
+		/*marketableTree > *:not(:last-child) {
+			border-left: solid 1px white;
+		}*/
+
+
+
+		waypointList {
+			display: block;
+		}
+			waypointList h1{
+				font-size: 20px;
+				font-weight: normal;
 			}
 
-			offerlist {
+			waypoint {
 				display: block;
-				padding-left: 2px;
+				background: #815555;
+				width: 100%;
+				padding: 2px;
 			}
+				waypoint h1 {
+					/*font-size: 13px;*/
+				}
 
+
+
+				offer {
+					display: block;
+					padding-left: 10px;
+				}
 
 
 

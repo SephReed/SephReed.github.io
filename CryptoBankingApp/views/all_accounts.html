@@ -18,8 +18,8 @@ changeSrc[backButton] {
 </style>
 
 
-<div class="moneyLogs columns" spawner="ACCOUNTS" spawnerSetPvar="account=ACCOUNTS[i]">
-	<colItem spawn>
+<div class="moneyLogs columns" spawner="ACCOUNTS">
+	<colItem spawn pvars="account=ACCOUNTS[i]">
 		<changesrc class="moneyLog" src="modules/account/view.html?acct={{account.name}}">
 			<include src="modules/account/mini.html?acct={{account.name}}"></include>
 		</changesrc>

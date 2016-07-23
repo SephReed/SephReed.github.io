@@ -151,6 +151,23 @@ PINE.createNeedle("[pnvatt]").addFunction( PINE.ops.STATIC, function(initMe, nee
 });
 
 
+PINE.createNeedle("[pvars]").addFunction( PINE.ops.STATIC, function(initMe) {
+	var pvar_att = El.attr(initMe, "pvars");
+
+	if(pvar_att) {
+		var pvars = pvar_att.split(/[;=]/g);
+		if(pvars.length%2 != 0)
+			PINE.err("syntax error in "+pvar_att+". Correct Syntax eg 'hat=hatlist[i];thing=thinglist[i]'");
+
+		for(var i_s = 0; i_s < pvars.length; i_s+=2) {
+			var pvar = pvars[i_s];
+			var value = PINE.nodeScopedVar(initMe, pvars[i_s+1]);
+			initMe.PVARS[pvar] = value;
+		}
+	}
+});
+
+
 
 
 PINE.nodeScopedVar = function(domNode, varName) {
