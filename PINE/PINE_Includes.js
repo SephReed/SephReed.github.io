@@ -60,6 +60,7 @@ PINE("[defaultChangeSrcTarget]", function(initMe) {
 
 
 INC.get = function(url, responseType) {
+	LOG("overview", "PINE_Include: Requesting url "+url+"...");	
 
 	//return a promise
 	return new Promise( function(resolve, reject) {
@@ -83,6 +84,7 @@ INC.get = function(url, responseType) {
 
 			var success = function(result) {
 				LOG("include", result.status+" "+url, result);
+				LOG("overview", "PINE_Include: "+url+" Success!");	
 
 				cache.response = result.response;
 				cache.complete = true;

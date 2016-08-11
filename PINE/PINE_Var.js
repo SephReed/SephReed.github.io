@@ -22,11 +22,9 @@ var pnv = PINE.pnv = {};
 
 
 PINE.Needle('*').addFunction( PINE.ops.INIT, function(initMe) {
-	var childNodes = initMe.childNodes;
-	for(var ch in childNodes) {
-		var child = childNodes[ch];
-		if(child.nodeName == "#text")  
-			pnv.parseText(child);
+	for (var node = initMe.firstChild; node; node = node.nextSibling) {
+		if(node.nodeName == "#text")  
+			pnv.parseText(node);
 	}
 
 	pnv.parseAtts(initMe);	
@@ -98,71 +96,98 @@ PINE.pnv.parseAtts = function(initMe)  {
 
 
 
-PINE.createNeedle("pnv").addFunction( PINE.ops.STATIC, function(initMe, needle) {
-	var get = El.attr(initMe, "var");
+PINE.createNeedle("pnv").addFunction({ 
+	opType: PINE.ops.STATIC, 
+	// isMultirun: true,
+	isAsync: true,
+	fn:  function(initMe, complete) {
+		var get = El.attr(initMe, "var");
 
-	if(get != null)  {
-		PINE.var(get, initMe, function(val) {
-			initMe.innerHTML = val;	
-		});
-	}
-});
-
-
-
-
-
-
-
-
-
-PINE.createNeedle("[pnvatt]").addFunction( PINE.ops.STATIC, function(initMe, needle) {
-		//
-	var rules = initMe.attributes["pnvatt"].value;
-
-	//KLUDGE: fix me if you can
-	var pairs = rules.split(":+:");
-	for(var i_p in pairs)  {
-
-		// console.log(pairs[i_p]);
-
-		var splitPoint = pairs[i_p].indexOf("=");
-		// var rule = pairs[i_p].split('=', 2);
-
-		// console.log(rule);
-
-		var setAtt = pairs[i_p].substring(0, splitPoint);
-		var outVal = pairs[i_p].substring(splitPoint+1);
-		var matches = outVal.match(/{{.+?}}/g);
-
-		for(var i_m in matches)  {
-			var replaceMe = matches[i_m];
-
-			var key = matches[i_m].replace(/[{}]/g, '');
-			var addMe = pnv.getVarFrom(key, initMe); 
-
-			outVal = outVal.replace(replaceMe, addMe);
+		if(get != null)  {
+			PINE.varCode(initMe, get, function(val) {
+				// initMe.textContent = val;
+				initMe.innerHTML = val;	
+				complete();
+			});
 		}
-
-		
-		initMe.attributes[setAtt].value = outVal;
 	}
-	
 });
 
 
-PINE.createNeedle("[pvars]").addFunction( PINE.ops.STATIC, function(initMe) {
-	var pvar_att = El.attr(initMe, "pvars");
 
-	if(pvar_att) {
-		var pvars = pvar_att.split(/[;=]/g);
-		if(pvars.length%2 != 0)
-			PINE.err("syntax error in "+pvar_att+". Correct Syntax eg 'hat=hatlist[i];thing=thinglist[i]'");
 
-		for(var i_s = 0; i_s < pvars.length; i_s+=2) {
-			var pvar = pvars[i_s];
-			var value = PINE.nodeScopedVar(initMe, pvars[i_s+1]);
-			initMe.PVARS[pvar] = value;
+
+
+
+
+
+PINE.createNeedle("[pnvatt]").addFunction( { 
+	opType: PINE.ops.STATIC, 
+	isAsync: true,
+	// isMultirun: true,
+	fn: function(initMe, complete) {
+			//
+		var rules = initMe.attributes["pnvatt"].value;
+
+		//KLUDGE: fix me if you can
+		var pairs = rules.split(":+:");
+		for(var i_p in pairs)  {
+
+			// console.log(pairs[i_p]);
+
+			var splitPoint = pairs[i_p].indexOf("=");
+			// var rule = pairs[i_p].split('=', 2);
+
+			// console.log(rule);
+
+			var setAtt = pairs[i_p].substring(0, splitPoint);
+			var outVal = pairs[i_p].substring(splitPoint+1);
+			var matches = outVal.match(/{{.+?}}/g);
+
+			var promises = [];
+			for(var i_m in matches)  {
+				var replaceMe = matches[i_m];
+
+				var key = matches[i_m].replace(/^{{|}}$/g, '');
+
+				promises.push(new Promise(function(resolve) {
+					PINE.varCode(initMe, key, function(result) {
+						outVal = outVal.replace(replaceMe, result);
+						resolve();
+					});
+				}));
+				// var addMe = pnv.getVarFrom(key, initMe); 
+
+				// outVal = outVal.replace(replaceMe, addMe);
+			}
+
+			Promise.all(promises).then(function() {
+				initMe.attributes[setAtt].value = outVal;
+				complete();
+			});
+			
+			// initMe.attributes[setAtt].value = outVal;
+		}
+	}
+});
+
+
+PINE.createNeedle("[pvars]").addFunction( { 
+	opType: PINE.ops.STATIC, 
+	// isMultirun: true,
+	fn: function(initMe) {
+		var pvar_att = El.attr(initMe, "pvars");
+
+		if(pvar_att) {
+			var pvars = pvar_att.split(/[;=]/g);
+			if(pvars.length%2 != 0)
+				PINE.err("syntax error in "+pvar_att+". Correct Syntax eg 'hat=hatlist[i];thing=thinglist[i]'");
+
+			for(var i_s = 0; i_s < pvars.length; i_s+=2) {
+				var pvar = pvars[i_s];
+				var value = PINE.nodeScopedVar(initMe, pvars[i_s+1]);
+				initMe.PVARS[pvar] = value;
+			}
 		}
 	}
 });
@@ -176,6 +201,8 @@ PINE.nodeScopedVar = function(domNode, varName) {
 
 
 pnv.getVarFrom = function(keyArrayOrName, currentNode, superRoot)  {
+	if(typeof keyArrayOrName == "boolean" || typeof keyArrayOrName == "undefined")
+		return keyArrayOrName;
 		//
 	//set pvars locations and default currentNode to window if outside the scope of PINE Vars
 	var pvars;
@@ -191,8 +218,14 @@ pnv.getVarFrom = function(keyArrayOrName, currentNode, superRoot)  {
 
 	//if a string was given instead of a keyarray, convert the string
 	var keyArray;
-	if(typeof keyArrayOrName == "string")
+	if(typeof keyArrayOrName == "string") {
+		keyArrayOrName = keyArrayOrName.trim();
+		var reservedValue = pnv.checkForReservedValue(keyArrayOrName);
+		if(reservedValue != "NON_RESERVED")
+			return reservedValue;
+
 		keyArray = U.stringToVariableLayers(keyArrayOrName, true);
+	}
 	else
 		keyArray = keyArrayOrName;
 
@@ -221,6 +254,37 @@ pnv.getVarFrom = function(keyArrayOrName, currentNode, superRoot)  {
 	return undefined;
 }
 
+
+pnv.checkForReservedValue = function(checkMe) {
+	var checkMe = checkMe.trim();
+	if(checkMe == "true")
+		return true;
+	else if(checkMe == "false")
+		return false;
+	else if(checkMe == "null")
+		return null;
+	else if(checkMe == "undefined")
+		return undefined;
+
+	if(checkMe.indexOf('.') != -1) {
+		var float = parseFloat(checkMe);
+		if (!isNaN(float))
+			return float;
+	}
+	else {
+		var int = parseInt(checkMe);
+		if (!isNaN(int))
+			return int;
+	}
+
+	if(checkMe.match(/^'[^']*'$/g))
+		return checkMe.replace(/^'|'$/g, '');
+
+	else if(checkMe.match(/^"[^"]*"$/g))
+		return checkMe.replace(/^"|"$/g, '');;
+
+	return "NON_RESERVED";
+}
 
 
 // pnv.getVarFrom = function(varName, domNode)  {
@@ -262,56 +326,187 @@ pnv.getVarFrom = function(keyArrayOrName, currentNode, superRoot)  {
 
 
 
-pnv.searchForPinevar = function(varName, domNode)  {
-	// var scope = domNode;
-	// if(!domNode || !domNode._pine_){
-	// 	// console.log("no node");
-	// 	scope = window;
-	// }
+// pnv.searchForPinevar = function(varName, domNode)  {
+// 	// var scope = domNode;
+// 	// if(!domNode || !domNode._pine_){
+// 	// 	// console.log("no node");
+// 	// 	scope = window;
+// 	// }
 
-	var scope = (domNode && domNode.PVARS) ? domNode : window;
+// 	var scope = (domNode && domNode.PVARS) ? domNode : window;
 	
-	// console.log("getting "+varName+" from:"); 
-	// console.log(scope);
+// 	// console.log("getting "+varName+" from:"); 
+// 	// console.log(scope);
 
-	if(scope.PVARS && scope.PVARS.hasOwnProperty(varName))
-		return scope.PVARS[varName];
+// 	if(scope.PVARS && scope.PVARS.hasOwnProperty(varName))
+// 		return scope.PVARS[varName];
 
-	if(scope.parentNode)
-		return pnv.getVarFrom(varName, scope.parentNode);
+// 	if(scope.parentNode)
+// 		return pnv.getVarFrom(varName, scope.parentNode);
 
-	else {
-		// console.log(scope, varName, scope[varName]);
-		return scope[varName];
+// 	else {
+// 		// console.log(scope, varName, scope[varName]);
+// 		return scope[varName];
+// 	}
+// }
+
+
+
+PINE.var = function( ) {
+	alert("don't use PINE.var, use PINE.nodeScopedVar on PINE.varCode");
+	PINE.err("don't use PINE.var, use PINE.nodeScopedVar on PINE.varCode");
+}
+
+
+PINE.varCode = function(domScope, varCode, callback)  {
+	for (var vneedle in pnv.needles) {
+		if(varCode.startsWith(vneedle))
+			return pnv.needles[vneedle](domScope, varCode, callback);
 	}
+
+	pnv.needles.PNV_DEFAULT(domScope, varCode, callback);
+}
+
+
+// pnv.runPVarCode = function(scope, pvarCode) {
+// 	if(pvarCode.indexOf("? ") == 0) {
+		
+// 	}
+// }
+
+
+
+
+
+
+var Comparitor = pnv.Comparitor = function(name, onSimplify) {
+	this.name = name;
+	this.simplify = onSimplify;
+}
+
+pnv.comparitorList = [];
+pnv.comparitorList.push(new Comparitor("&&", function(left, right) {
+	return left && right;
+}));
+pnv.comparitorList.push(new Comparitor("||", function(left, right) {
+	return left || right;
+}));
+pnv.comparitorList.push(new Comparitor("==", function(left, right) {
+	return left == right;
+}));
+pnv.comparitorList.push(new Comparitor("!=", function(left, right) {
+	return left != right;
+}));
+pnv.comparitorList.push(new Comparitor(">=", function(left, right) {
+	return left >= right;
+}));
+pnv.comparitorList.push(new Comparitor("<=", function(left, right) {
+	return left <= right;
+}));
+pnv.comparitorList.push(new Comparitor("<", function(left, right) {
+	return left < right;
+}));
+pnv.comparitorList.push(new Comparitor(">", function(left, right) {
+	return left > right;
+}));
+
+
+
+
+pnv.runConditional = function(scope, conditional) {
+	// conditional = conditional.trim();
+	var tree = pnv.createConditionTree(conditional);
+
+	if(typeof tree == "string")
+		return PINE.nodeScopedVar(scope, tree);
+
+	return pnv.solveConditionTree(scope, tree);
 }
 
 
 
 
-PINE.var = function(varName, domScope, callback)  {
-	// console.log("HHEY"+varName);
-	var args = varName.split(' ', 1);
-	// console.log(args);
+pnv.createConditionTree = function(conditional) {
+	if(conditional.charAt(0) == '(' && conditional.charAt(conditional.length-1) == ')')
+		conditional = conditional.substr(1, conditional.length-2);
+	
+	var parenDepth = 0;
+	for (var i = 0; i < conditional.length; i++) {
+		var char = conditional.charAt(i);
+		if(char == '(')
+			parenDepth++;
 
-	var vneedle = pnv.needles[args[0]];
+		else if(char == ')')
+			parenDepth--;
 
-	if(vneedle) 
-		vneedle(varName, domScope, callback);
+		if (parenDepth == 0) {
+			for(var i_c in pnv.comparitorList) {
+				var comparitor = pnv.comparitorList[i_c];
+				var key = comparitor.name;
+				if (conditional.startsWith(key, i)) {
+					var out = {};
+					out.comparitor = comparitor;
+					var left = conditional.substring(0, i).trim();
+					var right = conditional.substring(i + key.length).trim();
+					out.left = pnv.createConditionTree(left);
+					out.right = pnv.createConditionTree(right);
+					return out;
+				}
+			}	
+		}
+	}
 
-	else
-		pnv.needles.PNV_DEFAULT(varName, domScope, callback);
+	return conditional;
 }
+
+
+pnv.solveConditionTree = function(scope, root) {
+	var left = root.left;
+	if(typeof left == "string")
+		left = PINE.nodeScopedVar(scope, left);
+	else if (typeof left == "object")
+		left = pnv.solveConditionTree(scope, left);
+
+	var right = root.right;
+	if(typeof right == "string")
+		right = PINE.nodeScopedVar(scope, right);
+	else if (typeof right == "object")
+		right = pnv.solveConditionTree(scope, right);
+
+	return root.comparitor.simplify(left, right);
+}
+
+
 
 
 
 
 pnv.needles = {};
-pnv.needles["PNV_DEFAULT"] = function(varName, domScope, callback) {
+pnv.needles["PNV_DEFAULT"] = function(domScope, varName, callback) {
 	var pinevar = pnv.getVarFrom(varName, domScope);
-
 	callback(pinevar);
 }
+
+
+pnv.needles["? "] = function(scope, pvarCode, callback) {
+	var args = pvarCode.split(':');
+	if(args.length > 3)
+		return PINE.err("syntax error in '"+pvarCode+"'.  Proper format is {{? thing == true : trueOutput : falseOutput}} with falseOutput being optional.");
+
+	var conditional = args[0].substring(2) || pvarCode.substring(2);
+	var conditionBool = pnv.runConditional(scope, conditional);
+
+	if (args.length > 1 && conditionBool == true)
+		callback(PINE.nodeScopedVar(scope, args[1]));
+	
+	else if(args.length == 3)
+		callback(PINE.nodeScopedVar(scope, args[2]));
+
+	else
+		callback(conditionBool);
+}
+
+
 
 
 

@@ -206,6 +206,9 @@ treeSpawner.getArgs = function(initMe) {
 	if(out.spawnFrom === undefined) 
 		return PINE.err("tree spawner has no root object to spawn from", initMe, spawnFrom_att);
 
+	var type = typeof out.spawnFrom;
+	if(type != "object" && type != "function") 	
+		return null;
 
 	//depth limit
 	var spawnDepthLimit_att = El.attr(initMe, "tSpawnDepthLimit");
@@ -226,6 +229,13 @@ treeSpawner.getArgs = function(initMe) {
 
 
 // var countQuit = 0;
+treeSpawner.addFunction( PINE.ops.INIT, function(initMe) {
+	if(initMe.PVARS.key == undefined) 
+		initMe.PVARS.key = El.attr(initMe, "treeSpawner");	
+
+	if(initMe.PVARS.t_depth == undefined)
+		initMe.PVARS.t_depth = 0;
+});
 
 treeSpawner.addFunction( PINE.ops.COMMON, function(initMe) {
 
@@ -266,15 +276,17 @@ treeSpawner.addFunction( PINE.ops.COMMON, function(initMe) {
 			var depthLimit = args.spawnDepthLimit;
 
 			// if(depthLimit == -1 || depthLimit > 0) {
-			var correctType = typeof spawnFrom != "string";
+			var type = typeof spawnFrom;
+			var correctType = type == "object" || type == "string";
 			var correctDepthing = depthLimit == -1 || depthLimit > 0;
 
-			if(correctType && correctDepthing) {	
+			if(correctDepthing) {	
 				depthLimit > 0 ? depthLimit-- : null;
 
 				for(var key in spawnFrom) {
 					var addMe = treeSpawn.cloneNode(true);
-					El.attr(addMe, "treeSpawner", key);
+					// El.attr(addMe, "treeSpawner", key);
+					El.attr(addMe, "treeSpawner", "spawnFrom");
 					El.attr(addMe, "treeSpawn", '');
 					El.attr(addMe, "tSpawnDepthLimit", depthLimit);
 
@@ -287,8 +299,10 @@ treeSpawner.addFunction( PINE.ops.COMMON, function(initMe) {
 					if(args.childNodesKey)
 						addMe.PVARS[args.childNodesKey] = spawnFrom;
 
-					addMe.PVARS[key] = spawnFrom[key];	
+					addMe.PVARS.spawnFrom = spawnFrom[key];
+					// addMe.PVARS[key] = spawnFrom[key];	
 					addMe.PVARS.key = key;
+					addMe.PVARS.t_depth = initMe.PVARS.t_depth+1;
 
 					initMe.insertBefore(addMe, spawnInsertLocation);
 				}

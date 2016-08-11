@@ -454,9 +454,11 @@ p_selectableList.addFunction(function(initMe) {
 });
 
 PINE.Needle("[selectableList]").addFunction({
-	opType: PINE.ops.COMMON,
+	// opType: PINE.ops.COMMON,
+	opType: PINE.ops.POLISH,
 	isMultirun : true,
 	fn: function(initMe) {
+		console.log("THIS MAY BREAK STUFF IN SELECTABLE LIST");
 		initMe.FNS.selectionListRefresh();
 	}
 });

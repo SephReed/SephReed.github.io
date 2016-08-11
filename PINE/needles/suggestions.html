@@ -9,11 +9,11 @@ p_sugg.addFunction(PINE.ops.COMMON, function(initMe) {
 
 	//get all variables
 	var sugg_out_att = El.attr(initMe, "suggOut");
-	var sugg_out = window[sugg_out_att];
+	var sugg_out = PINE.nodeScopedVar(initMe, sugg_out_att);
 	// sugg_out = [];
 
 	var potential_matches_att = El.attr(initMe, "suggestions");
-	var potential_matches = window[potential_matches_att];
+	var potential_matches = PINE.nodeScopedVar(initMe, potential_matches_att);
 
 	var searchable_subObject = El.attr(initMe, "suggSubObject");
 

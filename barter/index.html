@@ -1,113 +1,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-	<!-- <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet"> -->
-	 <!-- <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">  -->
-
 	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
 	<script type="text/javascript" src="SephMarketTree.js"></script>
 	<script type="text/javascript" src="testWayPoints.js"></script>
 
+	<script type="text/javascript">
+	document.addEventListener("DOMContentLoaded", function() {
+		var initMe = El.byId("watcher");
+		var watch_att = El.attr(initMe, "logWatcher");
+		var watchUs = watch_att ? watch_att.split(/, */g) : undefined;
+
+		for(var i in watchUs)
+			U.observeLog[watchUs[i]] = true;
+
+		var logItem = initMe.querySelector("[logItem]");
+		logItem.remove();
+
+		PINE.addEventListener("logUpdate", function(event) {
+			// console.log(event);
+
+			if(!watchUs || watchUs.indexOf(event.type) != -1) {
+				var addMe = logItem.cloneNode();
+				addMe.textContent = event.text;
+				initMe.appendChild(addMe);
+			}
+		});
+	});
+	</script>
+
 	<script type="text/javascript" src="../PINE/PINE_Core_4.2.js"></script>
 	<script type="text/javascript" src="../PINE/PINE_Var.js"></script>
 	<script type="text/javascript" src="../PINE/PINE_Needles.js"></script>
+	<script type="text/javascript" src="../PINE/PINE_Includes.js"></script>
 	<needle src="../PINE/needles/suggestions.html"></needle>
 	<needle src="../PINE/needles/selectablelist.html"></needle>
+	<needle src="../PINE/needles/showHide.html"></needle>
+	<needle src="../PINE/needles/mapbox.html"></needle>
 
 
+	<!-- THESE SHOULD BE INCLUDED WITH THE MAP -->
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.21.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.21.0/mapbox-gl.css' rel='stylesheet' />
 
-	<script>
-		var search_suggestions = [];
-	</script>
+    <script type="text/javascript">
+    	PINE.ready(function() {
+			document.body.classList.add("pineReady");	
+    	});
+
+
+    	var mapboxArgs = {
+	        // container: 'map',
+	        style: 'mapbox://styles/sephreed/cimckh1zj00cj9lm1ch93zx6q',
+	        zoom: 17.55,
+	        center: [-97.753996, 30.262508]
+	    };
+    </script>
 </head>
 <body>
 
 
 <sidebar>
-	<div id="search_area">
-	
-		<input id="search_text_input" 
-	        type="text" 
-	        suggestions="MARKET_LISTINGS"
-	        suggSubObject="name"
-	        suggOut="search_suggestions"
-	        suggLimit="18"
-	        suggSpawner="suggestion_dropdown">
-	        </input>
-		<div id="search_button" onclick="search()" ></div>
-
-	    <div id="suggestion_dropdown" 
-	        spawner="search_suggestions" 
-	        style="display:none"	
-	        selectableList
-	        selectOn="hover"
-	        deselectAllOn="exit"
-	        onclick="search()">
-	        <div spawn 
-	            spawner="search_suggestions[i].parts"
-	            value="{{search_suggestions[i].text}}" 
-	            indexer="j"
-	            selectableItem>
-	            <span class="highlight_{{search_suggestions[i].parts[j].isTarget}}" spawn>{{search_suggestions[i].parts[j].text}}</span>
-	        </div>
-	    </div>
-		
-	</div>
-
+	<bgcolor></bgcolor>
+	<bgimg></bgimg>
+	<include src="modules/searchbar.html"></include>
 	<sidebarcontent>
+		<bgcolor></bgcolor>
+		<bgimg></bgimg>
 
 
 		<!-- <marketableTree treeSpawner="MARKET_TREE">
 			{{key}}
 			<treeSpawns></treeSpawns>
 		</marketableTree> -->
-		
-
+		<h1><center>Waypoints in your area:</center></h1>
 		<waypointList spawner="TEST_WAYPOINTS">
-			<h1>Waypoints in your area:</h1>
 			<waypoint spawn pvars="waypoint=TEST_WAYPOINTS[i]">
 				<h1>{{waypoint.title}}</h1>
 				<offer treeSpawner="waypoint" 
 					tSpawnChildNodesKey="offerings" 
-					pvars="offer=offerings[key].title">
+					pvars="offer=offerings[key].title"
+					showhide=">offer"
+					showHideInit="{{? t_depth == 0}}">
 					<h1>{{offer}}</h1>
 					<treeSpawns></treeSpawns>
-					<!-- <offerGroup treeSpawns> -->
-						<!-- <h1>Tamales{{key}}</h1> -->
-						<!-- <offerList>
-							<offer>pork</offer>
-							<offer>chicken</offer>
-							<offer>beef</offer>
-							<offer>spicy beef</offer>
-							<offer>cheese chicken</offer>
-						</offerList> -->
-					<!-- </offerGroup> -->
 				</offer>
-				<!-- <offerGroupList>
-					<offerGroup>
-						<h1>Tamales</h1>
-						<offerList>
-							<offer>pork</offer>
-							<offer>chicken</offer>
-							<offer>beef</offer>
-							<offer>spicy beef</offer>
-							<offer>cheese chicken</offer>
-						</offerList>
-					</offerGroup>
-				</offerGroupList> -->
 			</waypoint>
 		</waypointList>
 
 	</sidebarcontent>
 
 </sidebar><content>
-	<map></map>
-
-	
+	<overlay></overlay>
+	<view src="modules/map.html"></view>
+	<!-- <map></map> -->	
 </content>
 
 
+<overlay id="page_loading">
+	<bgimg></bgimg>
+	
+	<div id="watcher" logWatcher="overview">
+		Building Page...<br>
+		<div logItem></div>
+	</div>
+</overlay>
 </body>
 
 
@@ -128,9 +125,67 @@
 
 
 body {
+	position: relative;
 	/*font-family: arial;*/
     /*font-family: 'Ubuntu', sans-serif;*/
     font-family: 'PT Sans Narrow', sans-serif;
+}
+	
+	body > overlay {
+		/*display: none;*/
+		/*text-align: center;*/
+		padding: 0px 10px;
+		pointer-events: all;
+		/*background: #c8ddc1;*/
+		/*background: linear-gradient(#fff2ac, #71c5c1);*/
+		/*background: linear-gradient(#f9f6e5, #86bab8);*/
+		/*background: #FFFFFFF0;*/
+		background: #fef5dee6;
+		color: black;
+		font-size: 18px;
+		transition: opacity ease 0.25s;
+		transition-delay: 0.25s;
+	}
+
+	body.pineReady > overlay {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	/*body > overlay > bgimg {
+		background-size: 300px auto;
+		background-repeat: repeat;
+		background-image: url('public/images/bit_grain_pattern_horizontal.png');
+		background-image: url('public/images/parchment_pattern_invert.png');
+		opacity: 0.5;
+	}*/
+
+
+
+bgcolor, bgimg, overlay, content > view {
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	position: absolute;
+}
+
+bgcolor, bgimg {
+	z-index: -1;
+}
+
+overlay {
+	z-index: 100;
+	pointer-events: none;
+}
+
+sidebar, content {
+	filter: blur(2px);
+	transition: filter ease .5s;
+}
+
+body.pineReady sidebar, body.pineReady content {
+	filter: blur(0px);
 }
 
 
@@ -139,66 +194,30 @@ sidebar {
 	position: relative;
 	display: block;
 	float: left;
-	width: 300px;
+	width: 320px;
 	height: 100%;
 	z-index: 10;
-	box-shadow: 0px 0px 7px rgba(0,0,0,0.6);
+	/*box-shadow: 0px 0px 7px rgba(0,0,0,0.6);*/
 	overflow: scroll;
 }
 
-	#search_area {
-		position: relative;
-		margin: 8px;
-	}
-
-		#search_text_input {
-			width: 100%;
-			padding: 3px;
-			font-size: 15px;
-			border-radius: 4px;
-			border: solid 2px #758471;
-			box-shadow: 1px 1px 10px #ffffff28;
-		}
-
-		#search_button {
-			position: absolute;
-			cursor: pointer;
-			top: 0px;
-			right: 0px;
-			height: 28px;
-			width: 30px;
-			background-size: 70%;
-			background-image: url('public/images/search_seed.png');
-		}
-
-		#suggestion_dropdown {
-			position: absolute;
-			background: #618F61E6;
-			width: 100%;
-			max-height: 200px;
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-			border: solid 1px #685f5fb3;
-			box-shadow: 1px 1px 10px #0006;
-			overflow: scroll;
-		}
-
-		#suggestion_dropdown > div {
-			padding: 2px 10px;
-			
-		}
-
-		#suggestion_dropdown > div[selected] {
-			background: #33383380;
-		}
+	
 
 	sidebarcontent {
 		display: block;
 		position: absolute;
-		top: 40px;
-		bottom: 0px;
-		width: 100%;
+		top: 50px;
+		left: 4px;
+		right: 4px;
+		bottom: 4px;
+		/*width: 100%;*/
+		border-radius: 2px;
+		/*background: #fef5dee6;*/
+		color: #333;
 		overflow: scroll;
+		/*box-shadow: inset 1px 1px 10px #0001;*/
+		box-shadow: inset 0px 0px 15px #0002;
+
 	}
 
 		marketableTree {
@@ -211,31 +230,59 @@ sidebar {
 			border-left: solid 1px white;
 		}*/
 
+		sidebarcontent h1{
+			font-size: 23px;
+			font-weight: normal;
+		}
 
 
 		waypointList {
+
 			display: block;
+			position: absolute;
+			top: 30px;
+			padding-top: 12px;
+			bottom: 0px;
+			width: 100%;
+			/*background: #fef5dee6;
+			color: #333;*/
+			/*background: #38442AB3;*/
+			/*background: #84664CB3;*/
+			/*background-image: url("public/images/bit_grain_pattern.png");*/
+			
 		}
-			waypointList h1{
-				font-size: 20px;
-				font-weight: normal;
-			}
+			
 
 			waypoint {
 				display: block;
-				background: #815555;
+				background: #fffa;
 				width: 100%;
-				padding: 2px;
+				padding: 4px;
+				margin-bottom: 4px;
+				border-top: 1px solid #0002;
+				border-bottom: 1px solid #0002;
+				box-shadow: 1px 1px 5px #0002;
 			}
+
 				waypoint h1 {
-					/*font-size: 13px;*/
+					font-size: 20px;
 				}
 
+				waypoint > offer > h1 {
+					display: none;
+				}
 
+				waypoint > offer offer {
+					padding-left: 10px;
+				}
 
 				offer {
 					display: block;
-					padding-left: 10px;
+					
+				}
+
+				offer h1 {
+					font-size: 17px;
 				}
 
 
@@ -245,27 +292,64 @@ sidebar {
 
 content {
 	display: block;
+	position: relative;
 	float: left;
-	width: calc(100% - 300px);
+	width: calc(100% - 320px);
 	height: 100%;
 	overflow: scroll;
+	background: #B3EB6B;
 }
+	content > overlay {
+		/*box-shadow: inset 0px 0px 7px rgba(0,0,0,0.6);*/
+		box-shadow: inset 0px 0px 15px #0003;
+	}
 
-map {
-	display: block;
-	width: 100%;
-	height: 100%;
-	background-image: url("public/images/map.png");
-	background-size: cover;
-}
+
+	/*map {
+		display: block;
+		width: 100%;
+		height: 100%;
+		background-image: url("public/images/map.png");
+		background-size: cover;
+	}*/
 
 
 
 
 /*COLORING*/
-sidebar {
+body {
 	background: #333;
+}
+
+sidebar {
+	/*background: #84664CB3;*/
+	/*background: #8F5D3366;*/
 	color: white;
+	border-right: 1px solid #888;
+}
+
+
+sidebar > bgcolor {
+	background: #8F5D3366;
+}
+
+sidebar > bgimg {
+	background-size: 75px auto;
+	background-repeat: repeat;
+	background-image: url('public/images/bit_grain_pattern_horizontal.png');
+	opacity: 0.1;
+}
+
+
+sidebarcontent > bgcolor {
+	background: #fef5dee6;
+}
+
+sidebarcontent > bgimg {
+	background-size: 200px auto;
+	background-repeat: repeat;
+	background-image: url('public/images/parchment_pattern_invert.png');
+	opacity: 0.3;
 }
 </style>
 

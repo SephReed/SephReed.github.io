@@ -1,0 +1,71 @@
+
+<script>
+var p_showHide = PINE("[showHide]", function(initMe) {
+
+	var getArgs = function(initMe) {
+		var args = {};
+
+		var target_att = El.attr(initMe, "showHideTarget");
+		args.target = target_att ? El.byId(target_att) : initMe;	
+
+		args.selector = El.attr(initMe, "showHide");
+		if(args.selector.charAt(0) == ">")
+			args.selector = ":scope "+args.selector;
+
+		return args;
+	}
+
+
+	PINE.addFunctionToNode(initMe, "showHide", function(switchOn) {
+		var args = getArgs(initMe);
+
+		if(args) {
+			var target = args.target;
+			var selector = args.selector;
+
+			var modUs;
+			if(selector)
+				modUs = target.querySelectorAll(selector);
+			else 
+				modUs = [target];
+
+
+			for (var i = 0; i < modUs.length; i++) {
+				var modMe = modUs[i];
+
+				if(switchOn === undefined) 
+					switchOn = modMe.style.display == "none";
+
+				if(switchOn === true)
+					modMe.style.display = "";
+				else if(switchOn === false)
+					modMe.style.display = "none";
+			}
+
+		}
+	});
+
+	var init_att = El.attr(initMe, "showHideInit");
+	if(init_att != undefined)
+		initMe.FNS.showHide( init_att != "false" );		
+	
+
+	
+
+	initMe.addEventListener("click", function(e) {
+		e.stopPropagation();
+
+		var switchMode = El.attr(initMe, "showHideSwitchMode");
+		if(switchMode == "true")
+			switchMode = true;
+		else if(switchMode == "false")
+			switchMode = true;
+		
+		initMe.FNS.showHide(switchMode);
+	});
+
+});
+
+
+
+</script>

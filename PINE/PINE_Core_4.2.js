@@ -24,11 +24,17 @@
 
 var PINE = function(arg1, arg2, arg3) {
 	if(typeof arg1 == "string") {
-		if(typeof arg2 == "string" && typeof arg3 == "function")
-			PINE.Needle(arg1).addFunction(arg2, arg3);
+		if(typeof arg2 == "string" && typeof arg3 == "function") {
+			var out = PINE.Needle(arg1);
+			out.addFunction(arg2, arg3);
+			return out;
+		}
 		
-		else if (typeof arg2 == "function" && arg3 === undefined)
-			PINE.Needle(arg1).addFunction(arg2);
+		else if ((typeof arg2 == "function" || typeof arg2 == "object") && arg3 === undefined) {
+			var out = PINE.Needle(arg1);
+			out.addFunction(arg2);
+			return out;
+		}
 	}
 }
 PINE.class = {};
@@ -56,8 +62,9 @@ PINE.stopTags = [
 **********************************/
 
 var ev = PINE.events = {};
-PINE.events.load = "DOMContentLoaded";
-PINE.validEvents = [ev.load];
+PINE.events.load = "load";
+PINE.events.logUpdate = "logUpdate";
+PINE.validEvents = [ev.load, ev.logUpdate];
 PINE.eventListeners = {};
 
 PINE.addEventListener = function(type, callback) {
@@ -130,6 +137,7 @@ PINE.ops.order = [
 PINE.needles = {};
 
 PINE.class.Needle = function(keyword) {
+	LOG("overview", "Creating Needle "+keyword);	
 	this.keyword = keyword;
 	this.uses = 0;
 	this.pinefuncs = {};
@@ -230,7 +238,7 @@ PINE.registerPineFunc = function(args)  {
 
 	var needle = args.needle;
 	var keyword = needle.keyword;
-	var opType = args.opType;
+	var opType = args.opType || PINE.ops.COMMON;
 	var userFn = args.fn;
 	
 	var isAsync = args.isAsync === true;
@@ -429,7 +437,9 @@ PINE.keyApplies = function(keyword, domNode)  {
 **********************************/
 
 document.addEventListener("DOMContentLoaded", function(event) { 
+
 	PINE.debug.init();
+	LOG("overview", "DOMContentLoaded");
 
 	PINE.loadResources().then( function() {
 		
@@ -444,13 +454,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	  		PINE.loaded = true;
 	  		U.log("success", "PINE Run complete");
+	  		LOG("overview", "PINE Finished");	
 		});
 	});
 });
 
 
 PINE.init = function() {
-	
 
 	for(var i in PINE.ops.order)  {
 			//
@@ -465,7 +475,7 @@ PINE.init = function() {
 
 
 PINE.loadResources = function() {
-
+	LOG("overview", "Loading Resources");	
 	var promises = [];
 
 	var resources = document.getElementsByTagName("needle");
@@ -488,6 +498,8 @@ PINE.runResource = function(domNode) {
 
 		else {
 			PINE.addedResources[src] = domNode;
+
+			LOG("overview", "Adding Resource "+src);	
 
 			U.Ajax.get(src).then( function(request) {
 				domNode.innerHTML = request.response;
@@ -527,7 +539,10 @@ PINE.run = function() {
 			Pine_Forest.childNodes = [document.body];
 		
 
+		LOG("overview", "PINE Initiating DOM Tree");	
 		PINE.initiate(Pine_Forest);
+
+		LOG("overview", "PINE Sprouting Needles");	
 		PINE.sprout(Pine_Forest, {
 			// PINE.pinefuncs.queued, PINE.pinefuncs.passed, true
 			queuedOps : PINE.pinefuncs.queued,
@@ -571,6 +586,9 @@ PINE.initiate = function(root) {
 	//pvars might be defined before an initiation
 	if(root.PVARS === undefined)
 		root.PVARS = {};
+
+	if(root.PVARS.this === undefined)
+		root.PVARS.this = root; 
 
 	if(root.FNS === undefined)
 		root.FNS = {};
@@ -672,6 +690,7 @@ PINE.sprout = function( root, args)  {
 				if(opFuncs && opFuncs.length) {
 						//
 					unsentOps[opType] = [];
+					
 
 					// if(newRoot) {
 						// PINE.permeate2(root, opFuncs, permeateCallback, newRoot);
@@ -990,6 +1009,7 @@ PINE.updateAt = function(root, callback, passedOps) {
 // U.showLog["FNS"] = true;
 
 U.showLog = [];
+U.observeLog = [];
 var LOG = function()  {
 	var logType = arguments[0] || "all";
 
@@ -1014,6 +1034,23 @@ var LOG = function()  {
 			args[ar-1] = arguments[ar];
 
 		console.log.apply(console, args);
+	}
+
+	if (U.observeLog[logType]) {
+		//output for event listeners
+		var fns = PINE.eventListeners[ev.logUpdate];
+			//
+		if(fns) {
+			var out = {};
+			out.type = logType;
+			out.text = '';
+
+			for (var i = 1; i < arguments.length; i++)
+				out.text += arguments[i];
+
+			for(var i in fns)
+				fns[i](out);	
+		}
 	}
 }
 
@@ -1070,13 +1107,15 @@ PINE.err = function(whatevers_the_problem) { //?
 
 PINE.debug.init = function()  {
 
-	if(PINE.debug.disableLOG) 
+	if(PINE.debug.disableLOG)
 		LOG = function() {}
 	
 	if(PINE.debug.on) {
 		PINE.ready(PINE.debug.logAnalysis);
 		setTimeout(PINE.debug.showRunningAsyncs, 10000)		
 	}
+
+	LOG("overview", "Debugging Tools Initialized");	
 }
 
 
@@ -1530,9 +1569,6 @@ U.log = function() {
 }
 
 
-
-
-
 /***
 *	Cookie get and set shared by Srinivas Sabbani
 *	http://stackoverflow.com/a/4825695/4808079
@@ -1587,6 +1623,8 @@ U.cookie = U.setCookie = U.getCookie = U.deleteCookie = function() {
 
 
 U.getHttpArg = function(varName, url){
+	if(url === undefined)
+		url = window.location.href;
    	// if(varName=(new RegExp('[?&]'+encodeURIComponent(varName)+'=([^&]*)')).exec(url))
     //     return decodeURIComponent(varName[1]);
     if(varName = (new RegExp('[?&]'+varName+'=([^&]*)')).exec(url))
@@ -1857,6 +1895,10 @@ El.attr = function(domNode, name, value) {
 	else return undefined;
 }
 
+
+El.domReady = function(callback) {
+	document.addEventListener("DOMContentLoaded", callback);
+}
 
 
 
