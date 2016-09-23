@@ -1,4 +1,3 @@
-
 <script>
 var p_tab = PINE.createNeedle("tab");
 p_tab.groups = {};
@@ -16,14 +15,14 @@ p_tab.addFunction(function(initMe, needle) {
 	group.nodes.push(initMe);
 
 	//hide target
-	var targetId = El.attr(initMe, "target");
+	var targetId = El.attr(initMe, "tabTarget");
 	El.byId(targetId).style.display = "none";
 
 	
 	//if selected and only one selected, show target
-	if(initMe.attributes.selected) {
+	if(initMe.attributes.tabSelected) {
 		if(group.selected)
-			initMe.removeAttribute("selected");
+			initMe.removeAttribute("tabSelected");
 		
 		else {
 			group.selected = initMe;
@@ -34,37 +33,59 @@ p_tab.addFunction(function(initMe, needle) {
 
 	//create user handle for selecting tabs
 	PINE.addFunctionToNode(initMe, "tabSelect", function(onOff) {
-		p_tab.selectTab(initMe, onOff);
+		//if on, check that only one is on, then show target and add selected attribute
+		//if off, simply hide target and remove selected attribute
+		if(onOff == true) {
+			if(group.selected != initMe){
+				El.attr(initMe, "tabSelected", '');
+				El.byId(targetId).style.display = "inherit";	
+
+				if(group.selected != undefined)
+					group.selected.FNS.tabSelect(false);
+				
+				group.selected = initMe;
+			}
+		}
+		else {
+			El.byId(targetId).style.display = "none";
+			initMe.removeAttribute("tabSelected");
+		}
 	});
 
 	//on click, select the tab
 	initMe.addEventListener("click", function(){
-		initMe.FNS.tabSelect(onOff);
+		initMe.FNS.tabSelect(true);
 	});
 });
 
 
 
-//centralized select tab function
-p_tab.selectTab = function(selectMe, onOff) {
-	//if on, check that only one is on, then show target and add selected attribute
-	//if off, simply hide target and remove selected attribute
-	if(onOff == true) {
-		if(group.selected != selectMe){
-			El.attr(selectMe, "selected", '');
-			El.byId(targetId).style.display = "inherit";	
-
-			if(group.selected != undefined)
-				p_tab.selectTab(group.selected, false);
-			
-			group.selected = selectMe;
-		}
-	}
-	else {
-		El.byId(targetId).style.display = "none";
-		selectMe.removeAttribute("selected");
-	}
-}
+// //centralized select tab function
+// p_tab.selectTab = function(selectMe, targetId, group, onOff) {
+	
+	
+// }
 
 
 </script>
+
+
+
+
+<style>
+tab {
+	cursor: pointer;
+}
+
+tab[tabSelected] {
+	text-decoration: underline;
+}
+</style>
+
+
+
+
+
+
+
+
