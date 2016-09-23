@@ -506,7 +506,8 @@ PINE.runResource = function(domNode) {
 
 				var scripts = domNode.getElementsByTagName("script");
 				for(var sc = 0; sc < scripts.length; sc++ ) {
-					eval(scripts[sc].innerHTML);
+					U.helpfulEval(scripts[sc].innerHTML, src);
+					// eval(scripts[sc].innerHTML);
 				}
 
 				resolve();
@@ -515,6 +516,9 @@ PINE.runResource = function(domNode) {
 	});
 
 }
+
+
+
 
 
 
@@ -1518,6 +1522,24 @@ U.Ajax.get = function(url, responseType) {
 }
 
 
+
+
+
+U.helpfulEval = function(evalMe, filename) {
+	try {
+		console.log("trying eval for "+filename);
+		eval(evalMe);
+	}
+	catch(e) {
+		var lineNumber = e.lineNumber ? e.lineNumber : -1;
+		var errorOut = {};
+		errorOut.viewScript = evalMe;
+
+		PINE.err("eval error in file "+filename+" line: "+lineNumber+" of script: ", errorOut);
+	}
+}
+
+
 /****
 *	Console colors shared by SeriousJoker
 *	http://stackoverflow.com/a/25042340/4808079
@@ -1855,6 +1877,25 @@ El.byTag = function(domNode, tag) {
 	return domNode.getElementsByTagName(tag);
 }
 
+El.queryChildren = function(root, keyword, limit) {
+	return El.cssQuery(root, "> "+keyword, limit);
+}
+
+El.cssQuery = function(root, selector, limit) {
+	if(limit === 0)
+		return [];
+
+	selector = selector.trim();
+	if(selector.charAt(0) == ">")
+		selector = ":scope "+selector;
+
+	if(limit == 1)
+		return [root.querySelector(selector)];
+
+	else
+		return root.querySelectorAll(selector);
+}
+
 
 El.firstsOfKey = function(root, keyword, skipOnce)  {
 	if(skipOnce === false && PINE.keyApplies(keyword, root)) {
@@ -1873,6 +1914,8 @@ El.firstsOfKey = function(root, keyword, skipOnce)  {
 
 	return (out.length > 0) ? out : null;
 }
+
+
 
 El.attr = function(domNode, name, value) {
 	if(domNode.attributes) {
@@ -1896,6 +1939,16 @@ El.attr = function(domNode, name, value) {
 }
 
 
+El.windowOffset = function(target) {
+	var out = {};
+		//
+  	var bounds = target.getBoundingClientRect();
+  	out.left = bounds.left + window.scrollX;
+    out.top = bounds.top + window.scrollY;
+
+    return out;
+}
+
 El.domReady = function(callback) {
 	document.addEventListener("DOMContentLoaded", callback);
 }
@@ -1906,4 +1959,16 @@ El.domReady = function(callback) {
 
 
 PINE.init();
+
+
+
+
+
+
+
+
+
+
+
+
 

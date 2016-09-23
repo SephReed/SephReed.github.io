@@ -4,551 +4,550 @@
 		"selected_items":
 		[
 			[
-				"cam",
-				"cameraArgs_att"
+				"tr",
+				"trigger"
 			],
 			[
-				"f",
-				"framework"
+				"cli",
+				"clickFirstEnabled"
 			],
 			[
-				"s",
-				"startNode"
+				"click",
+				"clickFirst"
 			],
 			[
-				"fu",
-				"function"
+				"on",
+				"onOff"
 			],
 			[
-				"ro",
-				"rotateSphere"
+				"add",
+				"addFunctionToNode"
 			],
 			[
-				"ve",
-				"velocity"
+				"clic",
+				"clickFirst"
 			],
 			[
-				"no",
-				"nospawnCollection"
-			],
-			[
-				"empt",
-				"emptyHolders"
-			],
-			[
-				"chi",
-				"children"
-			],
-			[
-				"fi",
-				"filter"
-			],
-			[
-				"ta",
-				"tagsAtt"
-			],
-			[
-				"fil",
-				"filterTags"
-			],
-			[
-				"tar",
-				"target"
-			],
-			[
-				"targe",
-				"targetAtt"
-			],
-			[
-				"show",
-				"showChoices"
-			],
-			[
-				"pa",
-				"padding-top"
-			],
-			[
-				"fon",
-				"font-size"
-			],
-			[
-				"back",
-				"background-position"
-			],
-			[
-				"pad",
-				"padding-left"
-			],
-			[
-				"i",
-				"inset"
-			],
-			[
-				"box",
-				"box-shadow"
-			],
-			[
-				"co",
-				"columns"
-			],
-			[
-				"bo",
-				"border"
-			],
-			[
-				"sel",
-				"selected"
-			],
-			[
-				"in",
-				"initMe"
-			],
-			[
-				"get",
-				"getVarFrom"
-			],
-			[
-				"roo",
-				"rootVar"
-			],
-			[
-				"var",
-				"varName"
-			],
-			[
-				"re",
-				"result"
-			],
-			[
-				"i_",
-				"i_pvars"
-			],
-			[
-				"r",
-				"resolve"
-			],
-			[
-				"te",
-				"textarea	Tag"
-			],
-			[
-				"b",
-				"border"
+				"po",
+				"pointer-events"
 			],
 			[
 				"h",
-				"height"
+				"hidden"
 			],
 			[
-				"col",
-				"colItem"
+				"of",
+				"offsetWidth"
 			],
 			[
-				"img",
-				"imgHolder"
+				"o",
+				"offsetWidth"
 			],
 			[
-				"op",
-				"option	Tag"
+				"just",
+				"justOne"
 			],
 			[
-				"max",
-				"max-height"
+				"re",
+				"removeMe"
 			],
 			[
-				"font",
-				"font-weight"
+				"selection",
+				"selectionSwitch"
 			],
 			[
-				"goin",
-				"goingBack"
+				"de",
+				"deselectOnBlur"
 			],
 			[
-				"goi",
-				"goingBack"
+				"sel",
+				"selectOnClick"
+			],
+			[
+				"cl",
+				"classList"
+			],
+			[
+				"me",
+				"menuShowers"
+			],
+			[
+				"he",
+				"helpfulEval"
+			],
+			[
+				"se",
+				"selectOn_att"
+			],
+			[
+				"selectOn",
+				"selectOnClick"
+			],
+			[
+				"select",
+				"selectOnHover"
+			],
+			[
+				"des",
+				"deselectOnBlur"
+			],
+			[
+				"borde",
+				"border-radius"
+			],
+			[
+				"set",
+				"setLeft"
+			],
+			[
+				"ta",
+				"target"
+			],
+			[
+				"wi",
+				"windowOffset"
+			],
+			[
+				"spe",
+				"specialPos"
+			],
+			[
+				"win",
+				"windowPosition"
+			],
+			[
+				"b",
+				"bounds"
+			],
+			[
+				"le",
+				"length"
+			],
+			[
+				"di",
+				"displayedSubMenus"
+			],
+			[
+				"d",
+				"displayedSubMenus"
+			],
+			[
+				"dis",
+				"displayMenu"
+			],
+			[
+				"tar",
+				"targetRight"
+			],
+			[
+				"dro",
+				"dropdownDisplay"
+			],
+			[
+				"dr",
+				"dropdownDisplay"
+			],
+			[
+				"target",
+				"target_att"
+			],
+			[
+				"brac",
+				"branches"
+			],
+			[
+				"s",
+				"sameSizeRand"
+			],
+			[
+				"co",
+				"control"
+			],
+			[
+				"ra",
+				"randString"
+			],
+			[
+				"ad",
+				"adminBlock"
+			],
+			[
+				"e",
+				"email"
+			],
+			[
+				"email",
+				"emailSize"
+			],
+			[
+				"bloc",
+				"blocksize"
+			],
+			[
+				"blo",
+				"blockEmail"
+			],
+			[
+				"block",
+				"blockEmail"
+			],
+			[
+				"en",
+				"encodeMe"
+			],
+			[
+				"par",
+				"parseMe"
+			],
+			[
+				"p",
+				"parseMe"
+			],
+			[
+				"a",
+				"afterSize"
+			],
+			[
+				"shor",
+				"shortOneBlock"
+			],
+			[
+				"sho",
+				"shortOne"
+			],
+			[
+				"E",
+				"AES_ECB"
+			],
+			[
+				"test",
+				"testSizeString"
+			],
+			[
+				"f",
+				"floor"
+			],
+			[
+				"enc",
+				"encryptions"
+			],
+			[
+				"encr",
+				"encryptedFile"
+			],
+			[
+				"xo",
+				"xorString"
+			],
+			[
+				"cbc",
+				"cbcXor"
+			],
+			[
+				"cb",
+				"cbcXor"
+			],
+			[
+				"cha",
+				"chainBlocks"
+			],
+			[
+				"che",
+				"checkMe"
+			],
+			[
+				"ch",
+				"chunk"
+			],
+			[
+				"key",
+				"keyText"
+			],
+			[
+				"ke",
+				"keyText"
+			],
+			[
+				"l",
+				"length"
+			],
+			[
+				"cu",
+				"currentTopVal"
+			],
+			[
+				"un",
+				"unCommonThreshold"
+			],
+			[
+				"j",
+				"jargonRating"
+			],
+			[
+				"in",
+				"index"
+			],
+			[
+				"so",
+				"sortMeLimit"
+			],
+			[
+				"edi",
+				"editDist"
+			],
+			[
+				"ed",
+				"editDistances"
+			],
+			[
+				"str",
+				"stringEditDistance"
+			],
+			[
+				"char",
+				"charCodeAt"
+			],
+			[
+				"stri",
+				"stringHammingDistance"
+			],
+			[
+				"xor",
+				"xorString"
+			],
+			[
+				"st",
+				"str2"
 			],
 			[
 				"con",
 				"console"
 			],
 			[
-				"bac",
-				"backHistory"
+				"to",
+				"hexToString"
 			],
 			[
-				"er",
-				"eraseMode"
+				"spl",
+				"split"
+			],
+			[
+				"c",
+				"console"
+			],
+			[
+				"NUM",
+				"NUM_SHUFFLES"
+			],
+			[
+				"sh",
+				"shuffleMe"
+			],
+			[
+				"NU",
+				"NUM_SHUFFLES"
+			],
+			[
+				"pil",
+				"pileNum"
+			],
+			[
+				"shu",
+				"shuffle"
+			],
+			[
+				"pi",
+				"pileDraws"
+			],
+			[
+				"dec",
+				"decryptMe"
+			],
+			[
+				"ecr",
+				"encryptMe"
+			],
+			[
+				"ec",
+				"encryptMe"
 			],
 			[
 				"fun",
-				"func"
+				"function"
 			],
 			[
-				"ar",
-				"arg1"
+				"tra",
+				"transition"
 			],
 			[
-				"po",
-				"position"
-			],
-			[
-				"p",
-				"padding"
-			],
-			[
-				"ba",
-				"background"
-			],
-			[
-				"fo",
-				"font-weight"
-			],
-			[
-				"disa",
-				"disableLOG"
-			],
-			[
-				"first",
-				"firstsOfKey"
-			],
-			[
-				"bor",
-				"border-left"
-			],
-			[
-				"func",
-				"funcDoc"
-			],
-			[
-				"doc",
-				"docNodes"
-			],
-			[
-				"ad",
-				"addToMe"
-			],
-			[
-				"add",
-				"addToMe"
-			],
-			[
-				"arg",
-				"arg3"
-			],
-			[
-				"cu",
-				"currentUrl"
-			],
-			[
-				"type",
-				"typeof"
-			],
-			[
-				"typ",
-				"typeof"
-			],
-			[
-				"inlin",
-				"inline-block"
-			],
-			[
-				"border-r",
-				"border-radius"
-			],
-			[
-				"is",
-				"isMultirun"
-			],
-			[
-				"sc",
-				"scrollTop"
-			],
-			[
-				"key",
-				"keyword"
-			],
-			[
-				"par",
-				"parseAtts"
-			],
-			[
-				"step",
-				"step_type"
-			],
-			[
-				"paren",
-				"parentNode"
-			],
-			[
-				"creat",
-				"createNeedle"
-			],
-			[
-				"crea",
-				"createNeedle"
-			],
-			[
-				"P",
-				"PINE"
-			],
-			[
-				"pro",
-				"promises"
-			],
-			[
-				"added",
-				"addedResources"
-			],
-			[
-				"su",
-				"success"
-			],
-			[
-				"res",
-				"resources"
-			],
-			[
-				"load",
-				"loadResources"
-			],
-			[
-				"vi",
-				"views"
-			],
-			[
-				"vie",
-				"view"
-			],
-			[
-				"I",
-				"INC"
-			],
-			[
-				"init",
-				"initMe"
-			],
-			[
-				"ca",
-				"cacheOp"
-			],
-			[
-				"d",
-				"default"
-			],
-			[
-				"rep",
-				"replace"
-			],
-			[
-				"cache",
-				"cacheOp"
-			],
-			[
-				"cach",
-				"cacheOp"
-			],
-			[
-				"pin",
-				"pinefunc"
-			],
-			[
-				"up",
-				"updates"
-			],
-			[
-				"app",
-				"appendingString"
-			],
-			[
-				"spli",
-				"splice"
-			],
-			[
-				"color",
-				"coloring"
-			],
-			[
-				"sprout",
-				"sproutState"
-			],
-			[
-				"att",
-				"attributes"
-			],
-			[
-				"initi",
-				"initiation"
-			],
-			[
-				"spro",
-				"sproutState"
-			],
-			[
-				"pas",
-				"passed"
-			],
-			[
-				"queu",
-				"queuedOps"
-			],
-			[
-				"PI",
-				"PINE"
-			],
-			[
-				"runnin",
-				"runningAsyncs"
-			],
-			[
-				"runn",
-				"runningAsyncs"
-			],
-			[
-				"unsen",
-				"unsentOps"
-			],
-			[
-				"inc",
-				"incompleteOps"
-			],
-			[
-				"PINE",
-				"PINEFUNC"
-			],
-			[
-				"one",
-				"oneOff"
-			],
-			[
-				"dom",
-				"domNode"
-			],
-			[
-				"will",
-				"willSprout"
-			],
-			[
-				"check",
-				"checkRollCall"
-			],
-			[
-				"wait",
-				"waitForMe"
+				"font",
+				"font-family"
 			],
 			[
 				"call",
-				"callbackReturn"
+				"callback"
 			],
 			[
-				"then",
-				"thenables"
+				"DO",
+				"DOMContentLoaded"
 			],
 			[
-				"as",
-				"async"
-			],
-			[
-				"per",
-				"permeatePromises"
+				"wa",
+				"watchUs"
 			],
 			[
 				"log",
-				"logDone"
+				"logType"
+			],
+			[
+				"event",
+				"events"
+			],
+			[
+				"ma",
+				"mapbox"
+			],
+			[
+				"bg",
+				"bgcolor"
+			],
+			[
+				"pon",
+				"potential_matches_att"
+			],
+			[
+				"back",
+				"background"
+			],
+			[
+				"spawn",
+				"spawnFrom"
+			],
+			[
+				"var",
+				"varCode"
+			],
+			[
+				"sta",
+				"startsWith"
+			],
+			[
+				"check",
+				"checkMe"
+			],
+			[
+				"chek",
+				"checkMe"
+			],
+			[
+				"crea",
+				"createConditionTree"
 			],
 			[
 				"comp",
-				"complete"
+				"comparitor"
 			],
 			[
-				"wid",
-				"width"
+				"com",
+				"comparitor"
 			],
 			[
-				"ic",
-				"icon_id"
+				"ar",
+				"args"
 			],
 			[
-				"icon",
-				"icon_chooser"
+				"eq",
+				"eqLayers"
 			],
 			[
-				"backgro",
-				"background-size"
+				"brea",
+				"breakMe"
 			],
 			[
-				"wi",
-				"width"
+				"br",
+				"breakMe"
 			],
 			[
-				"spa",
-				"spawnerSource"
+				"last",
+				"lastBreak"
 			],
 			[
-				"cou",
-				"countAtt"
+				"paren",
+				"parenDepth"
 			],
 			[
-				"count",
-				"countAtt"
+				"break",
+				"breakByParenthesis"
 			],
 			[
-				"di",
-				"display"
+				"node",
+				"nodeScopedVar"
 			],
 			[
-				"wall",
-				"wall_lng"
+				"pvar",
+				"pvarCode"
 			],
 			[
-				"top",
-				"topic_tag"
+				"pa",
+				"padding-top"
 			],
 			[
-				"backgr",
-				"background-position"
+				"margin-",
+				"margin-left"
 			],
 			[
-				"styl",
-				"style_include"
+				"tree",
+				"treeSpawner"
 			],
 			[
-				"sty",
-				"style_include"
+				"mo",
+				"modMe"
+			],
+			[
+				"paus",
+				"paused"
+			],
+			[
+				"targ",
+				"target"
+			],
+			[
+				"gt",
+				"getArgs"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "walkscape/fps_scene.js",
+			"file": "PINE/needles/dropdownMenu.html",
 			"settings":
 			{
-				"buffer_size": 13197,
+				"buffer_size": 4996,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "walkscape/testsceneloader.html",
+			"file": "PINE/tests/testDropdown.html",
 			"settings":
 			{
-				"buffer_size": 1848,
-				"line_ending": "Unix",
-				"name": "<scene"
-			}
-		},
-		{
-			"file": "walkscape/3dHTML.js",
-			"settings":
-			{
-				"buffer_size": 1062,
+				"buffer_size": 1234,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "PINE/PINE_Var.js",
+			"file": "/Users/seph/Code/Web/stash_node/init.css",
 			"settings":
 			{
-				"buffer_size": 5005,
+				"buffer_size": 280,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PINE/needles/selectablelist.html",
+			"settings":
+			{
+				"buffer_size": 12065,
 				"line_ending": "Unix"
 			}
 		},
@@ -556,23 +555,7 @@
 			"file": "PINE/PINE_Core_4.2.js",
 			"settings":
 			{
-				"buffer_size": 33981,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "walkscape/THREE_translater.js",
-			"settings":
-			{
-				"buffer_size": 953,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "walkscape/fps.js",
-			"settings":
-			{
-				"buffer_size": 8731,
+				"buffer_size": 39829,
 				"line_ending": "Unix"
 			}
 		}
@@ -597,7 +580,7 @@
 				"Preferences: Browse Packages"
 			]
 		],
-		"width": 467.0
+		"width": 392.0
 	},
 	"console":
 	{
@@ -618,54 +601,105 @@
 	"expanded_folders":
 	[
 		"/Users/seph/Code/Web/SephReed.github.io",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests",
-		"/Users/seph/Code/Web/SephReed.github.io/public/images",
-		"/Users/seph/Code/Web/SephReed.github.io/walkscape",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing"
+		"/Users/seph/Code/Web/SephReed.github.io/public",
+		"/Users/seph/Code/Web/SephReed.github.io/public/css"
 	],
 	"file_history":
 	[
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/showHide.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Includes.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Var.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test_spawner.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/suggestions.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_13.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_14.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_12.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/CryptoTools.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.2.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/dropdownMenu.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_8.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_11.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_10.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_7.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_9.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_2.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_3.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_5.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_1.js",
+		"/Users/seph/Code/Web/SephReed.github.io/public/js/jsaes.js",
+		"/Users/seph/Code/Web/SephReed.github.io/public/js/testPublicJs.html",
+		"/Users/seph/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_6.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_4.js",
+		"/Users/seph/Code/Web/SephReed.github.io/public/js/Kaz.c",
+		"/Users/seph/Code/Web/SephReed.github.io/public/js/KazKylhekuRijndaelCipher.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/graspingCommonCripto.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/creep.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/public/js/ARTsinn.js",
+		"/Users/seph/Code/Web/SephReed.github.io/barter/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/public/js/THUMBZ.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/treeSpawnerTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/logWatcher.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/mapbox.html",
+		"/Users/seph/Code/Web/SephReed.github.io/barter/modules/map.html",
+		"/Users/seph/Code/Web/SephReed.github.io/public/css/init.css",
+		"/Users/seph/Code/Web/SephReed.github.io/barter/modules/searchbar.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/selectablelist.html",
+		"/Users/seph/Code/Web/SephReed.github.io/barter/SephMarketTree.js",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/needles/show.html",
+		"/Users/seph/Desktop/radio.html",
+		"/Users/seph/Desktop/chilloutzone.html",
+		"/Users/seph/Code/Web/SephReed.github.io/barter/testWayPoints.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/displayChildren.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/modules/account/mini.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/all_accounts.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/modules/account/view.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/modules/account_history/view.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/home.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Core.doc.html",
+		"/Users/seph/Code/Web/SephReed.github.io/barter/SephMarketTree.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/the shift",
+		"/Users/seph/Code/Web/SephReed.github.io/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/browsertools/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.css",
+		"/Users/seph/Code/Web/SephReed.github.io/walkscape/fps.js",
+		"/Users/seph/Code/Web/SephReed.github.io/walkscape/THREE_translater.js",
+		"/Users/seph/Code/Web/SephReed.github.io/walkscape/3dHTML.js",
+		"/Users/seph/Code/Web/SephReed.github.io/walkscape/fps_scene.js",
+		"/Users/seph/Code/Web/SephReed.github.io/walkscape/testsceneloader.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Writing/metaverse_devs/bai.txt",
 		"/Users/seph/Code/Web/SephReed.github.io/walkscape/fps_update.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test_spawner.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Needles.js",
-		"/Users/seph/Code/Web/SephReed.github.io/walkscape/fps.js",
 		"/Users/seph/Code/Web/SephReed.github.io/walkscape/ImprovedNoise.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Includes.doc.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Core.doc.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/onreturn.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.2.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/autoIndex.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/doc.css",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Var.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Template.QRE.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Template.doc.html",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/pay.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/overlay.html",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/share.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/needles/filter.html",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/contact_chooser.html",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/account.html",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/public/themes/default.css",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/needles/show.html",
-		"/Users/seph/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/peephole.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/bgimg.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Includes.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Var.doc.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/all_accounts.html",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/account_history.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/home.html",
 		"/Users/seph/Code/Web/SephReed.github.io/BankingAppGui/home.html",
 		"/Users/seph/Code/Web/SephReed.github.io/BankingAppGui/phone.css",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_needles.js",
-		"/Users/seph/Code/Web/SephReed.github.io/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Core.QRE.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Prettify.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Ajax.js",
@@ -701,60 +735,7 @@
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.css",
 		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/needles/Needle_CommentBox.html",
 		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Core.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/testing.css",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/retroHacker.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/needles/peephole.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/evalParseTester.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/test.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/wallView.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/topicView.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/test.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Var.js",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.js",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_artisan.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/test.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/doc.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Core.doc.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/streak.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/commentView.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/server.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/nodemysql.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/Needle_CommentBox.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/helloplace.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/overlay_needle.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/zepto.js",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/overlay_needle.html",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/eImprov_Keys.control.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/ClipPage.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Shared/MultiDeviceInterface.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Shared/MDI_recordingKit.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/DrumPage.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/BitwigInterface.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/QUNEO_init.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Shared/MDI_Constants.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/DeviceControls.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/BitwigObservers.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/QuneoConstants.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/eImprov_Quneo.control.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/Flair.js",
-		"/Users/seph/Library/Application Support/Sublime Text 2/Packages/User/JavaScript.sublime-settings",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Shared/MDI_BitwigHax.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/12_Step/12Step_init.js",
-		"/Users/seph/Documents/Bitwig Studio/Controller Scripts/eImprov/Keys/Keys_init.js",
-		"/Users/sjaromin/Desktop/testColor.html",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/QUNEO_init.js",
-		"/Users/sjaromin/Desktop/minecraft/forge/src/main/java/com/thumbz/mydimension/biomeConfig.json",
-		"/Users/sjaromin/Projects/Code/GitHubBranches/wii-u-gc-adapter2/wii-u-gc-adapter.c",
-		"/Users/sjaromin/Projects/Code/APIs/Spigot-API/README.md",
-		"/Users/sjaromin/Games/Evera/plugins/TerrainControl/worlds/CaveWorld/BiomeConfigs/LavaSandCavesBiomeConfig.ini",
-		"/Users/sjaromin/Games/Evera/plugins/TerrainControl/worlds/CaveWorld/BiomeConfigs/CoolCavesBiomeConfig.ini",
-		"/Users/sjaromin/Games/Evera/plugins/TerrainControl/worlds/Custom/WorldConfig.ini",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/BitwigInterface.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Quneo/HelperClasses.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/Shared/MDI_Constants.js",
-		"/Users/sjaromin/Documents/Bitwig Studio/Controller Scripts/eImprov/eImprov_Quneo.control.js"
+		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/testing.css"
 	],
 	"find":
 	{
@@ -765,6 +746,8 @@
 		"height": 93.0,
 		"where_history":
 		[
+			"/Users/seph/Code/Web/SephReed.github.io/PINE",
+			"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp",
 			""
 		]
 	},
@@ -773,6 +756,72 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"childrenOfKey",
+			"eval",
+			"displayMenu",
+			"showMenu",
+			"AES_ECB",
+			"\\n",
+			"\"",
+			"\\n",
+			"cbcXor",
+			"\\n",
+			"xtime",
+			"expandK",
+			"\\n",
+			" ",
+			"\"\\n",
+			"limit",
+			"\\n",
+			"MUNGER",
+			"\\n",
+			"THUMBZ",
+			"rijn_128",
+			"debug.init",
+			"LOG(",
+			"LOG",
+			"addEvent",
+			"registerP",
+			"goog",
+			"THIS MAY",
+			"window",
+			"isAs",
+			"searchFor",
+			"left",
+			"\\.push\\(new Comparitor\\(",
+			"\\.push(new Comparitor\\(",
+			".push(new Comparitor(",
+			"scope, ",
+			"args",
+			"args\\[1\\]",
+			"args\\[0\\]",
+			"args",
+			"conditionalList",
+			"registerPine",
+			"addFunction",
+			"show",
+			"display",
+			"out",
+			"displayChildren",
+			"eval",
+			"assertKey",
+			"assertVar",
+			"asertVar",
+			"assert",
+			"spending",
+			"name",
+			"cookie",
+			"stopTags",
+			"growingSpro",
+			"err",
+			"limit",
+			"selectable_list",
+			"slice",
+			"splice",
+			"suggSubObject",
+			"potential",
+			";",
+			"ephemer",
 			"\\n",
 			"\\[.*\\] ",
 			"/\\[.*\\]/g",
@@ -834,73 +883,7 @@
 			"$",
 			"parseTex",
 			"permeate",
-			">L",
-			">P",
-			"include",
-			">D",
-			"pinefunc = ",
-			"debug",
-			"updateAt = ",
-			"pop()",
-			"push",
-			".useCallback",
-			"completed",
-			"my",
-			"applyOpFu",
-			"\"run\"",
-			"PINE.sprout",
-			"callback",
-			"lat",
-			" lat",
-			"lat",
-			"testing",
-			"_pine>",
-			"_pine_",
-			"changeSrc",
-			"changesrc",
-			"setsrc",
-			"addFunc",
-			"alert",
-			"INC.init",
-			"INC.upda",
-			"evalEl",
-			"pause",
-			"PINE.",
-			"bank",
-			"registerFu",
-			"run",
-			"run2",
-			"initiate",
-			"permeate2",
-			"sprout",
-			"registerFunction",
-			"LOG",
-			"trigger",
-			"assignVal",
-			"$",
-			"evalElement",
-			"MDI_seleced_track",
-			"println",
-			"selected",
-			"selectedTr",
-			"selectedTrack",
-			"MDI_selected_track",
-			"octave",
-			"page",
-			"selectTrack",
-			"selectedTrack",
-			"remove",
-			"early",
-			"MDI_selected_track",
-			"MDI_seleced_tra",
-			"MDI_selected_tra",
-			"selected",
-			"tryRelea",
-			"attem",
-			"selectedTrack",
-			"selected",
-			"noteIn",
-			"noteInMDI_noteInMDI_noteIn"
+			">L"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -908,6 +891,42 @@
 		"regex": true,
 		"replace_history":
 		[
+			"queryChildren",
+			"menuDisplay",
+			"displayedMenu",
+			"displayMenu",
+			"ORACLE",
+			" \"\\n+\"",
+			"\\\\n\"\\n+\"",
+			"'",
+			"\\\\n\"\\n+\"",
+			" \"\\n+\"",
+			"lastChunk",
+			" \"\\n+\"",
+			"\\n",
+			" \\n",
+			" \"\\n",
+			"\"\\n+\"",
+			"CT",
+			" \"\\n\\+\"",
+			"\"\\n\\+\"",
+			"MUNGER",
+			"WIZARD",
+			"right",
+			"[",
+			"",
+			"left, right",
+			"right",
+			"left",
+			"left, right",
+			"comparitorList",
+			"showHide",
+			"show",
+			"args",
+			"display",
+			"{{account.name}}",
+			"varName",
+			"searchable_subObject",
 			"\\n\\n",
 			"",
 			"showChoices",
@@ -966,59 +985,87 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "walkscape/fps_scene.js",
+					"file": "PINE/needles/dropdownMenu.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 13197,
+						"buffer_size": 4996,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1433,
-								1438
+								4881,
+								4881
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2242.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "PINE/tests/testDropdown.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1234,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								298,
+								298
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "walkscape/testsceneloader.html",
+					"buffer": 2,
+					"file": "/Users/seph/Code/Web/stash_node/init.css",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1848,
+						"buffer_size": 280,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								436,
-								436
+								113,
+								113
 							]
 						],
 						"settings":
 						{
-							"auto_name": "<scene",
-							"syntax": "Packages/HTML/HTML.sublime-syntax"
+							"syntax": "Packages/CSS/CSS.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1028,60 +1075,32 @@
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "walkscape/3dHTML.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1062,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								998,
-								998
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 140.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
 					"buffer": 3,
-					"file": "PINE/PINE_Var.js",
+					"file": "PINE/needles/selectablelist.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5005,
+						"buffer_size": 12065,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								1952,
+								1952
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 283.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
@@ -1090,15 +1109,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 33981,
+						"buffer_size": 39829,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								38382,
+								38382
 							]
 						],
 						"settings":
@@ -1107,67 +1126,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 8114.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "walkscape/THREE_translater.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 953,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								94,
-								94
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 27957.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "walkscape/fps.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8731,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								7314,
-								7314
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 4127.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -1222,11 +1184,27 @@
 		"selected_items":
 		[
 			[
-				"pvar",
-				"PINE/PINE_Var.js"
+				"4.s",
+				"PINE/PINE_Core_4.2.js"
 			],
 			[
-				"pine_",
+				"jsa",
+				"public/js/jsaes.js"
+			],
+			[
+				"index",
+				"barter/index.html"
+			],
+			[
+				"inc",
+				"PINE/PINE_Includes.js"
+			],
+			[
+				"testtr",
+				"PINE/tests/treeSpawnerTest.html"
+			],
+			[
+				"4.2",
 				"PINE/PINE_Core_4.2.js"
 			],
 			[
@@ -1234,16 +1212,88 @@
 				"PINE/PINE_Var.js"
 			],
 			[
+				"nee",
+				"PINE/PINE_Needles.js"
+			],
+			[
+				"mark",
+				"barter/SephMarketTree.js"
+			],
+			[
 				"core",
 				"PINE/PINE_Core_4.2.js"
 			],
 			[
-				"over",
-				"PINE/needles/overlay.html"
+				"vars",
+				"PINE/PINE_Var.js"
 			],
 			[
-				"nee",
+				"sele",
+				"PINE/needles/selectablelist.html"
+			],
+			[
+				"pine_",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"dis",
+				"PINE/needles/displayChildren.html"
+			],
+			[
+				"sho",
+				"CryptoBankingApp/needles/show.html"
+			],
+			[
+				"tree",
+				"PINE/tests/treeSpawnerTest.html"
+			],
+			[
+				"pine_cor",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"testtree",
+				"PINE/tests/treeSpawnerTest.html"
+			],
+			[
+				"ne",
 				"PINE/PINE_Needles.js"
+			],
+			[
+				"barter",
+				"barter/index.html"
+			],
+			[
+				"need",
+				"PINE/PINE_Needles.js"
+			],
+			[
+				"includ",
+				"PINE/PINE_Includes.js"
+			],
+			[
+				"inclu",
+				"PINE/PINE_Includes.js"
+			],
+			[
+				"doc/in",
+				"PINE/docs/index.html"
+			],
+			[
+				"pine_doc",
+				"PINE/docs/PINE_Core.doc.html"
+			],
+			[
+				"",
+				"PINE/PINE_Needles.js"
+			],
+			[
+				"pvar",
+				"PINE/PINE_Var.js"
+			],
+			[
+				"over",
+				"PINE/needles/overlay.html"
 			],
 			[
 				"pa",
@@ -1266,10 +1316,6 @@
 				"CryptoBankingApp/views/contact_chooser.html"
 			],
 			[
-				"need",
-				"PINE/PINE_Needles.js"
-			],
-			[
 				"pine_var",
 				"PINE/PINE_Var.js"
 			],
@@ -1288,10 +1334,6 @@
 			[
 				"includes",
 				"PINE/PINE_Includes.js"
-			],
-			[
-				"doc/in",
-				"PINE/docs/index.html"
 			],
 			[
 				"docs/in",
@@ -1314,14 +1356,6 @@
 				"portfolio/portfolio_pined.html"
 			],
 			[
-				"inclu",
-				"PINE/PINE_Include.js"
-			],
-			[
-				"4.2",
-				"PINE/PINE_Core_4.2.js"
-			],
-			[
 				"doc.",
 				"PINE/docs/doc.css"
 			],
@@ -1339,14 +1373,6 @@
 			],
 			[
 				"4.0",
-				"PINE/PINE_Core_4.0.js"
-			],
-			[
-				"ne",
-				"PINE/PINE_Needles.js"
-			],
-			[
-				"",
 				"PINE/PINE_Core_4.0.js"
 			],
 			[

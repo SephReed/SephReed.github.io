@@ -1,0 +1,201 @@
+<script type="text/javascript">
+
+
+document.addEventListener("click", function(event) {
+	var onMenu = false;
+	for(var i  = 0; i < p_dropdownMenu.displayedMenus.length && !onMenu; i++)  {
+		var checkMe = p_dropdownMenu.displayedMenus[i];
+		onMenu = (checkMe == event.target || checkMe.contains(event.target));
+	}
+
+	for(var i  = 0; i < p_showMenu.menuShowers.length && !onMenu; i++)  {
+		var checkMe = p_showMenu.menuShowers[i];
+		onMenu = (checkMe == event.target || checkMe.contains(event.target));
+	}
+	
+	if(onMenu == false) {
+
+		for(var i in p_dropdownMenu.displayedMenus)
+			p_dropdownMenu.displayedMenus[i].classList.remove("displayedMenu");
+
+		for (var i in p_showMenu.menuShowers)
+			p_showMenu.menuShowers[i].classList.remove("showingMenu");
+
+		p_dropdownMenu.displayedMenus = [];
+		p_showMenu.menuShowers = [];
+
+		clickFirstEnabled = false;
+	}
+});
+
+
+var p_dropdownMenu = PINE("[dropdownMenu]", function(initMe) {
+	var needle = this;
+	var lastTarget;
+
+	PINE.addFunctionToNode(initMe, "menuDisplay", function(target, onOff) {
+		if(!target) 
+			return PINE.err("no target specified for menuDisplay");
+
+		
+		// console.log("findPosition");
+		// var boundsBottom = window.innerHeight;
+		var boundsRight = window.innerWidth;
+		var windowOffset = El.windowOffset(target);
+
+		var setTop, setLeft;
+		var specialPos = El.attr(target, "showMenuPos");
+		if(specialPos == "below") {
+			setTop = windowOffset.top + target.offsetHeight;
+			setLeft = windowOffset.left;
+
+			if(setLeft + initMe.offsetWidth > boundsRight) 
+				setLeft = windowOffset.left - (initMe.offsetWidth - target.offsetWidth);
+		}
+
+		else {
+			var targetRight = windowOffset.left + target.offsetWidth;
+			var targetTop = windowOffset.top;
+			setTop = targetTop;
+			setLeft = targetRight;
+
+			if(setLeft + initMe.offsetWidth > boundsRight) 
+				setLeft = windowOffset.left - initMe.offsetWidth;
+		}
+
+		// var targetRight = target.offsetLeft + target.offsetWidth;
+		// var targetTop = target.offsetTop;
+
+		initMe.style.top = setTop+"px";
+		initMe.style.left = setLeft+"px";
+		console.log(target);
+
+		initMe.FNS.hideSubmenus();
+
+		if(target != lastTarget) 
+			lastTarget = target;
+		// }
+
+		else if(onOff === undefined) 
+			onOff = !initMe.classList.contains("displayedMenu");
+		
+		if(onOff === false) {
+			initMe.classList.remove("displayedMenu");
+			var target = needle.displayedMenus.indexOf(initMe);
+			needle.displayedMenus.splice(target, 1);
+			
+			initMe.FNS.hideSubmenus();
+		}
+		else {
+			initMe.classList.add("displayedMenu");
+			needle.displayedMenus.push(initMe);
+		}
+		
+	});
+
+	PINE.addFunctionToNode(initMe, "hideSubmenus", function() {
+		var displayedSubMenus = initMe.querySelectorAll(".displayedMenu");
+
+		for(var i  = 0; i < displayedSubMenus.length; i++) {
+			var removeMe = displayedSubMenus[i]
+			removeMe.classList.remove("displayedMenu");
+			var target = needle.displayedMenus.indexOf(removeMe);
+			needle.displayedMenus.splice(target, 1);
+		}
+
+		// var menuShowers = initMe.querySelectorAll(".showingMenu");
+		// for(var i  = 0; i < menuShowers.length; i++) {
+		// 	var removeMe = menuShowers[i]
+		// 	console.log("menuShower", removeMe);
+		// 	removeMe.classList.remove("showingMenu");
+		// 	var target = p_showMenu.menuShowers.indexOf(removeMe);
+		// 	p_showMenu.menuShowers.splice(target, 1);
+		// }
+	});
+});
+
+p_dropdownMenu.displayedMenus = [];
+
+
+console.log(p_dropdownMenu);
+
+var clickFirstEnabled = false;
+var p_showMenu = PINE("[showMenu]", function(initMe) {
+	// p_dropdownMenu.menuShowers.push(initMe);
+
+	var trigger_att = El.attr(initMe, "showMenuTrigger");
+
+	var trigger = "clickFirst"
+	// if (trigger)
+
+	PINE.addFunctionToNode(initMe, "setShowMenuState", function(onOff) {
+		var args = p_showMenu.getArgs(initMe);
+		p_showMenu.menuShowers.push(initMe);
+		initMe.classList.add("showingMenu");
+		if(args) {
+			args.target.FNS.menuDisplay(initMe, onOff);
+		}
+	});
+
+	if(trigger == "click" || trigger == "clickFirst") {
+		initMe.addEventListener("click", function(event) {
+			initMe.FNS.setShowMenuState(true);
+			event.stopPropagation();
+			clickFirstEnabled = true;
+		});
+	}
+
+	if(trigger == "hover" || trigger == "clickFirst") {
+		initMe.addEventListener("mouseover", function(event) {
+			if(clickFirstEnabled || trigger == "hover") {
+				initMe.FNS.setShowMenuState(true);
+				event.stopPropagation();
+			}
+		});
+	}
+
+});
+
+p_showMenu.menuShowers = [];
+
+
+
+
+p_showMenu.getArgs = function(initMe) {
+	var args = {};
+	var target_att = El.attr(initMe, "showMenu");
+	if(target_att) 
+		args.target = El.byId(target_att);
+	else {
+		var matches = El.queryChildren(initMe, "[dropdownMenu]", 1);
+		if(matches.length)
+			args.target = matches[0];
+		else
+			return PINE.err("No target dropdownMenu set or found as immediate child for ", initMe);
+	}
+
+	return args;
+}
+
+
+
+</script>
+
+
+
+
+<style type="text/css">
+*[showMenu] {
+	cursor: context-menu;
+}
+*[dropdownMenu] {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+}
+*[dropdownMenu]:not(.displayedMenu) {
+	visibility: hidden;
+	pointer-events: none;
+	/*display: none;*/
+}
+</style>

@@ -492,25 +492,27 @@ U.evalElementScripts = function(initMe, url) {
 
 	for(var sc in hack.scripts) {
 		// console.log(hack.scripts[sc]);
-		try {
-			console.log("trying eval for "+url);
+		console.log("RECENTLY CHANGED INCLUDE EVAL CODE")
+		U.helpfulEval(hack.scripts[sc], url);
+		// try {
+		// 	console.log("trying eval for "+url);
 
-			// var fullyHackedScript = "try { \n" + hack.scripts[sc] + "\n} catch(e) { "
-			// fullyHackedScript += "console.log('Eval Error In "+url+"', e); }";
+		// 	// var fullyHackedScript = "try { \n" + hack.scripts[sc] + "\n} catch(e) { "
+		// 	// fullyHackedScript += "console.log('Eval Error In "+url+"', e); }";
 
 
-			// eval(fullyHackedScript);
-			// console.log(fullyHackedScript);
-			eval(hack.scripts[sc]);
+		// 	// eval(fullyHackedScript);
+		// 	// console.log(fullyHackedScript);
+		// 	eval(hack.scripts[sc]);
 
-		}
-		catch(e) {
-			var lineNumber = e.lineNumber ? e.lineNumber : -1;
-			var errorOut = {};
-			errorOut.viewScript = hack.scripts[sc];
+		// }
+		// catch(e) {
+		// 	var lineNumber = e.lineNumber ? e.lineNumber : -1;
+		// 	var errorOut = {};
+		// 	errorOut.viewScript = hack.scripts[sc];
 
-			PINE.err("eval error in file "+url+" line: "+lineNumber+" of script: ", errorOut);
-		}
+		// 	PINE.err("eval error in file "+url+" line: "+lineNumber+" of script: ", errorOut);
+		// }
 	}
 
 	return hack;
