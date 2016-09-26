@@ -17,7 +17,11 @@ p_menu.initiateItems = function(initMe, showAlways) {
 
 	var menuItems;
 	if(menu_att) {
-
+		if(menu_att == "none")
+			menuItems = [];
+		
+		else
+			menuItems = El.cssQuery(initMe, menu_att);
 	}
 	else {
 		menuItems = [];
