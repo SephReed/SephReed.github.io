@@ -17,11 +17,11 @@
 			border-top: 1px solid #EEE3;
 		}
 
-		*[dropdownMenu] > div:hover {
+		/**[dropdownMenu] > div:hover {
 			background: #09B8;
-		}
+		}*/
 
-		.showingMenu, *[selected] {
+		.hoveredMenuItem, .showingMenu {
 			background: #09B8;
 		}
 
@@ -37,28 +37,37 @@
 <body>
 
 
-<div id="la" dropdownMenu selectableList="onHover" selectableItems=">div">
+<div id="la" dropdownMenu>
 	<div>lalalal</div>
 	<div showMenu>
 		some Item >
-		<div dropdownMenu selectableList="onHover" selectableItems=">div">
-			<div> another menu</div>
+		<div dropdownMenu>
+			<div>another menu</div>
+			<div>another menu</div>
+			<div showMenu>
+				deeper yet >
+				<div dropdownMenu>
+					<div>way to go</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 
-<span showMenu="la" showMenuPos="below">
-File
-</span>
-| <span showMenu="la" showMenuPos="below">
-Edit
-</span>
-| <span showMenu="la" showMenuPos="below">
-Really long menu that nothing belongs beside
-</span>
-| <span showMenu="la" showMenuPos="below">
-Test
-</span>
+<div menu>
+	<span showMenu="la" showMenuPos="below">
+	File
+	</span>
+	| <span showMenu="la" showMenuPos="below">
+	Edit
+	</span>
+	| <span showMenu="la" showMenuPos="below">
+	Really long menu that nothing belongs beside
+	</span>
+	| <span showMenu="la" showMenuPos="below">
+	Test
+	</span>
+</div>
 	
 
 </body>

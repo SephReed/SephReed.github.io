@@ -1,35 +1,77 @@
 <script type="text/javascript">
 
 
-document.addEventListener("click", function(event) {
-	var onMenu = false;
-	for(var i  = 0; i < p_dropdownMenu.displayedMenus.length && !onMenu; i++)  {
-		var checkMe = p_dropdownMenu.displayedMenus[i];
-		onMenu = (checkMe == event.target || checkMe.contains(event.target));
-	}
 
-	for(var i  = 0; i < p_showMenu.menuShowers.length && !onMenu; i++)  {
-		var checkMe = p_showMenu.menuShowers[i];
-		onMenu = (checkMe == event.target || checkMe.contains(event.target));
-	}
-	
-	if(onMenu == false) {
-
-		for(var i in p_dropdownMenu.displayedMenus)
-			p_dropdownMenu.displayedMenus[i].classList.remove("displayedMenu");
-
-		for (var i in p_showMenu.menuShowers)
-			p_showMenu.menuShowers[i].classList.remove("showingMenu");
-
-		p_dropdownMenu.displayedMenus = [];
-		p_showMenu.menuShowers = [];
-
-		clickFirstEnabled = false;
-	}
+var p_menu = PINE("[menu]", function(initMe) {
+	p_menu.initiateItems(initMe);
 });
+
+p_menu.initiateItems = function(initMe) {
+	var menu_att = El.attr(initMe, "menu");
+
+	var menuItems;
+	if(menu_att) {
+
+	}
+	else {
+		menuItems = [];
+		for(var i = 0; i < initMe.childNodes.length; i++) {
+			if(initMe.childNodes[i].nodeType == 1)
+				menuItems.push(initMe.childNodes[i]);
+		}
+	}
+
+	initMe.PVARS.menuItems = menuItems;
+	initMe.PVARS.lastHovered = undefined;
+	for (var i = 0; i < menuItems.length; i++) {
+		let item = menuItems[i];
+		item.PVARS.superMenu = initMe;
+
+		item.addEventListener("mouseenter", function() {
+			var lastHovered = initMe.PVARS.lastHovered;
+			if(lastHovered && lastHovered != item){
+				if(lastHovered.FNS.setShowMenuState){
+					lastHovered.FNS.setShowMenuState(false);
+
+					if(El.attr(lastHovered, "showMenu") == El.attr(item, "showMenu"))
+						item.FNS.setShowMenuState(true);		
+				}
+
+				lastHovered.classList.remove("hoveredMenuItem");
+			}
+			
+
+			initMe.PVARS.lastHovered = item;
+			item.classList.add("hoveredMenuItem");
+		});
+
+		item.addEventListener("mouseleave", function() {
+			item.classList.remove("hoveredMenuItem");
+		});
+	}
+
+
+	PINE.addFunctionToNode(initMe, "setShowMenuState", function() {
+		for (var i = 0; i < menuItems.length; i++) {
+			var item = menuItems[i];
+			if(item.FNS.setShowMenuState) 
+				item.FNS.setShowMenuState(false);
+		}
+	});
+
+	// initMe.addEventListener("mouseleave", function() {
+	// 	initMe.PVARS.menuCurrentlyHovered = undefined;
+	// });
+}
+
+
+
 
 
 var p_dropdownMenu = PINE("[dropdownMenu]", function(initMe) {
+
+	p_menu.initiateItems(initMe);
+
 	var needle = this;
 	var lastTarget;
 
@@ -68,13 +110,12 @@ var p_dropdownMenu = PINE("[dropdownMenu]", function(initMe) {
 
 		initMe.style.top = setTop+"px";
 		initMe.style.left = setLeft+"px";
-		console.log(target);
+		// console.log(target);
 
 		initMe.FNS.hideSubmenus();
 
 		if(target != lastTarget) 
 			lastTarget = target;
-		// }
 
 		else if(onOff === undefined) 
 			onOff = !initMe.classList.contains("displayedMenu");
@@ -117,21 +158,48 @@ var p_dropdownMenu = PINE("[dropdownMenu]", function(initMe) {
 p_dropdownMenu.displayedMenus = [];
 
 
-console.log(p_dropdownMenu);
+
+
+
+// console.log(p_dropdownMenu);
 
 var clickFirstEnabled = false;
 var p_showMenu = PINE("[showMenu]", function(initMe) {
 	// p_dropdownMenu.menuShowers.push(initMe);
+	if(p_showMenu.outClickWatcherAdded == false)
+		p_showMenu.watchOutClicks();
+
 
 	var trigger_att = El.attr(initMe, "showMenuTrigger");
 
-	var trigger = "clickFirst"
+	var trigger = "clickFirst" || trigger_att;
 	// if (trigger)
+
+	// PINE.addFunctionToNode(initMe, "menuClose", function() {
+	// 	var args = p_showMenu.getArgs(initMe);
+	// 	initMe
+
+	// });
 
 	PINE.addFunctionToNode(initMe, "setShowMenuState", function(onOff) {
 		var args = p_showMenu.getArgs(initMe);
-		p_showMenu.menuShowers.push(initMe);
-		initMe.classList.add("showingMenu");
+
+		if(onOff) {
+			p_showMenu.menuShowers.push(initMe);
+			initMe.classList.add("showingMenu");
+		}
+		else if(initMe.classList.contains("showingMenu")) {
+			// .push(initMe);
+			var targetIndex = p_showMenu.menuShowers.indexOf(initMe);
+			if(targetIndex != -1)
+				p_showMenu.menuShowers.splice(targetIndex, 1);
+			else
+				PINE.err("shown menu not found in p_menu.menuShowers");
+
+			initMe.classList.remove("showingMenu");	
+		}
+
+
 		if(args) {
 			args.target.FNS.menuDisplay(initMe, onOff);
 		}
@@ -155,6 +223,42 @@ var p_showMenu = PINE("[showMenu]", function(initMe) {
 	}
 
 });
+
+
+
+//when clicks occur outside of all menu's, close everything
+p_showMenu.outClickWatcherAdded = false;
+p_showMenu.watchOutClicks = function() {
+
+	p_showMenu.outClickWatcherAdded = true;
+	document.addEventListener("click", function(event) {
+		var onMenu = false;
+		for(var i  = 0; i < p_dropdownMenu.displayedMenus.length && !onMenu; i++)  {
+			var checkMe = p_dropdownMenu.displayedMenus[i];
+			onMenu = (checkMe == event.target || checkMe.contains(event.target));
+		}
+
+		for(var i  = 0; i < p_showMenu.menuShowers.length && !onMenu; i++)  {
+			var checkMe = p_showMenu.menuShowers[i];
+			onMenu = (checkMe == event.target || checkMe.contains(event.target));
+		}
+		
+		if(onMenu == false) {
+
+			for(var i in p_dropdownMenu.displayedMenus)
+				p_dropdownMenu.displayedMenus[i].classList.remove("displayedMenu");
+
+			for (var i in p_showMenu.menuShowers)
+				p_showMenu.menuShowers[i].classList.remove("showingMenu");
+
+			p_dropdownMenu.displayedMenus = [];
+			p_showMenu.menuShowers = [];
+
+			clickFirstEnabled = false;
+		}
+	});
+
+}
 
 p_showMenu.menuShowers = [];
 

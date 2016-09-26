@@ -16,7 +16,10 @@ p_tab.addFunction(function(initMe, needle) {
 
 	//hide target
 	var targetId = El.attr(initMe, "tabTarget");
-	El.byId(targetId).style.display = "none";
+	var target = El.byId(targetId);
+
+	if(target)
+		target.style.display = "none";
 
 	
 	//if selected and only one selected, show target
@@ -26,6 +29,7 @@ p_tab.addFunction(function(initMe, needle) {
 		
 		else {
 			group.selected = initMe;
+			
 			El.byId(targetId).style.display = "inherit";
 		}
 	}
