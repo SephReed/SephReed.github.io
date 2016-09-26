@@ -6,7 +6,7 @@ var p_menu = PINE("[menu]", function(initMe) {
 	var menuShow_att = El.attr(initMe, "menuShow");
 	var showAlways = menuShow_att != "onEnter";
 
-	p_menu.initiateItems(initMe, true);
+	p_menu.initiateItems(initMe, showAlways);
 });
 
 p_menu.displayedMenus = [];
@@ -284,8 +284,8 @@ p_showMenu.getArgs = function(initMe) {
 }
 *[dropdownMenu] {
 	position: fixed;
-	top: 0px;
-	left: 0px;
+	/*top: 0px;
+	left: 0px;*/
 }
 *[dropdownMenu]:not(.displayedMenu) {
 	visibility: hidden;
