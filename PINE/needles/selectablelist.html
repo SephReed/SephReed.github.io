@@ -34,8 +34,10 @@ var p_selectableList = PINE.Needle("[selectableList]");
 p_selectableList.getArgs = function(initMe) {
 	var args = {};
 
-	if (El.attr(initMe, "selectOn"))
+	if (El.attr(initMe, "selectOn")) {
 		alert("do not use selectOn for ", initMe, "use selectableList");
+		PINE.err("do not use selectOn for ", initMe, "use selectableList");
+	}
 
 	var selectOn_att = El.attr(initMe, "selectableList");
 		//
