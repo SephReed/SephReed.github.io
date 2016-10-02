@@ -1,12 +1,21 @@
-
 <script>
-var p_showHide = PINE("[showHide]", function(initMe) {
+var p_showHide = PINE.Needle("[showHide]");
+// var p_showHide = PINE("[showHide]", function(initMe) {
+p_showHide.addFunction(PINE.ops.COMMON, function(initMe) {
 
 	var getArgs = function(initMe) {
 		var args = {};
 
 		var target_att = El.attr(initMe, "showHideTarget");
-		args.target = target_att ? El.byId(target_att) : initMe;	
+		if(target_att) {
+			args.target = El.byId(target_att);		
+			if(args.target == undefined)
+				PINE.err("could not find showHideTarget "+target_att+" for", initMe);
+		}
+
+		if(args.target == undefined)
+			args.target = initMe;
+		
 
 		args.selector = El.attr(initMe, "showHide");
 		if(args.selector.charAt(0) == ">")
@@ -19,7 +28,17 @@ var p_showHide = PINE("[showHide]", function(initMe) {
 	PINE.addFunctionToNode(initMe, "showHide", function(switchOn) {
 		var args = getArgs(initMe);
 
-		if(args) {
+		if(switchOn === undefined) 
+			switchOn = initMe.classList.contains("showHide_hiding");
+
+		if(switchOn)
+			initMe.classList.remove("showHide_hiding");
+		else
+			initMe.classList.add("showHide_hiding");
+
+
+
+		if(args && args.target) {
 			var target = args.target;
 			var selector = args.selector;
 
@@ -30,25 +49,29 @@ var p_showHide = PINE("[showHide]", function(initMe) {
 				modUs = [target];
 
 
-			for (var i = 0; i < modUs.length; i++) {
-				var modMe = modUs[i];
+			if(modUs.length) {
 
-				if(switchOn === undefined) 
-					switchOn = modMe.style.display == "none";
+				for (var i = 0; i < modUs.length; i++) {
+					var modMe = modUs[i];
 
-				if(switchOn === true)
-					modMe.style.display = "";
-				else if(switchOn === false)
-					modMe.style.display = "none";
-			}
+					if(switchOn)
+						modMe.classList.remove("showHide_hidden");
+					else
+						modMe.classList.add("showHide_hidden");
 
+					// if(switchOn === undefined) 
+					// 	switchOn = modMe.style.display == "none";
+
+					// if(switchOn === true)
+					// 	modMe.style.display = "";
+					// else if(switchOn === false)
+					// 	modMe.style.display = "none";
+				}
+			}	
 		}
 	});
-
-	var init_att = El.attr(initMe, "showHideInit");
-	if(init_att != undefined)
-		initMe.FNS.showHide( init_att != "false" );		
 	
+	// console.log("showhide", init_att);
 
 	
 
@@ -67,5 +90,32 @@ var p_showHide = PINE("[showHide]", function(initMe) {
 });
 
 
+p_showHide.addFunction(PINE.ops.POLISH, function(initMe) {
+	var init_att = El.attr(initMe, "showHideInit");
+	if(init_att != undefined)
+		initMe.FNS.showHide( init_att != "false" );		
+});
+
+
+// var p_showHide = PINE("[showHideItem]", function(initMe) {
+// 	var getArs = function(initMe) {
+// 		var args = {};
+
+// 	}
+
+// 	PINE.addFunctionToNode(initMe, "showHideItem", function(switchOn) {
+
+// 	});
+// }
+
+
 
 </script>
+
+
+
+<style>
+.showHide_hidden {
+	display: none;
+}
+</style>

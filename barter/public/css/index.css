@@ -1,0 +1,320 @@
+@font-face {
+	font-family: 'PT Sans Narrow';
+  	src:  url('../fonts/PT_Sans_Narrow/PT_Sans-Narrow-Web-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'PT Sans Narrow';
+  	src:  url('../fonts/PT_Sans_Narrow/PT_Sans-Narrow-Web-Bold.ttf') format('truetype');
+  	font-weight: bold;
+}
+
+
+
+body {
+	position: relative;
+	/*font-family: arial;*/
+    /*font-family: 'Ubuntu', sans-serif;*/
+    font-family: 'PT Sans Narrow', sans-serif;
+}
+	
+	body > overlay {
+		/*display: none;*/
+		/*text-align: center;*/
+		padding: 0px 10px;
+		pointer-events: all;
+		/*background: #c8ddc1;*/
+		/*background: linear-gradient(#fff2ac, #71c5c1);*/
+		/*background: linear-gradient(#f9f6e5, #86bab8);*/
+		/*background: #FFFFFFF0;*/
+		background: #fef5dee6;
+		color: black;
+		font-size: 18px;
+		transition: opacity ease 0.25s;
+		transition-delay: 0.25s;
+	}
+
+	body.pineReady > overlay {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	/*body > overlay > bgimg {
+		background-size: 300px auto;
+		background-repeat: repeat;
+		background-image: url('public/images/bit_grain_pattern_horizontal.png');
+		background-image: url('public/images/parchment_pattern_invert.png');
+		opacity: 0.5;
+	}*/
+
+
+
+bgcolor, bgimg, overlay, body > content > view {
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	position: absolute;
+}
+
+bgcolor, bgimg {
+	z-index: -1;
+}
+
+overlay {
+	z-index: 100;
+	pointer-events: none;
+}
+
+sidebar, body > content {
+	filter: blur(2px);
+	transition: filter ease .5s;
+}
+
+body.pineReady sidebar, body.pineReady > content {
+	filter: blur(0px);
+}
+
+
+/*SIDEBAR*/
+sidebar {
+	position: relative;
+	display: block;
+	float: left;
+	width: 320px;
+	height: 100%;
+	z-index: 10;
+	/*box-shadow: 0px 0px 7px rgba(0,0,0,0.6);*/
+	overflow: scroll;
+}
+
+	
+
+	sidebarcontent {
+		display: block;
+		position: absolute;
+		top: 50px;
+		left: 4px;
+		right: 4px;
+		bottom: 4px;
+		/*width: 100%;*/
+		border-radius: 2px;
+		/*background: #fef5dee6;*/
+		color: #333;
+		overflow: scroll;
+		/*box-shadow: inset 1px 1px 10px #0001;*/
+		box-shadow: inset 0px 0px 15px #0002;
+
+	}
+
+		marketableTree {
+			display: block;
+			margin-left: 8px;
+			padding-left: 3px;
+		}
+
+		/*marketableTree > *:not(:last-child) {
+			border-left: solid 1px white;
+		}*/
+
+		sidebarcontent h1{
+			font-size: 23px;
+			font-weight: normal;
+		}
+
+
+		waypointList {
+
+			display: block;
+			position: absolute;
+			top: 30px;
+			padding-top: 12px;
+			bottom: 0px;
+			width: 100%;
+			/*background: #fef5dee6;
+			color: #333;*/
+			/*background: #38442AB3;*/
+			/*background: #84664CB3;*/
+			/*background-image: url("public/images/bit_grain_pattern.png");*/
+			
+		}
+			
+
+			waypoint {
+				display: block;
+				background: #fffa;
+				width: 100%;
+				/*padding: 4px;*/
+				margin-bottom: 4px;
+				border-top: 1px solid #0002;
+				border-bottom: 1px solid #0002;
+				box-shadow: 1px 1px 5px #0002;
+			}
+
+				waypoint > h1 {
+					font-size: 20px;
+					/*padding-left: 10px;*/
+					padding-left: 10px;
+					border-bottom: 1px solid #0002;
+				}
+
+				waypoint > offer {
+					background: #FAFAFA;
+				}
+					
+					waypoint > offer > h1 {
+						display: none;
+					}
+
+				waypoint > offer offer {
+					/*padding-left: 5px;*/
+					margin-left: 5px;
+					background-repeat: no-repeat;
+					/*background-image: url('../images/icons/basic_arrow_down.png');*/
+					background-size: auto 20px;
+					background-position: left top;
+				}
+
+				offer {
+					display: block;	
+					cursor: pointer;
+				}
+					offer h1 {
+						position: relative;
+						font-size: 17px;
+						border-radius: 4px;
+						padding-left: 10px;
+						border: 1px solid transparent;
+					}
+
+						offer h1:hover {
+							
+							text-decoration: underline;
+						}
+							offer.is_item h1:hover {
+								/*background: rgba(250,250,250,0.5);	*/
+								/*background: rgba(0, 0, 0, 0.05);*/
+								background: rgba(79, 62, 47, 0.07);
+								border-color: #0004;
+								text-decoration: none;
+							} 
+
+						offer > offer h1::before {
+							position: absolute;
+							left: -3px;
+							top: -6px;
+							font-size: 25px;
+							content: '-';
+						}
+
+
+
+							offer > offer.showHide_hiding h1::before {
+								/*background-image: url('../images/icons/basic_arrow_right.png');*/
+								content: '+';
+							}
+
+							offer > offer.is_item h1::before {
+								content: '';
+							}
+
+							
+						.show_details {
+							position: absolute;
+							font-size: 25px;
+							width: 25px;
+							text-align: center;
+							top: -6px;
+							right: 10px;
+							opacity: 0;
+							transition: opacity ease 0.15s;
+						}
+
+							h1:hover .show_details {
+								opacity: 0.5;
+								transition-delay: 1s;
+							}
+
+							offer h1 .show_details:hover {
+								opacity: 1.0;
+								transition-delay: 0s;
+							}
+
+							offer.is_item h1 .show_details {
+								opacity: 1.0;
+							}
+
+
+
+					/*offer > offer > offer.showHide_hiding {
+						border-left: 1px dashed #333;
+					}*/
+
+
+
+
+
+
+/*CONTENT*/
+
+body > content {
+	display: block;
+	position: relative;
+	float: left;
+	width: calc(100% - 320px);
+	height: 100%;
+	overflow: scroll;
+	background: #B3EB6B;
+}
+	body > content > overlay {
+		/*box-shadow: inset 0px 0px 7px rgba(0,0,0,0.6);*/
+		box-shadow: inset 0px 0px 15px #0003;
+	}
+
+
+	/*map {
+		display: block;
+		width: 100%;
+		height: 100%;
+		background-image: url("public/images/map.png");
+		background-size: cover;
+	}*/
+
+
+
+
+/*COLORING*/
+body {
+	background: #333;
+}
+
+sidebar {
+	/*background: #84664CB3;*/
+	/*background: #8F5D3366;*/
+	color: white;
+	border-right: 1px solid #888;
+}
+
+
+sidebar > bgcolor {
+	background: #8F5D3366;
+}
+
+sidebar > bgimg {
+	background-size: 75px auto;
+	background-repeat: repeat;
+	background-image: url('../images/bit_grain_pattern_horizontal.png');
+	opacity: 0.3;
+}
+
+
+sidebarcontent > bgcolor {
+	background: #fef5dee6;
+}
+
+sidebarcontent > bgimg {
+	background-size: 200px auto;
+	background-repeat: repeat;
+	background-image: url('../images/parchment_pattern_invert.png');
+	opacity: 0.5;
+}

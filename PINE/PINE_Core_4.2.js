@@ -109,12 +109,20 @@ PINE.ops = {};
 
 PINE.ops.order = [
 	PINE.ops.INIT = "init",
+	PINE.ops.PVARS = "pvars",
 	PINE.ops.STATIC = "static",
 	PINE.ops.COMMON = "common",
 	PINE.ops.POLISH = "polish"
 ]
 
 
+//INIT assumes nothing.  It is used to set initial values (usually PVARS) prior to permeation or inline pvars.  
+//PVARS assumes all core values (usually PVARS) are set except those to be set by "[pvars]".  PVARS is a special step for the "[pvars]" tag.
+//STATIC assumes all core values (usually PVARS) are set.  STATIC functions have no inline attribute dependencies.
+//COMMON assumes all values are properly set, both inline and PVAR.
+//POLISH assumes the growth from it is complete.  
+// 		It is important that any Needles which mod their children do so during a POLISH stage.
+// 		All generative content added by POLISH should be repermeated.
 
 
 

@@ -59,36 +59,52 @@ PINE.pnv.parseText = function(initMe)  {
 
 
 
-
+PINE.pnv.attrRules = [];
 
 PINE.pnv.parseAtts = function(initMe)  {
-	var pnvatt = initMe.attributes.pnvatt;
+
+	if(El.attr(initMe, "pnvatts"))
+		return;
+
+	var pnvAttRules;
+	var pnvAttIndex;
 
 	for(var i = 0; i < initMe.attributes.length; i++)  {
 		var att = initMe.attributes[i];
 
-		if(att != pnvatt)  {
-			var watched_vars = att.value.match( /{{.+?}}/g );
-			if(watched_vars)  {
-				if(pnvatt == null)  {
-					pnvatt = document.createAttribute("pnvatt");
-					initMe.setAttributeNode(pnvatt);
-				}
-
-				if(pnvatt.value.length > 0)  {
-					//KLUDGE: fix me if you can
-					pnvatt.value += ":+:";
-				}
-
-				// pnvatt.value += att.name+"="+watched_vars[0];
-				pnvatt.value += att.name+"="+att.value;
-				att.value = "";
-
+		var watched_vars = att.value.match( /{{.+?}}/g );
+		if(watched_vars)  {
+				//
+			if(pnvAttRules == undefined) {
+				pnvAttIndex = PINE.pnv.attrRules.length;
+				pnvAttRules = {};
+				PINE.pnv.attrRules.push(pnvAttRules);
 			}
+
+			pnvAttRules[att.name] = att.value;
+			// El.attr(initMe, att.name, '');
+			// att.value = "";
+
+			// console.log("watching "+att.name);
+
+			// if(pnvatt == null)  {
+			// 	pnvatt = document.createAttribute("pnvatt");
+			// 	initMe.setAttributeNode(pnvatt);
+			// }
+
+			// if(pnvatt.value.length > 0)  {
+			// 	//KLUDGE: fix me if you can
+			// 	pnvatt.value += ":+:";
+			// }
+
+			// // pnvatt.value += att.name+"="+watched_vars[0];
+			// pnvatt.value += att.name+"="+att.value;
+			// att.value = "";
 		}
-		
 	}
 
+	if(pnvAttIndex)
+		El.attr(initMe, "pnvatts", pnvAttIndex);
 }
 
 
@@ -116,64 +132,8 @@ PINE.createNeedle("pnv").addFunction({
 
 
 
-
-
-
-
-
-PINE.createNeedle("[pnvatt]").addFunction( { 
-	opType: PINE.ops.STATIC, 
-	isAsync: true,
-	// isMultirun: true,
-	fn: function(initMe, complete) {
-			//
-		var rules = initMe.attributes["pnvatt"].value;
-
-		//KLUDGE: fix me if you can
-		var pairs = rules.split(":+:");
-		for(var i_p in pairs)  {
-
-			// console.log(pairs[i_p]);
-
-			var splitPoint = pairs[i_p].indexOf("=");
-			// var rule = pairs[i_p].split('=', 2);
-
-			// console.log(rule);
-
-			var setAtt = pairs[i_p].substring(0, splitPoint);
-			var outVal = pairs[i_p].substring(splitPoint+1);
-			var matches = outVal.match(/{{.+?}}/g);
-
-			var promises = [];
-			for(var i_m in matches)  {
-				var replaceMe = matches[i_m];
-
-				var key = matches[i_m].replace(/^{{|}}$/g, '');
-
-				promises.push(new Promise(function(resolve) {
-					PINE.varCode(initMe, key, function(result) {
-						outVal = outVal.replace(replaceMe, result);
-						resolve();
-					});
-				}));
-				// var addMe = pnv.getVarFrom(key, initMe); 
-
-				// outVal = outVal.replace(replaceMe, addMe);
-			}
-
-			Promise.all(promises).then(function() {
-				initMe.attributes[setAtt].value = outVal;
-				complete();
-			});
-			
-			// initMe.attributes[setAtt].value = outVal;
-		}
-	}
-});
-
-
 PINE.createNeedle("[pvars]").addFunction( { 
-	opType: PINE.ops.STATIC, 
+	opType: PINE.ops.PVARS, 
 	// isMultirun: true,
 	fn: function(initMe) {
 		var pvar_att = El.attr(initMe, "pvars");
@@ -191,6 +151,105 @@ PINE.createNeedle("[pvars]").addFunction( {
 		}
 	}
 });
+
+//the order of these two matters
+
+
+
+
+PINE.createNeedle("[pnvatts]").addFunction( { 
+	opType: PINE.ops.STATIC, 
+	isAsync: true,
+	// isMultirun: true,
+	fn: function(initMe, complete) {
+
+		var rulesIndex = El.attr(initMe, "pnvatts");
+		var rules = PINE.pnv.attrRules[rulesIndex];
+
+		// console.log(rules);
+
+		var allPromises = [];
+
+		for(var k_att in rules)  {
+			new function(att, outVal) {
+				var matches = outVal.match(/{{.+?}}/g);
+
+				var att_promises = [];
+				for(var i_m in matches)  {
+					var replaceMe = matches[i_m];
+
+					var key = matches[i_m].replace(/^{{|}}$/g, '');
+					var addMe = new Promise(function(resolve) {
+						PINE.varCode(initMe, key, function(result) {
+							outVal = outVal.replace(replaceMe, result);
+							resolve();
+						});
+					});
+
+					att_promises.push(addMe);
+					allPromises.push(addMe);
+				}
+
+				Promise.all(att_promises).then(function() {
+					var oldVal = El.attr(initMe, att);
+					El.attr(initMe, att, outVal);
+				});
+
+			}(k_att, rules[k_att]);
+		}
+
+		Promise.all(allPromises).then(function() {
+			complete();
+		});
+
+			
+		// var rules = initMe.attributes["pnvatt"].value;
+
+		// //KLUDGE: fix me if you can
+		// var pairs = rules.split(":+:");
+		// for(var i_p in pairs)  {
+
+		// 	// console.log(pairs[i_p]);
+
+		// 	var splitPoint = pairs[i_p].indexOf("=");
+		// 	// var rule = pairs[i_p].split('=', 2);
+
+		// 	// console.log(rule);
+
+		// 	var setAtt = pairs[i_p].substring(0, splitPoint);
+		// 	var outVal = pairs[i_p].substring(splitPoint+1);
+		// 	var matches = outVal.match(/{{.+?}}/g);
+
+		// 	console.log(setAtt, outVal);
+
+		// 	var promises = [];
+		// 	for(var i_m in matches)  {
+		// 		var replaceMe = matches[i_m];
+
+		// 		var key = matches[i_m].replace(/^{{|}}$/g, '');
+
+		// 		promises.push(new Promise(function(resolve) {
+		// 			PINE.varCode(initMe, key, function(result) {
+		// 				outVal = outVal.replace(replaceMe, result);
+		// 				resolve();
+		// 			});
+		// 		}));
+		// 		// var addMe = pnv.getVarFrom(key, initMe); 
+
+		// 		// outVal = outVal.replace(replaceMe, addMe);
+		// 	}
+
+		// 	Promise.all(promises).then(function() {
+		// 		initMe.attributes[setAtt].value = outVal;
+		// 		complete();
+		// 	});
+			
+		// 	// initMe.attributes[setAtt].value = outVal;
+		// }
+	}
+});
+
+
 
 
 
@@ -427,9 +486,12 @@ pnv.runConditional = function(scope, conditional) {
 
 
 pnv.createConditionTree = function(conditional) {
+	//remove outer parenthesis
 	if(conditional.charAt(0) == '(' && conditional.charAt(conditional.length-1) == ')')
 		conditional = conditional.substr(1, conditional.length-2);
 	
+	//go through character for character, skipping anything inside parenthesis
+	//when you happen upon a comparitor, split the conditional into two children of it (2 + 2) becomes + : [2, 2]
 	var parenDepth = 0;
 	for (var i = 0; i < conditional.length; i++) {
 		var char = conditional.charAt(i);
@@ -496,7 +558,7 @@ pnv.needles["? "] = function(scope, pvarCode, callback) {
 	var conditional = args[0].substring(2) || pvarCode.substring(2);
 	var conditionBool = pnv.runConditional(scope, conditional);
 
-	if (args.length > 1 && conditionBool == true)
+	if (args.length > 1 && conditionBool)
 		callback(PINE.nodeScopedVar(scope, args[1]));
 	
 	else if(args.length == 3)

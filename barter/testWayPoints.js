@@ -54,6 +54,37 @@ var TEST_WAYPOINTS = [
 	},
 	{
 		title: "Misty and Seph's home decor",
-		offerings: []
+		offerings: [
+			{
+				title: "Framed Cat Pics",
+				category: "Wall Art",
+				status: "available"
+			},
+			{
+				title : "Coffee Tables",
+				category: "Tables",
+				status : "available"
+			},
+			{
+				title: "Framed Cat Pics",
+				category: "Wall Art",
+				status: "available"
+			},
+			{
+				title : "Coffee Tables",
+				category: "Tables",
+				status : "available"
+			},
+			{
+				title: "Framed Cat Pics",
+				category: "Wall Art",
+				status: "available"
+			},
+			{
+				title : "Coffee Tables",
+				category: "Tables",
+				status : "available"
+			}
+		]
 	}
 ]

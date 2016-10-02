@@ -2,6 +2,7 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+	<link rel="stylesheet" type="text/css" href="public/css/index.css">
 	<script type="text/javascript" src="SephMarketTree.js"></script>
 	<script type="text/javascript" src="testWayPoints.js"></script>
 
@@ -40,8 +41,8 @@
 
 
 	<!-- THESE SHOULD BE INCLUDED WITH THE MAP -->
-	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.21.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.21.0/mapbox-gl.css' rel='stylesheet' />
+	<!-- <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.21.0/mapbox-gl.js'></script> -->
+    <!-- <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.21.0/mapbox-gl.css' rel='stylesheet' /> -->
 
     <script type="text/javascript">
     	PINE.ready(function() {
@@ -77,12 +78,13 @@
 		<waypointList spawner="TEST_WAYPOINTS">
 			<waypoint spawn pvars="waypoint=TEST_WAYPOINTS[i]">
 				<h1>{{waypoint.title}}</h1>
-				<offer treeSpawner="waypoint" 
+				<offer class="{{? offer.status : 'is_item'}}"
+					treeSpawner="waypoint" 
 					tSpawnChildNodesKey="offerings" 
-					pvars="offer=offerings[key].title"
+					pvars="offer=offerings[key]"
 					showhide=">offer"
 					showHideInit="{{? t_depth == 0}}">
-					<h1>{{offer}}</h1>
+					<h1>{{offer.title}}<span class="show_details">></span></h1>
 					<treeSpawns></treeSpawns>
 				</offer>
 			</waypoint>
@@ -92,7 +94,8 @@
 
 </sidebar><content>
 	<overlay></overlay>
-	<view src="modules/map.html"></view>
+	<view src="modules/waypointDetails.html"></view>
+	<!-- <view src="modules/map.html"></view> -->
 	<!-- <map></map> -->	
 </content>
 
@@ -100,7 +103,7 @@
 <overlay id="page_loading">
 	<bgimg></bgimg>
 	
-	<div id="watcher" logWatcher="overview">
+	<div id="watcher" logWatcher="overview" logWatcherCloseDelay="500">
 		Building Page...<br>
 		<div logItem></div>
 	</div>
@@ -111,246 +114,7 @@
 
 
 <style>
-@font-face {
-	font-family: 'PT Sans Narrow';
-  	src:  url('public/fonts/PT_Sans_Narrow/PT_Sans-Narrow-Web-Regular.ttf') format('truetype');
-}
 
-@font-face {
-	font-family: 'PT Sans Narrow';
-  	src:  url('public/fonts/PT_Sans_Narrow/PT_Sans-Narrow-Web-Bold.ttf') format('truetype');
-  	font-weight: bold;
-}
-
-
-
-body {
-	position: relative;
-	/*font-family: arial;*/
-    /*font-family: 'Ubuntu', sans-serif;*/
-    font-family: 'PT Sans Narrow', sans-serif;
-}
-	
-	body > overlay {
-		/*display: none;*/
-		/*text-align: center;*/
-		padding: 0px 10px;
-		pointer-events: all;
-		/*background: #c8ddc1;*/
-		/*background: linear-gradient(#fff2ac, #71c5c1);*/
-		/*background: linear-gradient(#f9f6e5, #86bab8);*/
-		/*background: #FFFFFFF0;*/
-		background: #fef5dee6;
-		color: black;
-		font-size: 18px;
-		transition: opacity ease 0.25s;
-		transition-delay: 0.25s;
-	}
-
-	body.pineReady > overlay {
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	/*body > overlay > bgimg {
-		background-size: 300px auto;
-		background-repeat: repeat;
-		background-image: url('public/images/bit_grain_pattern_horizontal.png');
-		background-image: url('public/images/parchment_pattern_invert.png');
-		opacity: 0.5;
-	}*/
-
-
-
-bgcolor, bgimg, overlay, content > view {
-	top: 0px;
-	left: 0px;
-	right: 0px;
-	bottom: 0px;
-	position: absolute;
-}
-
-bgcolor, bgimg {
-	z-index: -1;
-}
-
-overlay {
-	z-index: 100;
-	pointer-events: none;
-}
-
-sidebar, content {
-	filter: blur(2px);
-	transition: filter ease .5s;
-}
-
-body.pineReady sidebar, body.pineReady content {
-	filter: blur(0px);
-}
-
-
-/*SIDEBAR*/
-sidebar {
-	position: relative;
-	display: block;
-	float: left;
-	width: 320px;
-	height: 100%;
-	z-index: 10;
-	/*box-shadow: 0px 0px 7px rgba(0,0,0,0.6);*/
-	overflow: scroll;
-}
-
-	
-
-	sidebarcontent {
-		display: block;
-		position: absolute;
-		top: 50px;
-		left: 4px;
-		right: 4px;
-		bottom: 4px;
-		/*width: 100%;*/
-		border-radius: 2px;
-		/*background: #fef5dee6;*/
-		color: #333;
-		overflow: scroll;
-		/*box-shadow: inset 1px 1px 10px #0001;*/
-		box-shadow: inset 0px 0px 15px #0002;
-
-	}
-
-		marketableTree {
-			display: block;
-			margin-left: 8px;
-			padding-left: 3px;
-		}
-
-		/*marketableTree > *:not(:last-child) {
-			border-left: solid 1px white;
-		}*/
-
-		sidebarcontent h1{
-			font-size: 23px;
-			font-weight: normal;
-		}
-
-
-		waypointList {
-
-			display: block;
-			position: absolute;
-			top: 30px;
-			padding-top: 12px;
-			bottom: 0px;
-			width: 100%;
-			/*background: #fef5dee6;
-			color: #333;*/
-			/*background: #38442AB3;*/
-			/*background: #84664CB3;*/
-			/*background-image: url("public/images/bit_grain_pattern.png");*/
-			
-		}
-			
-
-			waypoint {
-				display: block;
-				background: #fffa;
-				width: 100%;
-				padding: 4px;
-				margin-bottom: 4px;
-				border-top: 1px solid #0002;
-				border-bottom: 1px solid #0002;
-				box-shadow: 1px 1px 5px #0002;
-			}
-
-				waypoint h1 {
-					font-size: 20px;
-				}
-
-				waypoint > offer > h1 {
-					display: none;
-				}
-
-				waypoint > offer offer {
-					padding-left: 10px;
-				}
-
-				offer {
-					display: block;
-					
-				}
-
-				offer h1 {
-					font-size: 17px;
-				}
-
-
-
-
-/*CONTENT*/
-
-content {
-	display: block;
-	position: relative;
-	float: left;
-	width: calc(100% - 320px);
-	height: 100%;
-	overflow: scroll;
-	background: #B3EB6B;
-}
-	content > overlay {
-		/*box-shadow: inset 0px 0px 7px rgba(0,0,0,0.6);*/
-		box-shadow: inset 0px 0px 15px #0003;
-	}
-
-
-	/*map {
-		display: block;
-		width: 100%;
-		height: 100%;
-		background-image: url("public/images/map.png");
-		background-size: cover;
-	}*/
-
-
-
-
-/*COLORING*/
-body {
-	background: #333;
-}
-
-sidebar {
-	/*background: #84664CB3;*/
-	/*background: #8F5D3366;*/
-	color: white;
-	border-right: 1px solid #888;
-}
-
-
-sidebar > bgcolor {
-	background: #8F5D3366;
-}
-
-sidebar > bgimg {
-	background-size: 75px auto;
-	background-repeat: repeat;
-	background-image: url('public/images/bit_grain_pattern_horizontal.png');
-	opacity: 0.1;
-}
-
-
-sidebarcontent > bgcolor {
-	background: #fef5dee6;
-}
-
-sidebarcontent > bgimg {
-	background-size: 200px auto;
-	background-repeat: repeat;
-	background-image: url('public/images/parchment_pattern_invert.png');
-	opacity: 0.3;
-}
 </style>
 
 
