@@ -90,7 +90,7 @@ sidebar {
 
 	
 
-	sidebarcontent {
+	sidebar > content {
 		display: block;
 		position: absolute;
 		top: 50px;
@@ -117,7 +117,7 @@ sidebar {
 			border-left: solid 1px white;
 		}*/
 
-		sidebarcontent h1{
+		sidebar > content h1{
 			font-size: 23px;
 			font-weight: normal;
 		}
@@ -151,7 +151,7 @@ sidebar {
 				box-shadow: 1px 1px 5px #0002;
 			}
 
-				waypoint > h1 {
+				sidebar waypoint > h1 {
 					font-size: 20px;
 					/*padding-left: 10px;*/
 					padding-left: 10px;
@@ -179,7 +179,7 @@ sidebar {
 					display: block;	
 					cursor: pointer;
 				}
-					offer h1 {
+					sidebar offer h1 {
 						position: relative;
 						font-size: 17px;
 						border-radius: 4px;
@@ -308,13 +308,62 @@ sidebar > bgimg {
 }
 
 
-sidebarcontent > bgcolor {
+sidebar > content > bgcolor {
 	background: #fef5dee6;
 }
 
-sidebarcontent > bgimg {
+sidebar > content > bgimg {
 	background-size: 200px auto;
 	background-repeat: repeat;
 	background-image: url('../images/parchment_pattern_invert.png');
 	opacity: 0.5;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width: 900px) {
+
+}
+
+@media all and (max-width: 600px) {
+	sidebar {
+		/*position: absolute;*/
+		width: 100%;
+		top: 20%;
+		height: 80%;
+	}
+
+		sidebar >  content {
+			width: 100%;
+			margin: 0px;
+			left: 0px;
+			top: 40px;
+		}
+
+	body>  content {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		width: 100%;
+		height: 20%;
+	}
+
+
+}
+
+
+@media all and (max-width: 500px) {
+
 }

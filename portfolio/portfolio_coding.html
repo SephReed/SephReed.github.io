@@ -63,7 +63,8 @@ columns > div {
 
 
 .terminal {
-	background: #181713;
+	/*background: #181713;*/
+	background: linear-gradient(#222, #181713 8px);
 	/*background: #21201B;*/
 	color: #5DCFA7;
 	font-size: 14px;
@@ -81,14 +82,19 @@ columns > div {
 }
 
 .terminal .wide_block_group {
+	border: 3px solid #111;
 	border-radius: 10px;
-	box-shadow: 0px 0px 5px rgba(255,255,255,0.2);
+	/*border-width: 3px;*/
+	/*box-shadow: 0px 0px 5px rgba(255,255,255,0.2);*/
+	box-shadow: 0px 0px 5px rgb(14, 14, 14);
+	background: linear-gradient(#333, #222 8px);
 }
 
 
 
 .terminal hr {
-	border-color: rgba(255,255,255,0.2);
+	/*border-color: rgba(255,255,255,0.2);*/
+	border-color: rgb(93, 207, 167);
 }
 
 
@@ -119,11 +125,19 @@ columns > div {
 }	
 
 
+@media all and (max-width: 900px) {
+  	.terminal .wide_block_group {
+  		border-radius: 0px;
+  		border-width: 0px 3px;
+  	}
+}
+
+
 </style>
 
 
 
-<div id="coding" class="terminal" style="display:none"> 
+<div id="coding" class="terminal"> 
 	<br>
 	<center>
 		<h1><b>Coding</b></h1>
@@ -164,7 +178,7 @@ columns > div {
 			<bgimg pos="bottom" repeat="xy" opacity="0.1" src="public/images/diagonal_lines.png"></bgimg>
 		</h1>
 		<div class="single_column_image highlight_odds">
-			
+
 			<div>
 				<h2>This Webpage - (Web Dev)</h2>
 				Everything you see here was made <b>from scratch</b> using Javascript, CSS, HTML, SVG, PINE, SketchUp, Blender, Gimp, Three.js, Zepto (a thin JQuery), and Green Sock.  There was no templates of any sort used for this or anything else I ever make.  Also, this page is mobile friendly.  Try scaling your window!
@@ -262,23 +276,20 @@ columns > div {
 		<columns class="image_blurb_group highlight_odds">
 			<div bgImage="url('public/images/LoveOpenSource.png')">
 				<h2>Open Source</h2>
-				<!-- "Beware of he who would deny you access to information, for in his heart he dreams himself your master."<br>
-				* Sid Meier's Alpha Centauri - 1999<br> -->
-				<!-- I just flat out don't like beurocracy so working on open source software is my way to share and hone my skills without having to feel compromised.  Besides, there is nothing in the world that's better at getting between a good idea and its implementation than closed source code and a preoccupied system of management. -->
 				Too many great ideas have been thwarted by the closed source systems which inevitably fall into the wrong hands.  I don't want to spend my life creating ideas for a thing that I may some day be denied access from, nor do I wish to deny the world of the tools I create.
 			</div>
 			
 
 			<div bgImage="url('public/images/NoBloat.png')">
 				<h2 class="">No Bloat</h2>
-				It's just a matter of cleanliness.  There are a lot of users and businesses that either refuse to use or don't understand updates and working around them often creates bloat.  These aren't the kind of people nor habits I care to burden myself with.
-				<!-- Bloat is an ugly thing most often found aywhere that IE users go.  I'm against the idea of adding unenjoyable work on my end and bloat on the users end for the sake of giving certain entities special treatment.  Enduring for the sake of a single powerful entity only further icreases its power, and I don't want to participate in that. -->
+				It's just a matter of cleanliness.  There are a lot of users and businesses that will slap together a few oversized libraries and consider it "working."  I prefer to have only the code that's needed, and not so much overhead.
 			</div>
 
 
 			<div bgImage="url('public/images/pioneer_icon.png')">
 				<h2>Explorative</h2>
-				It's not exactly an ethic, but I'm much more enthused about the future than I am the past.  Certainly, many great things have been done, but rather than learning to recreate or emulate them, I prefer to get my hands dirty trying to explore the unexplored.  Pioneering, in a modern sense.
+				In order to keep myself and the things I make relevant, I always aim to focus on the future.  Often this means trying new things and being on the front of the technology adoption bell curve.
+				<!-- It's not exactly an ethic, but I'm much more enthused about the future than I am the past.  Certainly, many great things have been done, but rather than learning to recreate or emulate them, I prefer to get my hands dirty trying to explore the unexplored.  Pioneering, in a modern sense. -->
 				<!-- Code is beautiful because it is an abstraction of the things we do into the fundamental logic behind them.  As code progresses, it reduces into purer forms in the way of updates and new features.  These progressments intrigue me and I intend to use and/or discover them. -->
 			</div>
 
@@ -286,7 +297,7 @@ columns > div {
 
 			<div bgImage="url('public/images/sad_puppy.png')">
 				<h2>Humane</h2>
-				The world is as boned as it ever needed to be and some.  But more importantly the best things in my life could never have been paid for, they came from a certain type of chaos.  It's a strange mixture of goodwill, resources, and freedom that creates the greatest stories. And I really like a good story.
+				The world is as hurt as it ever needed to be and some.  If I have to choose between making the world a worse place and making my life a little harder, I'll take the hard route.
 			</div>
 		</columns>
 	</section>
@@ -303,6 +314,11 @@ columns > div {
 			<div bgImage="url('public/images/html5-css3-js.png')">
 				<h2>HTML 5, CSS 3, Javascript</h2>
 				I've been working with HTML since age eleven, CSS the past six years, and Javascript the past four years. Javascript is one of my newest languages but it is also one of my favorites, mostly due to its portability and transparency.
+			</div>
+
+			<div bgImage="url('public/images/pine_logo.png')">
+				<h2>PINE</h2>
+				PINE is a tool I built myself for creating functional user interfaces.  At this point it has completely replaced JQuery and Angular Js in my personal projects, with astonishing results.
 			</div>
 
 		
@@ -327,10 +343,7 @@ columns > div {
 			</div>
 
 
-			<div bgImage="url('public/images/pine_logo.png')">
-				<h2>PINE</h2>
-				PINE is a tool I built myself for creating functional user interfaces.  It's pretty rad and you can learn more about it in my "Showcase" section below.
-			</div>
+			
 
 			<div bgImage="url('public/images/three_icon.png')">
 				<h2>Three.js</h2>

@@ -564,6 +564,9 @@ pnv.needles["? "] = function(scope, pvarCode, callback) {
 	else if(args.length == 3)
 		callback(PINE.nodeScopedVar(scope, args[2]));
 
+	else if(args.length == 2)
+		callback('');
+
 	else
 		callback(conditionBool);
 }

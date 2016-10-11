@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8"/>
+
+	<!-- FONTS -->
+	<!-- <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'> -->
+	<!-- <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'> -->
+
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="portfolio.css" />
+	<link rel="stylesheet" type="text/css" href="public/css/gentrific.css" />
+
+
+	<!-- PINE -->
+	<script src="../PINE/PINE_Core_4.2.js"></script>
+	<script>PINE.disable(["PINE", "[SPAWNER]"]);</script>
+	<script src="../PINE/PINE_Needles.js"></script>
+	<script src="../PINE/PINE_Includes.js"></script>
+
+	<!-- THREE JS -->
+	<script src="three.min.js"></script>
+	<script src="ColladaLoader.js"></script>
+	<script src="three.detector.js"></script>
+	<!-- <script src="tween.min.js"></script> -->
+	<script src="tween.min2.js"></script>
+
+	<script src="space.js"></script>
+	<script src="thumbz_symbol.js"></script>
+	
+
+	
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.02" />
+
+
+	<!-- POTFOLIO -->
+	<script src="portfolio.js"></script>
+	<script src="portfolio_needles.js"></script>
+	<needle src="../PINE/needles/bgimg.html"></needle>
+	<needle src="../PINE/needles/overlay.html"></needle>
+
+
+	
+
+
+	<script type="text/javascript">
+		
+	</script>
+
+
+
+
+
+
+	<!-- BG IMG INLINE DEF -->
+
+	<style>
+		background {
+			display: block;
+			height: 100%;
+			width: 100%;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			pointer-events: none;
+		}
+	</style>
+
+	<script>
+	
+
+	</script>
+
+
+
+
+
+
+
+
+	<!-- OVERLAY INLINE DEF -->
+
+	<style>
+		overlay {
+			z-index: 10;
+		}
+
+		fade {
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			height: 100%;
+			width: 100%;
+			background: black;
+			opacity: 0.7;
+		}
+
+		overlay, fade{
+			display: none;
+			z-index: 10;
+		}
+	</style>
+
+
+	<script type="text/javascript">
+	
+	</script>
+
+
+
+
+
+
+
+
+	<style>
+	#myCardOverlay {
+		width: 100%;
+		max-width: 8.89cm;
+		height: 5.08cm;
+		padding: 15px;
+		background-color: #fffbf4;
+		border: 1px solid rgba(0,0,0,0.3);
+		border-radius: 1px;
+		box-shadow: 1px 1px 20px rgba(0,0,0,0.5);
+		text-align: center;
+	}
+
+	#myCardOverlay h1{
+		display: block;
+		line-height: 30px;
+		font-size: 40px;
+		margin-bottom: 100px;
+		opacity: 0.7;
+	}
+
+	#myCardOverlay span {
+		position: relative;
+		background-color: rgba(255, 251, 244, 0.8);
+	}
+
+
+
+
+	@keyframes pulse {
+	  50% {  opacity: 0.2;  }
+	  0%, 100% {  opacity: 0.5; }
+	}
+	#myCardOverlay bgimg:nth-child(1) { animation: pulse 7s infinite;  }
+
+	</style>
+
+
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+
+
+
+	<fade id="theFade" color="black" opacity="0.5"></fade>
+	<overlay id="myCardOverlay" fade="#theFade">
+		<bgimg opacity="0.5" bgimgSize="auto 85%" bgimgSrc="public/images/ThumbzSymbol_black.png"></bgimg>
+		<bgimg opacity="0.1" bgimgSize="150% auto" bgimgSrc="public/images/ThumbzSymbol_black.png"></bgimg>
+		<bgimg opacity="0.2" bgimgSize="contain" bgimgSrc="public/images/ThumbzSymbol_black.png"></bgimg>
+		
+		<h1><pre>SEPH  REED</pre></h1>
+		<span selectOnClick>ShadyWillowCreek<span>@</span>gmail.com</span>
+	</overlay>
+
+
+
+
+
+
+	
+
+
+
+
+
+
+	<style>
+		body > content > section {
+			padding-top: 20px;
+			padding-bottom: 40px;
+			border-bottom: solid 1px #222;
+			box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
+		}
+
+
+		.thumbz_logo {
+			background-image: url('public/images/ThumbzSymbol_white.png');
+			background-size: auto 34%;
+			background-repeat: no-repeat;
+			background-position: center 60%;
+		}
+
+	</style>
+
+
+	<content>
+
+		<section id="header"> 
+			<h1 fontSize="70px" class="thumbz_logo">Seph&nbsp;&nbsp; Reed</h1>
+			<span>UI/UX Designer, Full Stack Developer, 2D/3D/Audio Asset Creator, Team Leader, Musician, and All Around Handyman</span>
+			<!-- <span>Freelance, Full Stack, Physical/Digital/Artistic Creator</span> <br> -->
+
+			<div id="thumbz_box"></div>
+			<div id="space_box"></div>
+			
+			
+			<background opacity="0.2">
+				<bgimg bgimgPos="bottom" bgimgRepeat="x" opacity="0.8" bgimgSrc="../public/images/treeline.png"></bgimg>
+				<bgimg bgimgPos="bottom left" bgimgSize="250px auto" bgimgSrc="../public/images/Pine_hill_2.png"></bgimg>
+			</background>
+
+			<include src="portfolio_contact.html"></include>
+		</section>
+
+
+		<section id="skillsets" textAlign="center">
+			<h1>My Skillsets</h1>
+			<span>There are many things I intend to learn in life, and many I already have.<br>
+			Choose one of the below for details.</span> <br>
+
+
+			<div class="show_item_group">
+				<changeSrc id="coding_btn" 
+					target="portfolio_view" 
+					scrollLink
+					scrollLinkDelay="20" 
+					src="portfolio_coding.html">
+					<div>Coding</div></changeSrc>
+
+				<changeSrc id="digital_art_btn" 
+					target="portfolio_view"
+					scrollLink
+					scrollLinkDelay="20" 
+					src="portfolio_digital_art.html">
+					<div>Digital Artist</div></changeSrc>
+
+				<changeSrc id="artisan_btn" 
+					scrollLink
+					scrollLinkDelay="20" 
+					target="portfolio_view" 
+					src="portfolio_artisan.html">
+					<div>Artisan</div></changeSrc>
+			</div>
+		</section>
+
+		<view id="portfolio_view" src="nosrc"></view>
+
+	</content>
+
+
+
+	<popin id="popin_wrapper">
+		<div id="popin">
+			<svg id="bottom_tab" height="60" width="280" viewBox="0 0 100 100" preserveAspectRatio = "none">
+				<defs>
+			    	<linearGradient id="copper_grad" x1="0%" y1="0%" x2="0%" y2="100%">
+			      		<stop offset="0%" style="stop-color:rgb(38, 37, 35);stop-opacity:1" />
+			      		<stop offset="100%" style="stop-color:rgb(17, 17, 17);stop-opacity:1" />
+			    	</linearGradient>
+			  	</defs>
+
+			  	<polyline points="0,100 15,0 85,0 100,100" fill="url(#copper_grad)"/>
+			</svg>
+		
+			<div id="popin_overlay" class="tooltip_group">
+				<a href="#header"
+					scrollLink
+					bgImage="url('public/images/Thumbz_icon.png')">
+					<span>Back to Top</span>
+				</a>
+
+				<a 	href="#skillsets"
+					scrollLink
+					bgImage="url('public/images/skillsets_icon.png')">
+					<span>Other Skillsets</span>
+				</a>
+
+				<span style="background-image: url('public/images/email_icon.png')"
+					trigger="click"
+					target="myCardOverlay"
+					fn="show"
+					args="">
+					<span>Email</span>
+				</span>
+				
+				<a 	href="https://www.instagram.com/seph_reed/"
+					bgImage="url('public/images/instagram_icon.png')"
+					target="_newtab">
+					<span>My Photos</span>
+				</a>
+			</div>
+		</div>
+	</popin>
+
+</body>
+
+
+
+
+
+</html>

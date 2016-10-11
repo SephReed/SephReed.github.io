@@ -1211,7 +1211,9 @@ PINE.debug.showRunningAsyncs = function() {
 **********************************/
 
 
-
+U.docReady = function(callback) {
+	document.addEventListener("DOMContentLoaded", callback);
+}
 
 
 U.get = function(start, keyArrayOrString, bracketsCase)  {
@@ -1958,9 +1960,22 @@ El.windowOffset = function(target) {
 }
 
 El.domReady = function(callback) {
-	document.addEventListener("DOMContentLoaded", callback);
+	return U.docReady(callback);
 }
 
+
+
+
+El.getStyle = function (domNode, styleProp) {
+    var out;
+    if(domNode.currentStyle) {
+        out = domNode.currentStyle[styleProp];
+    } else if (window.getComputedStyle) {
+    	var styling = document.defaultView.getComputedStyle(domNode, null);
+        out = styling.getPropertyValue(styleProp);
+    }
+    return out;
+}
 
 
 
