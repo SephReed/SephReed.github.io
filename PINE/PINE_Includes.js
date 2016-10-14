@@ -352,6 +352,8 @@ p_view.addFunction({
 var p_changeSrc = PINE.createNeedle("changeSrc");
 p_changeSrc.addFunction( function(initMe, needle) {
 
+	PINE.err("Use Attribute changeSrc instead!!")
+
 	initMe.addEventListener("click", function(event) {
 		
 		var src = El.attr(initMe, "src");
@@ -366,6 +368,22 @@ p_changeSrc.addFunction( function(initMe, needle) {
 });
 
 
+var p_changeSrc = PINE.createNeedle("[changeSrc]");
+p_changeSrc.addFunction( function(initMe, needle) {
+
+	initMe.addEventListener("click", function(event) {
+		
+		var src = El.attr(initMe, "changeSrc");
+
+		var target = El.attr(initMe, "changeSrcTarget") || INC.defaultChangeSrcTarget;
+		var domNode = El.byId(target);
+
+		if(domNode && domNode.FNS && domNode.FNS.changeSrc)
+			domNode.FNS.changeSrc(src);
+	});
+});
+
+
 
 
 
@@ -374,7 +392,7 @@ p_changeSrc.addFunction( function(initMe, needle) {
 ***************/
 
 
-PINE("[backButton]", PINE.ops.POLISH, function(initMe, needle) {
+PINE("[backButton]", PINE.ops.GATHER, function(initMe, needle) {
 
 	var target = El.attr(initMe, "backButton") || INC.defaultChangeSrcTarget;
 	var domNode = document.getElementById(target);

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+
+<h1>PINE.run() Explanation</h1>
+
+
+<h2>doc ready</h2>
+<ul>
+	<li>Init Debug</li>
+	<li>Load Resources (Needles)</li>
+	<li>Call Run</li>
+</ul>
+<div>
+
+
+	<h2>PINE.run()</h2>
+	<ul>
+		<li>PINE_FOREST = all "PINE" tags, if none get body</li>
+		<li>initiate PINE_FOREST</li>
+	</ul>
+	<div>
+
+		<h2>PINE.initiate()</h2>
+		<ul>
+			<li>Stop at [NOPINE]</li>
+			<li>give element PVARS, FNS, and _pine_</li>
+			<li>move onto children if not [PINEEND]</li>
+		</ul>
+
+
+	</div>
+
+	<h2>PINE.run()</h2>
+	<ul>
+		<li>Sprout PINE with queued and passed ops (passed ops should be none for first run)</li>
+	</ul>
+	<div>
+
+
+		<h2>PINE.Sprout()</h2>
+		<ul>
+			<li>Initialize: queuedOps, incompleteOps, unsentOps, and passedOps</li>
+			<li>run Check and Permeate Loop</li>
+		</ul>
+		<div>
+
+			<h2>PINE.Sprout() : checkPerm loop</h2>
+			<ul>
+				<li>loop in PINE.ops.order of operations</li>
+				<li>check stage: move everything from queued pile to unsent pile.  queued pile can be updated at any time</li>
+				<li>permeate stage: work through unsentops pile, moving into incompleteops pile, permeating the tree with each ops in order</li>
+				<li>any available PINE.ops.INIT will happen before PINE.ops.STATIC will happen before PINE.ops.COMMON, etc.</li>
+			</ul>
+			<div>
+
+
+				<h2>PINE.Permeate()</h2>
+				<ul>
+					<li>Check for PINE Stop cases: text or comment node, attr [nopine], tag from PINE.stopTags list</li>
+					<li>Check that this node has been initialized, if not PINE.updateAt() will bring up to pace</li>
+					<li>Check if node held</li>
+					<li>initialize apply() depending on whether root first or branch first dependent</li>
+					<li>if not, run apply()</li>
+					<li>if so, queue apply()</li>
+				</ul>
+				<div>
+
+					<h2>PINE.Permeate() : apply() : root first</h2>
+					<ul>
+						<li>hold current node</li>
+						<li>call applyOfFuncsAtNode()</li>
+					</ul>
+					<div>
+						
+						<h2>PINE.applyOpFuncsAtNode()</h2>
+						<ul>
+							<li>apply all opfuncs</li>
+							<li>resolve() when all opfuncs complete</li>
+						</ul>
+
+
+					</div>
+
+
+
+					<h2>PINE.Permeate() : apply() : root first</h2>
+					<ul>
+						<li>let go and unhold current node</li>
+						<li>Permeate ops to children</li>
+						<li>resolve() permeate at this point for this operation</li>
+					</ul>
+					<div>
+						
+						<h2>PINE.PermeateChildren()</h2>
+						<ul>
+							<li>iterate over all children calling Permeate()</li>
+							<li>resolve() when all children complete</li>
+						</ul>
+
+
+					</div>
+
+
+
+					<h2>PINE.Permeate() : apply() : root first</h2>
+					<ul>
+						<li>If an op is queued, dequeueu it.  call it's PINE.Permeate() : apply()</li>
+					</ul>
+
+
+
+
+
+
+
+
+					<h2>PINE.Permeate() : apply() : branch first differences</h2>
+					<ul>
+						<li>hold current node</li>
+						<li>call permeateChildren() first instead of last</li>
+						<li>call applyOfFuncsAtNode()</li>
+						<li>once complete, let go of current node</li>
+						<li>resolve()</li>
+						<li>unqueue any waiting op funcs</li>
+					</ul>
+					
+
+				</div>
+
+			</div>
+
+
+			<h2>PINE.Sprout() : checkPerm loop</h2>
+			<ul>
+				<li>move incopleteops to passed ops</li>
+				<li>restart check and permeate</li>
+			</ul>
+
+
+
+		</div>
+		<h2>PINE.Sprout()</h2>
+		<ul>
+			<li>resolve()</li>
+		</ul>
+
+
+
+
+	</div>
+
+	<h2>PINE.run()</h2>
+	<ul>
+		<li>resolve()</li>
+	</ul>
+
+
+	<!-- <h2></h2>
+	<ul>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+
+	<h2></h2>
+	<ul>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+
+	<h2></h2>
+	<ul>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+
+	<h2></h2>
+	<ul>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+
+	<h2></h2>
+	<ul>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+
+
+ -->
+
+
+
+
+
+
+</div>
+
+<h2>doc ready</h2>
+<ul>
+	<li>call all PINE.ready(fn) listeners</li>
+	<li>set PINE.loaded = true</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+<style>
+body {
+	font-family: arial;
+	color: #333;
+	background: #FAFAFA;
+}
+
+div {
+	margin-left: 30px
+}
+
+h2 {
+	margin-bottom: 0px;
+}
+
+ul {
+	margin-top: 5px;
+	margin-bottom: 40px;
+}
+
+
+</style>
+</html>

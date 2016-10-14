@@ -106,14 +106,15 @@ PINE.disable = function(needles) {
 
 PINE.ops = {};
 
-
 PINE.ops.order = [
 	PINE.ops.INIT = "init",
 	PINE.ops.PVARS = "pvars",
 	PINE.ops.STATIC = "static",
 	PINE.ops.COMMON = "common",
-	PINE.ops.POLISH = "polish"
+	PINE.ops.GATHER = "gather"
 ]
+
+PINE.ops.POLISH = PINE.ops.GATHER;
 
 
 //INIT assumes nothing.  It is used to set initial values (usually PVARS) prior to permeation or inline pvars.  
@@ -385,11 +386,17 @@ PINE.class.NodeFunc = function(domNode, func) {
 
 
 PINE.addFunctionToNode = function(domNode, funcName, func) {
-	// PINE.err("depreaciated add function to node");
 	PINE.addNodeFunction(domNode, funcName, func);
 }
 
 PINE.addNodeFunction = function(domNode, funcName, func) {
+	if(typeof domNode != "object" 
+		|| typeof funcName != "string" 
+		|| typeof func != "function") {
+		PINE.err("PINE.addFunctionToNode takes the arguments (object domNode, sting funcname, function func)");
+		return;
+	}
+
 	LOG("FNS", "adding function "+funcName+" to ", domNode);
 
 	if(domNode.FNS[funcName] !== undefined) 
@@ -468,6 +475,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 
+
+//Perhaps best placed near PINEFuncs
+//init() called at bottom of page
 PINE.init = function() {
 
 	for(var i in PINE.ops.order)  {
@@ -556,12 +566,16 @@ PINE.run = function() {
 
 		LOG("overview", "PINE Sprouting Needles");	
 		PINE.sprout(Pine_Forest, {
-			// PINE.pinefuncs.queued, PINE.pinefuncs.passed, true
 			queuedOps : PINE.pinefuncs.queued,
 			passedOps : PINE.pinefuncs.passed
 		}).then(resolve);
 	});
 }
+
+
+
+
+
 
 
 
@@ -636,6 +650,52 @@ PINE.initiate = function(root) {
 
 
 
+//TODO: micro improve performance by not running empty updates
+PINE.updateAt = function(root, callback, passedOps) {
+
+	LOG("async", "update at", root);
+
+	var newRoot = (root._pine_ === undefined);
+	if(newRoot){
+		PINE.initiate(root);
+		LOG("async", "new Root Found");
+	}
+	else if(root._pine_.ops.hold){
+		LOG("async", "held node needs no updating!", root);
+		
+		//if a node is held, it is in the process of being updated already
+		if(typeof callback == "function")
+			PINE.ready(callback)
+
+		return;
+	}
+
+	//if there are no passed ops, default to overal passed ops.  
+	//case where passedOps are given is for when found by sprout.
+	//passedOps will be all the ops which have already occured at the parent node
+	//PINE.pinefuncs.passed contains only ops which have permeated the entire tree
+	//the passedOps of parent may still be working through the tree and not in PINE.pinefuncs.passed
+	var cloneMe = passedOps !== undefined ? passedOps : PINE.pinefuncs.passed;
+	var updates = {};
+	for(var opType in cloneMe) 
+		updates[opType] = cloneMe[opType].slice(0);
+
+	LOG("async", "updates for found node", updates);
+	
+
+	var willSprout = PINE.sprout(root, { queuedOps: updates }, newRoot);
+
+	if(callback)
+		willSprout.then(callback)
+}
+
+
+
+
+
+
+
+
 
 // PINE.growingSprouts = [];
 
@@ -696,7 +756,7 @@ PINE.sprout = function( root, args)  {
 
 			//sending mode checks for things to send
 			else {
-				//get the unsent functions for this operation type
+				//get the not yet sent functions for this operation type
 				//if there are any send them to be permeated and remove them from unsent
 				var opFuncs = unsentOps[opType];
 				if(opFuncs && opFuncs.length) {
@@ -704,11 +764,9 @@ PINE.sprout = function( root, args)  {
 					unsentOps[opType] = [];
 					
 
-					// if(newRoot) {
-						// PINE.permeate2(root, opFuncs, permeateCallback, newRoot);
-					(function(opFuncs, opType, sproutState) {
-						var permeate = PINE.permeate(root, opFuncs, null, sproutState);
-						permeate = permeate.then( function() {
+					(function(opFuncs, opType) {
+						var permeate = PINE.permeate(root, opFuncs, null);
+						var full_permeate = permeate.then( function() {
 								//
 							for(var i = 0; i < opFuncs.length; i++)  {
 								LOG("opFunc", "removing ", opFuncs[i]);
@@ -726,8 +784,8 @@ PINE.sprout = function( root, args)  {
 							}
 						});
 
-						permeatePromises.push( permeate );
-					})(opFuncs, opType, args);
+						permeatePromises.push( full_permeate );
+					})(opFuncs, opType);
 
 					//after they have been sent, restart the check to make sure no new operations
 					//have entered the queue, and mark permeate called as true
@@ -765,11 +823,11 @@ PINE.sprout = function( root, args)  {
 
 
 
-
-PINE.permeate = function(root, opFuncs, layer, sproutState)  {
-	if(sproutState === undefined) {
-		PINE.err("sproutState undefined in", root);
-	}
+//TODO verify that sproutstate is useless
+PINE.permeate = function(root, opFuncs, layer)  {
+	// if(sproutState === undefined) {
+	// 	PINE.err("sproutState undefined in", root);
+	// }
 
 	layer = layer || '';
 	layer += '.';
@@ -777,6 +835,8 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 	return U.Go(function(resolve, reject) {
 		LOG("permeate", layer+">> permeate", root, opFuncs)
 
+
+		//Stop Case 1:  [NOPINE]
 		if(El.attr(root, "NOPINE") !== undefined) {
 			LOG("permeate", layer+"<<permeate stopping at NOPINE", root);
 			resolve();
@@ -784,7 +844,7 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 		}
 
 
-		// if this is a stopping point tag, resolve.  Don't muck around with script, style, or ENDPINE
+		//Stop Case 2:  if this is a stopping point tag, resolve.  Don't muck around with script, style, or ENDPINE
 		for(var i in PINE.stopTags) {
 			if(root.tagName == PINE.stopTags[i]) {
 				LOG("permeate", layer+"<<permeate stopping at tag "+root.tagName, root);
@@ -793,28 +853,58 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 			}
 		}
 
+		//Stop Case 3:  text or comment node
 		if(root.nodeName == "#text" || root.nodeName == "#comment") {
 			LOG("permeate", layer+"<<permeate stopping at node "+root.nodeName, root);
 			resolve();	
 			return;
 		}
 
+
+		//function for how to apply itself when the time comes.
+		//used below at different times in different cases
 		var apply = function() {
+			root._pine_.ops.hold = true;
+
 			PINE.applyOpFuncsAtNode(root, opFuncs, layer).then(function() {
+				root._pine_.ops.hold = false;
 
-				PINE.permeateChildren(root, opFuncs, layer, sproutState).then(function() {
-					LOG("permeate", layer+"<< permeate", root)
-					resolve();
+				PINE.permeateChildren(root, opFuncs, layer).then(resolve);
 
-					var nextOpFuncs = root._pine_.ops.queue.shift();
-
-					if(nextOpFuncs) {
-						nextOpFuncs();			
-					}
-				});
-
+				//Once GATHER is done, try switching this out for the one above
+				//If problems arise, put this in the then for permeate children
+				var nextOpFuncs = root._pine_.ops.queue.shift();
+					//
+				if(nextOpFuncs)
+					nextOpFuncs();			
 			});
 		}
+
+
+
+		if(opFuncs[0].opType == PINE.ops.GATHER) {
+			apply = function() {
+				root._pine_.ops.hold = true;
+
+				PINE.permeateChildren(root, opFuncs, layer).then(function() {
+					PINE.applyOpFuncsAtNode(root, opFuncs, layer).then(function() {
+						root._pine_.ops.hold = false;
+
+						resolve();
+
+						var nextOpFuncs = root._pine_.ops.queue.shift();
+							//
+						if(nextOpFuncs) 
+							nextOpFuncs();			
+						
+					});		
+				});
+			}
+		}
+
+
+
+
 
 
 
@@ -844,7 +934,7 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 				PINE.err("no parent node for ", root)
 
 			PINE.updateAt(root, function() {
-				PINE.permeate(root, opFuncs, layer, sproutState).then(resolve);
+				PINE.permeate(root, opFuncs, layer).then(resolve);
 			}, root.parentNode._pine_.ops.applied);
 		}
 
@@ -856,28 +946,8 @@ PINE.permeate = function(root, opFuncs, layer, sproutState)  {
 PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 
 	return U.Go(function(resolve, reject) {
-		// var resolve = resolve;
-		// console.log(layer+">> applyOpFuncs", root, opFuncs)
-			//
-		root._pine_.ops.hold = true;
-		LOG("hold", "run");
-		LOG(root, "run");
-
-		//TODO: callback parent first if nothing in queue should happen first
-		var complete = function() {
-
-			LOG("unhold", "run");
-			LOG(root, "run");
-			root._pine_.ops.hold = false;
-
-			// console.log(layer+"<< applyOpFuncs", root)F
-
-			resolve();
-		}
-
 
 		var localOpFuncs = [];
-
 		
 		for(var i in opFuncs)  {
 			if(PINE.keyApplies(opFuncs[i].keyword, root)) {
@@ -888,26 +958,17 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 
 
 		if(localOpFuncs.length)  {
-				//
-			// console.log("local ops found", localOpFuncs);
 
 			var promises = [];
 
 			for(var op in localOpFuncs) {
 				var opFunc = localOpFuncs[op];
 				promises.push(opFunc.fn(root));
-
-				// if(root._pine_.ops.applied[opFunc.opType] === undefined)
-				// 	root._pine_.ops.applied[opFunc.opType] = [];
-
-				
 			}	
 
-			// console.log(layer+"promises", promises);
-
-			U.Go.all(promises).then(complete);
+			U.Go.all(promises).then(resolve);
 		}
-		else complete();
+		else resolve();
 
 	});
 	
@@ -916,7 +977,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 
 
 
-PINE.permeateChildren = function(root, opFuncs, layer, sproutState) {
+PINE.permeateChildren = function(root, opFuncs, layer) {
 		//
 	return U.Go( function(resolve, reject) {
 
@@ -936,7 +997,7 @@ PINE.permeateChildren = function(root, opFuncs, layer, sproutState) {
 			var childPermPromises = [];
 				//
 			for(var i = 0; i < branches.length; i++)  {
-				childPermPromises.push( PINE.permeate(branches[i], opFuncs, layer, sproutState) );
+				childPermPromises.push( PINE.permeate(branches[i], opFuncs, layer) );
 			}
 
 			U.Go.all(childPermPromises).then(resolve);
@@ -954,41 +1015,6 @@ PINE.permeateChildren = function(root, opFuncs, layer, sproutState) {
 
 
 
-//TODO: micro improve performance by not running empty updates
-PINE.updateAt = function(root, callback, passedOps) {
-
-	LOG("async", "update at", root);
-
-	var newRoot = (root._pine_ === undefined);
-	if(newRoot){
-		PINE.initiate(root);
-		LOG("async", "new Root Found");
-		// console.log("new Root", root);
-	}
-	else if(root._pine_.ops.hold){
-		LOG("async", "held node needs no updating!", root);
-		// alert("wo")
-
-		if(typeof callback == "function")
-			PINE.ready(callback)
-		//TODO FIX
-		return;
-	}
-
-	//TODO: Fix this so that it is the passed functions of this round.
-	var cloneMe = passedOps !== undefined ? passedOps : PINE.pinefuncs.passed;
-	var updates = {};
-	for(var opType in cloneMe) 
-		updates[opType] = cloneMe[opType].slice(0);
-
-	LOG("async", "updates for found node", updates);
-	
-
-	var willSprout = PINE.sprout(root, { queuedOps: updates }, newRoot);
-
-	if(callback)
-		willSprout.then(callback)
-}
 
 
 
@@ -1889,6 +1915,8 @@ El.byTag = function(domNode, tag) {
 
 El.queryChildren = function(root, keyword, limit) {
 	return El.cssQuery(root, "> "+keyword, limit);
+	// var out = [];
+	// for(var i in root.children)
 }
 
 El.cssQuery = function(root, selector, limit) {
@@ -1946,6 +1974,44 @@ El.attr = function(domNode, name, value) {
 		}
 	}
 	else return undefined;
+}
+
+
+
+
+
+
+El.attArg = function(domNode, attNames, type, defaultVal) {
+
+	var out;
+	type = type.toLowerCase();
+
+	if(typeof attNames == "string")
+		out = El.attr(domNode, attNames);
+
+	else if (typeof attNames == "object") {
+		for (var i = 0; i < attNames.length && out == undefined; i++){
+			out = El.attr(domNode, attNames[i]);
+		}
+	}
+
+	
+	if(out === undefined)
+		return defaultVal;
+
+	else if (type == "string" || type == undefined)
+		return out;
+
+	else if (type == "int")
+		return parseInt(out);
+
+	else if (type == "domnode" || type == "id")
+		return El.byId(out);
+
+	else if (type == "float" || type == "double")
+		return parseFloat(out);
+
+	return out;
 }
 
 

@@ -7,7 +7,7 @@
 
 
 PINE.createNeedle("[pretifyCode]").addFunction({
-	opType : PINE.ops.POLISH,
+	opType : PINE.ops.GATHER,
 	fn : function(initMe, needle) {
 		// console.log("HEY");
 		var codeType = El.attr(initMe, "pretifyCode") || "html";

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Robot Soul</title>
+	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+
+	<script type="text/javascript" src="../PINE/PINE_Core_4.2.js"></script>
+	<script type="text/javascript" src="../PINE/PINE_Var.js"></script>
+	<script type="text/javascript" src="../PINE/PINE_Needles.js"></script>
+	<script type="text/javascript" src="../PINE/PINE_Includes.js"></script>
+	<!-- <needle src="../PINE/needles/suggestions.html"></needle>
+	<needle src="../PINE/needles/selectablelist.html"></needle>
+	<needle src="../PINE/needles/showHide.html"></needle> -->
+
+
+
+	<script type="text/javascript" src="RobotSoul.js"></script>
+	<needle src="devices/Oscillator.html"></needle>
+
+	<script type="text/javascript">
+
+
+		// var oscillator = audioCtx.createOscillator();
+		// oscillator.type = 'triangle';
+		// oscillator.frequency.value = 300; // value in hertz
+		// oscillator.connect(RS.Out);
+		// oscillator.start();
+	// 	var LFO = audioCtx.createOscillator();
+	// 	var FM = audioCtx.createOscillator();
+	// 	var FMBoost = audioCtx.createGain();
+	// 	var gainNode = audioCtx.createGain();
+
+
+
+		
+
+	// 	FM.type="square";
+	// 	FM.frequency.value = 2;
+	// 	FM.connect(FMBoost);
+	// 	FM.start();
+
+	// 	FMBoost.gain.value=70;
+	// 	FMBoost.connect(oscillator.frequency);
+
+	// 	LFO.type="saw";
+	// 	LFO.frequency.value = 3;
+	// 	LFO.connect(gainNode.gain);
+	// 	LFO.start();
+
+		
+
+	// 	setInterval(changeFreq, 100);
+
+	// 	gainNode.connect(audioCtx.destination);
+	// 	gainNode.gain.value = 0.25;
+
+
+	// 	var intervals = [1.0, 1.125, 1.25, 1.3333, 1.5, 1.8, 2.0]
+	// 	function changeFreq() {
+	// 		var intervalIndex = ~~(Math.random() * intervals.length);
+	// 		var noteFreq = 600 * intervals[intervalIndex];
+
+	// 		// if(noteFreq > 1600) 
+	// 		// 	noteFreq *= 0.25;
+	// 		// else if(noteFreq < 250) 
+	// 		// 	noteFreq *= 3;
+			
+
+
+	// 		// oscillator.frequency.value = noteFreq;
+	// 		var timeLeft = 100;
+	// 		var dT = 10;
+	// 		var dHz = (noteFreq - oscillator.frequency.value)/timeLeft;
+	// 		var slide = setInterval(function() {
+	// 			timeLeft -= dT;
+	// 			var freq;
+	// 			if(timeLeft <= 0) 
+	// 				freq = noteFreq;
+
+	// 			else
+	// 				freq = noteFreq - (timeLeft * dHz);
+
+	// 			oscillator.frequency.value = freq;
+
+	// 			if(timeLeft <= 0)
+	// 				clearInterval(slide);
+				
+	// 		}, dT);
+	// 	}
+
+	// 	return this;
+	// }
+
+
+		
+
+	
+
+
+	// PINE("trackItem", function(initMe) {
+	// 	initMe.addEventListener("click", function() {
+	// 		var id = parseInt(El.attr(initMe, "trackId"));
+
+
+	// 	});
+	// });
+
+
+
+	// Oscillator = function() {
+		
+	// }
+
+
+	function viewTrackDetails(trackId) {
+		El.byId("details").FNS.changeSrc("modules/TrackDevices.html?id="+trackId);
+	}
+
+	PINE.ready(function() {
+		viewTrackDetails(0);
+	});
+		
+	</script>
+	
+	
+</head>
+
+
+
+
+
+
+<body>
+
+
+<!-- <button onclick="Noodler()">Noodles</button> -->
+
+<view src="nosrc" id="details">
+
+</view>
+
+
+<trackList spawner="TRACKS.list">
+	<trackItem spawn changeSrc="modules/TrackDevices.html?id={{TRACKS.list[i].id}}" changeSrcTarget="details">
+		<solo>S</solo>
+		<mute>M</mute>
+		{{TRACKS.list[i].name}}
+	</trackItem>
+</trackList>
+
+
+
+
+
+
+</body>
+
+
+
+
+
+
+<style>
+body {
+	background: #333;
+	color: #FFF;
+	font-family: arial;
+}
+	
+	body.hide_cursor, body.hide_cursor * {
+		cursor: none !important;
+	}
+
+
+* {
+	border-color: #222;
+	border-width: 2px;
+}
+
+
+rsRange {
+	display: inline-block;
+	position: relative;
+	text-align: center;
+	width: 50px;
+	overflow: hidden;
+}
+	rsKnob, knob {
+		display: inline-block;
+		cursor: row-resize;
+		height: 25px;
+		width: 25px;
+		border-radius: 400px;
+		/*background: red;*/
+		background-image: url("public/images/knob.png");
+	}
+
+	rsRange rsLabel {
+		display: block;
+		font-size: 10px;
+	}
+
+
+tracklist {
+	position: absolute;
+	left: 400px;
+	height: 100%;
+	right: 0px;
+}
+	trackItem {
+		display: block;
+		border-bottom-style: solid;
+	}
+
+		trackItem solo, trackItem mute {
+			display: inline-block;
+			text-align: center;
+			height: 30px;
+			width: 30px;
+			line-height: 30px;
+			border-radius: 5px;
+			border-style: solid;
+			color: #333;
+		}
+
+			trackItem solo {
+				background: #c6b326;
+			}
+
+			trackItem mute {
+				background: #c08b2b;;
+			}
+
+#details {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background: #444;
+	height: 100%;
+	width: 400px;
+	overflow: scroll;
+}
+
+
+needle {
+	display: none;
+}
+
+
+
+
+
+
+</style>
+
+
+
+
+
+
+</html>
