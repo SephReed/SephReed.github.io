@@ -1,0 +1,51 @@
+<script type="text/javascript">
+	var r_knob = DEVICES.registerTemplate("Knob", function(device) {
+		var knob = IOH.createDCRange();
+
+		device.addOutput("out", "gain", knob);
+		device.addInput("knob_gain", "knob", function(newVal) {
+			knob.gain.value = newVal;
+		});
+
+	});
+</script>
+
+<rsDevice class="device_gain" defineRSDevice="Knob" unitHeight="1" unitWidth="1">
+	<div class="device_front">
+		<knobarea>
+			<knob deviceInput="knob_gain"></knob>
+		</knobarea>
+	</div>
+
+	<div class="device_back">
+		<rsOut name="out">
+			Out
+			<socket></socket>
+			</rsOut>
+	</div>
+
+</rsDevice>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

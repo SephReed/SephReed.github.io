@@ -1,0 +1,93 @@
+<script type="text/javascript">
+	var r_osc = DEVICES.registerTemplate("Oscillator", function(device) {
+		var osc, freqKnob;
+
+		
+		var freqIn = device.addInput("osc_frequency", "frequency");
+
+		var type = "sine";
+		var typeIn = device.addInput("osc_type", "wave_type", function(newVal) {
+			if(newVal) {
+				type = newVal;
+
+				if(osc)
+					osc.type = type;
+			}
+		});
+
+
+		var waveOut = device.addOutput("wave_out", "wave");
+
+		
+		device.start = function() {
+			osc = audioCtx.createOscillator();
+			freqIn.setReciever(osc.frequency);
+			osc.type = 'sine';
+			osc.frequency.value = 0;
+
+			waveOut.setSender(osc);
+
+			osc.start();
+		}
+
+		device.stop = function() {
+			osc.stop();
+			osc.disconnect();
+			osc = undefined;
+		}
+
+	});
+</script>
+
+<rsDevice class="device_oscillator quarter_size" defineRSDevice="Oscillator" unitHeight="1" unitWidth="2">
+	<div class="device_front">
+		<select deviceInput="osc_type">
+			<option value="sine" selected>Sine</option> 
+			<option value="triangle">Triangle</option>
+			<option value="square">Square</option>
+			<option value="sawtooth">Saw</option>
+		</select>
+	</div>
+
+	<div class="device_back">
+		<rsIn name="osc_frequency">
+			Freq
+			<socket></socket>
+			</rsIn>
+		
+		<rsIn name="osc_type">
+			Osc Type
+			<socket></socket>
+			</rsIn>
+
+		<rsOut name="wave_out">
+			Wave
+			<socket></socket>
+			</rsIn>
+	</div>
+
+</rsDevice>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,64 @@
+<script type="text/javascript">
+	var r_lrange = DEVICES.registerTemplate("LinearRange", function(device) {
+
+		var adder = audioCtx.createGain();
+
+		var multiplier = audioCtx.createGain();
+		multiplier.gain.value = 2000;
+		multiplier.connect(adder);
+
+		var base = IOH.createDC(20);
+		base.connect(adder);
+
+		
+
+		device.addOutput("out", "gain", adder);
+		device.addInput("in", "gain", multiplier);
+
+	});
+</script>
+
+<rsDevice class="device_linear_range" defineRSDevice="LinearRange" unitHeight="1" unitWidth="2">
+	<div class="device_front">
+		<!-- <knobarea>
+			<knob deviceInput="knob_gain"></knob>
+		</knobarea> -->
+	</div>
+
+	<div class="device_back">
+		<rsIn name="in">
+			In
+			<socket></socket>
+			</rsIn>
+
+		<rsOut name="out">
+			Out
+			<socket></socket>
+			</rsOut>
+	</div>
+
+</rsDevice>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

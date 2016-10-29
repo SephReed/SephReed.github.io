@@ -1,0 +1,627 @@
+<script type="text/javascript">
+var svgns = "http://www.w3.org/2000/svg";
+
+
+var p_cables = PINE("[cableOverlay]", function(initMe) {
+		//
+	var positioning = El.getStyle(initMe, "position");
+	
+	if(positioning == undefined || positioning == 'static')
+		initMe.style.position = "relative";
+	
+	var cableSpace = initMe.PVARS.cableSpace = El.byId("cableSpaceTemplate").cloneNode(true);
+	cableSpace.ID = "";
+	cableSpace.PVARS = {};
+
+	initMe.appendChild(cableSpace);
+
+	onResize = function() {
+		var bounds = initMe.PVARS.bounds = cableSpace.getBoundingClientRect();
+		console.log("bounds!", bounds)
+		cableSpace.setAttributeNS(null, "width", bounds.width);
+		cableSpace.setAttributeNS(null, "height", bounds.height);
+	}
+	onResize();
+
+	initMe.addEventListener("resize", onResize);
+
+
+	initMe.addEventListener("mousedown", function(event) {
+		var target = event.target;
+
+		console.log(target);
+
+		if(target.tagName == "SOCKET") {
+			onResize();
+			initMe.FNS.cableStart(target);
+			event.preventDefault();
+		}
+		else if(target.classList.contains("plug")) {
+			onResize();
+			p_cables.dragPlug(initMe, target);
+			event.preventDefault();
+		}
+		else if(target.parentNode.classList.contains("wire")) {
+			// target.parentNode.
+			event.preventDefault();
+		}
+
+	});
+
+
+	var hoveredWire;
+	var wireDeleteListener = function(event) {
+		if(event.key == 'x' || event.key == "Backspace") {
+			removeCable(hoveredWire._cable);
+			hoveredWire = undefined;
+			document.body.removeEventListener("keydown", wireDeleteListener);
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	}
+
+	initMe.addEventListener("mousemove", function(event) {
+		var target = event.target;
+		if(target.parentNode && target.parentNode != hoveredWire) {
+			if(target.parentNode.classList.contains("wire")) {
+				console.log("hovering wire");
+				hoveredWire = target.parentNode;
+				document.body.addEventListener("keydown", wireDeleteListener);
+			}
+			else if (hoveredWire != undefined) {
+				hoveredWire = undefined;
+				document.body.removeEventListener("keydown", wireDeleteListener);
+			}
+		}
+	});
+
+	var allCables = [];
+
+
+
+
+	var removeListeners = [];
+	PINE.addFunctionToNode(initMe, "cableOnRemove", function(listener) {
+		removeListeners.push(listener);
+	});
+
+	var notifyCableRemoveListeners = function(cable) {
+		for(var i in removeListeners)
+			removeListeners[i](cable);	
+	}
+
+
+
+
+	var connectListeners = [];
+	PINE.addFunctionToNode(initMe, "cableOnConnect", function(listener) {
+		connectListeners.push(listener);
+	});
+
+
+	var notifyCableConnectListeners = function(cable) {
+		for(var i in connectListeners)
+			connectListeners[i](cable);	
+	}
+
+
+
+
+
+
+
+
+	var createCable = function(startNode, endNode) {
+		var cable = new Cable(cableSpace, startNode, endNode);
+		allCables.push(cable);
+		cable.onRemove(notifyCableRemoveListeners);
+		cable.onConnect(notifyCableConnectListeners);
+		return cable;
+	}
+
+	var removeCable = function(cable) {
+		cable.remove();
+		var target = allCables.indexOf(cable)
+		allCables.splice(target, 1);
+	}
+
+	PINE.addFunctionToNode(initMe, "cableStart", function(startNode) {
+	    var cable = createCable(startNode);
+	    cable.dragPlug(startNode.parentNode.tagName == "RSOUT" ? cable.in : cable.out);
+	    return cable;
+	});
+
+	PINE.addFunctionToNode(initMe, "cableConnect", function(startNode, endNode) {
+	    return createCable(startNode, endNode);
+	});
+
+
+	
+	PINE.addFunctionToNode(initMe, "cableUpdatePositions", function() {
+	    for(var i in allCables) {
+	    	allCables[i].updatePosition();
+	    }
+	});
+	
+});
+
+
+
+
+
+
+p_cables.updateSocketPosPoint = function(socketNode) {
+	var x = socketNode.offsetLeft  + socketNode.offsetWidth/2;
+	var y = socketNode.offsetTop + socketNode.offsetHeight/2;
+	
+	if(socketNode.PVARS.socketPos == undefined)
+		socketNode.PVARS.socketPos = new Point(x, y);
+	else {
+		socketNode.PVARS.socketPos.x = x;
+		socketNode.PVARS.socketPos.y = y;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+var Cable = function(cableSpace, startNode, endNode) {
+	var cable = this;
+
+
+
+	cable.removeListeners = [];
+	cable.connectListeners = [];
+
+
+
+	cable.space = cableSpace;
+
+	var cableGUI = cable.gui = document.createElementNS(svgns, "g");
+	cableGUI._cable = cable;
+	cable.space.appendChild(cableGUI);
+
+
+	cable.out = {};
+	var outputPlug = cable.out.plug = document.createElementNS(svgns, "circle");
+	outputPlug.classList.add("plug");
+	// outputPlug.classList.add("out")
+    outputPlug.setAttributeNS(null, "r",  6);
+    cableGUI.appendChild(outputPlug);
+
+
+    cable.in = {};
+    var inputPlug = cable.in.plug = document.createElementNS(svgns, "circle");
+    inputPlug.classList.add("plug");
+    // inputPlug.classList.add("in")
+    inputPlug.setAttributeNS(null, "r",  6);
+    cableGUI.appendChild(inputPlug);
+
+
+
+    p_cables.updateSocketPosPoint(startNode);
+
+    cable.out.pos = startNode.PVARS.socketPos;
+	outputPlug.setAttributeNS(null, "cx", cable.out.pos.x);
+    outputPlug.setAttributeNS(null, "cy", cable.out.pos.y);
+
+    if(endNode != undefined) {
+    	p_cables.updateSocketPosPoint(endNode);
+    	cable.in.pos = endNode.PVARS.socketPos;
+    }
+    else cable.in.pos = startNode.PVARS.socketPos.clone();
+
+    inputPlug.setAttributeNS(null, "cx", cable.in.pos.x);
+    inputPlug.setAttributeNS(null, "cy", cable.in.pos.y);
+
+
+	
+    cable.wire = {};
+	var path = cable.wire.path = new WIRE_PATH(cable.in.pos, cable.out.pos);
+
+	var wire = cable.wire.group = document.createElementNS(svgns, "g");
+	wire._cable = cable;
+	wire.classList.add("wire");
+	wire.setAttributeNS(null, "stroke-linecap", "round");
+	wire.setAttributeNS(null, "stroke-linejoin", "round");
+	cableGUI.appendChild(wire);
+
+
+	var wireOutline = cable.wire.outline = document.createElementNS(svgns, "path");
+	wireOutline.classList.add("wire_outline");
+	wireOutline.setAttributeNS(null, "stroke-width", WIRE_PATH.width)
+	wireOutline.setAttributeNS(null, "d", path.getCode());
+	wire.appendChild(wireOutline);
+
+
+	var wireFill = cable.wire.fill = document.createElementNS(svgns, "path");
+	wireFill.classList.add("wire_fill");
+	wireFill.setAttributeNS(null, "stroke-width", WIRE_PATH.width - WIRE_PATH.borderWidth * 2);
+	wireFill.setAttributeNS(null, "d", path.getCode());
+	wire.appendChild(wireFill);
+
+
+    if(startNode.parentNode.tagName == "RSOUT") {
+    	cable.out.socket = startNode;
+    	cable.in.socket = endNode;
+    }
+    
+    else {
+    	cable.in.socket = startNode; 
+    	cable.out.socket = endNode; 
+    }
+    
+}
+
+
+Cable.prototype.onRemove = function(listener) {
+	this.removeListeners.push(listener);
+}
+
+
+
+Cable.prototype.remove = function() {
+	var cable = this;
+	cable.gui.remove();
+	for (var i in cable.removeListeners)
+    	cable.removeListeners[i](cable);
+}
+
+Cable.prototype.dragPlug = function(plug) {
+
+	console.log("dragging plug", plug);
+
+	var cable = this;
+	var initMe = cable.space.parentNode;
+	var space
+	var moveMe;
+
+	if(plug.pos && plug.plug)
+		moveMe = plug;
+
+	else if(typeof plug == "string") {
+		plug = plug.toUpperCase()
+		if(plug == "I" || plug == "IN" || plug == "INPUT")
+			moveMe = this.in;
+
+		else if(plug == "O" || plug == "OUT" || plug == "OUTPUT")
+			moveMe = this.out;
+
+		else PINE.err("Plug name not in list [I, IN, INPUT, O, OUT, OUTPUT] ", plug, cable);
+	}
+
+	else {
+		if(plug == cable.out.plug)
+			moveMe = cable.out;
+
+		else if(plug == cable.in.plug)
+			moveMe = cable.in;
+		
+		else PINE.err("plug is not on record for cable ", plug, cable);
+	}
+
+	cable.gui.classList.add("moving_cable");
+	
+	var path = cable.wire.path;
+
+
+	var lastTarget;
+	var hoveringSocket;
+	var hoverConnectable = false;
+	var moveEv = function(event) {
+				//
+		moveMe.pos.x = event.clientX - initMe.PVARS.bounds.left;
+		moveMe.pos.y = event.clientY - initMe.PVARS.bounds.top;
+
+		moveMe.plug.setAttributeNS(null, "cx", moveMe.pos.x);
+    	moveMe.plug.setAttributeNS(null, "cy", moveMe.pos.y);
+
+    	path.updateCode();
+    	cable.wire.fill.setAttributeNS(null, "d", path.getCode());
+		cable.wire.outline.setAttributeNS(null, "d", path.getCode());
+
+
+		var target = event.target;
+
+		if(target != lastTarget) {
+			hoverConnectable = false;
+
+			cable.wire.group.classList.remove("bad_connection");
+			cable.wire.group.classList.remove("good_connection");
+
+			if(target.tagName == "SOCKET") {
+				hoveringSocket = target;
+
+				var isInPlug = moveMe == cable.in;
+				if(target.parentNode.tagName == "RSIN" && isInPlug)
+					hoverConnectable = true;
+
+				else if(target.parentNode.tagName == "RSOUT" && isInPlug == false)
+					hoverConnectable = true;
+
+				if(hoverConnectable) 
+					cable.wire.group.classList.add("good_connection");
+				else
+					cable.wire.group.classList.add("bad_connection");
+			}
+
+			else hoveringSocket = undefined;
+
+			lastTarget = target;
+		}
+
+	}
+	initMe.addEventListener("mousemove", moveEv);
+
+	var upEv = function(event) {
+		var target = event.target;
+
+		if(hoverConnectable)
+			moveMe.socket = hoveringSocket;
+
+
+		if(moveMe.socket) {
+			p_cables.updateSocketPosPoint(moveMe.socket);
+
+			moveMe.pos = moveMe.socket.PVARS.socketPos;
+				//
+			moveMe.plug.setAttributeNS(null, "cx", moveMe.pos.x);
+    		moveMe.plug.setAttributeNS(null, "cy", moveMe.pos.y);
+
+			path.updateCode();
+				//
+			cable.wire.fill.setAttributeNS(null, "d", path.getCode());
+			cable.wire.outline.setAttributeNS(null, "d", path.getCode());
+			
+    		cable.gui.classList.remove("moving_cable");
+    		cable.wire.group.classList.remove("good_connection");
+
+    		for (var i in cable.connectListeners)
+    			cable.connectListeners[i](cable);
+		}
+
+		else cable.remove();
+		
+
+
+
+		initMe.removeEventListener("mousemove", moveEv);
+		initMe.removeEventListener("mouseup", upEv);
+	}
+	initMe.addEventListener("mouseup", upEv);
+}
+
+
+Cable.prototype.updatePosition = function() {
+	var cable = this;
+
+	// if(cable.in.socket == undefined || cable.out.socket == undefined)
+	// 	return
+
+	p_cables.updateSocketPosPoint(cable.in.socket);
+	cable.in.plug.setAttributeNS(null, "cx", cable.in.pos.x);
+	cable.in.plug.setAttributeNS(null, "cy", cable.in.pos.y);
+
+	p_cables.updateSocketPosPoint(cable.out.socket);
+	cable.out.plug.setAttributeNS(null, "cx", cable.out.pos.x);
+	cable.out.plug.setAttributeNS(null, "cy", cable.out.pos.y);
+
+	var path = cable.wire.path;
+	path.updateCode();
+		//
+	cable.wire.fill.setAttributeNS(null, "d", path.getCode());
+	cable.wire.outline.setAttributeNS(null, "d", path.getCode());
+}
+
+
+
+Cable.prototype.onConnect = function(listener) {
+	// this.gui.remove();
+	this.connectListeners.push(listener);
+}
+
+
+
+
+
+
+
+
+
+
+var WIRE_PATH = function(startPos, endPos) {
+	this.startPos = startPos;
+	this.endPos = endPos;
+	this.updateListeners = [];
+}
+
+WIRE_PATH.sagginess = 0.3;
+WIRE_PATH.width = 8;
+WIRE_PATH.borderWidth = 2;
+
+WIRE_PATH.prototype.setStartPos = function(pos) {
+	this.startPos = pos;
+	this.updateCode();
+}
+
+WIRE_PATH.prototype.setEndPos = function(pos) {
+	this.endPos = pos;
+	this.updateCode();
+}
+
+WIRE_PATH.prototype.updateCode = function() {
+	var out = 'M '+this.startPos.x+' '+this.startPos.y+' ';
+
+	if(WIRE_PATH.sagginess == 0) {
+		out += "L "+this.endPos.x+" "+this.endPos.y+" ";
+		out += "L "+this.startPos.x+" "+this.startPos.y+" ";
+	}
+	else {
+		var droopQ = this.startPos.midpoint(this.endPos);
+		var dist = this.startPos.distance(this.endPos);
+		droopQ.y += (WIRE_PATH.sagginess * dist);
+
+		out += "Q "
+			+droopQ.x+" "+droopQ.y+", "
+			+this.endPos.x+" "+this.endPos.y+" ";
+
+		out += "Q "
+			+droopQ.x+" "+droopQ.y+", "
+			+this.startPos.x+" "+this.startPos.y+" ";
+	}
+
+	
+	this.code = out;
+
+	for (var i in this.updateListeners)
+		updateListeners[i](out);
+}
+
+
+WIRE_PATH.prototype.onUpdate = function(listener) {
+	this.updateListeners.push(listener);
+
+	if(this.code)
+		listener(this.code);
+}
+
+
+WIRE_PATH.prototype.getCode = function() {
+	if(this.code == undefined)
+		this.updateCode();
+
+	return this.code;
+}
+
+
+
+
+
+
+var Point = function(x, y) {
+	this.x = x;
+	this.y = y;
+}
+
+Point.prototype.clone = function() {
+	return new Point(this.x, this.y);
+}
+
+
+Point.prototype.moveTo = function(point) {
+	this.x = point.x;
+	this.y = point.y;
+}
+
+
+Point.prototype.midpoint = function(toMe) {
+	var x = ((toMe.x - this.x)/2 + this.x);    //(3 - 1)/2 + 1 = 2
+	var y = ((toMe.y - this.y)/2 + this.y);
+
+	return new Point(x, y);
+}
+
+
+Point.prototype.distance = function(toMe) {
+	var dx = this.x - toMe.x;
+	var dy = this.y - toMe.y;
+	return Math.sqrt((dx*dx)+(dy*dy));
+}
+
+</script>
+
+
+<svg id="cableSpaceTemplate"
+	class="cable_space"
+	version="1.1"
+    baseProfile="full"
+    width="300" height="200"
+    xmlns="http://www.w3.org/2000/svg">
+</svg>
+
+
+
+<style>
+	.cable_space {
+		position: absolute;
+		pointer-events: none;
+		top: 0px;
+		left: 0px;
+		height: 100%;
+		width: 100%;
+	}
+
+		.cable_space g {
+			/*position: relative;*/
+			/*pointer-events: default;*/
+			pointer-events: all;
+			/*opacity: 0.4;*/
+			/*z-index: 10;*/
+		}
+
+			/*.cable_space g:hover {
+				opacity: 0.5;
+			}*/
+
+		.wire .wire_outline { 
+			opacity: 0.5;
+			stroke: #222;
+		}
+
+		.wire .wire_fill { 
+			stroke: #DDD;
+		}
+
+			.wire:hover .wire_outline {
+				stroke: #FF0;
+				opacity: 1;
+			}
+
+			.wire.good_connection .wire_outline {
+				stroke: #999;
+				opacity: 1;
+			}
+
+			.wire.bad_connection {
+				opacity: 0.3;
+			}
+
+				.wire.bad_connection .wire_outline {
+					stroke: #F00;
+				}
+
+		socket {
+			cursor: crosshair;
+		}
+
+
+		.cable_space .moving_cable * {
+			pointer-events: none;
+		}
+
+		.cable_space .plug {
+			fill: #ddd;
+		}
+
+ </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

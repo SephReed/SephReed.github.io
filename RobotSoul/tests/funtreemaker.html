@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>wire test</title>
+	<link rel="stylesheet" type="text/css" href="../../public/css/init.css">
+	<script type="text/javascript" src="../../PINE/PINE_Core_4.2.js"></script>
+
+	<script type="text/javascript">
+	var svgns = "http://www.w3.org/2000/svg";
+
+	U.docReady(function() {
+		var overlay = El.byId("cableOverlay");
+		var bounds = overlay.getBoundingClientRect();
+		console.log(bounds);
+		overlay.setAttributeNS(null, "width", bounds.width);
+		overlay.setAttributeNS(null, "height", bounds.height);
+
+		overlay.addEventListener("mousedown", function(event) {
+			var moveMe;
+			// console.log(event);
+			var target = event.target;
+			if(target == overlay) {
+				var x = event.layerX - bounds.left;
+				var y = event.layerY - bounds.top;
+
+				var plug = document.createElementNS(svgns, "circle");
+			    plug.setAttributeNS(null, "r",  20);
+			    plug.setAttributeNS(null, "fill", "#385");
+				
+
+				var wire = document.createElementNS(svgns, "path");
+				wire.setAttributeNS(null, "stroke", "#321");
+				wire.setAttributeNS(null, "fill", "#432");
+				// wire.setAttributeNS(null, "fill", "transparent");
+				wire.setAttributeNS(null, "stroke-width", 2);
+				wire.setAttributeNS(null, "stroke-linecap", "round");
+				wire.setAttributeNS(null, "stroke-linejoin", "round");
+
+				// stroke-linecap="round" fill="none" stroke-linejoin="round"
+
+				plug._wire = wire;
+				updatePlugPosition(plug, x, y);
+
+				
+				overlay.appendChild(wire);
+				overlay.appendChild(plug);
+
+				console.log(plug);
+				moveMe = plug;
+			}
+
+			event.preventDefault();
+
+			if(moveMe == undefined)
+				moveMe = event.target;
+
+			if(moveMe.tagName == "circle") {
+				var moveEv = function(event) {
+						//
+					var posX = event.layerX - bounds.left;
+					var posY = event.layerY - bounds.top;
+
+					updatePlugPosition(moveMe, posX, posY);
+					// moveMe.setAttributeNS(null, "cx", x);
+			    	// moveMe.setAttributeNS(null, "cy", y);
+				}
+				overlay.addEventListener("mousemove", moveEv);
+
+				var upEv = function() {
+					console.log("mouseup");
+					overlay.removeEventListener("mousemove", moveEv);
+					overlay.removeEventListener("mouseup", upEv);
+				}
+				overlay.addEventListener("mouseup", upEv);
+			}
+		
+		});
+	});		
+
+	function updatePlugPosition(plug, posX, posY) {
+		plug.setAttributeNS(null, "cx", posX);
+		plug.setAttributeNS(null, "cy", posY);
+
+		var wire = plug._wire;
+
+		// var startX = 10;
+		// var startY = 10;
+
+		// var dX = posX - startX;
+		// var halfX = dX/2;
+
+		// var pathText = "M 10 10 L "
+		// 	+posX+" "+posY+" Z";
+
+		// var t_startPos = startX+" "+startY+" ";
+		// var t_startSlope = (startX+50)+" "+(startY+50)+" ";
+		// var t_endSlope = (posX-50)+" "+(posY+50)+" ";
+		// var t_endPos = posX+" "+posY+" ";
+
+		// var b_startPos = startX+" "+(startY+5)+" ";
+		// var b_startSlope = (startX+50)+" "+(startY+50+5)+" ";
+		// var b_endSlope = (posX-50)+" "+(posY+50+5)+" ";
+		// var b_endPos = posX+" "+(posY+5)+" ";
+
+		// var pathText = "M "+t_startPos
+		// 	+"C "+t_startSlope+", "
+		// 	+t_endSlope+", "
+		// 	+t_endPos
+		// 	+"L "+b_endPos
+		// 	+"C "+b_endSlope+", "
+		// 	+b_startSlope+", "
+		// 	+b_startPos;
+		
+		var path = new ESVG.Path();
+		var end = path.addPoint(200, 200);
+		var start = path.addPoint(posX, posY);
+		var radius = 2;
+		var sagginess = 0.3;
+
+		path.start(start).sag(sagginess, end).turn(radius, 180).sag(sagginess, start);
+
+		wire.setAttributeNS(null, "d", path.code());
+	}
+
+	// <circle cx="150" cy="100" r="80" fill="green" />
+
+
+	
+
+
+	var ESVG = EASY_SVG = {};
+	ESVG.midpoint = function(a, b) {
+		var out = {};
+		out.x = ((b.x - a.x)/2 + a.x);    //(3 - 1)/2 + 1 = 2
+		out.y = ((b.y - a.y)/2 + a.y);
+		return out;
+	}
+
+	ESVG.distance = function(a, b) {
+		var dx = a.x - b.x;
+		var dy = a.y - b.y;
+		return Math.sqrt((dx*dx)+(dy*dy));
+	}
+
+
+	ESVG.angle = function(a, b) {
+		var dx = b.x - a.x;
+		var dy = b.y - a.y;
+
+		var out;
+
+		if(dx == 0)
+			out = Math.PI/2;
+		else
+		 	out = Math.atan(dy/dx);
+
+		if(dx > 0 && dy < 0)
+			out += 2 * Math.PI;
+		else if (dx < 0 || (dx <= 0 && dy < 0))
+			out += Math.PI;
+
+		return out;
+	}
+
+
+	ESVG.getPolarPoint = function(point, rotation, distance) {
+		var dx = Math.cos(rotation) * distance;
+		var dy = Math.sin(rotation) * distance;
+
+		var out = {};
+		out.x = point.x - dx;
+		out.y = point.y - dy;
+
+		return out;
+	}
+
+	// console.log(ESVG.angle({x: 0, y: 0}, {x: 1, y: 0}));
+	// console.log(ESVG.angle({x: 0, y: 0}, {x: 1, y: 1}));
+	// console.log(ESVG.angle({x: 0, y: 0}, {x: 0, y: 1}));
+	// console.log(ESVG.angle({x: 0, y: 0}, {x: -1, y: 1}));
+	// console.log(ESVG.angle({x: 0, y: 0}, {x: -1, y: 0}));
+	// console.log(ESVG.angle({x: 0, y: 0}, {x: -1, y: -1}));
+	// console.log(ESVG.angle({x: 0, y: 0}, {x: 0, y: -1}));
+	// console.log(ESVG.angle({x: 0, y: 0}, {x: 1, y: -1}));
+
+
+	ESVG.Path = function(arg1, arg2) {
+		var path = this;
+
+		path.steps = [];
+		path.lastStep = {};
+		path.lastStep.endPoint;
+		path.lastStep.endAngle;
+		// path.lastStepEndPoint;
+
+
+		path.points = [];
+		path.pointsById = {};
+
+		path.addPoint = function(x, y, id) {
+			var addMe = {};
+			addMe.x = x;
+			addMe.y = y;
+			path.points.push(addMe);
+
+			if(id !== undefined) {
+				addMe.ID = id;
+				path.points.byId[id] = addMe;
+			}
+
+			return addMe;
+		}
+
+		path.start = function(arg1, arg2) {
+			return path.basicInstruction("M", arg1, arg2);
+		}
+
+		path.line = function(arg1, arg2) {
+			path.basicInstruction("L", arg1, arg2);
+			// path.lastStep.endAngle = 
+			return path;
+		}
+
+		path.curveQ = function(arg1, arg2, arg3, arg4) {
+			if(typeof arg1 == "object" && typeof arg2 == "object"); {
+				this.steps.push(function() {
+					var Qx = arg1.x;
+					var Qy = arg1.y;
+
+					var endx = arg2.x;
+					var endy = arg2.y;
+
+					return "Q "+Qx+" "+Qy+", "+endx+" "+endy+" ";
+				});
+
+			}
+			return path
+		}
+
+		path.turn = function(radius, degrees) {
+			
+			this.steps.push(function() {
+				if(degrees == 0)
+					return;
+
+				var lastPoint = path.lastStep.endPoint;
+				var lastAngle = path.lastStep.endAngle;
+				var towardsCenter = lastAngle;
+				if(degrees > 0 )
+					towardsCenter += Math.PI/2;
+				else
+					towardsCenter -= Math.PI/2;
+				
+				// var endAngle = path.lastStep.endAngle = lastAngle + dRad;
+
+				console.log(lastAngle+" towards center "+towardsCenter);
+
+				var centerPoint = ESVG.getPolarPoint(lastPoint, towardsCenter, radius);
+				console.log(centerPoint);
+
+
+
+				var dRad = (degrees-180)/360 * 2 * Math.PI;
+				console.log(dRad);
+				var endRad =  towardsCenter - dRad;
+				var endPoint = ESVG.getPolarPoint(centerPoint, endRad, radius);
+
+
+
+				return "A "+radius+" "+radius+" 0 0 0 "+endPoint.x+" "+endPoint.y+" ";
+
+
+
+				// dRad = (degrees/2 -180)/360 * 2 * Math.PI;;
+				// console.log(dRad);
+				// var qPoint = ESVG.getPolarPoint(centerPoint, towardsCenter - dRad, radius);
+
+				// path.lastStep.endPoint = endPoint;
+				// path.lastStep.endAngle = endRad + Math.PI/2;				
+
+				// // return "L "+centerPoint.x+" "+centerPoint.y+" L "+endPoint.x+" "+endPoint.y+" L"+qPoint.x+" "+qPoint.y+" ";
+				// // return "L "+centerPoint.x+" "+centerPoint.y+" ";
+				// // return "L "+endPoint.x+" "+endPoint.y+" L "+qPoint.x+" "+qPoint.y+" ";
+				// return "Q"+qPoint.x+" "+qPoint.y+", "+endPoint.x+" "+endPoint.y+" ";
+				// // return "T "+endPoint.x+" "+endPoint.y+" ";
+			});
+			return path;
+		}
+
+		path.sag = function(sagAmount, arg2, arg3) {
+			if(typeof arg2 == "object") {
+				this.steps.push(function() {
+					var endPoint = arg2;
+					var lastPoint = path.lastStep.endPoint;
+
+
+					var droopQ = ESVG.midpoint(lastPoint, endPoint);
+					var dist = ESVG.distance(lastPoint, endPoint);
+					droopQ.y += (sagAmount * dist);
+
+					path.lastStep.endAngle = ESVG.angle(droopQ, endPoint);
+					path.lastStep.endPoint = endPoint;
+
+					var Qx = droopQ.x;
+					var Qy = droopQ.y;
+
+					var endx = endPoint.x;
+					var endy = endPoint.y;
+
+					return "Q "+Qx+" "+Qy+", "+endx+" "+endy+" ";
+				});
+			}
+			return path;
+		}
+
+
+
+		path.backToStart = function() {
+			this.steps.push("Z ");
+			return path;
+		}
+		
+
+		path.code = function() {
+			var out = '';
+			for(var i in path.steps) {
+				var step = path.steps[i];
+				if(typeof step == "string")
+					out += step;
+				else
+					out += step();
+			}
+			return out;
+		}
+
+
+
+		if(arg1 !== undefined)
+			path.start(arg1, arg2)
+	}
+
+	// ESVG.PathTool = new ESVG.Path();
+
+	ESVG.Path.prototype.basicInstruction = function(commandChar, arg1, arg2) {
+		var x, y;
+		if(typeof arg1 == "object") {
+			this.lastStep.endPoint = arg1;
+			this.steps.push(function() {
+				x = arg1.x;
+				y = arg1.y;
+
+				return commandChar+" "+x+" "+y+" ";
+			}); 
+		}
+		else if(typeof arg1 == "number" && typeof arg2 == "number"){
+			var point = {};
+			point.x = arg1;
+			point.y = arg1;
+			this.lastStep.endPoint = point;
+
+			this.steps.push(commandChar+" "+arg1+" "+arg2+" ");
+		}
+		else alert("path function requires numbers or point");
+
+
+		return this;
+	}	
+
+
+
+
+
+
+
+
+	var test = new ESVG.Path();
+	var start = test.addPoint(1, 1);
+	var end = test.addPoint(3, 3);
+	var quadPoint = test.addPoint(2, 2);
+
+
+	// test.start(start).curveQ(quadPoint, end).backToStart();
+	test.start(start).sag(0.5, end).turn(2, 180);
+	console.log(test.code());
+
+	start.x = 10;
+	console.log(test.code());
+
+
+
+
+	</script>
+
+
+
+
+
+
+</head>
+<body>
+
+<div id="cableSpace">
+	<svg id="cableOverlay"
+		version="1.1"
+	    baseProfile="full"
+	    width="300" height="200"
+	    xmlns="http://www.w3.org/2000/svg">
+	    <circle cx="200" cy="200" r="60" fill="#543" stroke="#222" stroke-width="10"/>
+	</svg>
+</div>
+
+
+
+
+</body>
+
+
+
+<style type="text/css">
+	#cableSpace {
+		height: 100%;
+		width: 100%;
+		padding: 40px;
+		
+	}
+
+		#cableOverlay {
+			height: 100%;
+			width: 100%;
+			background: #AFF;
+		}
+</style>
+</html>

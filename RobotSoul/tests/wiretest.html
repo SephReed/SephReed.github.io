@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>wire test</title>
+	<link rel="stylesheet" type="text/css" href="../../public/css/init.css">
+	<script type="text/javascript" src="../../PINE/PINE_Core_4.2.js"></script>
+	<!-- <script type="text/javascript" src="../ESVG.js"></script> -->
+
+	<script type="text/javascript">
+	var svgns = "http://www.w3.org/2000/svg";
+
+	U.docReady(function() {
+		var overlay = El.byId("cableOverlay");
+		var bounds = overlay.getBoundingClientRect();
+		
+		overlay.setAttributeNS(null, "width", bounds.width);
+		overlay.setAttributeNS(null, "height", bounds.height);
+
+		overlay.addEventListener("mousedown", function(event) {
+			var moveMe;
+			// console.log(event);
+			var target = event.target;
+			if(target.classList.contains("plugPlace")) {
+				
+				
+				var startX = parseInt(target.getAttributeNS(null, "cx"));
+				var startY = parseInt(target.getAttributeNS(null, "cy"));	
+
+				
+				
+
+				var x = event.layerX - bounds.left;
+				var y = event.layerY - bounds.top;
+
+				var plug = document.createElementNS(svgns, "circle");
+			    plug.setAttributeNS(null, "r",  10);
+			    plug.setAttributeNS(null, "fill", "#385");
+				
+
+				var wire = document.createElementNS(svgns, "path");
+				wire.classList.add("cable");
+				wire.setAttributeNS(null, "stroke", "#0FF");
+				wire.setAttributeNS(null, "stroke-width", CABLE.width - CABLE.borderWidth * 2);
+				wire.setAttributeNS(null, "stroke-linecap", "round");
+				wire.setAttributeNS(null, "stroke-linejoin", "round");
+
+				var wireOutline = document.createElementNS(svgns, "path");
+				wireOutline.classList.add("cableOutline");
+				wireOutline.setAttributeNS(null, "stroke", "#222");
+				wireOutline.setAttributeNS(null, "stroke-width", CABLE.width)
+				wireOutline.setAttributeNS(null, "stroke-linecap", "round");
+				wireOutline.setAttributeNS(null, "stroke-linejoin", "round");
+
+				wire._cable = {};
+				wire._cable.outline = wireOutline;
+				var start = wire._cable.startPos = new Point(startX, startY);
+				var end = wire._cable.endPos = new Point(x, y);
+				wire._cable.path = new CABLE(start, end);
+
+				// stroke-linecap="round" fill="none" stroke-linejoin="round"
+
+				plug._wire = wire;
+				updatePlugPosition(plug, x, y);
+
+				overlay.appendChild(plug);
+				overlay.appendChild(wireOutline);
+				overlay.appendChild(wire);
+				
+				moveMe = plug;
+			}
+
+			event.preventDefault();
+
+			if(moveMe == undefined)
+				moveMe = event.target;
+
+			if(moveMe.tagName == "circle") {
+				var moveEv = function(event) {
+						//
+					var posX = event.layerX - bounds.left;
+					var posY = event.layerY - bounds.top;
+
+					updatePlugPosition(moveMe, posX, posY);
+					// moveMe.setAttributeNS(null, "cx", x);
+			    	// moveMe.setAttributeNS(null, "cy", y);
+				}
+				overlay.addEventListener("mousemove", moveEv);
+
+				var upEv = function() {
+					overlay.removeEventListener("mousemove", moveEv);
+					overlay.removeEventListener("mouseup", upEv);
+				}
+				overlay.addEventListener("mouseup", upEv);
+			}
+		
+		});
+	});		
+
+
+	function updatePlugPosition(plug, posX, posY) {
+		plug.setAttributeNS(null, "cx", posX);
+		plug.setAttributeNS(null, "cy", posY);
+
+		var wire = plug._wire;
+		wire._cable.endPos.x = posX;
+		wire._cable.endPos.y = posY;
+
+		wire._cable.path.updateCode();
+		console.log(wire);
+
+
+		wire.setAttributeNS(null, "d", wire._cable.path.getCode());
+		wire._cable.outline.setAttributeNS(null, "d", wire._cable.path.getCode());
+	}
+
+	// <circle cx="150" cy="100" r="80" fill="green" />
+
+
+
+
+
+	var CABLE = function(startPos, endPos) {
+		var cable = this;
+
+		cable.startPos = startPos;
+		cable.endPos = endPos;
+
+	}
+	CABLE.sagginess = 0.3;
+	CABLE.width = 7;
+	CABLE.borderWidth = 1.5;
+
+	CABLE.prototype.setStartPos = function(pos) {
+		this.startPos = pos;
+		this.updateCode();
+	}
+
+	CABLE.prototype.setEndPos = function(pos) {
+		this.endPos = pos;
+		this.updateCode();
+	}
+
+	CABLE.prototype.updateCode = function() {
+		var out = 'M '+this.startPos.x+' '+this.startPos.y+' ';
+
+		var droopQ = this.startPos.midpoint(this.endPos);
+		var dist = this.startPos.distance(this.endPos);
+		droopQ.y += (CABLE.sagginess * dist);
+
+		// var step = {};
+
+		out += "Q "
+			+droopQ.x+" "+droopQ.y+", "
+			+this.endPos.x+" "+this.endPos.y+" ";
+
+		out += "Q "
+			+droopQ.x+" "+droopQ.y+", "
+			+this.startPos.x+" "+this.startPos.y+" ";
+
+		// step.endPos = endPos.clone();
+		// step.endAngle = droopQ.angle(endPos);
+		// step.startAngle = startPos.angle(droopQ);
+		// var sag1 = CABLE.getSagStep(this.startPos, this.endPos);
+
+		// out += sag1.code;
+
+		// var turn1 = CABLE.getTurnStep(sag1);
+
+		// out += turn1.code;
+
+		// var sag2EndAngle = sag1.startAngle + Math.PI;
+		// var sag2EndPoint = this.startPos.createPolarPoint(sag2EndAngle - Math.PI/2, CABLE.width);
+
+		// var sag2 = CABLE.getSagStep(turn1.endPos, sag2EndPoint);
+
+		// out += sag2.code;
+
+		// var turn2 = CABLE.getTurnStep(sag2);
+
+		// out += turn2.code;
+
+		// out += " Z";
+
+		this.code = out;
+	}
+
+
+	CABLE.prototype.getCode = function() {
+		if(this.code == undefined)
+			this.updateCode();
+
+		return this.code;
+	}
+
+
+	CABLE.getSagStep = function(startPos, endPos) {
+
+		var droopQ = startPos.midpoint(endPos);
+		var dist = startPos.distance(endPos);
+		droopQ.y += (CABLE.sagginess * dist);
+
+		var step = {};
+
+		step.code = "Q "
+			+droopQ.x+" "+droopQ.y+", "
+			+endPos.x+" "+endPos.y+" ";
+
+		step.endPos = endPos.clone();
+		step.endAngle = droopQ.angle(endPos);
+		step.startAngle = startPos.angle(droopQ);
+		return step;
+	}
+
+
+
+	// CABLE.getTurnStep = function(lastStep) {
+	// 	var degrees = 180;
+	// 	var radius = CABLE.width/2;
+
+	// 	var startPos = lastStep.endPos;
+	// 	var startAngle = lastStep.endAngle;
+
+	// 	var towardsCenter = startAngle;
+	// 	if(degrees > 0 )
+	// 		towardsCenter += Math.PI/2;
+	// 	else
+	// 		towardsCenter -= Math.PI/2;
+
+
+	// 	var centerPoint = startPos.createPolarPoint(towardsCenter, radius);
+
+	// 	var dRad = (degrees-180)/360 * 2 * Math.PI;
+	// 	var endRad =  towardsCenter - dRad;
+	// 	var endPos = centerPoint.createPolarPoint(endRad, radius);
+
+
+	// 	out = {};
+	// 	out.code = "A "+radius+" "+radius+" 0 0 0 "+endPos.x+" "+endPos.y+" ";
+	// 	out.endAngle = endRad + Math.PI/2;				
+	// 	out.endPos = endPos;
+
+	// 	return out;
+	// }
+
+
+
+
+
+
+
+
+
+
+	var Point = function(x, y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	// Point.prototype.clone = function() {
+	// 	return new Point(this.x, this.y);
+	// }
+
+	// Point.prototype.createPolarPoint = function(rotation, distance) {
+	// 	var dx = Math.cos(rotation) * distance;
+	// 	var dy = Math.sin(rotation) * distance;
+
+	// 	var x = this.x - dx;
+	// 	var y = this.y - dy;
+
+	// 	return new Point(x, y);
+	// }
+
+	// Point.prototype.createTranslatePoint = function(dx, dy) {
+	// 	return new Point(this.x + dx, this.y + dy);
+	// };
+
+
+	Point.prototype.midpoint = function(toMe) {
+		var x = ((toMe.x - this.x)/2 + this.x);    //(3 - 1)/2 + 1 = 2
+		var y = ((toMe.y - this.y)/2 + this.y);
+
+		return new Point(x, y);
+	}
+
+
+	Point.prototype.distance = function(toMe) {
+		var dx = this.x - toMe.x;
+		var dy = this.y - toMe.y;
+		return Math.sqrt((dx*dx)+(dy*dy));
+	}
+
+
+	// Point.prototype.angle = function(toMe) {
+	// 	var dx = toMe.x - this.x;
+	// 	var dy = toMe.y - this.y;
+
+	// 	var out;
+
+	// 	if(dx == 0)
+	// 		out = Math.PI/2;
+	// 	else
+	// 	 	out = Math.atan(dy/dx);
+
+	// 	if(dx > 0 && dy < 0)
+	// 		out += 2 * Math.PI;
+	// 	else if (dx < 0 || (dx <= 0 && dy < 0))
+	// 		out += Math.PI;
+
+	// 	return out;
+	// }
+
+
+
+
+
+
+	</script>
+
+
+
+
+
+
+</head>
+<body>
+
+<div id="cableSpace">
+	<svg id="cableOverlay"
+		version="1.1"
+	    baseProfile="full"
+	    width="300" height="200"
+	    xmlns="http://www.w3.org/2000/svg">
+	    <circle class="plugPlace" cx="200" cy="200" r="60" fill="#543" stroke="#222" stroke-width="10"/>
+
+	    <circle class="plugPlace" cx="600" cy="600" r="20" fill="#543" stroke="#222" stroke-width="10"/>
+
+	    <circle class="plugPlace" cx="400" cy="600" r="20" fill="#543" stroke="#222" stroke-width="10"/>
+
+	    <circle class="plugPlace" cx="700" cy="100" r="20" fill="#543" stroke="#222" stroke-width="10"/>
+	</svg>
+</div>
+
+
+
+
+</body>
+
+
+
+<style type="text/css">
+	#cableSpace {
+		height: 100%;
+		width: 100%;
+		padding: 40px;
+		
+	}
+
+		#cableOverlay {
+			height: 100%;
+			width: 100%;
+			background: #AFF;
+		}
+</style>
+</html>

@@ -12,7 +12,10 @@ var RS = ROBOT_SOUL = function(arg1, arg2) {
 }
 
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-RS.Out = audioCtx.destination; 
+// RS.Out = audioCtx.destination; 
+RS.Out = audioCtx.createGain();
+RS.Out.connect(audioCtx.destination);
+RS.Out.gain.value = 0.5;
 
 
 RS.class = {};
@@ -36,42 +39,68 @@ U.docReady(function() {
 		for(var i in RS.keyListeners) 
 			RS.keyListeners[i](event);
 	});	
+
+	document.body.addEventListener("keydown", function(event) {
+		if(event.key == "z" && (event.metaKey == true || event.ctrlKey == true)) {
+			if(event.shiftKey == true)
+				RS.redo();
+			else
+				RS.undo();
+		}
+	});
 });
 
 
+var ActHist = RS.ActionHistory = {};
+ActHist.undoPile = [];
+ActHist.redoPile = [];
+ActHist.ingoreNextEvent = false;
+
+ActHist.addEvent = function(event) {
+	if(ActHist.ingoreNextEvent) {
+		ActHist.ingoreNextEvent = false;
+		return;
+	}
+
+	if(ActHist.redoPile.length)
+		ActHist.redoPile = [];
+
+	ActHist.undoPile.push(event);
+}
+
+RS.undo = function() {
+	var event = ActHist.undoPile.pop();
+	if(event) {
+		event.undo();
+		ActHist.redoPile.push(event);
+	}
+}
+
+RS.redo = function() {
+	var event = ActHist.redoPile.pop();
+	if(event) {
+		ActHist.ingoreNextEvent = true;
+		event.redo();
+		ActHist.undoPile.push(event);
+	}
+}
 
 
 
-// RS.dragInPlace = function(domNode, onMovement) {
-
-// 	document.body.classList.add("hide_cursor");
-
-// 	var hasPointerLock = domNode.requestPointerLock !== undefined;
-// 	if(hasPointerLock)
-// 		domNode.requestPointerLock();
-
-// 	var moveEvent = function(event) {			
-// 		onMovement(event);
-// 	}
-
-// 	var releaseEvent = function(event) {
-// 		document.body.removeEventListener("mousemove", moveEvent);
-// 		document.body.removeEventListener("mouseup", releaseEvent);
-// 		document.body.classList.remove("hide_cursor");
-// 		if(hasPointerLock)
-// 			document.exitPointerLock();
-// 		else
-// 			document.body.removeEventListener("mouseleave", releaseEvent)
-// 	}
 
 
-// 	document.body.addEventListener("mousemove", moveEvent);
-// 	document.body.addEventListener("mouseup", releaseEvent);
-// 	if(!hasPointerLock)
-// 		document.body.addEventListener("mouseleave", releaseEvent);
-// }
 
 
+
+
+
+RS.connectGUI = function(soul, gui) {
+	RS.connectRanges(soul, gui);
+	RS.connectSelects(soul, gui);
+	RS.connectIOSockets(soul, gui);
+	// RS.connectButtons(soul, gui);	
+	// RS.connectRadioButtons(soul, gui);	
+}
 
 
 
@@ -92,9 +121,9 @@ var NoteInput = RS.class.NoteInput = function(name) {
 
 	this.recieveMidi = function(midiOut) {
 		var midiPack;
-		if(midiOut.id == undefined) {
+		if(midiOut.ID == undefined) {
 			midiPack = {}
-			midiPack.id = this;
+			midiPack.ID = this;
 			midiPack.midi = midiOut;
 		}
 		else midiPack = midiOut;
@@ -119,363 +148,47 @@ var MasterNoteIn = new NoteInput("Master Note In");
 
 
 
-// /************************
-// *
-// *	NOTE INPUT TRACKS
-// *
-// **************************/
-// RS.noteInputTracks = {};
-// var NoteInputTrack = RS.class.NoteInputTrack = function() 
 
 
 
 
 
 
+RS.load = function(loadFile) {
+	if(loadFile == undefined) {
+		var track = new MidiSequenceTrack();
+		TRACKS.addTrack(track);
 
-
-
-/************************
-*
-*	KEYBOARD PIANO
-*
-**************************/
-var KEYS = RS.Keys = {};
-
-KEYS.noteInput = new NoteInput("Text Keyboard");
-KEYS.noteInput.connectMidi(MasterNoteIn);
-KEYS.octave = 4;
-
-
-KEYS.layouts = {}
-
-var wonderplan = KEYS.layouts["Wonderplan"] = {};
-
-wonderplan.lowercase = "dgsmtnwryifaebo;h";
-wonderplan.uppercase = "DGSMTNWRYIFAEBO:H";
-wonderplan.octaveShift = "zx";
-
-KEYS.currentLayout = wonderplan;
-
-
-
-
-RS.addKeyListener(function(event) {
-	var key = event.key;
-
-	//try note
-	var note = KEYS.currentLayout.lowercase.indexOf(key);
-
-	if(note == -1)
-		note = KEYS.currentLayout.uppercase.indexOf(key);		
-
-	if(note != -1) {
-		note += 12 * KEYS.octave;
-		KEYS.noteInput.recieveMidi(note);
-		return;
+		MasterNoteIn.connectMidi(track);
 	}
+	else {
+		var loadMe = loadFile;
+		if(typeof loadFile == "string")
+			loadMe = JSON.parse(loadFile);
 
-	var octaveShift = KEYS.currentLayout.octaveShift.indexOf(key);	
-	if(octaveShift == 0){
-		KEYS.octave = Math.max(0, KEYS.octave-1);
-		return;
-	}
-	if(octaveShift == 1){
-		KEYS.octave = Math.min(8, KEYS.octave+1);
-		return;
-	}
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/************************
-*
-*	DEVICES
-*
-**************************/
-
-
-
-var DEVICES = RS.Devices = {};
-
-var Device = RS.class.Device = function(deviceName, initFn) {
-	if(initFn == undefined) {
-		return DEVICES[deviceName];
-	}
-
-
-	var master = function(track) {
-		console.log(master);
-		var clone = {};
-
-		clone.name = function() {
-			return master.deviceName;
-		}
-
-		clone.master = master;
-
-		clone.audioNodes = {};
-
-		clone.setParam = function(nodeName, paramName, newVal) {
-			var node = clone.audioNodes[nodeName];
-			if(node[paramName].value != undefined)
-				node[paramName].value = newVal;
-			else
-				node[paramName] = newVal;
-		}
 		
-		clone.isEnabled = false;
-		clone.setEnabled = function(onOff) {
-			if(onOff === true || onOff === false){
-				for (var i in clone.audioNodes) {
-					if(onOff && clone.audioNodes[i].start)
-						clone.audioNodes[i].start();
-					else if(clone.audioNodes[i].stop)
-						clone.audioNodes[i].stop()
-				}
-				clone.isEnabled = onOff;		
-			}
-			else PINE.err("setEnabled(boolean) requires a boolean value ");
-		}
+		DEVICES.load(loadMe.devices);
+		RACKS.load(loadMe.racks);
+		TRACKS.load(loadMe.tracks);
+		CONNECTIONS.load(loadMe.connections);
 
-		clone.getGUI = function() {
-			if(clone.GUI)
-				return clone.GUI;
-
-			else {
-				clone.GUI = master.GUI.cloneNode(true);
-				El.attr(clone.GUI, "cloneCopy", "");
-				clone.GUI.PVARS = {};
-				clone.GUI.PVARS.soul = clone;
-				return clone.GUI;
-			}
-
-			return undefined;
-		}
-
-		master.initFn.call(clone);
-
-		clone.setTrack = function(newTrack) {
-			if(newTrack == undefined)
-				return PINE.err("no track given for setTrack()");
-
-			if(clone.recieveMidi)
-				newTrack.midiConnect(clone);
-		}
-
-		clone.setTrack(track);
-
-		return clone;
-	}
-
-	console.log(master, deviceName, initFn);
-
-	master.initFn = initFn;
-	master.deviceName = deviceName;
-	master.setGUI = function(newGUI) {
-		master.GUI = newGUI;
-	}
-
-	DEVICES[master.deviceName] = master;
-
-	return master;
-}
-
-
-
-
-
-
-
-PINE("[defineRSDevice]", function(initMe) {
-	if(El.attr(initMe, "cloneCopy") !== undefined)
-		return;
-
-	var defining = El.attr(initMe, "defineRSDevice");
-	var soul = RS(defining);
-
-	if(soul == undefined)
-		PINE.err("Device not yet defined.  Use RS(deviceName, func) before <defineRSDevice>");
-
-	else soul.setGUI(initMe);
-});
-
-
-
-PINE("[defineRSDevice]", PINE.ops.GATHER, function(initMe) {
-	var soul = initMe.PVARS.soul;
-
-	if(soul)
-		RS.connectGUI(soul, initMe);
-});
-
-
-
-
-RS.connectGUI = function(soul, gui) {
-	RS.connectRanges(soul, gui);
-	RS.connectSelects(soul, gui);
-	// RS.connectButtons(soul, gui);	
-	// RS.connectRadioButtons(soul, gui);	
-}
-
-RS.connectRanges = function(soul, gui) {
-	var ranges = El.cssQuery(gui, "rsRange");
-
-	for(var i = 0; i < ranges.length; i++) {
-		var range = ranges[i];
-		var args = RS.getNodeParam(range);
-
-		new function(range, args) {
-			range.FNS.onRangeChange(function(newVal) {
-				soul.setParam(args.node, args.param, newVal);
-			});
-		}(range, args);
+		console.log(loadMe);
 	}
 }
 
 
-RS.connectSelects = function(soul, gui) {
-	var selects = El.cssQuery(gui, "select");
-
-	for(var i = 0; i < selects.length; i++) {
-		var args = RS.getNodeParam(selects[i]);
-		selects[i].addEventListener("change", function(event) {
-			soul.setParam(args.node, args.param, event.target.value);			
-		});	
-	}
-}
-
-RS.getNodeParam = function(domNode) {
-	var out = {};
-	out.node = El.attr(domNode, "node");
-	out.param = El.attr(domNode, "param");
-	return out;
-}
 
 
+RS.toLoadable = function() {
+	var save = {};
+	save.tracks = TRACKS.toLoadable();
+	save.devices = RS.devicesToLoadable();
+	save.connections = RS.connectionsToLoadable();
 
+	var string = JSON.stringify(save);
+	console.log(string);
 
-
-
-
-
-
-/*************************
-*
-*     Knob
-*
-**************************/
-var p_knob = PINE("knob", function(initMe) {
-
-	var knobVal = 0.5;
-	PINE.addFunctionToNode(initMe, "getKnobVal", function() {
-		return knobVal;
-	});
-
-
-
-	var minRotation = El.attArg(initMe, ["knobMinRotation", "minRotation"], "int", -135);
-	var maxRotation = El.attArg(initMe, ["knobMaxRotation", "maxRotation"], "int", 135);
-	var dragRadius = El.attArg(initMe, ["knobDragRadius", "dragRadius"], "int", 150);
-
-	var rotationWidth = maxRotation - minRotation;
-	var unitPerPx = 0.5/dragRadius;
-	console.log(dragRadius, unitPerPx);
-
-	initMe.addEventListener("mousedown", function(mouseDownEvent) {
-		var dy = 0;
-		var startVal = knobVal;
-
-		mouseDownEvent.preventDefault();
-		U.dragInPlace(initMe, function(moveEvent) {
-
-			var moveY = moveEvent.movementY
-			if(moveEvent.shiftKey)
-				moveY *= 0.1;
-
-			dy -= moveY;
-
-			var newVal = (unitPerPx * dy) + startVal;
-
-			console.log(dy, newVal);
-
-			initMe.FNS.setKnobVal(newVal);
-		});
-	});
-
-	var knobChangeListeners = [];
-	PINE.addFunctionToNode(initMe, "onKnobChange", function(listener) {
-		knobChangeListeners.push(listener);
-	});
-
-
-	
-	PINE.addFunctionToNode(initMe, "setKnobVal", function(newVal) {
-		newVal = Math.max(newVal, 0);
-		newVal = Math.min(newVal, 1);
-		knobVal = newVal;
-
-		for(var i in knobChangeListeners)
-			knobChangeListeners[i](knobVal);
-
-		var rotation = (knobVal * rotationWidth) + minRotation;
-		initMe.style.transform = "rotate("+rotation+"deg)";
-	});
-
-});
-
-
-
-
-
-
-
-
-
-U.dragInPlace = function(domNode, onMovement) {
-
-	document.body.classList.add("hide_cursor");
-
-	var hasPointerLock = domNode.requestPointerLock !== undefined;
-	if(hasPointerLock)
-		domNode.requestPointerLock();
-
-	var moveEvent = function(event) {			
-		onMovement(event);
-	}
-
-	var releaseEvent = function(event) {
-		document.body.removeEventListener("mousemove", moveEvent);
-		document.body.removeEventListener("mouseup", releaseEvent);
-		document.body.classList.remove("hide_cursor");
-		if(hasPointerLock)
-			document.exitPointerLock();
-		else
-			document.body.removeEventListener("mouseleave", releaseEvent)
-	}
-
-
-	document.body.addEventListener("mousemove", moveEvent);
-	document.body.addEventListener("mouseup", releaseEvent);
-	if(!hasPointerLock)
-		document.body.addEventListener("mouseleave", releaseEvent);
+	return save;
 }
 
 
@@ -521,64 +234,53 @@ RS.createDCRange = function(initVal) {
 var p_rsRange = PINE("rsRange", PINE.ops.GATHER, function(initMe) {
 
 	console.log("rsRange found")
-	var knob = El.cssQuery(initMe, ">knob");
-	if(knob.length)
-		knob = knob[0]
-	else
-		knob = undefined;
+	
+	var rangeVal = 1;
+	PINE.addFunctionToNode(initMe, "getRangeVal", function() {
+		return rangeVal;
+	});
 
-
-	var args = p_rsRange.getArgs(initMe);
-	var max = args.max;
-	var min = args.min;
+	var min = El.attArg(initMe, ["rangeMin", "min"], "float", 0);
+	var max = El.attArg(initMe, ["rangeMax", "max"], "float", 1);
 	var width = max - min;
 
 
+	var displayItems = [];
 
+
+	var knob = El.firstOfTag(initMe, "knob");
+
+	var ignoreKnobUpdate = false;
 	if(knob) {
+		displayItems.push(knob);
 		initMe.PVARS.knob = knob;
 		knob.FNS.onKnobChange(function(turnRatio) {
+				//
+			if(ignoreKnobUpdate) return;
+
 			var newVal = turnRatio * width;
 			newVal += min;
-			initMe.FNS.setRangeVal(newVal);
+			initMe.FNS.setRangeVal(newVal, [knob]);
 		});
-
-
-
-
-
-
-
-		// knob.addEventListener("mousedown", function(mouseDownEvent) {
-		// 	var args = p_rsRange.getArgs(initMe);
-		// 	var max = args.max;
-		// 	var min = args.min;
-		// 	var unitPerPx = (max-min)/300.0; //300px total drag min to max;
-			
-		// 	var dy = 0;
-
-		// 	mouseDownEvent.preventDefault();
-		// 	RS.dragInPlace(initMe, function(moveEvent) {
-
-		// 		var moveY = moveEvent.movementY
-		// 		if(moveEvent.shiftKey)
-		// 			moveY *= 0.1;
-
-		// 		dy -= moveY;
-
-		// 		var newVal = (unitPerPx * dy) + min;
-		// 		newVal = Math.max(newVal, min);
-		// 		newVal = Math.min(newVal, max);
-
-
-		// 		var ratio = newVal/(max-min);
-		// 		knob.style.transform = "rotate("+ (ratio*180) +"deg)";
-
-		// 		for(var i in rangeChangeListeners)
-		// 			rangeChangeListeners[i](newVal);
-		// 	});
-		// });
 	}
+
+
+
+	var readout = El.firstOfTag(initMe, "numreadout");
+
+	var ignoreReadoutUpdate = false;
+	if(readout) {
+		readout.FNS.setNumReadoutLow(min);
+		readout.FNS.setNumReadoutHigh(max);
+		
+		readout.FNS.onNumReadoutChange(function(newVal) {
+				//
+			if(ignoreReadoutUpdate) return;
+
+			initMe.FNS.setRangeVal(newVal, [readout]);
+		});
+	}
+
 
 
 	var rangeChangeListeners = [];
@@ -587,12 +289,27 @@ var p_rsRange = PINE("rsRange", PINE.ops.GATHER, function(initMe) {
 	});
 
 
-	PINE.addFunctionToNode(initMe, "setRangeVal", function(newVal) {
+	PINE.addFunctionToNode(initMe, "setRangeVal", function(newVal, doNotUpdate) {
 		newVal = Math.min(max, newVal);
 		newVal = Math.max(min, newVal);
+		rangeVal = newVal;
 
 		for(var i in rangeChangeListeners)
-			rangeChangeListeners[i](newVal);	
+			rangeChangeListeners[i](rangeVal);	
+
+		
+		if(knob && doNotUpdate.includes(knob) == false) {
+			ignoreKnobUpdate = true;
+			var ratio = width/(rangeVal - min)
+			knob.FNS.setKnobVal(ratio);
+		}
+
+		if(readout && doNotUpdate.includes(readout) == false) {
+			ignoreReadoutUpdate = true;
+			readout.FNS.setNumReadoutVal(rangeVal);
+		}
+		
+
 	});
 
 });
@@ -600,32 +317,6 @@ var p_rsRange = PINE("rsRange", PINE.ops.GATHER, function(initMe) {
 
 
 
-p_rsRange.getArgs = function(initMe) {
-	var args = {};
-
-	//max
-	args.max = El.attr(initMe, "max");
-	if(args.max === undefined)
-		args.max = 1;
-	else
-		args.max = parseFloat(args.max);
-
-	//min
-	args.min = El.attr(initMe, "min");
-	if(args.min === undefined)
-		args.min = 0;
-	else
-		args.min = parseFloat(args.min);
-
-	//drag radius
-	args.dragRadius = El.attr(initMe, "dragRadius");
-	if(args.dragRadius === undefined)
-		args.dragRadius = 300;
-	else
-		args.dragRadius = parseFloat(args.dragRadius);
-
-	return args;
-}
 
 
 
@@ -637,74 +328,13 @@ p_rsRange.getArgs = function(initMe) {
 
 
 
-/******************************
-*
-*	DEVICE HOLDERS aka TRACKS
-*
-********************************/
-
-var Track = RS.class.Track = function(args) {
-	for(var key in args)
-		this[key] = args[key];
-	
-	this.id = TRACKS.maxId++;
-
-	if(this.name == undefined)
-		this.name = "Track "+this.id;
-
-	TRACKS.list.push(this);
-	TRACKS.byId[this.id] = this;
-
-	this.addDevice = function(device) {
-		var addMe;
-		if(typeof device == "string")
-			addMe = new Device(device)(this);
-
-		else if(true || typeof device == "string") {
-			console.log(typeof device);
-			addMe = device;
-		}
-
-		addMe.setEnabled(true);
-		var guiNode = addMe.getGUI();
-		El.byId("track_details").appendChild(guiNode);
-		PINE.updateAt(guiNode);
-	}
-
-	this.midiConnections = []
-	this.midiConnect = function(device) {
-		this.midiConnections.push(device);
-	}
-
-	this.midiDisconnect = function(device) {
-		var target = this.midiConnections.indexOf(device)
-		if(target != -1)
-			this.midiConnections.splice(target, 1);
-	}
-
-
-	this.recieveMidi = function(midiIn) {
-		for (var i in this.midiConnections)
-			this.midiConnections[i].recieveMidi(midiIn);
-	}
-
-	MasterNoteIn.connectMidi(this);
-}
 
 
 
 
-var TRACKS = RS.Tracks = function(id) {
-	return TRACKS.byId[id];
-}
-	
-TRACKS.list = [];
-TRACKS.byId = {}
-TRACKS.maxId = 0;
 
 
-new Track();
-new Track();
+
 
 
 var LogNode = RS.LogNode = audioCtx.createScriptProcessor(4096, 1, 1);
@@ -751,7 +381,58 @@ LogNode.onaudioprocess = function(audioProcessingEvent) {
 
 
 
+/************************
+*
+*	KEYBOARD PIANO
+*
+**************************/
+var KEYS = RS.Keys = {};
 
+KEYS.noteInput = new NoteInput("Text Keyboard");
+KEYS.noteInput.connectMidi(MasterNoteIn);
+KEYS.octave = 4;
+
+
+KEYS.layouts = {}
+
+var wonderplan = KEYS.layouts["Wonderplan"] = {};
+
+wonderplan.lowercase = "dgsmtnwryifaebo;h";
+wonderplan.uppercase = "DGSMTNWRYIFAEBO:H";
+wonderplan.octaveShift = "zx";
+
+KEYS.currentLayout = wonderplan;
+
+
+
+U.docReady(function() {
+	document.body.addEventListener("keydown", function(event) {
+		var key = event.key;
+
+		//try note
+		var note = KEYS.currentLayout.lowercase.indexOf(key);
+
+		if(note == -1)
+			note = KEYS.currentLayout.uppercase.indexOf(key);		
+
+		if(note != -1) {
+			note += 12 * KEYS.octave;
+			KEYS.noteInput.recieveMidi(note);
+			return;
+		}
+
+		var octaveShift = KEYS.currentLayout.octaveShift.indexOf(key);	
+		if(octaveShift == 0){
+			KEYS.octave = Math.max(0, KEYS.octave-1);
+			return;
+		}
+		if(octaveShift == 1){
+			KEYS.octave = Math.min(8, KEYS.octave+1);
+			return;
+		}
+
+	});	
+});
 
 
 

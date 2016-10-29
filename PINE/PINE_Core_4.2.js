@@ -520,15 +520,32 @@ PINE.runResource = function(domNode) {
 			LOG("overview", "Adding Resource "+src);	
 
 			U.Ajax.get(src).then( function(request) {
-				domNode.innerHTML = request.response;
-
-				var scripts = domNode.getElementsByTagName("script");
-				for(var sc = 0; sc < scripts.length; sc++ ) {
-					U.helpfulEval(scripts[sc].innerHTML, src);
-					// eval(scripts[sc].innerHTML);
+				if(src.includes('.js')) {
+					U.runScript(request.response, domNode, src);
+					resolve();
 				}
 
-				resolve();
+				else {
+					var response = request.response;
+
+					// var promises = [];
+					var promise;
+
+					response = response.replace(/<script(.|\s)*?>(\s|.)*?<\/script>/g, function(replaceMe) {
+						replaceMe = replaceMe.replace(/<script(.|\s)*?>|<\/script>/g, '')
+						// var promise = U.runScript(replaceMe, domNode, src);
+						var addMe = U.runScript(replaceMe, domNode, src);;
+						promise = promise ? promise.then(addMe) : addMe;
+						// promises.push(promise);
+						return '';
+					});
+
+					domNode.innerHTML += response;
+
+					// Promise.all(promises).then(resolve);
+					promise.then(resolve);
+				}
+
 			}, reject);
 		}
 	});
@@ -1111,19 +1128,42 @@ PINE.err = function(whatevers_the_problem) { //?
 		// }
 
 		var args = [];
+		var showStack = true;
+		var labelPine = true;
 
-		for(var ar in arguments)
-			args[ar] = arguments[ar];
+		for(var ar in arguments) {
+			if(ar == 0 && typeof arguments[ar] == "string") {
+				if(arguments[ar].indexOf("nostack") != -1)
+			 		showStack = false;
+			 	if(arguments[ar].indexOf("notpine") != -1)
+			 		labelPine = false;
+
+			 	if(labelPine && showStack)
+			 		args.push(arguments[ar]);
+			}
+			else	
+				args.push(arguments[ar]);
+		}
 		
-		args.unshift("PINE error: ");
+		if(labelPine)
+			args.unshift("PINE error: ");
 		args.unshift("error");
 
-		var stack = {};
-		stack.errorStack = new Error().stack.split('\n');
-		var badLine = stack.errorStack[1];
+		if(showStack) {
+			var stack = {};
+			stack.lines = [];
+			var errorStack = new Error().stack.split('\n');
+			for(var i in errorStack) {
+				var shortened = errorStack[i].match(/(\/)?([^\/]*?\/)?([^\/]+?)$/g);
+				stack.lines[i] = shortened && shortened.length ? shortened[0] : errorStack[i];
+			}
+
+			var badLine = stack.lines[1];
 
 
-		U.log("light", badLine, stack);
+			U.log("light", badLine, stack);
+		}
+		
 
 		U.log.apply(this, args)
 		// console.log(new Error());
@@ -1263,33 +1303,6 @@ U.assertKey = U.assertArray = U.assertVar = function() {
 
 
 
-
-
-// U.assertVar = function(start, keyString, keyNotArray)  {
-// 	var keyArray = keyString.match(/[\w\d]+/g)
-// 	var pos = start;
-
-// 	var noNeed = true;
-
-// 	if(start) {
-// 		for(var i in keyArray)  {
-// 			var key = keyArray[i];
-// 			if(pos[key] == null) {
-// 				pos[key] = {};
-// 				noNeed = false;
-// 			}
-// 			pos = pos[key];
-// 		}
-// 	}
-// 	else noNeed = false;
-
-// 	if(keyNotArray == false && noNeed == false){
-// 		pos = [];
-// 	}
-
-// 	return noNeed;
-// }
-
 U.stringToVariableLayers = function(keyString, rootLess) {
 	if(keyString === undefined)
 		return;
@@ -1403,113 +1416,6 @@ U.getnit = function(start, keyArrayOrString, init, bracketsCase, forceSet)  {
 
 
 
-// //mix between get and init.
-// U.getnit = function(start, keyString, init, bracketsCase)  {
-
-// 	if(keyString === undefined)
-// 		return start;
-
-// 	if(keyString.charAt(0) == '.')
-// 		keyString = keyString.substr(1);
-
-// 	var bracketsCase = bracketsCase || U.get;
-
-// 	// console.log("getting"+keyString)
-// 	// console.log(start);
-	
-// 	var pos = start;
-
-	
-// 	//there should be a starting point
-// 	if(start) {
-// 			//
-// 		var keyArray = [];
-// 		var lastStop = 0;
-// 		var openBrackets = 0;
-
-// 		//go through string splitting at 0 depth end brackets (ie [[this]] [[notthis])
-// 		//also split at dots
-// 		//eg. exam.tests[lala.go["hey"]] == ["exam", "tests", "[lala.go['hey']]"];
-// 		//eg. test['[test]'] == ["test", "['test']"]
-// 		for(var c = 0; c < keyString.length; c++) {
-// 			var char = keyString.charAt(c);
-
-// 			if(char == '[') { 
-// 				if(openBrackets == 0 && c != 0) {
-// 					keyArray.push(keyString.substring(lastStop, c));
-// 					lastStop = c;	
-// 				}
-// 				openBrackets++; 
-// 			}
-// 			else if(char == ']') {  openBrackets--;  }
-
-// 			else if(openBrackets == 0 && char == '.') {
-// 				keyArray.push(keyString.substring(lastStop, c));
-// 				lastStop = c+1;	
-// 			}
-// 		}
-// 		keyArray.push(keyString.substring(lastStop));
-
-// 		// console.log(keyArray);
-
-
-// 		//match any brackets, or any string of digits and characters
-// 		//KLUDGE: very little error handling
-// 		for(var i in keyArray)  {
-// 			var key = keyArray[i];
-
-// 			// console.log("IN"+key);
-
-// 			//if this is a brackets match, remove the outermost brackets
-// 			if(key.charAt(0) == '[') {
-// 				key = key.replace(/(^\[|\]$)/g, '');
-
-// 				//if the new first char not a quote it is it's own variable
-// 				if (key.charAt(0) != "'" && key.charAt(0) != '"') {
-// 					// console.log("HEYHE");
-// 					key = bracketsCase(start, key, bracketsCase);
-// 					// console.log("SPECIAL CASE"+key);
-// 				}
-
-// 				//otherwise, replace the quotes
-// 				else {
-// 					key = key.replace(/['"]/g, '');
-// 				}
-// 			}
-			
-
-// 			// console.log("OUT"+key);
-
-// 			if(pos[key] === undefined) {
-// 				if(init === undefined)
-// 					return undefined;
-
-// 				//last one
-// 				else if(i < keyArray.length - 1)
-// 					pos[key] = {};
-
-// 				else pos[key] = init;
-// 			}
-// 			pos = pos[key];
-// 		}
-// 	}
-
-// 	return pos;
-// }
-
-
-
-
-// U.assertKey = function(start, keyString)  {
-// 	U.assertVar(start, keyString, true);
-// }
-
-// U.assertArray = function(start, keyString)  {
-// 	U.assertVar(start, keyString, false);
-// }
-
-
-
 U.initArray = function(val, size)  {
 	var out = [];
 	for(var i = 0; i < size; i++) {
@@ -1518,6 +1424,15 @@ U.initArray = function(val, size)  {
 	return out;
 }
 
+
+U.removeFromArray = function(val, array) {
+	var target = array.indexOf(val);
+
+	if(target != -1)
+		array.splice(target, 1);
+
+	return target != -1;
+}
 
 
 U.Ajax = {};
@@ -1569,10 +1484,64 @@ U.helpfulEval = function(evalMe, filename) {
 	catch(e) {
 		var lineNumber = e.lineNumber ? e.lineNumber : -1;
 		var errorOut = {};
-		errorOut.viewScript = evalMe;
 
-		PINE.err("eval error in file "+filename+" line: "+lineNumber+" of script: ", errorOut);
+		errorOut.lines = evalMe.split('\n');
+		var line = errorOut.lines[lineNumber-1];
+
+		PINE.err("eval error in file "+filename+" line: "+lineNumber+" of script: \n"+line, errorOut);
 	}
+}
+
+
+U.ranScripts = [];
+U.ranScripsNextId = 0;
+U.runScript = function(scriptText, appendTo, src) {
+	// console.log(scriptText);
+	// var scriptText = scriptText + ' ';
+
+	return new Promise( function(resolve, reject) {
+		var id = U.ranScripsNextId;
+		U.ranScripsNextId++;
+
+		var ranScript = {};
+		ranScript.text = scriptText;
+		ranScript.resolve = resolve;
+		ranScript.src = src || "no src";
+			//
+		U.ranScripts[id] = ranScript;
+
+
+
+		scriptText = "var _scriptHelper = U.ranScripts["+id+"];\n"
+			+"try {\n"+scriptText
+			+"\n} catch(ex){\n"
+				+"U.ranScriptException(_scriptHelper, ex); }\n"
+			+"_scriptHelper.resolve();";
+
+		
+		var script = document.createElement("script");
+		ranScript.element = script;
+
+		script.innerHTML = scriptText;
+		
+
+		appendTo = appendTo || document.head;
+		appendTo.appendChild(script);
+	});
+}
+
+U.ranScriptException = function(_scriptHelper, ex) {
+	var lineNumber = ex.lineNumber-2;
+	var errorOut = {};
+	errorOut.exception = ex;
+	errorOut.lines = _scriptHelper.text.split('\n');
+	var line = errorOut.lines[lineNumber-1];
+	PINE.err("nostack notpine", 
+		ex.message+'\n'
+		+_scriptHelper.src+' :: '+lineNumber+':\n'
+		+line,
+		_scriptHelper.element,
+		errorOut);
 }
 
 
@@ -1585,10 +1554,10 @@ U.log = function() {
     var color = arguments[0] || "black";
     var bgc = "Transparent";
     switch (color) {
-        case "success":  color = "Yellow";      	bgc = "Green";      	break;
-        case "info":     color = "Black"; 	   		bgc = "Orange";       	break;
-        case "error":    color = "Red";        		bgc = "Black";          break;
-        case "light":    color = "rgba(150,150,150,0.3)";     				break;
+        case "success":  color = "Yellow";      			bgc = "Green";      	break;
+        case "info":     color = "Black"; 	   				bgc = "Orange";       	break;
+        case "error":    color = "#D33";   					bgc = "#222";          break;
+        case "light":    color = "rgba(150,150,150,0.3)";     						break;
         default: color = color;
     }
     
@@ -1627,57 +1596,12 @@ U.log = function() {
 }
 
 
-/***
-*	Cookie get and set shared by Srinivas Sabbani
-*	http://stackoverflow.com/a/4825695/4808079
-* 	Modded
-***/
 
 U.cookie = U.setCookie = U.getCookie = U.deleteCookie = function() {
 	alert("DON'T USE COOKIES, USE LOCAL STORAGE");
 	PINE.err("cookies no longer supported");
 }
 
-
-// U.cookie = function(name, value, days) {
-// 	if(value) 
-// 		U.setCookie(name, value, days);
-	
-// 	else
-// 		return U.getCookie(name);
-// }
-
-// U.setCookie = function(name, value, days) {
-//     var expires;
-//     if (days) {
-//         var date = new Date();
-//         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-//         expires = "; expires=" + date.toGMTString();
-//     }
-//     else {
-//         expires = "";
-//     }
-//     document.cookie = name + "=" + value + expires + "; path=/";
-// }
-
-// U.getCookie = function(c_name) {
-//     if (document.cookie.length > 0) {
-//         var c_start = document.cookie.indexOf(c_name + "=");
-//         if (c_start != -1) {
-//             c_start = c_start + c_name.length + 1;
-//             var c_end = document.cookie.indexOf(";", c_start);
-//             if (c_end == -1) {
-//                 c_end = document.cookie.length;
-//             }
-//             return unescape(document.cookie.substring(c_start, c_end));
-//         }
-//     }
-//     return "";
-// }
-
-// U.deleteCookie = function(varName) {
-//   	document.cookie = varName + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-// }
 
 
 U.getHttpArg = function(varName, url){
@@ -1913,6 +1837,14 @@ El.byTag = function(domNode, tag) {
 	return domNode.getElementsByTagName(tag);
 }
 
+El.firstOfTag = function(domNode, tag) {
+	var result = El.byTag(domNode, tag);
+	if(result.length)
+		return result[0];
+	else
+		return undefined;
+}
+
 El.queryChildren = function(root, keyword, limit) {
 	return El.cssQuery(root, "> "+keyword, limit);
 	// var out = [];
@@ -1956,6 +1888,9 @@ El.firstsOfKey = function(root, keyword, skipOnce)  {
 
 
 El.attr = function(domNode, name, value) {
+	if(typeof domNode == "string")
+		domNode = El.byId(domNode);
+
 	if(domNode.attributes) {
 		var target = domNode.attributes[name];
 
@@ -1984,7 +1919,7 @@ El.attr = function(domNode, name, value) {
 El.attArg = function(domNode, attNames, type, defaultVal) {
 
 	var out;
-	type = type.toLowerCase();
+	type = type ? type.toLowerCase() : undefined;
 
 	if(typeof attNames == "string")
 		out = El.attr(domNode, attNames);

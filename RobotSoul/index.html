@@ -8,117 +8,142 @@
 	<script type="text/javascript" src="../PINE/PINE_Var.js"></script>
 	<script type="text/javascript" src="../PINE/PINE_Needles.js"></script>
 	<script type="text/javascript" src="../PINE/PINE_Includes.js"></script>
+	<script type="text/javascript" src="../public/js/WebMIDIAPI.min.js"></script>
 	<!-- <needle src="../PINE/needles/suggestions.html"></needle>
 	<needle src="../PINE/needles/selectablelist.html"></needle>
 	<needle src="../PINE/needles/showHide.html"></needle> -->
+	<needle src="../PINE/needles/knobsAndSliders.html"></needle>
 
 
 
 	<script type="text/javascript" src="RobotSoul.js"></script>
-	<needle src="devices/Oscillator.html"></needle>
+	<script type="text/javascript" src="RobotSoul_IOHelper.js"></script>
+	<script type="text/javascript" src="RobotSoul_Tracks.js"></script>
+	<script type="text/javascript" src="RobotSoul_Devices.js"></script>
+	<script type="text/javascript" src="RobotSoul_DeviceRack.js"></script>
+
+	<needle src="cableOverlay.html"></needle>
+	<needle src="devices/basic/Oscillator.html"></needle>
+	<needle src="devices/MidiFreq.html"></needle>
+	<needle src="devices/basic/Gain.html"></needle>
+	<needle src="devices/basic/Interval.html"></needle>
+	<needle src="devices/basic/Knob.html"></needle>
+	<needle src="devices/basic/LinearRange.html"></needle>
 
 	<script type="text/javascript">
 
-
+		// var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 		// var oscillator = audioCtx.createOscillator();
 		// oscillator.type = 'triangle';
 		// oscillator.frequency.value = 300; // value in hertz
-		// oscillator.connect(RS.Out);
+		// oscillator.connect(audioCtx.destination);
 		// oscillator.start();
-	// 	var LFO = audioCtx.createOscillator();
-	// 	var FM = audioCtx.createOscillator();
-	// 	var FMBoost = audioCtx.createGain();
-	// 	var gainNode = audioCtx.createGain();
-
-
-
 		
+	// var loadMe = '{"tracks":{"0":{"ID":0,"name":"Track 0","deviceRacks":[0]}},"devices":{"masters":{"0":"DeviceRack","1":"Oscillator","2":"MidiToFreq","3":"Gain","4":"Interval","5":"Knob","6":"LinearRange"},"clones":{"0":{"ID":0,"masterID":0},"1":{"ID":1,"masterID":2},"2":{"ID":2,"masterID":1},"3":{"ID":3,"masterID":5},"4":{"ID":4,"masterID":3}}},"connections":{"0":{"ID":0,"output":{"name":"midi","device":0},"input":{"name":"midi_in","device":1}},"1":{"ID":1,"output":{"name":"frequency_out","device":1},"input":{"name":"osc_frequency","device":2}},"2":{"ID":2,"output":{"name":"out","device":3},"input":{"name":"gain","device":4}},"3":{"ID":3,"output":{"name":"wave_out","device":2},"input":{"name":"in","device":4}}}}'
+	var loadMe = {
+		devices : {
+			templates : {
+				// nextID : 3,
+				byID : {
+					0 : "DeviceRack",
+					1 : "MidiToFreq",
+					2 : "Oscillator",
+					3 : "Gain",	
+					4 : "Knob"
+				}
+			},
+			clones : {
+				nextID : 5,
+				list : [
+					{	ID : 0,		template : 0 },
+					{	ID : 1,		template : 1 },
+					{	ID : 2,		template : 2 },
+					{	ID : 3,		template : 3 },
+					{	ID : 4,		template : 4 },
+				]
+			}
+		},
 
-	// 	FM.type="square";
-	// 	FM.frequency.value = 2;
-	// 	FM.connect(FMBoost);
-	// 	FM.start();
+		racks : [
+			{
+				ID: 0,
+				devices : [1, 2, 3, 4]
+			}
+		],
 
-	// 	FMBoost.gain.value=70;
-	// 	FMBoost.connect(oscillator.frequency);
+		tracks : [
+			{
+				ID: 0,
+				racks : [0]
+			}
+		],
 
-	// 	LFO.type="saw";
-	// 	LFO.frequency.value = 3;
-	// 	LFO.connect(gainNode.gain);
-	// 	LFO.start();
+		connections : [
+			{	ID : 0,		
+				output : {
+					device : 0,
+					name : "midi"
+				},
+				input : {
+					device : 1,
+					name : "midi_in"
+				}
+			},
 
-		
-
-	// 	setInterval(changeFreq, 100);
-
-	// 	gainNode.connect(audioCtx.destination);
-	// 	gainNode.gain.value = 0.25;
-
-
-	// 	var intervals = [1.0, 1.125, 1.25, 1.3333, 1.5, 1.8, 2.0]
-	// 	function changeFreq() {
-	// 		var intervalIndex = ~~(Math.random() * intervals.length);
-	// 		var noteFreq = 600 * intervals[intervalIndex];
-
-	// 		// if(noteFreq > 1600) 
-	// 		// 	noteFreq *= 0.25;
-	// 		// else if(noteFreq < 250) 
-	// 		// 	noteFreq *= 3;
-			
-
-
-	// 		// oscillator.frequency.value = noteFreq;
-	// 		var timeLeft = 100;
-	// 		var dT = 10;
-	// 		var dHz = (noteFreq - oscillator.frequency.value)/timeLeft;
-	// 		var slide = setInterval(function() {
-	// 			timeLeft -= dT;
-	// 			var freq;
-	// 			if(timeLeft <= 0) 
-	// 				freq = noteFreq;
-
-	// 			else
-	// 				freq = noteFreq - (timeLeft * dHz);
-
-	// 			oscillator.frequency.value = freq;
-
-	// 			if(timeLeft <= 0)
-	// 				clearInterval(slide);
-				
-	// 		}, dT);
-	// 	}
-
-	// 	return this;
-	// }
+			{	
+				ID : 1,		
+				output : {
+					device : 1,
+					name : "frequency_out"
+					
+				},
+				input : {
+					device : 2,
+					name : "osc_frequency"
+				}
+			},
+			{	ID : 2,		
+				output : {
+					device : 2,
+					name : "wave_out"
+				},
+				input : {
+					device : 3,
+					name : "in"
+				}
+			},
+			{	ID : 3,		
+				output : {
+					device : 4,
+					name : "out"
+				},
+				input : {
+					device : 3,
+					name : "gain"
+				}
+			}
+		]
+	}
 
 
-		
 
+	PINE.ready(function(){
+		RS.load(loadMe);
+		El.byId("all_tracks").FNS.update();	
+		viewTrackDetails(0);
+	});
+	
 	
 
 
-	// PINE("trackItem", function(initMe) {
-	// 	initMe.addEventListener("click", function() {
-	// 		var id = parseInt(El.attr(initMe, "trackId"));
-
-
-	// 	});
-	// });
-
-
-
-	// Oscillator = function() {
-		
-	// }
-
-
 	function viewTrackDetails(trackId) {
-		El.byId("details").FNS.changeSrc("modules/TrackDevices.html?id="+trackId);
+		
+		El.byId("details").FNS.changeSrc("modules/Rack.html?id="+trackId);
 	}
 
-	PINE.ready(function() {
-		viewTrackDetails(0);
-	});
+	// PINE.ready(function() {
+	
+	// });
 		
 	</script>
 	
@@ -140,8 +165,17 @@
 </view>
 
 
-<trackList spawner="TRACKS.list">
-	<trackItem spawn changeSrc="modules/TrackDevices.html?id={{TRACKS.list[i].id}}" changeSrcTarget="details">
+<!-- <trackList spawner="TRACKS.list">
+	<trackItem spawn changeSrc="modules/TrackDevices.html?id={{TRACKS.list[i].ID}}" changeSrcTarget="details">
+		<solo>S</solo>
+		<mute>M</mute>
+		{{TRACKS.list[i].name}}
+	</trackItem>
+</trackList> -->
+
+
+<trackList id="all_tracks" spawner="TRACKS.list">
+	<trackItem spawn changeSrc="modules/Rack.html?id={{TRACKS.list[i].ID}}" changeSrcTarget="details">
 		<solo>S</solo>
 		<mute>M</mute>
 		{{TRACKS.list[i].name}}
@@ -162,7 +196,8 @@
 
 <style>
 body {
-	background: #333;
+	/*background: #30120E;*/
+	/*background: #453B75;*/
 	color: #FFF;
 	font-family: arial;
 }
@@ -175,6 +210,10 @@ body {
 * {
 	border-color: #222;
 	border-width: 2px;
+}
+
+* [changeSrc] {
+	cursor: pointer;
 }
 
 
@@ -197,7 +236,7 @@ rsRange {
 
 	rsRange rsLabel {
 		display: block;
-		font-size: 10px;
+		/*font-size: 10px;*/
 	}
 
 
@@ -206,6 +245,11 @@ tracklist {
 	left: 400px;
 	height: 100%;
 	right: 0px;
+	/*background: #453B75;*/
+	background-color: #4A465C;
+	border-left-style: solid;
+	box-shadow: 1px 1px 15px #1117;
+	background-image: url("public/images/misty_robot.png");
 }
 	trackItem {
 		display: block;
@@ -235,7 +279,8 @@ tracklist {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	background: #444;
+	/*background: #444;*/
+	background: #56755B;
 	height: 100%;
 	width: 400px;
 	overflow: scroll;

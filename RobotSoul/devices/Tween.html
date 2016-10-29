@@ -1,0 +1,100 @@
+<script type="text/javascript">
+	var r_tween = Device("Tween", function(device) {
+
+
+		var lastVal = [];
+		var tweeningProcess = undefined;
+
+
+		var tweener = audioCtx.createScriptProcessor(256, 1, 1);
+
+		// Give the node a function to process audio events
+		tweener.onaudioprocess = function(audioProcessingEvent) {
+
+		  	// The input buffer is the song we loaded earlier
+		    var inputBuffer = audioProcessingEvent.inputBuffer;
+
+		    // The output buffer contains the samples that will be modified and played
+		    var outputBuffer = audioProcessingEvent.outputBuffer;
+
+		    // Loop through the output channels (in this case there is only one)
+		    for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+		    	var inputData = inputBuffer.getChannelData(channel);
+		   	 	var outputData = outputBuffer.getChannelData(channel);
+
+			    // Loop through the 4096 samples
+			    for (var sample = 0; sample < inputBuffer.length; sample++) {
+			    	var input = inputData[sample];
+
+			    	if(lastVal[channel] != input) {
+			    		if(lastVal[channel] == undefined)
+		   	 				lastVal[channel] = inputData[0];
+		   	 			
+			    	}
+
+
+			      // make output equal to the same as the input
+			      outputData[sample] = ;
+
+			      // add noise to each output sample
+			      outputData[sample] += ((Math.random() * 2) - 1) * 0.2;         
+			    }
+		    }
+		}
+		// var freqIn = device.addInput("osc_frequency", "frequency");
+
+		// var type = "sine";
+		// var typeIn = device.addInput("osc_type", "wave_type", function(newVal) {
+		// 	if(newVal) {
+		// 		type = newVal;
+
+		// 		if(osc)
+		// 			oct.type = type;
+		// 	}
+		// });
+
+		// var osc, freqKnob;
+		// device.start = function() {
+		// 	osc = audioCtx.createOscillator();
+		// 	freqIn.setReciever(osc.frequency);
+		// 	osc.type = 'sine';
+		// 	osc.frequency.value = 0;
+		// 	osc.connect(RS.Out);
+		// 	osc.start();
+		// }
+
+		// device.stop = function() {
+		// 	osc.stop();
+		// 	osc.disconnect();
+		// 	osc = undefined;
+		// }
+
+	});
+</script>
+
+<!-- <rsDevice class="device_oscillator quarter_size" defineRSDevice="Oscillator" unitHeight="1" unitWidth="1">
+	<div class="device_front">
+		<select node="osc" param="type">
+			<option value="sine" selected>Sine</option> 
+			<option value="triangle">Triangle</option>
+			<option value="square">Square</option>
+			<option value="sawtooth">Saw</option>
+		</select>
+	</div>
+
+	<div class="device_back">
+		<rsIn name="osc_frequency">
+			Freq
+			<socket></socket>
+			</rsIn>
+		
+		<rsIn name="osc_type">
+			Wave
+			<socket></socket>
+			</rsIn>
+	</div>
+
+</rsDevice>
+ -->
+
+
