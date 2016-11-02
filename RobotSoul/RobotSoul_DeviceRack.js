@@ -2,9 +2,12 @@
 
 var RACKS = RS.deviceRacks = {};
 
-RACKS.all = [];
-// RACKS.byId = {};
-// RACKS.maxId = 0;
+RACKS.initState = function() {
+	RACKS.all = [];
+}
+RACKS.initState()
+
+
 RACKS.get = DEVICES.getClone;
 
 var DeviceRack = DEVICES.registerTemplate("DeviceRack" , function(rack) {
@@ -24,6 +27,18 @@ var DeviceRack = DEVICES.registerTemplate("DeviceRack" , function(rack) {
 		if(rack.GUI == undefined) {
 			rack.GUI = document.createElement("DeviceRack");
 			El.attr(rack.GUI, "cableOverlay", "");
+			
+			El.attr(rack.GUI, "dragArea", ">rsdevice");
+			El.attr(rack.GUI, "dragAreaSnap", "");
+			El.attr(rack.GUI, "unit", "50");
+			El.attr(rack.GUI, "dragAreaOverlap", "none");
+			El.attr(rack.GUI, "dragAreaOnResize", "redisperse");
+			El.attr(rack.GUI, "disperseOn", "show");
+
+			El.attr(rack.GUI, "boxSelectArea", ">rsdevice");
+
+			El.attr(rack.GUI, "selectableList", "");
+			El.attr(rack.GUI, "selectableItems", ">rsdevice");
 
 			for(var i in rack.devices){
 				// console.log("getting gui of device", rack.devices[i]);
@@ -33,6 +48,21 @@ var DeviceRack = DEVICES.registerTemplate("DeviceRack" , function(rack) {
 			}
 
 			PINE.updateAt(rack.GUI);
+
+			rack.GUI.FNS.dragAreaOnMove(function(deviceGUI) {
+				// setTimeout(function() {
+					// console.log(deviceGUI);
+					var outputs = deviceGUI.PVARS.soul.outputs.all;
+					var inputs = deviceGUI.PVARS.soul.inputs.all;
+					var sockets = outputs.concat(inputs);
+
+					for(var i in sockets) {
+						var cons = sockets[i].connections;
+						for(var c in cons)
+							cons[c].cable ? cons[c].cable.updatePosition() : undefined;
+					}
+				// }, 200);
+			});
 
 			for(var i in rack.devices){
 				rack.addDeviceConnectionsToGUI(rack.devices[i]);
@@ -121,6 +151,9 @@ var DeviceRack = DEVICES.registerTemplate("DeviceRack" , function(rack) {
 
 
 
+
+
+
 RACKS.toLoadable = function() {
 	var save = [];
 	for (var i in RACKS.all) {
@@ -136,6 +169,8 @@ RACKS.toLoadable = function() {
 	}
 	return save;
 }	
+
+
 
 
 RACKS.load = function(loadMe) {

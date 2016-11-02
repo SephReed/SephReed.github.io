@@ -2,7 +2,7 @@
 	var r_knob = DEVICES.registerTemplate("Knob", function(device) {
 		var knob = IOH.createDCRange();
 
-		device.addOutput("out", "gain", knob);
+		device.addOutput("knob", "gain", knob);
 		device.addInput("knob_gain", "knob", function(newVal) {
 			knob.gain.value = newVal;
 		});
@@ -18,8 +18,8 @@
 	</div>
 
 	<div class="device_back">
-		<rsOut name="out">
-			Out
+		<rsOut name="knob">
+			Knob
 			<socket></socket>
 			</rsOut>
 	</div>

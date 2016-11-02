@@ -456,6 +456,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	PINE.debug.init();
 	LOG("overview", "DOMContentLoaded");
 
+	El.initWaitForDisplay();
+
+
 	PINE.loadResources().then( function() {
 		
 		PINE.run().then(function() {
@@ -1829,7 +1832,7 @@ U.Async.prototype.run = function(resolve, reject) {
 
 var El = PINE.UTILITIES.ELEMENT = {};
 
-El.byId = function(id) {
+El.byID = El.byId = function(id) {
 	return document.getElementById(id);
 }
 
@@ -1913,10 +1916,54 @@ El.attr = function(domNode, name, value) {
 
 
 
+El.waitForDisplay = function(domNode) {
+	return new Promise(function(resolve, reject) {
+		var inWindow = El.getRootNode(domNode) == window;
+		var isDisplayed = El.getStyle(domNode, "display") != "none";
+
+		if(inWindow && isDisplayed) {
+			resolve();
+			return;
+		}
+		else {
+			domNode.classList.add("watch_for_display");
+		 	var onStart = function(event) {
+			    if (event.animationName == 'watch_for_display_inserted' && event.target == domNode) {
+			    	document.removeEventListener('animationstart', onStart);
+			    	resolve();
+			    }
+			}
+		 	document.addEventListener('animationstart', onStart);
+		}
+	});
+}
+
+
+//unfortunate hack used for El.waitForDisplay().  
+//Very useful for any elements which make use of their dimensions on screen.
+El.initWaitForDisplay = function() {
+	var display_watch_style = document.createElement("style");
+	display_watch_style.textContent = "@keyframes watch_for_display_inserted { from { z-index: 1; } to { z-index: 1; } }"
+		+	".watch_for_display { animation-duration: 0.001s; animation-name: watch_for_display_inserted; }";
+	document.body.appendChild(display_watch_style);
+}
+
+
+	
+
+
+El.getRootNode = function(branch) {
+	var out = branch
+	while(out.parentNode)
+		out = out.parentNode;
+
+	return out;
+}
 
 
 
-El.attArg = function(domNode, attNames, type, defaultVal) {
+
+El.attArg = function(domNode, attNames, type, defaultVal, defaultAttVal) {
 
 	var out;
 	type = type ? type.toLowerCase() : undefined;
@@ -1930,25 +1977,51 @@ El.attArg = function(domNode, attNames, type, defaultVal) {
 		}
 	}
 
-	
+	if(type == "exists")
+		return out != undefined;
+
+
+	if(out === '') 
+		out = defaultAttVal;
+		
 	if(out === undefined)
 		return defaultVal;
-
-	else if (type == "string" || type == undefined)
+	
+	
+	if (type == "string" || type == undefined)
 		return out;
 
 	else if (type == "int")
 		return parseInt(out);
 
-	else if (type == "domnode" || type == "id")
+	else if (type == "id")
 		return El.byId(out);
+
+	else if (type == "tag")
+		return El.byTag(domNode, out);
+
+	else if (type == "tagFirst")
+		return El.firstOfTag(domNode, out);
+
+	else if (type == "selector")
+		return El.cssQuery(domNode, out);
 
 	else if (type == "float" || type == "double")
 		return parseFloat(out);
 
+	else if (type == "boolean")
+		return out == "true" ? true : out == "false" ? false : undefined;
+
 	return out;
 }
 
+
+El.makeSizeCalculatable = function(domNode) {
+	var positioning = El.getStyle(domNode, "position");
+	
+	if(positioning == undefined || positioning == 'static')
+		domNode.style.position = "relative";
+}
 
 El.windowOffset = function(target) {
 	var out = {};
@@ -1959,6 +2032,38 @@ El.windowOffset = function(target) {
 
     return out;
 }
+
+El.relativePos = function(ofMe, toMe) {
+	var spaceBounds = ofMe.getBoundingClientRect();
+	var itemBounds = toMe.getBoundingClientRect();
+
+	var x = itemBounds.left - spaceBounds.left;
+	var y = itemBounds.top - spaceBounds.top;
+
+	return {x: x, y: y};
+}
+
+
+El.overlap = function(el1, el2) {
+
+	var bounds1 = el1.getBoundingClientRect();
+	var bounds2 = el2.getBoundingClientRect();
+
+	var firstIstLeftmost = (bounds1.left <= bounds2.left);
+	var leftest = firstIstLeftmost ? bounds1 : bounds2;
+	var rightest = firstIstLeftmost ? bounds2 : bounds1;
+
+	if(leftest.right > rightest.left) {
+			//
+		var firstIsTopmost = (bounds1.top <= bounds2.top);
+		var topest = firstIsTopmost ? bounds1 : bounds2;
+		var bottomest = firstIsTopmost ? bounds2 : bounds1;
+
+		return topest.bottom > bottomest.top;
+	}
+	else return false;
+}
+
 
 El.domReady = function(callback) {
 	return U.docReady(callback);

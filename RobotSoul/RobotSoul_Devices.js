@@ -15,8 +15,55 @@ DEVICES.templates.byName = {};
 DEVICES.templates.nextID = 0;
 
 DEVICES.clones = {};
-DEVICES.clones.byID = {};
-DEVICES.clones.nextID = 0;
+
+DEVICES.initState = function() {
+	DEVICES.clones.byID = {};
+	DEVICES.clones.nextID = 0;
+
+	for (var id in DEVICES.templates.byID)
+		DEVICES.templates.byID[id].counter = 1;
+}
+DEVICES.initState();
+
+
+
+DEVICES.toLoadable = function() {
+	var save = {};
+	save.templates = {};
+	// save.templates.nextID = DEVICES.templates.nextID;
+	save.templates.byID = {};
+
+	save.clones = {};
+	save.clones.nextID = DEVICES.clones.nextID;
+	save.clones.list = [];
+
+	for (var id in DEVICES.templates.byID) {
+		save.templates.byID[id] = DEVICES.templates.byID[id].name; 
+	}
+
+	for (var id in DEVICES.clones.byID) {
+		save.clones.list.push(DEVICES.clones.byID[id].toLoadable()); 
+	}	
+
+	return save;
+};
+
+
+
+DEVICES.load = function(loadMe) {
+	DEVICES.clones.nextID = loadMe.clones.nextID;
+
+	var templateNames = loadMe.templates.byID;
+
+	for(var i in loadMe.clones.list) {
+		var clone = loadMe.clones.list[i];
+		console.log("clone", clone);
+		var deviceName = templateNames[clone.template];
+
+		var addMe = DEVICES.new(deviceName, clone);
+	}
+}
+
 
 
 DEVICES.get = function(target) {
@@ -167,7 +214,7 @@ DeviceClone.prototype.toLoadable = function() {
 	var clone = this;
 	var save = {};
 	save.ID = clone.ID;
-	save.template = template.ID;
+	save.template = clone.template.ID;
 
 	if(clone.getPreset)
 		save.preset = clone.getPreset();
@@ -212,48 +259,6 @@ DeviceClone.prototype.getInput = function(name) {
 // Device.nextCloneID = 0;
 
 
-
-DEVICES.toLoadable = function() {
-	var save = {};
-	save.templates = {};
-	save.templates.nextID = DEVICES.templates.nextID;
-	save.templates.byId = {};
-
-	save.clones = {};
-	save.clones.nextID = DEVICES.clones.nextID;
-	save.clones.list = [];
-
-	for (var id in DEVICES.templates.byId) {
-		save.templates.byId[id] = DEVICES.templates.byId[id].deviceName; 
-	}
-
-	for (var id in DEVICES.clones.byId) {
-		save.clones.list.push(DEVICES.clones.byId[id].toLoadable()); 
-	}	
-
-	return save;
-};
-
-DEVICES.load = function(loadMe) {
-	// DEVICES.templates.nextID = loadMe.templates.nextID;
-	DEVICES.clones.nextID = loadMe.clones.nextID;
-
-	var templateNames = loadMe.templates.byID;
-	// for(var id in templateNames) {
-	// 	var intId = parseInt(id);
-	// 	var name = templateNames[id];
-	// 	DEVICES.templates.byID[intId] = name;
-	// 	DEVICES.templates.byName[name] = intId;
-	// }
-
-	for(var i in loadMe.clones.list) {
-		var clone = loadMe.clones.list[i];
-		console.log("clone", clone);
-		var deviceName = templateNames[clone.template];
-
-		var addMe = DEVICES.new(deviceName, clone);
-	}
-}
 
 
 

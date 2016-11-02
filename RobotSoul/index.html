@@ -9,10 +9,16 @@
 	<script type="text/javascript" src="../PINE/PINE_Needles.js"></script>
 	<script type="text/javascript" src="../PINE/PINE_Includes.js"></script>
 	<script type="text/javascript" src="../public/js/WebMIDIAPI.min.js"></script>
-	<!-- <needle src="../PINE/needles/suggestions.html"></needle>
-	<needle src="../PINE/needles/selectablelist.html"></needle>
+	<script type="text/javascript" src="../public/js/detect-element-resize.js"></script>
+	<!-- <needle src="../PINE/needles/suggestions.html"></needle>	
 	<needle src="../PINE/needles/showHide.html"></needle> -->
+	<needle src="../PINE/needles/selectablelist.html"></needle>
 	<needle src="../PINE/needles/knobsAndSliders.html"></needle>
+	<needle src="../PINE/needles/dragArea.html"></needle>
+	<needle src="../PINE/needles/boxSelectArea.html"></needle>
+	<needle src="../PINE/needles/dropdownMenu.html"></needle>
+	<needle src="../PINE/needles/fileChooser.html"></needle>
+	<needle src="../PINE/needles/modal.html"></needle>
 
 
 
@@ -23,12 +29,15 @@
 	<script type="text/javascript" src="RobotSoul_DeviceRack.js"></script>
 
 	<needle src="cableOverlay.html"></needle>
+
+
 	<needle src="devices/basic/Oscillator.html"></needle>
 	<needle src="devices/MidiFreq.html"></needle>
 	<needle src="devices/basic/Gain.html"></needle>
 	<needle src="devices/basic/Interval.html"></needle>
 	<needle src="devices/basic/Knob.html"></needle>
 	<needle src="devices/basic/LinearRange.html"></needle>
+	<needle src="devices/Tween.html"></needle>
 
 	<script type="text/javascript">
 
@@ -39,8 +48,8 @@
 		// oscillator.connect(audioCtx.destination);
 		// oscillator.start();
 		
-	// var loadMe = '{"tracks":{"0":{"ID":0,"name":"Track 0","deviceRacks":[0]}},"devices":{"masters":{"0":"DeviceRack","1":"Oscillator","2":"MidiToFreq","3":"Gain","4":"Interval","5":"Knob","6":"LinearRange"},"clones":{"0":{"ID":0,"masterID":0},"1":{"ID":1,"masterID":2},"2":{"ID":2,"masterID":1},"3":{"ID":3,"masterID":5},"4":{"ID":4,"masterID":3}}},"connections":{"0":{"ID":0,"output":{"name":"midi","device":0},"input":{"name":"midi_in","device":1}},"1":{"ID":1,"output":{"name":"frequency_out","device":1},"input":{"name":"osc_frequency","device":2}},"2":{"ID":2,"output":{"name":"out","device":3},"input":{"name":"gain","device":4}},"3":{"ID":3,"output":{"name":"wave_out","device":2},"input":{"name":"in","device":4}}}}'
 	var loadMe = {
+		projectName : "First File",
 		devices : {
 			templates : {
 				// nextID : 3,
@@ -115,7 +124,7 @@
 			{	ID : 3,		
 				output : {
 					device : 4,
-					name : "out"
+					name : "knob"
 				},
 				input : {
 					device : 3,
@@ -128,7 +137,7 @@
 
 
 	PINE.ready(function(){
-		RS.load(loadMe);
+		RS.new();
 		El.byId("all_tracks").FNS.update();	
 		viewTrackDetails(0);
 	});
@@ -141,10 +150,91 @@
 		El.byId("details").FNS.changeSrc("modules/Rack.html?id="+trackId);
 	}
 
-	// PINE.ready(function() {
-	
-	// });
+
+
+	// document.addEventListener("keydown", function(event) {
+	//   if(event.key == "Escape") {
+	//     toggleFullScreen();
+	//   }
+	// }, false);
+
+	// function toggleFullScreen() {
+	//   if (!document.fullscreenElement) {
+	//       document.documentElement.requestFullscreen();
+	//   } else {
+	//     if (document.exitFullscreen) {
+	//       document.exitFullscreen(); 
+	//     }
+	//   }
+	// }
+
+	function newFile() {
+		El.byID("save_first_modal").FNS.showModal();
+		El.byID("save_first_rename").value = RS.projectName;
+	}
+
+	function save_first_new(doSave) {
 		
+		if(doSave === true) {
+			RS.projectName = El.byID("save_first_rename").value;
+			RS.save();
+		}
+
+		if(doSave !== undefined) {
+			RS.new();
+			El.byId("all_tracks").FNS.update();	
+			El.byId("details").FNS.dropAllViews(true);
+			viewTrackDetails(0);
+		}
+
+		El.byID("save_first_modal").FNS.hideModal();
+	}
+
+	function loadFile(file) {
+		var reader = new FileReader();
+		reader.onload = function(event) {
+			var contents = event.target.result;
+			RS.load(contents);
+
+			El.byId("all_tracks").FNS.update();	
+			El.byId("details").FNS.dropAllViews(true);
+			viewTrackDetails(0);
+		};
+		reader.readAsText(file);
+	}
+
+
+	function saveFileAs() {
+		El.byID("save_as_rename").value = RS.projectName;
+		El.byID("save_as_modal").FNS.showModal();
+	}
+
+	function rename_and_save() {
+		RS.projectName = El.byID("save_as_rename").value;
+		RS.save();
+		El.byID("save_as_modal").FNS.hideModal();
+	}
+
+
+
+	U.docReady(function() {
+		document.body.addEventListener("keydown", function(event) {
+			if(event.key == "s" && (event.metaKey == true || event.ctrlKey == true)) {
+				event.preventDefault();
+				if(event.shiftKey == true) 
+					saveFileAs();
+				
+				else RS.save();
+			}
+			else if(event.key == "N") {
+				event.preventDefault();
+				newFile();
+			}
+		});
+	});
+
+	
+	
 	</script>
 	
 	
@@ -156,13 +246,97 @@
 
 
 <body>
-
+<!-- <a href="path/to/file" download>Click here to download</a> -->
 
 <!-- <button onclick="Noodler()">Noodles</button> -->
+<fade id="dark_fade" style="background:#2229"></fade>
 
-<view src="nosrc" id="details">
+<modal id="save_as_modal" fade="dark_fade">
+	<input id="save_as_rename" type="text">
+	<button onclick="rename_and_save()">Save</button>
+</modal>
 
-</view>
+<modal id="save_first_modal" fade="dark_fade">
+	Would you like to save your project first?<br>
+	<input id="save_first_rename" type="text">
+	<button onclick="save_first_new(true)">Save</button>
+	<button onclick="save_first_new(false)">Don't Save</button>
+	<button onclick="save_first_new()">Cancel</button>
+</modal>
+
+<div id="topbar">
+	<span id="fullscreen_btn" onclick="RS.switchFullscreen()"></span>
+	<div menu>
+		<div showMenu="file_menu" 
+			showMenuPos="below"
+			exitMenuOnSecondClick>
+			File
+
+		</div><div 
+			showMenu="edit_menu" 
+			showMenuPos="below"
+			exitMenuOnSecondClick>
+			Edit
+
+		</div><div 
+			showMenu="options_menu" 
+			showMenuPos="below"
+			exitMenuOnSecondClick>
+			Options
+
+		</div><div 
+			showMenu="about_menu" 
+			showMenuPos="below"
+			exitMenuOnSecondClick>
+			About
+		</div> 
+	</div>
+	
+	<div id="rack_tabs">
+		<span>DeviceRack 1</span>
+		<span>DeviceRack 2</span>
+	</div>
+
+</div>
+
+<div id="file_menu" dropdownMenu>
+	<div onclick="newFile()"">New</div>
+	<div onclick="RS.save()">Save</div>
+	<div onclick="saveFileAs()">Save As</div>
+	<div fileChooser onFileChoose="loadFile">Load</div>
+</div>
+
+<div id="edit_menu" dropdownMenu>
+	<div>Copy</div>
+	<div>Paste</div>
+	<div>Delete</div>
+</div>
+
+<div id="options_menu" dropdownMenu>
+	<div>Set Layout</div>
+	<div>Set Theme</div>
+	<div>Advanced</div>
+</div>
+
+<div id="about_menu" dropdownMenu>
+	<div>About RobotSoul</div>
+	<div>Hotkey Cheat Sheet</div>
+	<div showMenu>
+		How to >
+		<div dropdownMenu>
+			<div>Connect Devices</div>
+			<div>Live Perform</div>		
+			<div>Create Your Own Devices</div>		
+			<div>Create Your Own Theming</div>		
+		</div>
+	</div>
+	<div>About Creators</div>
+</div>
+
+
+
+
+<view src="nosrc" id="details"></view>
 
 
 <!-- <trackList spawner="TRACKS.list">
@@ -240,16 +414,141 @@ rsRange {
 	}
 
 
+*[dropdownMenu] {
+	border-style: solid;
+	background-color: #555;
+	box-shadow: 1px 1px 15px #3333;
+}
+
+	*[dropdownMenu] div:not([dropdownMenu]) {
+		margin: 3px 0px;
+		padding: 0px 9px;
+	}
+
+	*[dropdownMenu] .hoveredMenuItem, .showingMenu {
+		background-color: #969;
+	}
+
+
+
+
+modal {
+	padding: 20px;
+	top: 33%;
+	border-style: solid;
+	border-radius: 10px;
+	background: #555;
+}
+
+
+
+
+
+
+#topbar, #details {
+	box-shadow: 1px 1px 20px #1117;
+	z-index: 1;
+}
+
+#topbar {
+	position: relative;
+	height: 30px;
+	line-height: 28px;
+	width: 100%;
+	background-color: #555;
+	border-bottom-style: solid;
+}
+
+
+
+
+	#fullscreen_btn {
+		display: inline-block;
+		cursor: zoom-in;
+		vertical-align: middle;
+		height: 20px;
+		width: 20px;
+		margin: 2px 6px;
+		background-color: #7ba77b;
+		background-size: 66% auto;
+		background-image: url("public/images/fullscreen_icon.png");
+		border-style: solid;
+		border-radius: 20px;
+	}
+
+		/*#fullscreen_btn:hover {
+			
+		}*/
+
+		body:fullscreen #fullscreen_btn {
+			cursor: zoom-out;
+			background-color: #bc3e3e;
+			background-image: url("public/images/close_fullscreen_icon.png");
+		}
+
+	#topbar > [menu], #topbar > [menu] > [showmenu]{
+		display: inline-block;
+	}
+
+	#topbar > [menu] > [showmenu]{
+		padding: 0px 9px;
+	}
+
+		#load {
+			position: relative;
+		}
+
+			#load input {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+				top: 0px;
+				left: 0px;
+				opacity: 0;
+			}
+
+
+
+
+
+	#rack_tabs {
+		display: inline-block;
+		position: absolute;
+		right: 0px;
+		width: 400px;
+		padding: 0px 3px;
+		overflow-x: scroll;
+	}
+
+		#rack_tabs > span {
+			border-style: solid solid none solid;
+			position: relative;
+			top: 3px;
+			padding: 1px 2px;
+		}
+
+
 tracklist {
 	position: absolute;
-	left: 400px;
-	height: 100%;
+	
+	
+	top: 30px;
+	bottom: 0px;
+	left: 0px;
+	right: 400px;
+	
+	/*left: 400px;
 	right: 0px;
-	/*background: #453B75;*/
-	background-color: #4A465C;
-	border-left-style: solid;
-	box-shadow: 1px 1px 15px #1117;
+	border-left-style: solid;*/
+	
+	/*background-color: #4A465C;*/
+	background-color: #56755B;
+	
+	
+	
 	background-image: url("public/images/misty_robot.png");
+	background-size: auto 50%;
+	background-position: bottom left;
 }
 	trackItem {
 		display: block;
@@ -277,12 +576,20 @@ tracklist {
 
 #details {
 	position: absolute;
-	top: 0px;
-	left: 0px;
-	/*background: #444;*/
-	background: #56755B;
-	height: 100%;
-	width: 400px;
+	top: 30px;
+	/*left: 0px;*/
+	right: 0px;
+	width: 402px;
+	bottom: 0px;
+
+	/*background: #56755B;*/
+	background-color: #4A465C;
+	
+	border-left-style: solid;
+	/*border-right-style: solid;*/
+	/*border-color: #AAA;*/
+	/*border-width: 5px;*/
+	/*padding: 0px 2px;*/
 	overflow: scroll;
 }
 

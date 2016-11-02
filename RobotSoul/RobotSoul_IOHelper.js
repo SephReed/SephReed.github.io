@@ -440,15 +440,20 @@ IOH.createOutput = function(name, valueType, senderFnOrNode, defaultVal) {
 
 
 var CONNECTIONS = IOH.Connections = {};
-CONNECTIONS.nextID = 0;
-CONNECTIONS.list = [];
 
 
-RS.connectionsToLoadable = function() {
-	var save = {};
-	for(var i in IOH.Connection.list) {
-		var con = IOH.Connection.list[i];
-		save[con.ID] = con.toLoadable();
+CONNECTIONS.initState = function() {
+	CONNECTIONS.nextID = 0;
+	CONNECTIONS.list = [];
+}
+CONNECTIONS.initState();
+
+
+CONNECTIONS.toLoadable = function() {
+	var save = [];
+	for(var i in CONNECTIONS.list) {
+		var con = CONNECTIONS.list[i];
+		save.push(con.toLoadable());
 	}
 	return save;
 }

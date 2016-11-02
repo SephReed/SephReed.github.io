@@ -4,10 +4,12 @@
 
 var TRACKS = RS.Tracks = {}
 
-	
-TRACKS.list = [];
-TRACKS.byId = {}
-TRACKS.maxId = 0;
+TRACKS.initState = function() {
+	TRACKS.list = [];
+	TRACKS.byId = {}
+	TRACKS.maxId = 0;
+}
+TRACKS.initState();
 
 TRACKS.get = function(target) {
 	var asInt = parseInt(target);
@@ -37,12 +39,14 @@ TRACKS.add = function(addMe) {
 
 
 TRACKS.toLoadable = function() {
-	var tracksOut = {};
-	for(var id in TRACKS.byId)
-		tracksOut[id] = TRACKS.byId[id].toLoadable();
+	var save = [];
+	for(var i in TRACKS.list)
+		save.push(TRACKS.list[i].toLoadable());
 
-	return tracksOut;
+	return save;
 }
+
+
 
 TRACKS.load = function(loadMe) {
 	for(var i in loadMe) {
@@ -142,10 +146,10 @@ var MidiSequenceTrack = RS.class.MidiSequenceTrack = function(insertAfter) {
 		var trackOut = {};
 		trackOut.ID = midiTrack.ID;
 		trackOut.name = midiTrack.name;
-		trackOut.deviceRacks = [];
+		trackOut.racks = [];
 
 		for(var i in midiTrack.deviceRacks)
-			trackOut.deviceRacks.push(midiTrack.deviceRacks[i].ID);
+			trackOut.racks.push(midiTrack.deviceRacks[i].ID);
 
 		return trackOut;
 	}

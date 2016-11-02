@@ -169,13 +169,18 @@ var p_showMenu = PINE("[showMenu]", function(initMe) {
 
 
 	var trigger_att = El.attr(initMe, "showMenuTrigger");
+	var hasUnclick = El.attArg(initMe, "exitMenuOnSecondClick", "exists");
+	console.log(hasUnclick, initMe);
 
 	var trigger = "clickFirst" || trigger_att;
+
+	var currentlyShowing = false;
 	
 
 	PINE.addFunctionToNode(initMe, "menuEnter", function() {
 		p_showMenu.menuShowers.push(initMe);
 		initMe.classList.add("showingMenu");
+		currentlyShowing = true;
 
 		var args = p_showMenu.getArgs(initMe);
 		if(args) {
@@ -190,6 +195,7 @@ var p_showMenu = PINE("[showMenu]", function(initMe) {
 			p_showMenu.menuShowers.splice(targetIndex, 1);
 
 		initMe.classList.remove("showingMenu");	
+		currentlyShowing = false;
 		var args = p_showMenu.getArgs(initMe);
 
 		if(args) 
@@ -199,10 +205,19 @@ var p_showMenu = PINE("[showMenu]", function(initMe) {
 
 
 	if(trigger == "click" || trigger == "clickFirst") {
-		initMe.addEventListener("click", function(event) {
-			initMe.FNS.menuEnter();
+		initMe.addEventListener("mousedown", function(event) {
+			if(hasUnclick == false || currentlyShowing == false) {
+				initMe.FNS.menuEnter();	
+				clickFirstEnabled = true;
+			} 
+			else {
+				initMe.FNS.menuExit();
+				clickFirstEnabled = false;
+			}
+			
 			event.stopPropagation();
-			clickFirstEnabled = true;
+			event.preventDefault();
+			
 		});
 	}
 
@@ -227,10 +242,10 @@ p_showMenu.watchOutClicks = function() {
 	p_showMenu.outClickWatcherAdded = true;
 	document.addEventListener("click", function(event) {
 		var onMenu = false;
-		for(var i  = 0; i < p_menu.displayedMenus.length && !onMenu; i++)  {
-			var checkMe = p_menu.displayedMenus[i];
-			onMenu = (checkMe == event.target || checkMe.contains(event.target));
-		}
+		// for(var i  = 0; i < p_menu.displayedMenus.length && !onMenu; i++)  {
+		// 	var checkMe = p_menu.displayedMenus[i];
+		// 	onMenu = (checkMe == event.target || checkMe.contains(event.target));
+		// }
 
 		for(var i  = 0; i < p_showMenu.menuShowers.length && !onMenu; i++)  {
 			var checkMe = p_showMenu.menuShowers[i];
@@ -289,6 +304,7 @@ p_showMenu.getArgs = function(initMe) {
 *[dropdownMenu] {
 	cursor: default;
 	position: fixed;
+	z-index: 20;
 	/*top: 0px;
 	left: 0px;*/
 }

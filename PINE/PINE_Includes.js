@@ -229,8 +229,8 @@ p_view.init = function(initMe, onComplete) {
 		p_view.dropView(initMe, url);
 	});
 
-	PINE.addNodeFunction(initMe, "dropAllViews", function() {
-		p_view.dropAllViews(initMe);
+	PINE.addNodeFunction(initMe, "dropAllViews", function(includeCurrent) {
+		p_view.dropAllViews(initMe, includeCurrent);
 	});
 
 	PINE.addNodeFunction(initMe, "dropViewsContaining", function(url) {
@@ -243,7 +243,12 @@ p_view.dropView = function(domNode, url) {
 	delete domNode._pine_.views[url];
 }
 
-p_view.dropAllViews = function(domNode) {
+p_view.dropAllViews = function(domNode, includeCurrent) {
+	if(includeCurrent) {
+		domNode.setAttribute("src", "nosrc");
+		p_view.update(domNode)
+	}
+
 	domNode._pine_.views = {};
 }
 
@@ -263,15 +268,11 @@ p_view.update = function(initMe, callback) {
 	var url = El.attr(initMe, "src");
 		
 	if(url) {
-		if(url == "nosrc"){
-			callback();
-			return;
-		}
+		
 
 		var currentUrl = initMe._pine_.currentUrl;
 
 		if(url == currentUrl) return;
-
 			//
 		if(currentUrl != "unset") {
 
@@ -289,6 +290,12 @@ p_view.update = function(initMe, callback) {
 
 			oldView.PVARS = initMe.PVARS;
 			initMe.PVARS = {};
+		}
+
+		if(url == "nosrc"){
+			initMe._pine_.currentUrl = url;
+			if(callback) { callback(); }
+			return;
 		}
 
 

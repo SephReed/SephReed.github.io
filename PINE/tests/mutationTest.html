@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="../PINE_Core_4.2.js"></script>
+	<script type="text/javascript">
+		var addMe = document.createElement("div");
+		addMe.style.display = "none";
+		addMe.classList.add("watched");
+
+
+		El.waitForDisplay(addMe).then(function() {
+			alert("yay!");
+		});
+
+
+		// var config =  { attributes: true, childList: true, characterData: true }
+		// var observer = new MutationObserver(function(mutations) {
+		// 	console.log(mutations);
+		// });	
+		// observer.observe(addMe, config);
+
+		function appendAddMe() {
+			document.body.appendChild(addMe);
+		}
+
+		function displayAddMe() {
+			addMe.style.display = "";
+		}
+	</script>
+</head>
+<body>
+	<button onclick="appendAddMe()">Append addMe</button>
+	<button onclick="displayAddMe()">Display addMe</button>
+</body>
+
+<style type="text/css">
+	div {
+		height: 50px;
+		width: 50px;
+		background: #969;
+	}
+
+	/*@keyframes watch_for_display_inserted {  
+	    from { z-index: 1; }
+	    to { z-index: 1; }   
+	}
+
+	.watch_for_display {
+	    animation-duration: 0.001s;
+	    animation-name: watch_for_display_inserted;
+	}*/
+</style>
+</html>

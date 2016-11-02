@@ -47,8 +47,20 @@ U.docReady(function() {
 			else
 				RS.undo();
 		}
+		// else if(event.key == "Escape") {
+		// 	RS.switchFullscreen();
+		// }
 	});
 });
+
+
+
+RS.switchFullscreen = function() {
+	if(document.fullscreenElement != null)
+		document.exitFullscreen();
+
+	else document.body.requestFullscreen();
+}
 
 
 var ActHist = RS.ActionHistory = {};
@@ -151,46 +163,115 @@ var MasterNoteIn = new NoteInput("Master Note In");
 
 
 
+RS.clearProject = function() {
+	RS.projectName = "untitled";
+	DEVICES.initState();
+	RACKS.initState();
+	TRACKS.initState();
+	CONNECTIONS.initState();
+}
 
 
+
+
+
+
+RS.defaultFile = {
+	projectName : "Default File",
+	devices : {
+		templates : {
+			byID : { 0 : "DeviceRack" }
+		},
+		clones : {
+			nextID : 1,
+			list : [{ ID : 0,	template : 0 }]
+		}
+	},
+	racks : [
+		{
+			ID: 0,
+			devices : []
+		}
+	],
+
+	tracks : [
+		{
+			ID: 0,
+			racks : [0]
+		}
+	],
+	connections : []
+}
+
+
+
+RS.projectName = "BeatsAndGeeks";
 
 RS.load = function(loadFile) {
-	if(loadFile == undefined) {
-		var track = new MidiSequenceTrack();
-		TRACKS.addTrack(track);
+	var loadMe = loadFile;
+	if(typeof loadFile == "string")
+		loadMe = JSON.parse(loadFile);
 
-		MasterNoteIn.connectMidi(track);
-	}
-	else {
-		var loadMe = loadFile;
-		if(typeof loadFile == "string")
-			loadMe = JSON.parse(loadFile);
+	RS.clearProject();
 
-		
-		DEVICES.load(loadMe.devices);
-		RACKS.load(loadMe.racks);
-		TRACKS.load(loadMe.tracks);
-		CONNECTIONS.load(loadMe.connections);
+	RS.projectName = loadMe.projectName;
+	DEVICES.load(loadMe.devices);
+	RACKS.load(loadMe.racks);
+	TRACKS.load(loadMe.tracks);
+	CONNECTIONS.load(loadMe.connections);
 
-		console.log(loadMe);
-	}
+	
 }
+
+
+RS.new = function() {
+	RS.load(RS.defaultFile);
+}
+
+
 
 
 
 
 RS.toLoadable = function() {
 	var save = {};
+	save.projectName = RS.projectName;
+	save.devices = DEVICES.toLoadable();
+	save.racks = RACKS.toLoadable();
 	save.tracks = TRACKS.toLoadable();
-	save.devices = RS.devicesToLoadable();
-	save.connections = RS.connectionsToLoadable();
+	save.connections = CONNECTIONS.toLoadable();
 
-	var string = JSON.stringify(save);
-	console.log(string);
-
-	return save;
+	return JSON.stringify(save);
 }
 
+
+
+RS.save = function() {
+	var data = RS.toLoadable();
+	var filename = RS.projectName + ".sol";
+	var type = "json";
+	RS.download(data, filename, type);
+}
+
+
+RS.download = function(data, filename, type) {
+    var a = document.createElement("a");
+    var	file = new Blob([data], {type: type});
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+        var url = URL.createObjectURL(file);
+        console.log(url);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);  
+        }, 0); 
+    }
+}
 
 
 

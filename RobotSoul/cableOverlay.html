@@ -150,9 +150,17 @@ var p_cables = PINE("[cableOverlay]", function(initMe) {
 
 
 
-p_cables.updateSocketPosPoint = function(socketNode) {
-	var x = socketNode.offsetLeft  + socketNode.offsetWidth/2;
-	var y = socketNode.offsetTop + socketNode.offsetHeight/2;
+p_cables.updateSocketPosPoint = function(cableSpace, socketNode) {
+	var x, y;
+
+	var spaceBounds = cableSpace.getBoundingClientRect();
+	var socketBounds = socketNode.getBoundingClientRect();
+
+	var x = socketBounds.left - spaceBounds.left;
+	var y = socketBounds.top - spaceBounds.top;
+
+	x += socketNode.offsetWidth/2;
+	y += socketNode.offsetHeight/2;
 	
 	if(socketNode.PVARS.socketPos == undefined)
 		socketNode.PVARS.socketPos = new Point(x, y);
@@ -205,20 +213,38 @@ var Cable = function(cableSpace, startNode, endNode) {
 
 
 
-    p_cables.updateSocketPosPoint(startNode);
-
-    cable.out.pos = startNode.PVARS.socketPos;
-	outputPlug.setAttributeNS(null, "cx", cable.out.pos.x);
-    outputPlug.setAttributeNS(null, "cy", cable.out.pos.y);
-
-    if(endNode != undefined) {
-    	p_cables.updateSocketPosPoint(endNode);
-    	cable.in.pos = endNode.PVARS.socketPos;
+    //THIS IS WRONG!!!  startNode is not necessarily cable.out
+    var startPart, endPart;
+    if(startNode.parentNode.tagName == "RSOUT") {
+    	startPart = cable.out;
+    	endPart = cable.in;
     }
-    else cable.in.pos = startNode.PVARS.socketPos.clone();
+    else if(startNode.parentNode.tagName == "RSIN"){
+    	startPart = cable.in;
+    	endPart = cable.out;
+    }
+
+    else PINE.err("socket is neither child of RSIN or RSOUT");
+
+    startPart.socket = startNode;
+    endPart.socket = endNode;
+
+
+    p_cables.updateSocketPosPoint(cable.space, startNode);
+
+    startPart.pos = startNode.PVARS.socketPos;
+	
+    if(endNode != undefined) {
+    	p_cables.updateSocketPosPoint(cable.space, endNode);
+    	endPart.pos = endNode.PVARS.socketPos;
+    }
+    else endPart.pos = startNode.PVARS.socketPos.clone();
 
     inputPlug.setAttributeNS(null, "cx", cable.in.pos.x);
     inputPlug.setAttributeNS(null, "cy", cable.in.pos.y);
+
+    outputPlug.setAttributeNS(null, "cx", cable.out.pos.x);
+    outputPlug.setAttributeNS(null, "cy", cable.out.pos.y);
 
 
 	
@@ -244,19 +270,7 @@ var Cable = function(cableSpace, startNode, endNode) {
 	wireFill.classList.add("wire_fill");
 	wireFill.setAttributeNS(null, "stroke-width", WIRE_PATH.width - WIRE_PATH.borderWidth * 2);
 	wireFill.setAttributeNS(null, "d", path.getCode());
-	wire.appendChild(wireFill);
-
-
-    if(startNode.parentNode.tagName == "RSOUT") {
-    	cable.out.socket = startNode;
-    	cable.in.socket = endNode;
-    }
-    
-    else {
-    	cable.in.socket = startNode; 
-    	cable.out.socket = endNode; 
-    }
-    
+	wire.appendChild(wireFill);    
 }
 
 
@@ -367,7 +381,7 @@ Cable.prototype.dragPlug = function(plug) {
 
 
 		if(moveMe.socket) {
-			p_cables.updateSocketPosPoint(moveMe.socket);
+			p_cables.updateSocketPosPoint(cable.space, moveMe.socket);
 
 			moveMe.pos = moveMe.socket.PVARS.socketPos;
 				//
@@ -404,19 +418,26 @@ Cable.prototype.updatePosition = function() {
 	// if(cable.in.socket == undefined || cable.out.socket == undefined)
 	// 	return
 
-	p_cables.updateSocketPosPoint(cable.in.socket);
+	p_cables.updateSocketPosPoint(cable.space, cable.in.socket);
 	cable.in.plug.setAttributeNS(null, "cx", cable.in.pos.x);
 	cable.in.plug.setAttributeNS(null, "cy", cable.in.pos.y);
 
-	p_cables.updateSocketPosPoint(cable.out.socket);
+	p_cables.updateSocketPosPoint(cable.space, cable.out.socket);
 	cable.out.plug.setAttributeNS(null, "cx", cable.out.pos.x);
 	cable.out.plug.setAttributeNS(null, "cy", cable.out.pos.y);
+
 
 	var path = cable.wire.path;
 	path.updateCode();
 		//
 	cable.wire.fill.setAttributeNS(null, "d", path.getCode());
 	cable.wire.outline.setAttributeNS(null, "d", path.getCode());
+
+
+	
+	
+
+	
 }
 
 
@@ -597,7 +618,7 @@ Point.prototype.distance = function(toMe) {
 				}
 
 		socket {
-			cursor: crosshair;
+			cursor: cell;
 		}
 
 

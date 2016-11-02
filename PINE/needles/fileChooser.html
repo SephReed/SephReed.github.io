@@ -1,0 +1,43 @@
+<script type="text/javascript">
+	
+
+
+var addBrowser = function(initMe) {
+	var browser = document.createElement("input");
+	browser.type = "file";
+	browser.classList.add("hidden_file_input");
+
+	El.makeSizeCalculatable(initMe);
+	initMe.appendChild(browser);
+	return browser;
+}
+
+
+PINE("[fileChooser]", function(initMe) {
+	var browser = addBrowser(initMe);
+
+	browser.addEventListener("change", function(event) {
+		var file = event.target.files[0];
+		if (!file) return;
+		
+		else {
+			var onFileChange = El.attr(initMe, "onFileChoose")
+			if(onFileChange != undefined) {
+				window[onFileChange](file);
+			}
+		}
+	});
+});
+
+</script>
+
+<style>
+.hidden_file_input {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+}
+</style>
