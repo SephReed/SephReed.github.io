@@ -119,7 +119,7 @@
 
 		device.addInput("midi_in", "midi", function(midiIn) {
 			var ratio = device.converter(midiIn);
-			var freq = ratio * 440;
+			var freq = ratio * 444;
 
 			console.log(midiIn, ratio, freq);
 

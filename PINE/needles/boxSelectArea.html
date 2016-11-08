@@ -1,115 +1,136 @@
 <script type="text/javascript">
 	
-PINE("[boxSelectArea]", PINE.ops.GATHER, function(initMe) {
-	var selectionBox = document.createElement("selectionBox");
+PINE.createNeedle("[boxSelectArea]", function(box) {
 
-	var selectables = El.attArg(initMe, 
+	box.addAttArg("items",
 		["boxSelectItems", "boxSelectArea", "selectionItems", "items"], 
 		"selector", 
-		undefined, ">*");
+		undefined, ">*:not(selectionBox)")
 
-	var highlight = El.attArg(initMe, ["boxSelectHighligh", "selectHighlight", "highlight"], "boolean", true);
-		//
-	initMe.appendChild(selectionBox);
+	box.addAttArg("highlight",
+		["boxSelectHighligh", "selectHighlight", "highlight"], 
+		"boolean", true);
 
-	initMe.addEventListener("mousedown", function(event) {
-		initMe.classList.add("currently_box_selecting");
 
-		var bounds = initMe.getBoundingClientRect();
 
-		event.preventDefault();
-
-		var startX = event.clientX - bounds.left;
-		var startY = event.clientY - bounds.top;
-		var endX = startX;
-		var endY = startY;
+	box.addInitFn(PINE.ops.GATHER, function() {
+		var initMe = this.domNode;
+		var instance = this;
 
 		
-		selectionBox.style.left = startX+"px";
-		selectionBox.style.top = startY+"px";
-		selectionBox.style.width = "0px";
-		selectionBox.style.height = "0px";
+		var highlight = this.attArg.highlight;
+		console.log(highlight);
 
-		selectionBox.classList.add("show_selection_box");
+		var selectionBox = document.createElement("selectionBox");
+		initMe.appendChild(selectionBox);
 
-		var currentlyHighlighted = [];
-		var requestedFrame;
-		var onMove = function(event) {
-			// event.preventDefault();
-			endX = event.clientX - bounds.left;
-			endY = event.clientY - bounds.top;
+		console.log("adding box", selectionBox);
+		// var highlight = El.attArg(initMe, ["boxSelectHighligh", "selectHighlight", "highlight"], "boolean", true);
+			//
+		
+		
 
-			if(requestedFrame == undefined) {
-				requestedFrame = window.requestAnimationFrame(function() {
-					if(endX < startX) { 
-						selectionBox.style.left = endX+"px";
-						selectionBox.style.width = (startX - endX)+"px";
-					}
-					else {
-						selectionBox.style.left = startX+"px";
-						selectionBox.style.width = (endX - startX)+"px";
-					}
+		initMe.addEventListener("mousedown", function(event) {
 
-					if(endY < startY) { 
-						selectionBox.style.top = endY+"px";
-						selectionBox.style.height = (startY - endY)+"px";
-					}
-					else {
-						selectionBox.style.top = startY+"px";
-						selectionBox.style.height = (endY - startY)+"px";
-					}
+			var selectables = instance.attArg.items;
+			initMe.classList.add("currently_box_selecting");
 
-					requestedFrame = undefined;
+			var bounds = initMe.getBoundingClientRect();
 
-					if(highlight) {
-						for(var i = 0; i < selectables.length; i++) {
-							var item = selectables[i];
+			event.preventDefault();
 
-							if(currentlyHighlighted.indexOf(item) == -1 
-							  && El.overlap(selectionBox, item)) {
-									//
-								currentlyHighlighted.push(item);
-								item.classList.add("selection_box_overlapped");
-							}
+			var startX = event.clientX - bounds.left;
+			var startY = event.clientY - bounds.top;
+			var endX = startX;
+			var endY = startY;
+
+			
+			selectionBox.style.left = startX+"px";
+			selectionBox.style.top = startY+"px";
+			selectionBox.style.width = "0px";
+			selectionBox.style.height = "0px";
+
+			console.log("showing box");
+			selectionBox.classList.add("show_selection_box");
+
+			var currentlyHighlighted = [];
+			var requestedFrame;
+			var onMove = function(event) {
+				// event.preventDefault();
+				endX = event.clientX - bounds.left;
+				endY = event.clientY - bounds.top;
+
+				if(requestedFrame == undefined) {
+					requestedFrame = window.requestAnimationFrame(function() {
+						if(endX < startX) { 
+							selectionBox.style.left = endX+"px";
+							selectionBox.style.width = (startX - endX)+"px";
+						}
+						else {
+							selectionBox.style.left = startX+"px";
+							selectionBox.style.width = (endX - startX)+"px";
 						}
 
-						for(var i = 0; i < currentlyHighlighted.length; i++) {
-							var item = currentlyHighlighted[i];
-							if(El.overlap(selectionBox, item) == false) {
-								currentlyHighlighted.splice(i, 1);
-								i--;
-								item.classList.remove("selection_box_overlapped");
+						if(endY < startY) { 
+							selectionBox.style.top = endY+"px";
+							selectionBox.style.height = (startY - endY)+"px";
+						}
+						else {
+							selectionBox.style.top = startY+"px";
+							selectionBox.style.height = (endY - startY)+"px";
+						}
+
+						requestedFrame = undefined;
+
+						if(highlight) {
+							for(var i = 0; i < selectables.length; i++) {
+								var item = selectables[i];
+
+								if(currentlyHighlighted.indexOf(item) == -1 
+								  && El.overlap(selectionBox, item)) {
+										//
+									currentlyHighlighted.push(item);
+									item.classList.add("selection_box_overlapped");
+								}
+							}
+
+							for(var i = 0; i < currentlyHighlighted.length; i++) {
+								var item = currentlyHighlighted[i];
+								if(El.overlap(selectionBox, item) == false) {
+									currentlyHighlighted.splice(i, 1);
+									i--;
+									item.classList.remove("selection_box_overlapped");
+								}
 							}
 						}
-					}
-				});
-			}
-		}
-		initMe.addEventListener("mousemove", onMove);
-
-
-		var onRelease = function(event) {
-			if(requestedFrame != undefined) {
-				window.cancelAnimationFrame(requestedFrame);
-				requestedFrame = undefined;
-			}
-
-			var boxed = [];
-			for(var i = 0; i < selectables.length; i++) {
-				if(El.overlap(selectionBox, selectables[i])) {
-					boxed.push(selectables[i]);
-					selectables[i].remove();
+					});
 				}
 			}
+			initMe.addEventListener("mousemove", onMove);
 
-			initMe.removeEventListener("mousemove", onMove);
-			initMe.removeEventListener("mouseup", onRelease);
-			selectionBox.classList.remove("show_selection_box");
-			initMe.classList.remove("currently_box_selecting");
-		}
-		initMe.addEventListener("mouseup", onRelease);
-	});
-	
+
+			var onRelease = function(event) {
+				if(requestedFrame != undefined) {
+					window.cancelAnimationFrame(requestedFrame);
+					requestedFrame = undefined;
+				}
+
+				var boxed = [];
+				for(var i = 0; i < selectables.length; i++) {
+					if(El.overlap(selectionBox, selectables[i])) {
+						boxed.push(selectables[i]);
+						selectables[i].remove();
+					}
+				}
+
+				initMe.removeEventListener("mousemove", onMove);
+				document.body.removeEventListener("mouseup", onRelease);
+				selectionBox.classList.remove("show_selection_box");
+				initMe.classList.remove("currently_box_selecting");
+			}
+			document.body.addEventListener("mouseup", onRelease);
+		});
+	});	
 });
 
 
@@ -137,6 +158,7 @@ PINE("[boxSelectArea]", PINE.ops.GATHER, function(initMe) {
 		border-radius: 2px;
 		opacity: 0;
 		transition: opacity ease 0.2s;
+		z-index: 12;
 	}
 
 		selectionBox.show_selection_box {
@@ -145,5 +167,6 @@ PINE("[boxSelectArea]", PINE.ops.GATHER, function(initMe) {
 
 	.selection_box_overlapped {
 		border: 1px solid yellow;
+		z-index: 1;
 	}
 </style>

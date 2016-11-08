@@ -43,15 +43,16 @@ PINE.Include.setDefaultChangeSrcTarget = function(target) {
 }
 
 
-PINE("[defaultChangeSrcTarget]", function(initMe) {
+PINE("[defaultChangeSrcTarget]", function() {
+	var job = this;
 	if(INC.defaultChangeSrcTarget) {
 		PINE.err("default change src target already set to ", INC.defaultChangeSrcTarget, 
 			" use PINE.Include.setDefaultChangeSrcTarget() if you want to change it mid site execution")
 	}
 
-	else 
-		INC.setDefaultChangeSrcTarget(initMe);
-});
+	else INC.setDefaultChangeSrcTarget(job.domNode);
+})
+
 
 
 
@@ -63,17 +64,19 @@ INC.get = function(url, responseType) {
 	LOG("overview", "PINE_Include: Requesting url "+url+"...");	
 
 	//return a promise
-	return new Promise( function(resolve, reject) {
+	return new SyncPromise( function(resolve, reject) {
 
+		//get the base url. check the rules for it
 		var noQueryUrl = url.replace(/\?.*/g, '');
 		var cacheOp = INC.cacheSettings[noQueryUrl] || INC.default;
 
 		if(cacheOp == INC.BYROOT)
 			url = noQueryUrl;
 
+
+		//get the cache, if none is set create a cache
+		//caches contain a resolve and reject queue for cases where mulitple functions make a promise for the url
 		var cache = INC.srcCache[url];
-
-
 		if(cache == null)  {
 
 			cache = INC.srcCache[url] = {};
@@ -83,8 +86,7 @@ INC.get = function(url, responseType) {
 			cache.complete = false;
 
 			var success = function(result) {
-				LOG("include", result.status+" "+url, result);
-				LOG("overview", "PINE_Include: "+url+" Success!");	
+				LOG("overview", "PINE_Include: INC.get '"+url+"' Success!");	
 
 				cache.response = result.response;
 				cache.complete = true;
@@ -106,7 +108,7 @@ INC.get = function(url, responseType) {
 			}
 
 
-			U.Ajax.get(url).then(success, failure)
+			U.Ajax.get(url).syncThen(success, failure)
 		}			
 
 		//if the url has been requested, but not yet resolved
@@ -131,64 +133,109 @@ INC.get = function(url, responseType) {
 ***************/
 
 
-var p_include = PINE.createNeedle("include");
+PINE.createNeedle("include", function(include) {
 
-p_include.update = function(initMe, callback) {
+	include.addAttArg("src", "src", "string");
 
-	var url = El.attr(initMe, "src");
-		
-	if(url) {
-		if(url == "nosrc") {
-			callback();
-			return;
-		}
-		
-		
-		INC.get(url).then(function(response) {
-
-			if(url.indexOf(".html") != -1) {
-				initMe.innerHTML = response;
-
-				if(El.attr(initMe, "ENDPINE") === undefined)
-					U.evalElementScripts(initMe, url);
-			}
-			else if(url.indexOf(".css") != -1) {
-				initMe.innerHTML = "<style>"+response+"</style>"
-			}
-			else {
-				PINE.err("file is neither .html or .css");
-			}
-
-
-			callback ? callback() : null
-		});	
-		
-	} else {
-		PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
-		callback();
+	include.FNS.changeSrc = function(src) {
+		this.domNode.setAttribute("src", src);
+		return this.FNS.update();
 	}
-}
 
+	include.FNS.update = function() {
+		var job = this;
+		var domNode = job.domNode;
 
+		var url = this.attArg.src;
 
-p_include.init = function(initMe, onComplete) {
-	p_include.update(initMe, onComplete);
+		if(url) {
+			if(url == "nosrc") 
+				return SyncPromise.resolved();
+			
+			
+			return INC.get(url).syncThen(function(response) {
 
-	PINE.addNodeFunction(initMe, "changeSrc", function(src, callback) {
-		// callback = callback || function(){};
-		initMe.setAttribute("src", src);
-		p_include.update(initMe, function(){
-			PINE.updateAt(initMe, callback);
-		});
+				if(url.indexOf(".html") != -1) {
+					domNode.innerHTML = response;
+
+					if(El.attr(initMe, "ENDPINE") === undefined)
+						U.evalElementScripts(initMe, url);
+				}
+
+				else if(url.indexOf(".css") != -1) 
+					domNode.innerHTML = "<style>"+response+"</style>"
+				
+				else PINE.err("file is neither .html or .css");
+				
+
+				return PINE.updateAt(domNode);
+			});	
+			
+		} 
+		else {
+			PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
+			return SyncPromise.resolved();
+		}
+	}
+
+	include.addInitFn({
+		isAsync : true,
+		fn: function(resolve) {
+			this.FNS.update().syncThen(resolve);
+		}
 	});
-}
 
-
-p_include.addFunction({
-	opType : PINE.ops.COMMON,
-	isAsync : true,
-	fn: p_include.init
 });
+
+// p_include.update = function(initMe, callback) {
+
+// 	var url = El.attr(initMe, "src");
+		
+// 	if(url) {
+// 		if(url == "nosrc") {
+// 			callback();
+// 			return;
+// 		}
+		
+		
+// 		INC.get(url).then(function(response) {
+
+// 			if(url.indexOf(".html") != -1) {
+// 				initMe.innerHTML = response;
+
+// 				if(El.attr(initMe, "ENDPINE") === undefined)
+// 					U.evalElementScripts(initMe, url);
+// 			}
+// 			else if(url.indexOf(".css") != -1) {
+// 				initMe.innerHTML = "<style>"+response+"</style>"
+// 			}
+// 			else {
+// 				PINE.err("file is neither .html or .css");
+// 			}
+
+
+// 			callback ? callback() : null
+// 		});	
+		
+// 	} else {
+// 		PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
+// 		callback();
+// 	}
+// }
+
+
+
+// p_include.init = function(initMe, onComplete) {
+// 	p_include.update(initMe, onComplete);
+
+// 	PINE.addNodeFunction(initMe, "changeSrc", function(src, callback) {
+// 		// callback = callback || function(){};
+		
+// 	});
+// }
+
+
+
 
 
 
@@ -197,154 +244,141 @@ p_include.addFunction({
 *   view
 ***************/
 
+INC.VIEWS = {};
+
+
 INC.View = function(url) {
 	this.url = url;
 	this.childNodes = [];
 	this.PVARS = {};
-	// this.onShow = onShow;
-	// this.onHide = onHide;
 }
 
 
 
-var p_view = PINE.createNeedle("view");
+var p_view = PINE.createNeedle("view", function(view) {
 
+	view.addAttArg("url", "src", "string");
 
-p_view.init = function(initMe, onComplete) {
-	initMe._pine_.views = {};
-	initMe._pine_.currentUrl = "unset";
+	view.FNS.update = function() {
+		var job = this;
+		var domNode = this.domNode;
+		var url = job.attArg.url;
+			
+		if(url) {
 
-	p_view.update(initMe, onComplete);
+			var currentUrl = job.currentUrl;
 
-
-	PINE.addNodeFunction(initMe, "changeSrc", function(src, callback) {
-		// callback = callback || function(){};
-		initMe.setAttribute("src", src);
-		p_view.update(initMe, function(){
-			PINE.updateAt(initMe, callback);
-		});
-	});
-
-	PINE.addNodeFunction(initMe, "dropView", function(url) {
-		p_view.dropView(initMe, url);
-	});
-
-	PINE.addNodeFunction(initMe, "dropAllViews", function(includeCurrent) {
-		p_view.dropAllViews(initMe, includeCurrent);
-	});
-
-	PINE.addNodeFunction(initMe, "dropViewsContaining", function(url) {
-		p_view.dropViewsContaining(initMe, url);
-	});
-}
-
-
-p_view.dropView = function(domNode, url) {
-	delete domNode._pine_.views[url];
-}
-
-p_view.dropAllViews = function(domNode, includeCurrent) {
-	if(includeCurrent) {
-		domNode.setAttribute("src", "nosrc");
-		p_view.update(domNode)
-	}
-
-	domNode._pine_.views = {};
-}
-
-p_view.dropViewsContaining = function(domNode, url) {
-	var views = domNode._pine_.views;
-	for(var key in views) {
-		if(key.indexOf(url) != -1)
-			delete views[key];
-	}
-}
-
-
-
-
-p_view.update = function(initMe, callback) {
-
-	var url = El.attr(initMe, "src");
-		
-	if(url) {
-		
-
-		var currentUrl = initMe._pine_.currentUrl;
-
-		if(url == currentUrl) return;
-			//
-		if(currentUrl != "unset") {
-
-			var oldView = initMe._pine_.views[currentUrl];
-
-			if(oldView === undefined) {
-				oldView = initMe._pine_.views[currentUrl] = new INC.View(currentUrl);
-			}
-
-			var moveMe;
-			while (moveMe = initMe.lastChild)  {
-				oldView.childNodes.push(moveMe)
-				initMe.removeChild(moveMe);
-			}
-
-			oldView.PVARS = initMe.PVARS;
-			initMe.PVARS = {};
-		}
-
-		if(url == "nosrc"){
-			initMe._pine_.currentUrl = url;
-			if(callback) { callback(); }
-			return;
-		}
-
-
-		var view = initMe._pine_.views[url];
-			//
-		if(view !== undefined) {
-			var moveMe;
-			while (moveMe = view.childNodes.pop())  {
-				initMe.appendChild(moveMe);
-			}
-
-			initMe.PVARS = view.PVARS;
-			view.PVARS = {};
-		}
-		else {
+			if(url == currentUrl) return;
 				//
-			INC.get(url).then(function(response) {
-				view = initMe._pine_.views[url] = new INC.View(url);
+			if(currentUrl != "unset") {
+
+				var oldView = job.views[currentUrl];
+
+				if(oldView === undefined) 
+					oldView = job.views[currentUrl] = new INC.View(currentUrl);
+				
+
+				var moveMe;
+				while (moveMe = domNode.lastChild)  {
+					oldView.childNodes.push(moveMe)
+					domNode.removeChild(moveMe);
+				}
+
+				oldView.PVARS = domNode.PVARS;
+				domNode.PVARS = {};
+			}
+
+			if(url == "nosrc"){
+				job.currentUrl = url;
+				return SyncPromise.resolved();
+			}
+
+
+			var view = job.views[url];
+				//
+			if(view !== undefined) {
+				var moveMe;
+				while (moveMe = view.childNodes.pop())  {
+					domNode.appendChild(moveMe);
+				}
+
+				domNode.PVARS = view.PVARS;
+				view.PVARS = {};
+			}
+			else {
 					//
-				if(url.indexOf(".html") != -1) {
-					initMe.innerHTML = response;
-					U.evalElementScripts(initMe, url);
-				}
-				else if(url.indexOf(".css") != -1) {
-					initMe.innerHTML = "<style>"+response+"</style>"
-				}
-				else {
-					PINE.err("file is neither .html or .css");
-				}
+				return INC.get(url).syncThen(function(response) {
+					view = job.views[url] = new INC.View(url);
+						//
+					if(url.indexOf(".html") != -1) {
+						domNode.innerHTML = response;
+						return U.evalElementScripts(domNode, url).syncThen(function(){
+							return PINE.updateAt(domNode);
+						});
+					}
+					else if(url.indexOf(".css") != -1) {
+						domNode.innerHTML = "<style>"+response+"</style>"
+					}
+
+					else PINE.err("file is neither .html or .css");
+
+					return PINE.updateAt(domNode);
+				});
+			}
+
+			job.currentUrl = url;
+		
+		} else {
+			PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
+			return SyncPromise.resolved();
+		}
+	}
+
+	view.FNS.changeSrc = function(src) {
+		this.domNode.setAttribute("src", src);
+		return this.FNS.update();
+	}
+
+	view.FNS.dropView = function(url) {
+		delete this.views[url];
+	}
 
 
-				callback ? callback() : null
-			});
+	view.FNS.dropAllViews = function(includeCurrent) {
+		var domNode = this.domNode;
+
+		if(includeCurrent) {
+			domNode.setAttribute("src", "nosrc");
+			this.FNS.update(domNode)
 		}
 
-		initMe._pine_.currentUrl = url;
-	
-	} else {
-		PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
-		callback();
+		this.views = {};
 	}
-}
 
-p_view.addFunction({
-	opType : PINE.ops.COMMON,
-	isAsync : true,
-	fn: p_view.init
+
+	view.FNS.dropViewsContaining = function(url) {
+		var domNode = this.domNode;
+		var views = this.views;
+		for(var key in views) {
+			if(key.indexOf(url) != -1)
+				delete views[key];
+		}
+	}
+
+
+
+	view.addInitFn({
+		isAsync : true,
+		fn: function(resolve) {
+			var job = this;
+			job.currentUrl = "unset";
+			job.views = {};
+			job.FNS.update(job.domNode).syncThen(resolve);
+		}
+	});
+
+
 });
-
 
 
 
@@ -354,41 +388,22 @@ p_view.addFunction({
 *   changeSrc
 ***************/
 
+PINE.createNeedle("[changeSrc]", function(change) {
+	change.addAttArg("src", "changeSrc", "string");
+	change.addAttArg("target", ["changeSrcTarget", "target"], "id", INC.defaultChangeSrcTarget);
 
+	change.addInitFn( function() {
+		var job = this;
+		var initMe = job.domNode;
 
-var p_changeSrc = PINE.createNeedle("changeSrc");
-p_changeSrc.addFunction( function(initMe, needle) {
-
-	PINE.err("Use Attribute changeSrc instead!!")
-
-	initMe.addEventListener("click", function(event) {
-		
-		var src = El.attr(initMe, "src");
-
-		var target = El.attr(initMe, "target") || INC.defaultChangeSrcTarget;
-		var domNode = document.getElementById(target);
-
-		if(domNode && domNode.FNS && domNode.FNS.changeSrc)
-			domNode.FNS.changeSrc(src);
-		
+		initMe.addEventListener("click", function(event) {
+			var target = job.target;
+			if(target && target.FNS && target.FNS.changeSrc)
+				target.FNS.changeSrc(job.src);
+		});
 	});
 });
 
-
-var p_changeSrc = PINE.createNeedle("[changeSrc]");
-p_changeSrc.addFunction( function(initMe, needle) {
-
-	initMe.addEventListener("click", function(event) {
-		
-		var src = El.attr(initMe, "changeSrc");
-
-		var target = El.attr(initMe, "changeSrcTarget") || INC.defaultChangeSrcTarget;
-		var domNode = El.byId(target);
-
-		if(domNode && domNode.FNS && domNode.FNS.changeSrc)
-			domNode.FNS.changeSrc(src);
-	});
-});
 
 
 
@@ -436,52 +451,6 @@ PINE("[backButton]", PINE.ops.GATHER, function(initMe, needle) {
 
 
 
-/****************
-*    needle
-***************/
-
-// var p_needle = PINE.createNeedle("needle");
-
-// p_needle.addFunction({
-// 	opType : PINE.ops.INIT,
-// 	isAsync : true,
-// 	fn: function(initMe, onComplete) {
-// 		console.log("updating")
-
-
-// 		var url = El.attr(initMe, "src");
-			
-// 		if(url) {
-// 			INC.get(url).then(function(response) {
-
-// 				if(url.indexOf(".html") != -1) {
-// 					initMe.innerHTML = response;
-
-// 					U.evalElementScripts(initMe, url);
-// 				}
-// 				else if(url.indexOf(".css") != -1) {
-// 					initMe.innerHTML = "<style>"+response+"</style>"
-// 				}
-// 				else {
-// 					PINE.err("file is neither .html or .css");
-// 				}
-
-
-// 				// callback ? callback() : null
-// 				onComplete();
-// 			});
-		
-// 		} else {
-// 			PINE.err("include src for "+initMe+" in not set");
-// 		}
-// 	}
-// });
-
-
-
-
-
-
 
 
 
@@ -495,10 +464,11 @@ U.evalElementScripts = function(initMe, url) {
 
 	var injects = [];
 
-	var fakeLoc = {};
-	var search = url.match(/\?.*/g);
-	fakeLoc.search = search ? search[0] : "";
-	injects.push({var_name: "window.location", addMe: fakeLoc});
+	console.log("evaling elementScripts")
+	// var fakeLoc = {};
+	// var search = url.match(/\?.*/g);
+	// fakeLoc.search = search ? search[0] : "";
+	// injects.push({var_name: "window.location", addMe: fakeLoc});
 
 	var INCLUDED = {};
 	INCLUDED.url = url;
@@ -515,32 +485,14 @@ U.evalElementScripts = function(initMe, url) {
 
 	initMe.PVARS = hack.localVars;
 
+	var promises = [];
 	for(var sc in hack.scripts) {
-		// console.log(hack.scripts[sc]);
-		console.log("RECENTLY CHANGED INCLUDE EVAL CODE")
-		U.helpfulEval(hack.scripts[sc], url);
-		// try {
-		// 	console.log("trying eval for "+url);
-
-		// 	// var fullyHackedScript = "try { \n" + hack.scripts[sc] + "\n} catch(e) { "
-		// 	// fullyHackedScript += "console.log('Eval Error In "+url+"', e); }";
-
-
-		// 	// eval(fullyHackedScript);
-		// 	// console.log(fullyHackedScript);
-		// 	eval(hack.scripts[sc]);
-
-		// }
-		// catch(e) {
-		// 	var lineNumber = e.lineNumber ? e.lineNumber : -1;
-		// 	var errorOut = {};
-		// 	errorOut.viewScript = hack.scripts[sc];
-
-		// 	PINE.err("eval error in file "+url+" line: "+lineNumber+" of script: ", errorOut);
-		// }
+		promises.push(U.runScript(hack.scripts[sc], undefined, url));
 	}
 
-	return hack;
+	console.log(promises);
+
+	return SyncPromise.all(promises);
 }
 
 

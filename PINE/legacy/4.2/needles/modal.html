@@ -1,0 +1,98 @@
+<script type="text/javascript">
+PINE("modal", function(initMe) {
+		//	
+	var exitOnOutClick = El.attArg(initMe, "exitOnOutClick", "boolean", true);
+	var fade = El.attArg(initMe, ["modalFade", "fade"], "id")
+	var currentlyShowing = false;
+
+	PINE.addFunctionToNode(initMe, "hideModal", function() {
+		if(currentlyShowing == false)
+			return;
+
+		currentlyShowing = false;
+
+		initMe.classList.remove("shown_overlay");
+		if(fade !== undefined) 
+			fade.classList.remove("shown_overlay");
+	});
+
+	PINE.addFunctionToNode(initMe, "showModal", function() {
+		if(currentlyShowing == true)
+			return;
+
+		console.log("SHOWING MODAL");
+
+		currentlyShowing = true;
+
+		initMe.classList.add("shown_overlay");
+
+		if(fade !== undefined) 
+			fade.classList.add("shown_overlay");
+
+		if(exitOnOutClick) {
+			var mouseupFunc = function(event) {
+				if(initMe == event.target || initMe.contains(event.target)) return;	
+				initMe.FNS.hideModal();
+				document.removeEventListener('keyup', onKeyup, false);
+				document.removeEventListener('mouseup', mouseupFunc, false);
+			}
+			document.addEventListener('mouseup', mouseupFunc);
+
+			var onKeyup = function(event) {
+				console.log(event.key);
+				if(event.key == "Escape") {
+					initMe.FNS.hideModal();
+					document.removeEventListener('keyup', onKeyup, false);
+					document.removeEventListener('mouseup', mouseupFunc, false);
+				}
+			}
+			document.addEventListener('keyup', onKeyup);
+		}
+	});
+});
+</script>
+
+
+ 
+
+<!-- OVERLAY INLINE DEF -->
+
+<style>
+modal {
+	display: none;
+	position: fixed;
+	z-index: 100;
+	left: 50%;
+	top: 50%;
+	opacity: 0;
+	transform: translateX(-50%) translateY(-50%);
+	transition: opacity ease 2s;
+}
+
+.shown_overlay {
+	display: block;
+	animation: fade_in_overlay ease 0.5s forwards;
+}
+
+@keyframes fade_in_overlay {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+fade {
+	display: none;
+	/*pointer-events: none;*/
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 99;
+	opacity: 0;
+	transition: opacity ease 2s;
+}
+</style>

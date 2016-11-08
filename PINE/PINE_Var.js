@@ -20,15 +20,18 @@ var pnv = PINE.pnv = {};
 
 
 
+PINE.createNeedle("*", function() {
+	this.addInitFn( PINE.ops.INIT, function() {
+		var initMe = this.domNode;
+		for (var node = initMe.firstChild; node; node = node.nextSibling) {
+			if(node.nodeName == "#text")  
+				pnv.parseText(node);
+		}
 
-PINE.Needle('*').addFunction( PINE.ops.INIT, function(initMe) {
-	for (var node = initMe.firstChild; node; node = node.nextSibling) {
-		if(node.nodeName == "#text")  
-			pnv.parseText(node);
-	}
-
-	pnv.parseAtts(initMe);	
+		pnv.parseAtts(initMe);	
+	});
 });
+
 
 
 
@@ -112,30 +115,40 @@ PINE.pnv.parseAtts = function(initMe)  {
 
 
 
-PINE.createNeedle("pnv").addFunction({ 
-	opType: PINE.ops.STATIC, 
-	// isMultirun: true,
-	isAsync: true,
-	fn:  function(initMe, complete) {
+PINE.createNeedle("pnv", function(pnv){
+	pnv.FNS.pnvUpdate = function() {
+		var initMe = this.domNode;
 		var get = El.attr(initMe, "var");
 
 		if(get != null)  {
-			PINE.varCode(initMe, get, function(val) {
-				// initMe.textContent = val;
-				initMe.innerHTML = val;	
-				complete();
+			return new SyncPromise(function(resolve) {
+				PINE.varCode(initMe, get, function(val) {
+					// initMe.textContent = val;
+					initMe.innerHTML = val;	
+					resolve();
+				});
 			});
 		}
+		else return SyncPromise.resolved();
 	}
+
+	pnv.addInitFn({ 
+		opType: PINE.ops.STATIC, 
+		isAsync: true,
+		fn:  function(resolve) {
+			this.FNS.pnvUpdate().syncThen(resolve);
+		}
+	});
 });
 
 
 
 
-PINE.createNeedle("[pvars]").addFunction( { 
+PINE.createNeedle("[pvars]").addInitFn( { 
 	opType: PINE.ops.PVARS, 
 	// isMultirun: true,
-	fn: function(initMe) {
+	fn: function() {
+		var initMe = this.domNode;
 		var pvar_att = El.attr(initMe, "pvars");
 
 		if(pvar_att) {
@@ -145,7 +158,7 @@ PINE.createNeedle("[pvars]").addFunction( {
 
 			for(var i_s = 0; i_s < pvars.length; i_s+=2) {
 				var pvar = pvars[i_s];
-				var value = PINE.nodeScopedVar(initMe, pvars[i_s+1]);
+				var value = El.pvar(initMe, pvars[i_s+1]);
 				initMe.PVARS[pvar] = value;
 			}
 		}
@@ -157,11 +170,12 @@ PINE.createNeedle("[pvars]").addFunction( {
 
 
 
-PINE.createNeedle("[pnvatts]").addFunction( { 
+PINE.createNeedle("[pnvatts]").addInitFn( { 
 	opType: PINE.ops.STATIC, 
 	isAsync: true,
 	// isMultirun: true,
-	fn: function(initMe, complete) {
+	fn: function(resolve) {
+		var initMe = this.domNode;
 
 		var rulesIndex = El.attr(initMe, "pnvatts");
 		var rules = PINE.pnv.attrRules[rulesIndex];
@@ -179,7 +193,7 @@ PINE.createNeedle("[pnvatts]").addFunction( {
 					var replaceMe = matches[i_m];
 
 					var key = matches[i_m].replace(/^{{|}}$/g, '');
-					var addMe = new Promise(function(resolve) {
+					var addMe = new SyncPromise(function(resolve) {
 						PINE.varCode(initMe, key, function(result) {
 							outVal = outVal.replace(replaceMe, result);
 							resolve();
@@ -190,7 +204,7 @@ PINE.createNeedle("[pnvatts]").addFunction( {
 					allPromises.push(addMe);
 				}
 
-				Promise.all(att_promises).then(function() {
+				SyncPromise.all(att_promises).syncThen(function() {
 					var oldVal = El.attr(initMe, att);
 					El.attr(initMe, att, outVal);
 				});
@@ -198,65 +212,25 @@ PINE.createNeedle("[pnvatts]").addFunction( {
 			}(k_att, rules[k_att]);
 		}
 
-		Promise.all(allPromises).then(function() {
-			complete();
-		});
-
-			
-		// var rules = initMe.attributes["pnvatt"].value;
-
-		// //KLUDGE: fix me if you can
-		// var pairs = rules.split(":+:");
-		// for(var i_p in pairs)  {
-
-		// 	// console.log(pairs[i_p]);
-
-		// 	var splitPoint = pairs[i_p].indexOf("=");
-		// 	// var rule = pairs[i_p].split('=', 2);
-
-		// 	// console.log(rule);
-
-		// 	var setAtt = pairs[i_p].substring(0, splitPoint);
-		// 	var outVal = pairs[i_p].substring(splitPoint+1);
-		// 	var matches = outVal.match(/{{.+?}}/g);
-
-		// 	console.log(setAtt, outVal);
-
-		// 	var promises = [];
-		// 	for(var i_m in matches)  {
-		// 		var replaceMe = matches[i_m];
-
-		// 		var key = matches[i_m].replace(/^{{|}}$/g, '');
-
-		// 		promises.push(new Promise(function(resolve) {
-		// 			PINE.varCode(initMe, key, function(result) {
-		// 				outVal = outVal.replace(replaceMe, result);
-		// 				resolve();
-		// 			});
-		// 		}));
-		// 		// var addMe = pnv.getVarFrom(key, initMe); 
-
-		// 		// outVal = outVal.replace(replaceMe, addMe);
-		// 	}
-
-		// 	Promise.all(promises).then(function() {
-		// 		initMe.attributes[setAtt].value = outVal;
-		// 		complete();
-		// 	});
-			
-		// 	// initMe.attributes[setAtt].value = outVal;
-		// }
+		SyncPromise.all(allPromises).syncThen(resolve);
 	}
 });
 
 
 
-
-
-
 PINE.nodeScopedVar = function(domNode, varName) {
+	PINE.err("don't use node scoped var!! use El.pvar");
+	return El.pvar(domNode, varName);
+}
+
+El.pvar = function(domNode, varName) {
 	return pnv.getVarFrom(varName, domNode);
 }
+
+ElementHelper.prototype.pvar = function(varName) {
+	return El.pvar(this.domNode, varName);
+}
+
 
 
 pnv.getVarFrom = function(keyArrayOrName, currentNode, superRoot)  {

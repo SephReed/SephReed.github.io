@@ -42,62 +42,67 @@ U.dragInPlace = function(domNode, onMovement) {
 *     Knob
 *
 **************************/
-var p_knob = PINE("knob", function(initMe) {
+PINE.createNeedle("knob", function(knob) {
 
-	var knobVal = 0.5;
-	PINE.addFunctionToNode(initMe, "getKnobVal", function() {
-		return knobVal;
-	});
-
+	knob.addAttArg("minRotation", ["knobMinRotation", "minRotation"], "int", -135);
+	knob.addAttArg("maxRotation", ["knobMaxRotation", "maxRotation"], "int", 135);
+	knob.addAttArg("dragRadius", ["knobDragRadius", "dragRadius"], "int", 150);
 
 
-	var minRotation = El.attArg(initMe, ["knobMinRotation", "minRotation"], "int", -135);
-	var maxRotation = El.attArg(initMe, ["knobMaxRotation", "maxRotation"], "int", 135);
-	var dragRadius = El.attArg(initMe, ["knobDragRadius", "dragRadius"], "int", 150);
+	knob.addInitFn(function() {
+		var job = this;
 
-	var rotationWidth = maxRotation - minRotation;
-	var unitPerPx = 0.5/dragRadius;
-	console.log(dragRadius, unitPerPx);
+		job.knobVal = 0.5;
+		job.knobChangeListeners = [];
 
-	initMe.addEventListener("mousedown", function(mouseDownEvent) {
-		var dy = 0;
-		var startVal = knobVal;
+		job.rotationWidth = job.attArg.maxRotation - job.attArg.minRotation;
+		var unitPerPx = 0.5/job.attArg.dragRadius;
 
-		mouseDownEvent.preventDefault();
-		U.dragInPlace(initMe, function(moveEvent) {
+		job.domNode.addEventListener("mousedown", function(mouseDownEvent) {
+			var dy = 0;
+			var startVal = job.knobVal;
 
-			var moveY = moveEvent.movementY
-			if(moveEvent.shiftKey)
-				moveY *= 0.1;
+			mouseDownEvent.preventDefault();
+			U.dragInPlace(job.domNode, function(moveEvent) {
 
-			dy -= moveY;
+				var moveY = moveEvent.movementY
+				if(moveEvent.shiftKey)
+					moveY *= 0.1;
 
-			var newVal = (unitPerPx * dy) + startVal;
+				dy -= moveY;
 
-			console.log(dy, newVal);
+				var newVal = (unitPerPx * dy) + startVal;
 
-			initMe.FNS.setKnobVal(newVal);
+				console.log(dy, newVal);
+
+				job.FNS.setKnobVal(newVal);
+			});
 		});
 	});
 
-	var knobChangeListeners = [];
-	PINE.addFunctionToNode(initMe, "onKnobChange", function(listener) {
-		knobChangeListeners.push(listener);
-	});
+
+	knob.FNS.getKnobVal = function() {
+		return this.knobVal;
+	}
+	
+
+	knob.FNS.onKnobChange = function(listener) {
+		this.knobChangeListeners.push(listener);
+	}
 
 
 	
-	PINE.addFunctionToNode(initMe, "setKnobVal", function(newVal) {
+	knob.FNS.setKnobVal = function(newVal) {
 		newVal = Math.max(newVal, 0);
 		newVal = Math.min(newVal, 1);
-		knobVal = newVal;
+		this.knobVal = newVal;
 
-		for(var i in knobChangeListeners)
-			knobChangeListeners[i](knobVal);
+		for(var i in this.knobChangeListeners)
+			this.knobChangeListeners[i](this.knobVal);
 
-		var rotation = (knobVal * rotationWidth) + minRotation;
-		initMe.style.transform = "rotate("+rotation+"deg)";
-	});
+		var rotation = (this.knobVal * this.rotationWidth) + this.attArg.minRotation;
+		this.domNode.style.transform = "rotate("+rotation+"deg)";
+	}
 
 });
 
@@ -111,38 +116,38 @@ var p_knob = PINE("knob", function(initMe) {
 *
 **************************/
 
-var p_readout = PINE("numreadout", function(initMe) {
-	var readoutVal = 0;
-	var readoutLow = 0;
-	var readoutHigh = 1;
-	var readoutListeners = [];
+// var p_readout = PINE("numreadout", function(initMe) {
+// 	var readoutVal = 0;
+// 	var readoutLow = 0;
+// 	var readoutHigh = 1;
+// 	var readoutListeners = [];
 
-	PINE.addFunctionToNode(initMe, "setNumReadoutLow", function(newVal) {
-		readoutLow = newVal;
-	});
+// 	PINE.addFunctionToNode(initMe, "setNumReadoutLow", function(newVal) {
+// 		readoutLow = newVal;
+// 	});
 
-	PINE.addFunctionToNode(initMe, "setNumReadoutHigh", function(newVal) {
-		readoutHigh = newVal;
-	});
+// 	PINE.addFunctionToNode(initMe, "setNumReadoutHigh", function(newVal) {
+// 		readoutHigh = newVal;
+// 	});
 
-	PINE.addFunctionToNode(initMe, "getNumReadoutVal", function() {
-		return readoutVal;
-	});
+// 	PINE.addFunctionToNode(initMe, "getNumReadoutVal", function() {
+// 		return readoutVal;
+// 	});
 
-	PINE.addFunctionToNode(initMe, "setNumReadoutVal", function(newVal) {
-		readoutVal = newVal;
-		initMe.textContent = (readoutVal+'').substr(0, 8);
+// 	PINE.addFunctionToNode(initMe, "setNumReadoutVal", function(newVal) {
+// 		readoutVal = newVal;
+// 		initMe.textContent = (readoutVal+'').substr(0, 8);
 
-		for(var i in readoutListeners)
-			readoutListeners[i](readoutVal);
-	});
+// 		for(var i in readoutListeners)
+// 			readoutListeners[i](readoutVal);
+// 	});
 
-	initMe.FNS.setNumReadoutVal(readoutVal);
+// 	initMe.FNS.setNumReadoutVal(readoutVal);
 
-	PINE.addFunctionToNode(initMe, "onNumReadoutChange", function(listener) {
-		readoutListeners.push(listener);
-	});
-});
+// 	PINE.addFunctionToNode(initMe, "onNumReadoutChange", function(listener) {
+// 		readoutListeners.push(listener);
+// 	});
+// });
 
 
 

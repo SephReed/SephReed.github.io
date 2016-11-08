@@ -2,146 +2,144 @@
 var svgns = "http://www.w3.org/2000/svg";
 
 
-var p_cables = PINE("[cableOverlay]", function(initMe) {
+PINE.createNeedle("[cableOverlay]", function(cables) {
 		//
-	var positioning = El.getStyle(initMe, "position");
-	
-	if(positioning == undefined || positioning == 'static')
-		initMe.style.position = "relative";
-	
-	var cableSpace = initMe.PVARS.cableSpace = El.byId("cableSpaceTemplate").cloneNode(true);
-	cableSpace.ID = "";
-	cableSpace.PVARS = {};
-
-	initMe.appendChild(cableSpace);
-
-	onResize = function() {
-		var bounds = initMe.PVARS.bounds = cableSpace.getBoundingClientRect();
-		console.log("bounds!", bounds)
-		cableSpace.setAttributeNS(null, "width", bounds.width);
-		cableSpace.setAttributeNS(null, "height", bounds.height);
-	}
-	onResize();
-
-	initMe.addEventListener("resize", onResize);
-
-
-	initMe.addEventListener("mousedown", function(event) {
-		var target = event.target;
-
-		console.log(target);
-
-		if(target.tagName == "SOCKET") {
-			onResize();
-			initMe.FNS.cableStart(target);
-			event.preventDefault();
-		}
-		else if(target.classList.contains("plug")) {
-			onResize();
-			p_cables.dragPlug(initMe, target);
-			event.preventDefault();
-		}
-		else if(target.parentNode.classList.contains("wire")) {
-			// target.parentNode.
-			event.preventDefault();
-		}
-
-	});
-
-
-	var hoveredWire;
-	var wireDeleteListener = function(event) {
-		if(event.key == 'x' || event.key == "Backspace") {
-			removeCable(hoveredWire._cable);
-			hoveredWire = undefined;
-			document.body.removeEventListener("keydown", wireDeleteListener);
-			event.preventDefault();
-			event.stopPropagation();
-		}
+	cables.FNS.onCableRemove = function(listener) {
+		this.domNode.addEventListener("cableRemove", listener);
 	}
 
-	initMe.addEventListener("mousemove", function(event) {
-		var target = event.target;
-		if(target.parentNode && target.parentNode != hoveredWire) {
-			if(target.parentNode.classList.contains("wire")) {
-				console.log("hovering wire");
-				hoveredWire = target.parentNode;
-				document.body.addEventListener("keydown", wireDeleteListener);
+	cables.FNS.onCableConnect = function(listener) {
+		this.domNode.addEventListener("cableConnect", listener);
+	}
+
+	cables.FNS.cableStart = function(startNode) {
+	    var cable = cables.createCable(this, startNode);
+	    cable.dragPlug(startNode.parentNode.tagName == "RSOUT" ? cable.in : cable.out);
+	    return cable;
+	}
+
+	cables.FNS.cableConnect = function(startNode, endNode) {
+	    return cables.createCable(this, startNode, endNode);
+	}
+
+
+	
+	cables.FNS.cableUpdatePositions = function() {
+	    for(var i in this.allCables) {
+	    	this.allCables[i].updatePosition();
+	    }
+	}
+
+
+	cables.addInitFn(function() {
+		var initMe = this.domNode;
+		var instance = this;
+		instance.allCables = [];
+
+		El.makeSizeCalculatable(initMe);
+		
+		var cableSpace = instance.cableSpace = El.byId("cableSpaceTemplate").cloneNode(true);
+
+		initMe.appendChild(cableSpace);
+
+		var onResize = function() {
+			var bounds = initMe.PVARS.bounds = cableSpace.getBoundingClientRect();
+			console.log("bounds!", bounds)
+			cableSpace.setAttributeNS(null, "width", bounds.width);
+			cableSpace.setAttributeNS(null, "height", bounds.height);
+		}
+
+		El.waitForDisplay(initMe).then(onResize);
+
+
+		initMe.addEventListener("mousedown", function(event) {
+			var target = event.target;
+
+			console.log(target);
+
+			if(target.tagName == "SOCKET") {
+				onResize();
+				initMe.FNS.cableStart(target);
+				event.preventDefault();
 			}
-			else if (hoveredWire != undefined) {
+			else if(target.classList.contains("plug")) {
+				onResize();
+				cables.dragPlug(initMe, target);
+				event.preventDefault();
+			}
+			else if(target.parentNode.classList.contains("wire")) {
+				// target.parentNode.
+				event.preventDefault();
+			}
+
+		});
+
+
+		var hoveredWire;
+		var wireDeleteListener = function(event) {
+			if(event.key == 'x' || event.key == "Backspace") {
+				cables.removeCable(instance, hoveredWire._cable);
 				hoveredWire = undefined;
 				document.body.removeEventListener("keydown", wireDeleteListener);
+				event.preventDefault();
+				event.stopPropagation();
 			}
 		}
-	});
 
-	var allCables = [];
-
-
-
-
-	var removeListeners = [];
-	PINE.addFunctionToNode(initMe, "cableOnRemove", function(listener) {
-		removeListeners.push(listener);
-	});
-
-	var notifyCableRemoveListeners = function(cable) {
-		for(var i in removeListeners)
-			removeListeners[i](cable);	
-	}
-
+		initMe.addEventListener("mousemove", function(event) {
+			var target = event.target;
+			if(target.parentNode && target.parentNode != hoveredWire) {
+				if(target.parentNode.classList.contains("wire")) {
+					console.log("hovering wire");
+					hoveredWire = target.parentNode;
+					document.body.addEventListener("keydown", wireDeleteListener);
+				}
+				else if (hoveredWire != undefined) {
+					hoveredWire = undefined;
+					document.body.removeEventListener("keydown", wireDeleteListener);
+				}
+			}
+		});
 
 
-
-	var connectListeners = [];
-	PINE.addFunctionToNode(initMe, "cableOnConnect", function(listener) {
-		connectListeners.push(listener);
 	});
 
 
-	var notifyCableConnectListeners = function(cable) {
-		for(var i in connectListeners)
-			connectListeners[i](cable);	
-	}
-
-
-
-
-
-
-
-
-	var createCable = function(startNode, endNode) {
-		var cable = new Cable(cableSpace, startNode, endNode);
-		allCables.push(cable);
-		cable.onRemove(notifyCableRemoveListeners);
-		cable.onConnect(notifyCableConnectListeners);
+	cables.createCable = function(instance, startNode, endNode) {
+		console.log("creating cable");
+		var cable = new Cable(instance.cableSpace, startNode, endNode);
+		instance.allCables.push(cable);
+		// cable.onRemove(notifyCableRemoveListeners);
+		// cable.onConnect(notifyCableConnectListeners);
 		return cable;
 	}
 
-	var removeCable = function(cable) {
+	cables.removeCable = function(instance, cable) {
 		cable.remove();
-		var target = allCables.indexOf(cable)
-		allCables.splice(target, 1);
+		U.removeFromArray(cable, instance.allCables);
 	}
 
-	PINE.addFunctionToNode(initMe, "cableStart", function(startNode) {
-	    var cable = createCable(startNode);
-	    cable.dragPlug(startNode.parentNode.tagName == "RSOUT" ? cable.in : cable.out);
-	    return cable;
-	});
-
-	PINE.addFunctionToNode(initMe, "cableConnect", function(startNode, endNode) {
-	    return createCable(startNode, endNode);
-	});
-
-
 	
-	PINE.addFunctionToNode(initMe, "cableUpdatePositions", function() {
-	    for(var i in allCables) {
-	    	allCables[i].updatePosition();
-	    }
-	});
+	// cables.updateSocketPosPoint = function(cableSpace, socketNode) {
+	// 	var x, y;
+	// 	// var cableSpace = instance.cableSpace;
+
+	// 	var spaceBounds = cableSpace.getBoundingClientRect();
+	// 	var socketBounds = socketNode.getBoundingClientRect();
+
+	// 	var x = socketBounds.left - spaceBounds.left;
+	// 	var y = socketBounds.top - spaceBounds.top;
+
+	// 	x += socketNode.offsetWidth/2;
+	// 	y += socketNode.offsetHeight/2;
+		
+	// 	if(socketNode.PVARS.socketPos == undefined)
+	// 		socketNode.PVARS.socketPos = new Point(x, y);
+	// 	else {
+	// 		socketNode.PVARS.socketPos.x = x;
+	// 		socketNode.PVARS.socketPos.y = y;
+	// 	}
+	// }
 	
 });
 
@@ -149,26 +147,6 @@ var p_cables = PINE("[cableOverlay]", function(initMe) {
 
 
 
-
-p_cables.updateSocketPosPoint = function(cableSpace, socketNode) {
-	var x, y;
-
-	var spaceBounds = cableSpace.getBoundingClientRect();
-	var socketBounds = socketNode.getBoundingClientRect();
-
-	var x = socketBounds.left - spaceBounds.left;
-	var y = socketBounds.top - spaceBounds.top;
-
-	x += socketNode.offsetWidth/2;
-	y += socketNode.offsetHeight/2;
-	
-	if(socketNode.PVARS.socketPos == undefined)
-		socketNode.PVARS.socketPos = new Point(x, y);
-	else {
-		socketNode.PVARS.socketPos.x = x;
-		socketNode.PVARS.socketPos.y = y;
-	}
-}
 
 
 
@@ -181,12 +159,6 @@ p_cables.updateSocketPosPoint = function(cableSpace, socketNode) {
 
 var Cable = function(cableSpace, startNode, endNode) {
 	var cable = this;
-
-
-
-	cable.removeListeners = [];
-	cable.connectListeners = [];
-
 
 
 	cable.space = cableSpace;
@@ -230,12 +202,12 @@ var Cable = function(cableSpace, startNode, endNode) {
     endPart.socket = endNode;
 
 
-    p_cables.updateSocketPosPoint(cable.space, startNode);
+    this.updateSocketPosPoint(startNode);
 
     startPart.pos = startNode.PVARS.socketPos;
 	
     if(endNode != undefined) {
-    	p_cables.updateSocketPosPoint(cable.space, endNode);
+    	this.updateSocketPosPoint(endNode);
     	endPart.pos = endNode.PVARS.socketPos;
     }
     else endPart.pos = startNode.PVARS.socketPos.clone();
@@ -274,17 +246,43 @@ var Cable = function(cableSpace, startNode, endNode) {
 }
 
 
-Cable.prototype.onRemove = function(listener) {
-	this.removeListeners.push(listener);
+// Cable.prototype.onRemove = function(listener) {
+// 	this.removeListeners.push(listener);
+// }
+
+
+
+Cable.prototype.updateSocketPosPoint = function(socketNode) {
+	var x, y;
+	var cableSpace = this.space;
+
+	var spaceBounds = cableSpace.getBoundingClientRect();
+	var socketBounds = socketNode.getBoundingClientRect();
+
+	var x = socketBounds.left - spaceBounds.left;
+	var y = socketBounds.top - spaceBounds.top;
+
+	x += socketNode.offsetWidth/2;
+	y += socketNode.offsetHeight/2;
+	
+	if(socketNode.PVARS.socketPos == undefined)
+		socketNode.PVARS.socketPos = new Point(x, y);
+	else {
+		socketNode.PVARS.socketPos.x = x;
+		socketNode.PVARS.socketPos.y = y;
+	}
 }
-
-
 
 Cable.prototype.remove = function() {
 	var cable = this;
+	cable.gui.dispatchEvent(new CustomEvent("cableRemove", {
+		detail : {
+			cable : cable
+		},
+		bubbles : true,
+		cancelable : true
+	}))
 	cable.gui.remove();
-	for (var i in cable.removeListeners)
-    	cable.removeListeners[i](cable);
 }
 
 Cable.prototype.dragPlug = function(plug) {
@@ -381,12 +379,18 @@ Cable.prototype.dragPlug = function(plug) {
 
 
 		if(moveMe.socket) {
-			p_cables.updateSocketPosPoint(cable.space, moveMe.socket);
+			cable.updateSocketPosPoint(moveMe.socket);
 
 			moveMe.pos = moveMe.socket.PVARS.socketPos;
 				//
 			moveMe.plug.setAttributeNS(null, "cx", moveMe.pos.x);
     		moveMe.plug.setAttributeNS(null, "cy", moveMe.pos.y);
+
+    		if(moveMe == cable.out)
+    			path.setEndPos(moveMe.pos);
+    		else
+    			path.setStartPos(moveMe.pos);
+    			
 
 			path.updateCode();
 				//
@@ -396,8 +400,13 @@ Cable.prototype.dragPlug = function(plug) {
     		cable.gui.classList.remove("moving_cable");
     		cable.wire.group.classList.remove("good_connection");
 
-    		for (var i in cable.connectListeners)
-    			cable.connectListeners[i](cable);
+    		cable.gui.dispatchEvent(new CustomEvent("cableConnect", {
+				detail : {
+					cable : cable
+				},
+				bubbles : true,
+				cancelable : true
+			}));
 		}
 
 		else cable.remove();
@@ -418,11 +427,11 @@ Cable.prototype.updatePosition = function() {
 	// if(cable.in.socket == undefined || cable.out.socket == undefined)
 	// 	return
 
-	p_cables.updateSocketPosPoint(cable.space, cable.in.socket);
+	this.updateSocketPosPoint(cable.in.socket);
 	cable.in.plug.setAttributeNS(null, "cx", cable.in.pos.x);
 	cable.in.plug.setAttributeNS(null, "cy", cable.in.pos.y);
 
-	p_cables.updateSocketPosPoint(cable.space, cable.out.socket);
+	this.updateSocketPosPoint(cable.out.socket);
 	cable.out.plug.setAttributeNS(null, "cx", cable.out.pos.x);
 	cable.out.plug.setAttributeNS(null, "cy", cable.out.pos.y);
 
@@ -432,20 +441,15 @@ Cable.prototype.updatePosition = function() {
 		//
 	cable.wire.fill.setAttributeNS(null, "d", path.getCode());
 	cable.wire.outline.setAttributeNS(null, "d", path.getCode());
-
-
-	
-	
-
 	
 }
 
 
 
-Cable.prototype.onConnect = function(listener) {
-	// this.gui.remove();
-	this.connectListeners.push(listener);
-}
+// Cable.prototype.onConnect = function(listener) {
+// 	// this.gui.remove();
+// 	this.connectListeners.push(listener);
+// }
 
 
 

@@ -612,7 +612,7 @@ IOH.Connection.prototype.remove = function() {
 	U.removeFromArray(con, con.input.connections);
 	U.removeFromArray(con, con.output.connections);
 
-	U.removeFromArray(con, IOH.Connection.list);
+	U.removeFromArray(con, CONNECTIONS.list);
 }
 
 

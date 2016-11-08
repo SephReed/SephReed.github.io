@@ -47,47 +47,51 @@ var DeviceRack = DEVICES.registerTemplate("DeviceRack" , function(rack) {
 				rack.GUI.appendChild(addMe);
 			}
 
-			PINE.updateAt(rack.GUI);
-
-			rack.GUI.FNS.dragAreaOnMove(function(deviceGUI) {
-				// setTimeout(function() {
-					// console.log(deviceGUI);
-					var outputs = deviceGUI.PVARS.soul.outputs.all;
-					var inputs = deviceGUI.PVARS.soul.inputs.all;
-					var sockets = outputs.concat(inputs);
-
-					for(var i in sockets) {
-						var cons = sockets[i].connections;
-						for(var c in cons)
-							cons[c].cable ? cons[c].cable.updatePosition() : undefined;
-					}
-				// }, 200);
-			});
-
-			for(var i in rack.devices){
-				rack.addDeviceConnectionsToGUI(rack.devices[i]);
-			}
-
-
-			rack.GUI.FNS.cableOnRemove(function(cable) {
-				if(cable.connection)
-					cable.connection.remove();
-			});
-
-			rack.GUI.FNS.cableOnConnect(function(cable) {
-				var output = cable.out.socket.parentNode.PVARS.output;
-				var input = cable.in.socket.parentNode.PVARS.input;
-
-				if(cable.connection) {
-					var con = cable.connection;
-				}
+			PINE.updateAt(rack.GUI).then(function() {
 				
-				else {
-					var con = new IOH.Connection(output, input);
-					cable.connection = con;
-					con.cable = cable;
+				rack.GUI.FNS.dragAreaOnMove(function(deviceGUI) {
+					// setTimeout(function() {
+						// console.log(deviceGUI);
+						var outputs = deviceGUI.PVARS.soul.outputs.all;
+						var inputs = deviceGUI.PVARS.soul.inputs.all;
+						var sockets = outputs.concat(inputs);
+
+						for(var i in sockets) {
+							var cons = sockets[i].connections;
+							for(var c in cons)
+								cons[c].cable ? cons[c].cable.updatePosition() : undefined;
+						}
+					// }, 200);
+				});
+
+				for(var i in rack.devices){
+					rack.addDeviceConnectionsToGUI(rack.devices[i]);
 				}
+
+
+				rack.GUI.FNS.onCableRemove(function(event) {
+					var cable = event.detail.cable;
+					if(cable.connection)
+						cable.connection.remove();
+				});
+
+				rack.GUI.FNS.onCableConnect(function(event) {
+					var cable = event.detail.cable;
+					var output = cable.out.socket.parentNode.PVARS.output;
+					var input = cable.in.socket.parentNode.PVARS.input;
+
+					if(cable.connection) {
+						var con = cable.connection;
+					}
+					
+					else {
+						var con = new IOH.Connection(output, input);
+						cable.connection = con;
+						con.cable = cable;
+					}
+				});
 			});
+
 
 		}
 
@@ -129,7 +133,11 @@ var DeviceRack = DEVICES.registerTemplate("DeviceRack" , function(rack) {
 				var inSocket = con.input.socketGUI;
 				var outSocket = con.output.socketGUI;
 
+				console.log("cable try", inSocket, outSocket);
+
 				if(inSocket && outSocket) {
+					console.log("cable connect", con);
+
 					con.cable = rack.GUI.FNS.cableConnect(inSocket, outSocket);
 					con.cable.connection = con;
 				}

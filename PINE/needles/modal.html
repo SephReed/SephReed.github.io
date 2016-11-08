@@ -1,35 +1,44 @@
 <script type="text/javascript">
-PINE("modal", function(initMe) {
+PINE.createNeedle("modal", function(modal) {
+
 		//	
-	var exitOnOutClick = El.attArg(initMe, "exitOnOutClick", "boolean", true);
-	var fade = El.attArg(initMe, ["modalFade", "fade"], "id")
-	var currentlyShowing = false;
+	modal.addAttArg("exitOut", "exitOnOutClick", "boolean", true);
+	modal.addAttArg("fade", ["modalFade", "fade"], "id")
 
-	PINE.addFunctionToNode(initMe, "hideModal", function() {
-		if(currentlyShowing == false)
+
+	modal.addInitFn(function() {
+		this.currentlyShowing = false;
+	})
+
+
+	modal.FNS.hideModal = function() {
+		var instance = this;
+		if(instance.currentlyShowing == false)
 			return;
 
-		currentlyShowing = false;
+		instance.currentlyShowing = false;
 
-		initMe.classList.remove("shown_overlay");
-		if(fade !== undefined) 
-			fade.classList.remove("shown_overlay");
-	});
+		instance.domNode.classList.remove("shown_overlay");
 
-	PINE.addFunctionToNode(initMe, "showModal", function() {
-		if(currentlyShowing == true)
+		if(instance.fade !== undefined) 
+			instance.fade.classList.remove("shown_overlay");
+	}
+
+	modal.FNS.showModal = function() {
+		var initMe = this.domNode;
+		var fade = this.fade;
+
+		if(this.currentlyShowing == true)
 			return;
 
-		console.log("SHOWING MODAL");
-
-		currentlyShowing = true;
-
+		this.currentlyShowing = true;
+			//
 		initMe.classList.add("shown_overlay");
 
 		if(fade !== undefined) 
 			fade.classList.add("shown_overlay");
 
-		if(exitOnOutClick) {
+		if(this.exitOut) {
 			var mouseupFunc = function(event) {
 				if(initMe == event.target || initMe.contains(event.target)) return;	
 				initMe.FNS.hideModal();
@@ -48,7 +57,7 @@ PINE("modal", function(initMe) {
 			}
 			document.addEventListener('keyup', onKeyup);
 		}
-	});
+	};
 });
 </script>
 

@@ -1,0 +1,68 @@
+
+
+<script>
+
+var p_bgimg = PINE("bgimg", function(initMe) {
+
+	//POS
+	var pos = El.attr(initMe, "bgimgPos") || "center center";
+	initMe.style.backgroundPosition = pos;
+
+	//REPEAT
+	var repeat = El.attr(initMe, "bgimgRepeat") || '';
+	var repeatX = (repeat.indexOf('x') != -1);
+	var repeatY = (repeat.indexOf('y') != -1);
+
+	if(repeatX && repeatY)
+		initMe.style.backgroundRepeat = "repeat";
+
+	else if(repeatX)
+		initMe.style.backgroundRepeat = "repeat-x";
+
+	else if(repeatY)
+		initMe.style.backgroundRepeat = "repeat-y";
+
+	else if(repeat == "")
+		initMe.style.backgroundRepeat = "no-repeat";
+
+	else
+		initMe.style.backgroundRepeat = repeat;
+
+
+
+	//SIZE
+	var size = El.attr(initMe, "bgimgSize") || "auto auto";
+	initMe.style.backgroundSize = size;
+
+	//src
+	var src = El.attr(initMe, "bgimgSrc");
+	if(src)
+		initMe.style.backgroundImage = "url('"+src+"')";
+
+	// console.log("PARENT POS");
+	var parent = initMe.parentNode;
+	var parentPositioning = El.getStyle(parent, "position");
+	
+	if(parentPositioning == undefined || parentPositioning == 'static')
+		parent.style.position = "relative";
+			
+});
+
+
+
+</script>
+
+
+
+
+<style>
+	bgimg {
+		display: block;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		pointer-events: none;
+	}
+</style>

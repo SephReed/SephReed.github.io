@@ -6,13 +6,14 @@
 *         | |    | | | |\  | | |__ 
 *         |_|    |_| |_| \_| |____|
 *
-*                 4.1       /\
+*                 4.2       /\
 *          by: Seph Reed   X  X
 *                           \/
 *
 ********************************************/
 
 "use strict"
+
 
 
 
@@ -114,14 +115,14 @@ PINE.ops.order = [
 	PINE.ops.GATHER = "gather"
 ]
 
-PINE.ops.POLISH = PINE.ops.GATHER;
+// PINE.ops.POLISH = PINE.ops.GATHER;
 
 
 //INIT assumes nothing.  It is used to set initial values (usually PVARS) prior to permeation or inline pvars.  
 //PVARS assumes all core values (usually PVARS) are set except those to be set by "[pvars]".  PVARS is a special step for the "[pvars]" tag.
 //STATIC assumes all core values (usually PVARS) are set.  STATIC functions have no inline attribute dependencies.
 //COMMON assumes all values are properly set, both inline and PVAR.
-//POLISH assumes the growth from it is complete.  
+//GATHER assumes the growth from it is complete.  
 // 		It is important that any Needles which mod their children do so during a POLISH stage.
 // 		All generative content added by POLISH should be repermeated.
 
@@ -294,7 +295,7 @@ PINE.class.PineFunc = function(needle, opType, userFn, isAsync, isMultirun)  {
 	
 	my.fn = function(domNode)  {
 
-		return U.Go( function( resolve, reject )  {
+		return new SyncPromise( function( resolve, reject )  {
 			var pinefunc = my;
 			var history = domNode._pine_.pinefuncHistory;
 			var passed = history[my.id];
@@ -449,6 +450,7 @@ PINE.keyApplies = function(keyword, domNode)  {
 
 /**********************************
 *	 	          RUN
+*http://sephreed.github.io/PINE/PINE_Run_Explanation.html
 **********************************/
 
 document.addEventListener("DOMContentLoaded", function(event) { 
@@ -456,12 +458,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	PINE.debug.init();
 	LOG("overview", "DOMContentLoaded");
 
-	El.initWaitForDisplay();
-
-
-	PINE.loadResources().then( function() {
+	PINE.loadResources().syncThen( function() {
 		
-		PINE.run().then(function() {
+		PINE.run().syncThen(function() {
 			var listeners = PINE.eventListeners[PINE.events.load];
 
 			if(listeners) {
@@ -505,13 +504,13 @@ PINE.loadResources = function() {
 		promises.push(PINE.runResource(resources[i_r]));
 	}
 
-	return U.Go.all(promises);	
+	return SyncPromise.all(promises);	
 }
 
 PINE.addedResources = {};
 PINE.runResource = function(domNode) {
 		//
-	return U.Go(function(resolve, reject) {
+	return new SyncPromise(function(resolve, reject) {
 			//
 		var src = El.attr(domNode, "src");
 
@@ -522,7 +521,7 @@ PINE.runResource = function(domNode) {
 
 			LOG("overview", "Adding Resource "+src);	
 
-			U.Ajax.get(src).then( function(request) {
+			U.Ajax.get(src).syncThen( function(request) {
 				if(src.includes('.js')) {
 					U.runScript(request.response, domNode, src);
 					resolve();
@@ -537,8 +536,8 @@ PINE.runResource = function(domNode) {
 					response = response.replace(/<script(.|\s)*?>(\s|.)*?<\/script>/g, function(replaceMe) {
 						replaceMe = replaceMe.replace(/<script(.|\s)*?>|<\/script>/g, '')
 						// var promise = U.runScript(replaceMe, domNode, src);
-						var addMe = U.runScript(replaceMe, domNode, src);;
-						promise = promise ? promise.then(addMe) : addMe;
+						var addMe = U.runScript(replaceMe, domNode, src);
+						promise = promise ? promise.syncThen(addMe) : addMe;
 						// promises.push(promise);
 						return '';
 					});
@@ -546,7 +545,7 @@ PINE.runResource = function(domNode) {
 					domNode.innerHTML += response;
 
 					// Promise.all(promises).then(resolve);
-					promise.then(resolve);
+					promise.syncThen(resolve);
 				}
 
 			}, reject);
@@ -565,7 +564,7 @@ PINE.runResource = function(domNode) {
 //the major function for PINE.  it creates the super root (PINE.forest), initiates it, and runs
 //sprout on it using the queued pine funcs array (which all new pine funcs are added to)
 PINE.run = function() {
-	return U.Go(function(resolve, reject) {
+	return new SyncPromise(function(resolve, reject) {
 
 		if(PINE.forest == null) {
 			PINE.forest = {};
@@ -588,7 +587,7 @@ PINE.run = function() {
 		PINE.sprout(Pine_Forest, {
 			queuedOps : PINE.pinefuncs.queued,
 			passedOps : PINE.pinefuncs.passed
-		}).then(resolve);
+		}).syncThen(resolve);
 	});
 }
 
@@ -665,7 +664,7 @@ PINE.initiate = function(root) {
 *  |___| |_|   |_|\_\|___| |___|  |_|
 *
 *	Make holds and current step separate
-*
+* http://sephreed.github.io/PINE/PINE_Run_Explanation.html
 ********************************************/
 
 
@@ -706,7 +705,7 @@ PINE.updateAt = function(root, callback, passedOps) {
 	var willSprout = PINE.sprout(root, { queuedOps: updates }, newRoot);
 
 	if(callback)
-		willSprout.then(callback)
+		willSprout.syncThen(callback)
 }
 
 
@@ -724,7 +723,7 @@ PINE.updateAt = function(root, callback, passedOps) {
 //callsback when all queued functions have been applied.  If a function is added
 //mid process to queued ops, it will be sent as well
 PINE.sprout = function( root, args)  {
-	var willSprout = U.Go( function( resolve, reject ) {
+	var willSprout = new SyncPromise( function( resolve, reject ) {
 		var queuedOps = args.queuedOps;
 			//
 		LOG("sprout", "sprouting at; with; ", root, queuedOps);
@@ -786,7 +785,7 @@ PINE.sprout = function( root, args)  {
 
 					(function(opFuncs, opType) {
 						var permeate = PINE.permeate(root, opFuncs, null);
-						var full_permeate = permeate.then( function() {
+						var full_permeate = permeate.syncThen( function() {
 								//
 							for(var i = 0; i < opFuncs.length; i++)  {
 								LOG("opFunc", "removing ", opFuncs[i]);
@@ -825,9 +824,9 @@ PINE.sprout = function( root, args)  {
 			LOG("sprout uneeded", "sprout");
 			resolve();
 		}
-		else U.Go.all( permeatePromises ).then( function() {
+		else SyncPromise.all( permeatePromises ).syncThen( function() {
 			return PINE.sprout( root, args );
-		}).then(resolve);
+		}).syncThen(resolve);
 	});
 	
 	// PINE.growingSprouts.push(willSprout);
@@ -852,7 +851,7 @@ PINE.permeate = function(root, opFuncs, layer)  {
 	layer = layer || '';
 	layer += '.';
 
-	return U.Go(function(resolve, reject) {
+	return new SyncPromise(function(resolve, reject) {
 		LOG("permeate", layer+">> permeate", root, opFuncs)
 
 
@@ -886,10 +885,10 @@ PINE.permeate = function(root, opFuncs, layer)  {
 		var apply = function() {
 			root._pine_.ops.hold = true;
 
-			PINE.applyOpFuncsAtNode(root, opFuncs, layer).then(function() {
+			PINE.applyOpFuncsAtNode(root, opFuncs, layer).syncThen(function() {
 				root._pine_.ops.hold = false;
 
-				PINE.permeateChildren(root, opFuncs, layer).then(resolve);
+				PINE.permeateChildren(root, opFuncs, layer).syncThen(resolve);
 
 				//Once GATHER is done, try switching this out for the one above
 				//If problems arise, put this in the then for permeate children
@@ -906,8 +905,8 @@ PINE.permeate = function(root, opFuncs, layer)  {
 			apply = function() {
 				root._pine_.ops.hold = true;
 
-				PINE.permeateChildren(root, opFuncs, layer).then(function() {
-					PINE.applyOpFuncsAtNode(root, opFuncs, layer).then(function() {
+				PINE.permeateChildren(root, opFuncs, layer).syncThen(function() {
+					PINE.applyOpFuncsAtNode(root, opFuncs, layer).syncThen(function() {
 						root._pine_.ops.hold = false;
 
 						resolve();
@@ -954,7 +953,7 @@ PINE.permeate = function(root, opFuncs, layer)  {
 				PINE.err("no parent node for ", root)
 
 			PINE.updateAt(root, function() {
-				PINE.permeate(root, opFuncs, layer).then(resolve);
+				PINE.permeate(root, opFuncs, layer).syncThen(resolve);
 			}, root.parentNode._pine_.ops.applied);
 		}
 
@@ -965,7 +964,7 @@ PINE.permeate = function(root, opFuncs, layer)  {
 
 PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 
-	return U.Go(function(resolve, reject) {
+	return new SyncPromise(function(resolve, reject) {
 
 		var localOpFuncs = [];
 		
@@ -986,7 +985,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 				promises.push(opFunc.fn(root));
 			}	
 
-			U.Go.all(promises).then(resolve);
+			SyncPromise.all(promises).syncThen(resolve);
 		}
 		else resolve();
 
@@ -999,7 +998,7 @@ PINE.applyOpFuncsAtNode = function(root, opFuncs, layer)  {
 
 PINE.permeateChildren = function(root, opFuncs, layer) {
 		//
-	return U.Go( function(resolve, reject) {
+	return new SyncPromise( function(resolve, reject) {
 
 		if(El.attr(root, "ENDPINE") !== undefined) {
 			resolve();
@@ -1020,7 +1019,7 @@ PINE.permeateChildren = function(root, opFuncs, layer) {
 				childPermPromises.push( PINE.permeate(branches[i], opFuncs, layer) );
 			}
 
-			U.Go.all(childPermPromises).then(resolve);
+			SyncPromise.all(childPermPromises).syncThen(resolve);
 				
 		}
 		else resolve();
@@ -1497,55 +1496,32 @@ U.helpfulEval = function(evalMe, filename) {
 
 
 U.ranScripts = [];
-U.ranScripsNextId = 0;
+U.ranScriptsNextId = 0;
 U.runScript = function(scriptText, appendTo, src) {
 	// console.log(scriptText);
 	// var scriptText = scriptText + ' ';
 
 	return new Promise( function(resolve, reject) {
-		var id = U.ranScripsNextId;
-		U.ranScripsNextId++;
-
+		var id = U.ranScriptsNextId++;
+		
 		var ranScript = {};
-		ranScript.text = scriptText;
 		ranScript.resolve = resolve;
-		ranScript.src = src || "no src";
-			//
 		U.ranScripts[id] = ranScript;
 
+		scriptText = scriptText + "\nU.ranScripts["+id+"].resolve()";
 
+		var	file = new Blob([scriptText], {type: "text/javascript"});
+		var url = URL.createObjectURL(file);
 
-		scriptText = "var _scriptHelper = U.ranScripts["+id+"];\n"
-			+"try {\n"+scriptText
-			+"\n} catch(ex){\n"
-				+"U.ranScriptException(_scriptHelper, ex); }\n"
-			+"_scriptHelper.resolve();";
-
-		
 		var script = document.createElement("script");
-		ranScript.element = script;
-
-		script.innerHTML = scriptText;
-		
+	    script.src = url+"?"+src;
+	    script.type = "text/javascript";
 
 		appendTo = appendTo || document.head;
 		appendTo.appendChild(script);
 	});
 }
 
-U.ranScriptException = function(_scriptHelper, ex) {
-	var lineNumber = ex.lineNumber-2;
-	var errorOut = {};
-	errorOut.exception = ex;
-	errorOut.lines = _scriptHelper.text.split('\n');
-	var line = errorOut.lines[lineNumber-1];
-	PINE.err("nostack notpine", 
-		ex.message+'\n'
-		+_scriptHelper.src+' :: '+lineNumber+':\n'
-		+line,
-		_scriptHelper.element,
-		errorOut);
-}
 
 
 /****
@@ -1621,197 +1597,62 @@ U.getHttpArg = function(varName, url){
 
 
 
-
-
-
-
 /***********
 *
 *	Similar to promises, but only asynchronous when necessary
 *
 ***********/
 
-U.Go = function(fn) {
-	var async = new U.Async(fn);
-	var thenFn = new U.Thenable(async);
 
-	thenFn.run();
-	return thenFn;
+var SyncPromise = function(fn) {
+	var syncable = this;
+	syncable.state = "pending";
+	syncable.value;
+
+	var wrappedFn = function(resolve, reject) {
+		var fakeResolve = function(val) {
+			syncable.value = val;
+			syncable.state = "fulfilled";
+			resolve(val);
+		}
+
+		fn(fakeResolve, reject);
+	}
+
+	var out = new Promise(wrappedFn);
+	out.syncable = syncable;
+	return out;
 }
 
-
-U.Go.all = function(thenables) {
-	var results = [];	
-
-	var async = new U.Async(function(resolve, reject) {
-		if(thenables.length) {
-
-			for(var th in thenables) {
-				var waitForMe = thenables[ th ];
-
-				if(waitForMe.isAsync && waitForMe.status == true) {
-					results.push(waitForMe.callbackReturn);
-				}
-				else if (waitForMe.isAsync == false && waitForMe.hasRun) {
-					results.push(waitForMe.return);	
-				}
-				else {
-
-					waitForMe.then( function(result) {
-						results.push(result);
-						if (results.length == thenables.length) {
-							resolve(results);
-						}				
-					});
-				}
-
-			}
+SyncPromise.all = function(promises) {
+	for(var i in promises) {
+		if(promises[i].syncable && promises[i].syncable.state == "fulfilled") {
+			promises.splice(i, 1);
+			i--;
 		}
-		
+	}
 
-		if (results.length == thenables.length) {
-			resolve(results);
-		}
-	});
+	if(promises.length == 0)
+		return new SyncPromise(function(resolve) { resolve(); });
 
-	var thenFn = new U.Thenable(async);
-	thenFn.run();
-	return thenFn;
+	else
+		return Promise.all(promises);
 }
 
-
-
-
-U.Thenable = function(fn) {
-	var my = this;
-	my.fn = fn;
-	my.next = undefined;
-	my.status = undefined;
-	my.callbackReturn;
-	my.return;
-	my.passed = false;
-	my.hasRun = false;
-	my.isAsync = false;
-	my.recievedThenable;
-
-
-	my.resolve = function(callbackReturn) {
-		if(my.passed) {
-			PINE.err("resolved thenable already passed")
-			return;
-		}
-
-		my.callbackReturn = callbackReturn;
-		my.status = true;		
-
-		my.tryRunNext();
-	}
-
-	my.reject = function(callbackReturn) {
-		my.callbackReturn = callbackReturn;
-		my.status = false;
-		PINE.err("rejected promise "+callbackReturn);
-	}
-}
-
-U.Thenable.prototype.run = function(val) {
-	this.hasRun = true;
-	if ( this.fn instanceof U.Async ) {
-		this.isAsync = true;
-		this.fn.run(this.resolve, this.reject);
-	}
-
-	else if( this.fn instanceof U.Thenable ) {
-		this.isAsync = true;
-		this.fn.then(this.resolve);
-	}
-
-	else {
-		if(typeof this.fn != "function"){
-			PINE.err("non function");
-		}
-		this.return = this.fn(val);
-
-		if(this.return instanceof U.Async) {
-			this.isAsync = true;
-			this.return.run(this.resolve, this.reject);
-		}
-
-		else {
-			this.tryRunNext();		
-		}
-	}
-	
-	
-}
-
-
-U.Thenable.prototype.tryRunNext = function() {
-	if(this.passed) {
-		PINE.err("thenable already passed")
-		return;
-	}
-
-	if(this.next && this.hasRun) {
+Promise.prototype.syncThen = function (nextFn) {
+	if(this.syncable && this.syncable.state == "fulfilled") {
 			//
-		if( this.isAsync ) {
-			if( this.status ) {
-				this.next.run( this.callbackReturn );
-				this.passed = true;	
-			}
+		if(nextFn instanceof Promise) {
+			return nextFn;
 		}
 		else {
-			this.next.run(this.return)
-			this.passed = true;
+			var val = this.syncable.value;
+			var out = nextFn(val);
+			return new SyncPromise(function(resolve) { resolve(out); });
 		}
 	}
-}
 
-
-U.Thenable.prototype.then = function(fn) {
-	// if(typeof fn != "function"){
-	// 	PINE.err("non function passes to then ", fn);
-	// 	fn();
-	// }
-
-	// if( this.recievedThenable !== undefined ) {
-	// 	return this.recievedThenable.then(fn);
-	// }
-
-	// else {
-		var out = new U.Thenable(fn);
-
-		if(this.next === undefined) {
-			this.next = out;
-		} else {
-			PINE.err("double then")
-		}
-
-		this.tryRunNext();
-
-		return out;
-	// }
-}
-
-
-
-
-
-
-
-U.Async = function(fn) {
-	this.fn = fn;
-	this.called = false;
-}
-
-U.Async.prototype.run = function(resolve, reject) {
-	if(this.called == false) {
-		this.called = true;
-		this.fn(resolve, reject);
-	}
-	else {
-		PINE.err("async already called")
-	}
+	else return this.then(nextFn);
 }
 
 
@@ -1823,14 +1664,9 @@ U.Async.prototype.run = function(resolve, reject) {
 
 
 
-
-
-
-
-
-
-
-var El = PINE.UTILITIES.ELEMENT = {};
+var El = PINE.UTILITIES.ELEMENT = function(domNode) {
+	return new PINE.class.ElementHelper(domNode);
+}
 
 El.byID = El.byId = function(id) {
 	return document.getElementById(id);
@@ -1914,9 +1750,14 @@ El.attr = function(domNode, name, value) {
 	else return undefined;
 }
 
-
+// El.on = function(domNode, eventName, fn) {
+// 	domNode.addEventListener(eventName, fn);
+// }
 
 El.waitForDisplay = function(domNode) {
+	if(El.waitForDisplayInited == false)
+		El.initWaitForDisplay();
+
 	return new Promise(function(resolve, reject) {
 		var inWindow = El.getRootNode(domNode) == window;
 		var isDisplayed = El.getStyle(domNode, "display") != "none";
@@ -1941,7 +1782,9 @@ El.waitForDisplay = function(domNode) {
 
 //unfortunate hack used for El.waitForDisplay().  
 //Very useful for any elements which make use of their dimensions on screen.
+El.waitForDisplayInited = false;
 El.initWaitForDisplay = function() {
+	El.waitForDisplayInited = true;
 	var display_watch_style = document.createElement("style");
 	display_watch_style.textContent = "@keyframes watch_for_display_inserted { from { z-index: 1; } to { z-index: 1; } }"
 		+	".watch_for_display { animation-duration: 0.001s; animation-name: watch_for_display_inserted; }";
@@ -2065,9 +1908,9 @@ El.overlap = function(el1, el2) {
 }
 
 
-El.domReady = function(callback) {
-	return U.docReady(callback);
-}
+// El.domReady = function(callback) {
+// 	return U.docReady(callback);
+// }
 
 
 
@@ -2087,17 +1930,63 @@ El.getStyle = function (domNode, styleProp) {
 
 
 
+var ElementHelper = PINE.class.ElementHelper = function(domNode) {
+	if(typeof domNode == "string")
+		this.domNode = El.byID(domNode);
+
+	else
+		this.domNode = domNode;
+}
+ElementHelper.prototype.byTag = function(tag) {
+	return El.byTag(this.domNode, tag);
+}
+ElementHelper.prototype.firstOfTag = function(tag) {
+	return El.firstOfTag(this.domNode, tag);
+}
+
+ElementHelper.prototype.queryChildren = function(keyword, limit) {
+	return El.cssQuery(this.domNode, "> "+keyword, limit);
+}
+
+ElementHelper.prototype.cssQuery = function(selector, limit) {
+	return El.cssQuery(this.domNode, keyword, limit);
+}
+
+ElementHelper.prototype.firstsOfKey = function(keyword, skipOnce)  {
+	return El.firstsOfKey(this.domNode, keyword, skipOnce);
+}
+
+ElementHelper.prototype.attr = function(name, value) {
+	return El.attr(this.domNode, name, value); 
+}
+
+ElementHelper.prototype.waitForDisplay = function() {
+	return El.waitForDisplay(this.domNode);
+}
+
+ElementHelper.prototype.getRootNode = function() {
+	return El.getRootNode(this.domNode);	
+}
+
+ElementHelper.prototype.makeSizeCalculatable = function() {
+	return El.makeSizeCalculatable(this.domNode);	
+}
+
+ElementHelper.prototype.relativePos = function(toMe) {
+	return El.relativePos(this.domNode, toMe);	
+}
+
+ElementHelper.prototype.overlap = function(withMe) {
+	return El.overlap(this.domNode, withMe);	
+}
+
+ElementHelper.prototype.getStyle = function(styleProp) {
+	return El.getStyle(this.domNode, styleProp);	
+}
+
+
+
+
+
 PINE.init();
-
-
-
-
-
-
-
-
-
-
-
-
-
+PINE.err("SWITCH TO 4.8!!");

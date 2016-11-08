@@ -4,7 +4,8 @@
 	<title>Robot Soul</title>
 	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
 
-	<script type="text/javascript" src="../PINE/PINE_Core_4.2.js"></script>
+	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
+	<!-- <script type="text/javascript"> U.runScriptMode = "fast" </script> -->
 	<script type="text/javascript" src="../PINE/PINE_Var.js"></script>
 	<script type="text/javascript" src="../PINE/PINE_Needles.js"></script>
 	<script type="text/javascript" src="../PINE/PINE_Includes.js"></script>
@@ -12,7 +13,7 @@
 	<script type="text/javascript" src="../public/js/detect-element-resize.js"></script>
 	<!-- <needle src="../PINE/needles/suggestions.html"></needle>	
 	<needle src="../PINE/needles/showHide.html"></needle> -->
-	<needle src="../PINE/needles/selectablelist.html"></needle>
+	<!-- <needle src="../PINE/needles/selectablelist.html"></needle> -->
 	<needle src="../PINE/needles/knobsAndSliders.html"></needle>
 	<needle src="../PINE/needles/dragArea.html"></needle>
 	<needle src="../PINE/needles/boxSelectArea.html"></needle>
@@ -138,7 +139,7 @@
 
 	PINE.ready(function(){
 		RS.new();
-		El.byId("all_tracks").FNS.update();	
+		El.byId("all_tracks").FNS.spawnerUpdate();	
 		viewTrackDetails(0);
 	});
 	
@@ -182,7 +183,7 @@
 
 		if(doSave !== undefined) {
 			RS.new();
-			El.byId("all_tracks").FNS.update();	
+			El.byId("all_tracks").FNS.spawnerUpdate();	
 			El.byId("details").FNS.dropAllViews(true);
 			viewTrackDetails(0);
 		}
@@ -196,7 +197,7 @@
 			var contents = event.target.result;
 			RS.load(contents);
 
-			El.byId("all_tracks").FNS.update();	
+			El.byId("all_tracks").FNS.spawnerUpdate();	
 			El.byId("details").FNS.dropAllViews(true);
 			viewTrackDetails(0);
 		};
@@ -268,26 +269,26 @@
 	<span id="fullscreen_btn" onclick="RS.switchFullscreen()"></span>
 	<div menu>
 		<div showMenu="file_menu" 
-			showMenuPos="below"
-			exitMenuOnSecondClick>
+			menuPos="below"
+			secondClickExit>
 			File
 
 		</div><div 
 			showMenu="edit_menu" 
-			showMenuPos="below"
-			exitMenuOnSecondClick>
+			menuPos="below"
+			secondClickExit>
 			Edit
 
 		</div><div 
 			showMenu="options_menu" 
-			showMenuPos="below"
-			exitMenuOnSecondClick>
+			menuPos="below"
+			secondClickExit>
 			Options
 
 		</div><div 
 			showMenu="about_menu" 
-			showMenuPos="below"
-			exitMenuOnSecondClick>
+			menuPos="below"
+			secondClickExit>
 			About
 		</div> 
 	</div>

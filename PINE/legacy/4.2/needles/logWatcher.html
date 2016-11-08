@@ -1,0 +1,26 @@
+<script type="text/javascript">
+	
+
+PINE("[logWatcher]", function(initMe) {
+	var watch_att = El.attr(initMe, "logWatcher");
+	var watchUs = watch_att ? watch_att.split(/, */g) : undefined;
+
+	for(var i in watchUs)
+		U.observeLog[watchUs[i]] = true;
+
+	var logItem = initMe.querySelector("[logItem]");
+	logItem.remove();
+
+	PINE.addEventListener("logUpdate", function(event) {
+		console.log(event);
+
+		if(!watchUs || watchUs.indexOf(event.type) != -1) {
+			var addMe = logItem.cloneNode();
+			addMe.textContent = event.text;
+			initMe.appendChild(addMe);
+		}
+	});
+
+});
+
+</script>

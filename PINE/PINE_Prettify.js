@@ -15,34 +15,6 @@ PINE.createNeedle("[pretifyCode]").addFunction({
 		console.log("codeType "+codeType);
 
 		initMe.innerHTML = pretifyCode(initMe.innerHTML, codeType);
-
-
-		// var innerHTML = initMe.innerHTML;
-
-		// if(innerHTML.match(/.+/g))
-		// 	initMe.innerHTML = pretifyCode(innerHTML, codeType);
-
-		// else {
-		// 	// create an observer instance
-		// 	var observer = new MutationObserver(function(mutations) {
-		// 	  	// mutations.forEach(function(mutation) {
-
-		// 	  		console.log(initMe);
-		// 	  		console.log(innerHTML);
-		// 	  		console.log(codeType);
-
-		// 	    	observer.disconnect();
-		// 	    	initMe.innerHTML = pretifyCode(initMe.innerHTML, codeType);
-		// 	  	// });    
-		// 	});
-			 
-		// 	// configuration of the observer:
-		// 	var config = { childList: true, subtree: true };
-			 
-		// 	// pass in the target node, as well as the observer options
-		// 	observer.observe(initMe, config);
-		// }
-			
 	}
 });
 

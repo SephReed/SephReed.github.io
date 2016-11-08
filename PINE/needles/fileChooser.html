@@ -2,30 +2,32 @@
 	
 
 
-var addBrowser = function(initMe) {
-	var browser = document.createElement("input");
-	browser.type = "file";
-	browser.classList.add("hidden_file_input");
+PINE.createNeedle("[fileChooser]", function(choose) {
 
-	El.makeSizeCalculatable(initMe);
-	initMe.appendChild(browser);
-	return browser;
-}
+	choose.addAttArg("onChoice", ["onFileChoose", "onChoose"], "string");
 
+	choose.addInitFn(function() {
+		var job = this;
+		var initMe = job.domNode;
 
-PINE("[fileChooser]", function(initMe) {
-	var browser = addBrowser(initMe);
+		var browser = document.createElement("input");
+		browser.type = "file";
+		browser.classList.add("hidden_file_input");
 
-	browser.addEventListener("change", function(event) {
-		var file = event.target.files[0];
-		if (!file) return;
+		El.makeSizeCalculatable(initMe);
+		initMe.appendChild(browser);
 		
-		else {
-			var onFileChange = El.attr(initMe, "onFileChoose")
-			if(onFileChange != undefined) {
-				window[onFileChange](file);
+		browser.addEventListener("change", function(event) {
+			var file = event.target.files[0];
+			if (!file) return;
+			
+			else {
+				var onFileChange = job.attArg.onChoice;
+				if(onFileChange != undefined) {
+					window[onFileChange](file);
+				}
 			}
-		}
+		});
 	});
 });
 

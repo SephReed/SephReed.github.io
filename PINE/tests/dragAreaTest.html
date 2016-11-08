@@ -2,10 +2,21 @@
 <html>
 <head>
 	<title></title>
-	<script src="../PINE_Core_4.2.js"></script>
-	<script src="../../public/js/detect-element-resize.js"></script>
+	<script src="../PINE_Core_4.8.js"></script>
+	<!-- <script src="../../public/js/detect-element-resize.js"></script> -->
 	<needle src="../needles/dragArea.html"></needle>
 	<needle src="../needles/boxSelectArea.html"></needle>
+
+	<script>
+	function addItems() {
+		var area = El.byID("area");
+		for(var i = 0; i < 40; i++) {
+			var addMe = document.createElement("div");
+			area.appendChild(addMe);
+		}
+		PINE.updateAt(area);
+	}
+	</script>
 </head>
 <body>
 

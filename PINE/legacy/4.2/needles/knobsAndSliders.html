@@ -1,0 +1,179 @@
+<script type="text/javascript">
+
+
+
+U.dragInPlace = function(domNode, onMovement) {
+
+	document.body.classList.add("hide_cursor");
+
+	var hasPointerLock = domNode.requestPointerLock !== undefined;
+	if(hasPointerLock)
+		domNode.requestPointerLock();
+
+	var moveEvent = function(event) {			
+		onMovement(event);
+	}
+
+	var releaseEvent = function(event) {
+		document.body.removeEventListener("mousemove", moveEvent);
+		document.body.removeEventListener("mouseup", releaseEvent);
+		document.body.classList.remove("hide_cursor");
+		if(hasPointerLock)
+			document.exitPointerLock();
+		else
+			document.body.removeEventListener("mouseleave", releaseEvent)
+	}
+
+
+	document.body.addEventListener("mousemove", moveEvent);
+	document.body.addEventListener("mouseup", releaseEvent);
+	if(!hasPointerLock)
+		document.body.addEventListener("mouseleave", releaseEvent);
+}
+
+
+
+
+
+
+
+/*************************
+*
+*     Knob
+*
+**************************/
+var p_knob = PINE("knob", function(initMe) {
+
+	var knobVal = 0.5;
+	PINE.addFunctionToNode(initMe, "getKnobVal", function() {
+		return knobVal;
+	});
+
+
+
+	var minRotation = El.attArg(initMe, ["knobMinRotation", "minRotation"], "int", -135);
+	var maxRotation = El.attArg(initMe, ["knobMaxRotation", "maxRotation"], "int", 135);
+	var dragRadius = El.attArg(initMe, ["knobDragRadius", "dragRadius"], "int", 150);
+
+	var rotationWidth = maxRotation - minRotation;
+	var unitPerPx = 0.5/dragRadius;
+	console.log(dragRadius, unitPerPx);
+
+	initMe.addEventListener("mousedown", function(mouseDownEvent) {
+		var dy = 0;
+		var startVal = knobVal;
+
+		mouseDownEvent.preventDefault();
+		U.dragInPlace(initMe, function(moveEvent) {
+
+			var moveY = moveEvent.movementY
+			if(moveEvent.shiftKey)
+				moveY *= 0.1;
+
+			dy -= moveY;
+
+			var newVal = (unitPerPx * dy) + startVal;
+
+			console.log(dy, newVal);
+
+			initMe.FNS.setKnobVal(newVal);
+		});
+	});
+
+	var knobChangeListeners = [];
+	PINE.addFunctionToNode(initMe, "onKnobChange", function(listener) {
+		knobChangeListeners.push(listener);
+	});
+
+
+	
+	PINE.addFunctionToNode(initMe, "setKnobVal", function(newVal) {
+		newVal = Math.max(newVal, 0);
+		newVal = Math.min(newVal, 1);
+		knobVal = newVal;
+
+		for(var i in knobChangeListeners)
+			knobChangeListeners[i](knobVal);
+
+		var rotation = (knobVal * rotationWidth) + minRotation;
+		initMe.style.transform = "rotate("+rotation+"deg)";
+	});
+
+});
+
+
+
+
+
+/*************************
+*
+*     Readout
+*
+**************************/
+
+var p_readout = PINE("numreadout", function(initMe) {
+	var readoutVal = 0;
+	var readoutLow = 0;
+	var readoutHigh = 1;
+	var readoutListeners = [];
+
+	PINE.addFunctionToNode(initMe, "setNumReadoutLow", function(newVal) {
+		readoutLow = newVal;
+	});
+
+	PINE.addFunctionToNode(initMe, "setNumReadoutHigh", function(newVal) {
+		readoutHigh = newVal;
+	});
+
+	PINE.addFunctionToNode(initMe, "getNumReadoutVal", function() {
+		return readoutVal;
+	});
+
+	PINE.addFunctionToNode(initMe, "setNumReadoutVal", function(newVal) {
+		readoutVal = newVal;
+		initMe.textContent = (readoutVal+'').substr(0, 8);
+
+		for(var i in readoutListeners)
+			readoutListeners[i](readoutVal);
+	});
+
+	initMe.FNS.setNumReadoutVal(readoutVal);
+
+	PINE.addFunctionToNode(initMe, "onNumReadoutChange", function(listener) {
+		readoutListeners.push(listener);
+	});
+});
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+<style>
+numreadout {
+	display: inline-block;
+	width: 90%;
+	padding: 2px;
+	background: #333;
+	font-size: 9px;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+

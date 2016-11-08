@@ -264,31 +264,43 @@ DeviceClone.prototype.getInput = function(name) {
 
 
 
-PINE("[defineRSDevice]", function(initMe) {
-	var defining = El.attr(initMe, "defineRSDevice");
-	var soul = RS.Devices.get(defining);
+PINE.createNeedle("[defineRSDevice]", function(device) {
 
-	if (soul !== undefined)  {
-		var width = El.attArg(initMe, "unitWidth", "int", 1);
-		var height = El.attArg(initMe, "unitHeight", "int", 1);
 
-		initMe.style.width = (50 * width) +'px';
-		initMe.style.height = (50 * height) +'px';
+	device.addInitFn(function() {
+		var initMe = this.domNode;
+		var defining = El.attr(initMe, "defineRSDevice");
+		var soul = RS.Devices.get(defining);
 
-		soul.setGUI(initMe);
-	}
+		if (soul !== undefined)  {
+			var width = El.attArg(initMe, "unitWidth", "int", 1);
+			var height = El.attArg(initMe, "unitHeight", "int", 1);
 
-	else PINE.err("Device '"+defining+"'' not yet defined.  Use RS(deviceName, func) before <defineRSDevice>");
+			initMe.style.width = (50 * width) +'px';
+			initMe.style.height = (50 * height) +'px';
+
+			soul.setGUI(initMe);
+		}
+
+		else PINE.err("Device '"+defining+"'' not yet defined.  Use RS(deviceName, func) before <defineRSDevice>");
+	});
+
+
+	device.addInitFn(PINE.ops.GATHER, function() {
+		var initMe = this.domNode;
+		var soul = initMe.PVARS.soul;
+
+		if(soul)
+			RS.connectGUI(soul, initMe);
+	});
+
+
+	
 });
 
 
 
-PINE("[defineRSDevice]", PINE.ops.GATHER, function(initMe) {
-	var soul = initMe.PVARS.soul;
 
-	if(soul)
-		RS.connectGUI(soul, initMe);
-});
 
 
 

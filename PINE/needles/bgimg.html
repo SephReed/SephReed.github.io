@@ -2,7 +2,8 @@
 
 <script>
 
-var p_bgimg = PINE("bgimg", function(initMe) {
+PINE("bgimg", function() {
+	var initMe = instance.domNode;
 
 	//POS
 	var pos = El.attr(initMe, "bgimgPos") || "center center";
