@@ -65,13 +65,15 @@ var components = {};
 		}
 
 
-
 		components["build"] = {
 			block8_12 : 3,
 			block12_12 : 3,
 			block8_8 : 2,
 			block4_8 : 6,
 			tower : 6,
+			plywood : 24,
+			wire : 8 + 8 + 28 + 4 + 8 + 20 + 12 + 8 + 28 + 8 + 28 + 100,
+			ledwire : 28*4 + 2*(8*4) + (28+8+8+8+ (3*12))
 		}
 
 
@@ -123,11 +125,11 @@ var components = {};
 		build["screw"] *= 1.333;
 		// build["screwbox"] = ~~(build["screw"]/1950)+1;
 
-		build["wire"] = 8 + 8 + 28 + 4 + 8 + 20 + 12 + 8 + 28 + 8 + 28 + 100;
+		// build["wire"] = 
 		build["wire"] *= 1.333;
 		// build["wireBundle"] = ~~(build["wire"]/100)+1;
 
-		build["ledwire"] = 28*4 + 2*(8*4) + (28+8+8+8+ (3*12));
+		// build["ledwire"] = 28*4 + 2*(8*4) + (28+8+8+8+ (3*12));
 		// build["ledBundle"] = ~~(build["ledwire"]/30)+1;
 
 
