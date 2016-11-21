@@ -73,7 +73,8 @@ var components = {};
 			tower : 6,
 			plywood : 24,
 			wire : 8 + 8 + 28 + 4 + 8 + 20 + 12 + 8 + 28 + 8 + 28 + 100,
-			ledwire : 28*4 + 2*(8*4) + (28+8+8+8+ (3*12))
+			ledwire : 28*4 + 2*(8*4) + (28+8+8+8+ (3*12)),
+			contingency : 1
 		}
 
 
@@ -118,7 +119,8 @@ var components = {};
 			lightSocket : 1.39,
 			switch: 0.69,
 			colorLight : 10.00, 
-			ledBundle : 40.00
+			ledBundle : 40.00,
+			contingency : 1847.58
 		}
 
 		var build = simples["build"];
