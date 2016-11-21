@@ -369,11 +369,11 @@ var p_view = PINE.createNeedle("view", function(view) {
 
 	view.addInitFn({
 		isAsync : true,
-		fn: function(resolve) {
+		fn: function(args) {
 			var job = this;
 			job.currentUrl = "unset";
 			job.views = {};
-			job.FNS.update(job.domNode).syncThen(resolve);
+			job.FNS.update(job.domNode).syncThen(args.complete);
 		}
 	});
 

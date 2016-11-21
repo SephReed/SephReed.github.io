@@ -135,8 +135,8 @@ PINE.createNeedle("pnv", function(pnv){
 	pnv.addInitFn({ 
 		opType: PINE.ops.STATIC, 
 		isAsync: true,
-		fn:  function(resolve) {
-			this.FNS.pnvUpdate().syncThen(resolve);
+		fn:  function(args) {
+			this.FNS.pnvUpdate().syncThen(args.complete);
 		}
 	});
 });

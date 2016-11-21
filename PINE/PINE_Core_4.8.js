@@ -111,6 +111,11 @@ PINE.disable = function(needles) {
 
 
 
+PINE.nextClassID = 0;
+PINE.createNewClassID = function() {
+	return "el_"+PINE.nextClassID++;
+}
+
 
 
 
@@ -201,6 +206,8 @@ PINE.NEEDLES.runningInits = [];
 
 
 
+
+
 /******************************
 *
 *		Needle Class
@@ -214,6 +221,9 @@ PINE.class.Needle = function(matchCase, args) {
 	this.FNS = {};
 	this.inits = {};
 	this.attArgs = {};
+	this.selectors = {};
+	this.selectors.list = [];
+	this.selectors.byName = {};
 
 	if(args && args.extend) {
 		if(typeof args.extend == "string")
@@ -226,9 +236,10 @@ PINE.class.Needle = function(matchCase, args) {
 }
 
 
+PINE.NEEDLES.nextFnID = 0;
 PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
 	var needle = this;
-	var opType, fn, isAsync, isMultirun;
+	var opType, fn, isAsync, isMultirun, watchSelector;
 	if(typeof arg1 == "string" && typeof arg2 == "function") {
 		opType = arg1;
 		fn = arg2;
@@ -236,35 +247,62 @@ PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
 	else if(typeof arg1 == "function" && arg2 == undefined) {
 		fn = arg1;
 	}
-	else if(typeof arg1 == "object" && arg2 == undefined) {
+	else if(typeof arg1 == "object") {
 		opType = arg1.opType;
-		fn = arg1.fn;
 		isAsync = arg1.isAsync;
 		isMultirun = arg1.isMultirun;
+		watchSelector = arg1.watchSelector;
+
+		if(typeof arg2 == "function")
+			fn = arg2;
+
+		else if(arg2 == undefined)
+			fn = arg1.fn;
+
+		else PINE.err("bad addInitFn() call", needle);
 	}
 
 	else PINE.err("bad addInitFn() call", needle);
 
+	if(watchSelector) {
+	 	var attArg = needle.attArgs[watchSelector];
+
+	 	if(attArg === undefined)
+			return PINE.err("selector for '"+watchSelector+"' must be added before watcher", needle);
+
+		else {
+
+		}
+	}
+
 
 	var addMe = {};
+	addMe.ID = PINE.NEEDLES.nextFnID++;
 	addMe.needle = needle;
 	addMe.opType = opType || PINE.ops.COMMON;
 	addMe.isAsync = isAsync == true;
 	addMe.isMultirun = isMultirun == true;
+	addMe.watchSelector = watchSelector;
+
+
+
 	addMe.fn = function() {
 		var instance = this;
 		return new SyncPromise(function(resolve) {
+			var args = {};
 			if(addMe.isAsync)  {
 				console.log("async instance called")
 				PINE.NEEDLES.runningInits.push(addMe);
-				fn.call(instance, function() {
+				args.complete = function() {
 					U.removeFromArray(addMe, PINE.NEEDLES.runningInits);
 					resolve();
-				});
+				}
+				args.addedNodes = instance._selector_fn_backlogs[addMe.ID];
+				fn.call(instance, args);
 			}
 
 			else {
-				fn.call(instance);
+				fn.call(instance, args);
 				resolve();
 			}
 		});
@@ -286,7 +324,43 @@ PINE.class.Needle.prototype.addAttArg = function(name, attNames, type, defaultVa
 	addMe.defaultVal = defaultVal;
 	addMe.defaultAttVal = defaultAttVal;
 
-	this.attArgs[name] = addMe;
+	if(type.toLowerCase() !== "liveselector")
+		this.attArgs[name] = addMe;
+	else {
+		addMe.fns = {};
+		addMe.name = name;
+		this.selectors.list.push(addMe);
+		this.selectors.byName[name] = addMe;
+	}
+	
+}
+
+
+PINE.class.Needle.prototype.onLiveSelectorAddItem = function(name, arg1, arg2) {
+	var needle = this;
+	var selector = needle.selectors.byName[name];
+
+	if(selector == undefined)
+		return PINE.err("selector for '"+name+"' must be added before watcher", needle);
+
+	var fn, opType
+	if(typeof arg1 == "function" && arg2 == undefined) {
+		opType = PINE.ops.COMMON; 
+		fn = arg1;
+	}
+	else if(typeof arg1 == "string" && typeof arg2 == "function") {
+		opType = arg1;
+		fn = arg2;
+	}
+
+	var addMe = {};
+	addMe.opType = opType;
+	addMe.fn = fn;
+
+	if(selector.fns[opType] == undefined)
+		selector.fns[opType] = [];
+
+	selector.fns[opType].push(addMe);
 }
 
 
@@ -302,19 +376,32 @@ PINE.class.Needle.prototype.tryInject = function(domNode) {
 PINE.class.Needle.prototype.inject = function(domNode) {
 	
 	var needle = this;
-	var instance = new PINE.class.Instance(needle, domNode);
 
-	for(var key in needle.FNS) {
-		(function(key) {
-			if(domNode.FNS[key] == undefined) {
-				instance.superFNS[key] = domNode.FNS[key] = function() {
-					return needle.FNS[key].apply(instance, arguments);
+	if(needle.selectors.list.length) {
+		if(domNode.__pine__.nodeAddObserver == undefined) {
+				//
+			domNode.__pine__.nodeAddListeners = [];
+
+			var config = { childList: true, subtree: true };
+			var observer = new MutationObserver(function(mutations) {
+				var addedNodes = [];
+				for(var i = 0; i < mutations.length; i++) {
+					addedNodes = addedNodes.concat(mutations[i].addedNodes);
 				}
-			}
-			else PINE.err("adding an already taken FNS name "+key, domNode, needle);
-		})(key)
+
+				var listeners = domNode.__pine__.nodeAddListeners
+				for(var i = 0; i < listeners.length; i++) {
+					listeners[i](addedNodes);
+				}
+			  	   
+			});
+	
+			observer.observe(domNode, config);
+			domNode.__pine__.nodeAddObserver = observer;
+		}
 	}
 
+	var instance = new PINE.class.Instance(needle, domNode);
 	domNode.__pine__.instances[needle.matchCase] = instance;
 }
 
@@ -373,9 +460,20 @@ PINE.class.Instance = function(needle, domNode) {
 	instance.domNode = domNode;
 	instance.needle = needle;
 	instance.PVARS = domNode.PVARS;
+	instance.ranInits = [];
+
 	instance.FNS = domNode.FNS;
 	instance.superFNS = {};
-	instance.ranInits = [];
+	for(var key in needle.FNS) {
+		(function(key) {
+			if(domNode.FNS[key] == undefined) {
+				instance.superFNS[key] = domNode.FNS[key] = function() {
+					return needle.FNS[key].apply(instance, arguments);
+				}
+			}
+			else PINE.err("adding an already taken FNS name "+key, domNode, needle);
+		})(key)
+	}
 
 	instance.attArg = {};
 	for(var name in instance.needle.attArgs) {
@@ -387,6 +485,51 @@ PINE.class.Instance = function(needle, domNode) {
 			});	
 		})(instance.needle.attArgs[name])
 	}
+
+
+
+	// var selectors = instance.needle.selectors.list;
+	instance._selector_fn_backlogs = {};
+
+	// var all_watcher_fns = [];
+	// for(var i in selectors) {
+	// 	(function(selector) {
+
+	// 		// var addMe = {};
+	// 		// addMe.items = [];
+	// 		// addMe.fns = {};
+	// 		// instance._selectors[selector.name] = addMe;
+
+	// 		for(var i_f in selector.fns) {
+	// 			var addFn = {};
+	// 			instance._selector_fn_backlogs
+	// 			addFn.backlog = [];
+	// 			addFn.fn = selector.fns[i_f];
+	// 			addMe.fns[i_f] = addFn;
+
+	// 			all_watcher_fns.push(addFn);
+	// 		}
+
+	// 		Object.defineProperty(instance.attArg, selector.name, {
+	// 			get: function() {
+	// 				return selector.items;
+	// 			}
+	// 		});	
+			
+	// 	})(selectors[i])
+	// }
+
+	// instance.domNode.__pine__.nodeAddListeners.push(function(addedNodes) {
+	// 	for (var i in all_watcher_fns) {
+	// 		var watch = all_watcher_fns[i];
+	// 		watch.backlog = watch.backlog.concat(addedNodes);
+	// 	}
+
+	// 	for (var key in instance._selector_fn_backlogs) {
+	// 		var selector = instance._selector_fn_backlogs[key];
+	// 		selector.items = selector.items.concat(addedNodes);
+	// 	}
+	// });
 }
 
 
@@ -1428,6 +1571,18 @@ El.firstOfTag = function(domNode, tag) {
 		return undefined;
 }
 
+El.relativeMatch = function(target, selector, root) {
+	var tmp_used = false;
+	if(root.id == '')
+	   tmp_used = root.id = "tmp_match_id";
+
+	var doesMatch = element.matches("#"+root.id+selector);
+	if(tmp_used !== false)
+	    root.id = '';
+
+	return doesMatch;
+}
+
 El.queryChildren = function(root, keyword, limit) {
 	return El.cssQuery(root, "> "+keyword, limit);
 	// var out = [];
@@ -1493,6 +1648,8 @@ El.attr = function(domNode, name, value) {
 	}
 	else return undefined;
 }
+
+
 
 // El.on = function(domNode, eventName, fn) {
 // 	domNode.addEventListener(eventName, fn);

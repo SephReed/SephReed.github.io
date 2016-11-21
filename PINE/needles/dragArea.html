@@ -2,7 +2,8 @@
 	
 PINE.createNeedle("[dragArea]", function(drags) {
 
-	drags.addAttArg("items", ["dragAreaItems", "dragArea", "selectionItems", "items"], "selector", undefined, ">*");
+	// drags.addAttArg("draggables", ["dragAreaItems", "dragArea", "selectionItems", "items"], "selector", undefined, ">*");
+	drags.addAttArg("draggables", ["dragAreaItems", "dragArea", "selectionItems", "items"], "liveSelector", ">*");
 	drags.addAttArg("units", ["dragGridUnit", "unit"], "number");	
 	drags.addAttArg("overlap", ["dragAreaOverlap", "dragOverlap", "overlap"], "string", "all");	
 	drags.addAttArg("overlapReset", ["dragAreaOverlapReset", "dragOverlapReset", "overlapReset"], "string", "start");	
@@ -10,28 +11,31 @@ PINE.createNeedle("[dragArea]", function(drags) {
 	drags.addAttArg("dispersion", ["dragAreaDispersion", "dispersion"], "string", "leftToRight");
 	drags.addAttArg("bound", ["dragAreaBound", "dragBound", "bound"], "boolean", true);
 
+	drags.onLiveSelectorAddItem("draggables",
+		function(addedItem) {
+			addedItem.classList.add("is_draggable");
+			drags.addListenersToDraggable(this, addedItem);
+		}
+	);
 
-	// drags.addAttArg("items", "selector", {
-	// 	aliases: ["dragAreaItems", "dragArea", "selectionItems", "items"], 
-	// 	defaultAtt: ">*",
-	// });
+	
 
 
 	drags.addInitFn(function() {
 		console.log("running init fn drag")
-		var instance = this;
-		var initMe = instance.domNode;
-		instance.dragListeners = [];
+		var ni = this;
+		var initMe = ni.domNode;
+		ni.dragListeners = [];
 
 		console.log(this);
 
-		var draggables = instance.attArg.items;
+		var draggables = ni.attArg.draggables;
 		for(var i = 0; i < draggables.length; i++) {
 			draggables[i].classList.add("is_draggable");
-			drags.addListenersToDraggable(instance, draggables[i]);
+			drags.addListenersToDraggable(ni, draggables[i]);
 		}
 
-		instance.FNS.setDragEnabled(true);
+		ni.FNS.setDragEnabled(true);
 		El.waitForDisplay(initMe).then(initMe.FNS.dragAreaDisperse);
 
 		initMe.addEventListener("nodesPineInitiated", function(event) {
@@ -39,10 +43,13 @@ PINE.createNeedle("[dragArea]", function(drags) {
 			console.log("nodes initiated");
 			for(var i in addedNodes) {
 				addedNodes[i].classList.add("is_draggable");
-				drags.addListenersToDraggable(instance, addedNodes[i]);
+				drags.addListenersToDraggable(ni, addedNodes[i]);
 			}
 		});
 	});
+
+
+	
 
 
 
@@ -74,7 +81,7 @@ PINE.createNeedle("[dragArea]", function(drags) {
 			var left = 0;
 			var top = 0;
 			var lineHeight = 0;
-			var draggables = this.attArg.items;
+			var draggables = this.attArg.draggables;
 
 			for(var i = 0; i < draggables.length; i++) {
 				var moveMe = draggables[i];
@@ -100,11 +107,11 @@ PINE.createNeedle("[dragArea]", function(drags) {
 
 
 
-	drags.addListenersToDraggable = function(instance, draggable) {
-		var initMe = instance.domNode;
+	drags.addListenersToDraggable = function(ni, draggable) {
+		var initMe = ni.domNode;
 			//
 		draggable.addEventListener("mousedown", function(event) {
-			if(instance.enabled == false)
+			if(ni.enabled == false)
 				return;
 
 			event.preventDefault();
@@ -148,16 +155,16 @@ PINE.createNeedle("[dragArea]", function(drags) {
 				var top = currentTop - bounds.top;
 				var left = currentLeft - bounds.left;
 					//
-				if(instance.attArg.snap) {
-					top -= top % instance.attArg.units;
-					left -= left % instance.attArg.units;
+				if(ni.attArg.snap) {
+					top -= top % ni.attArg.units;
+					left -= left % ni.attArg.units;
 				}
 				else {
 					top -= offsetY;
 					left -= offsetX;
 				}
 
-				if(instance.attArg.bound) {
+				if(ni.attArg.bound) {
 					top = Math.max(0, top);
 					top = Math.min(top, bounds.bottom - draggable.offsetHeight);
 
@@ -169,8 +176,8 @@ PINE.createNeedle("[dragArea]", function(drags) {
 				draggable.style.left = left+"px";
 
 
-				if(instance.attArg.overlap != "all") {
-					var draggables = instance.attArg.items;
+				if(ni.attArg.overlap != "all") {
+					var draggables = ni.attArg.draggables;
 					for(var i = 0; i < draggables.length; i++) {
 						var other = draggables[i];
 
@@ -201,7 +208,7 @@ PINE.createNeedle("[dragArea]", function(drags) {
 				}
 
 				if(lastLeft != left || lastTop != top) {
-					var listeners = instance.dragListeners;
+					var listeners = ni.dragListeners;
 					for(var i in listeners)
 						listeners[i](draggable);
 
@@ -222,8 +229,8 @@ PINE.createNeedle("[dragArea]", function(drags) {
 				initMe.classList.remove("currently_dragging");	
 				draggable.classList.remove("being_dragged");
 
-				if(instance.attArg.overlap != "all" && currentlyOver.length != 0) {
-					if(instance.attArg.overlapReset == "lastGood") {
+				if(ni.attArg.overlap != "all" && currentlyOver.length != 0) {
+					if(ni.attArg.overlapReset == "lastGood") {
 						draggable.style.top = lastGoodTop+"px";
 						draggable.style.left = lastGoodLeft+"px";		
 					}
@@ -233,7 +240,7 @@ PINE.createNeedle("[dragArea]", function(drags) {
 					}
 					
 
-					var listeners = instance.dragListeners;
+					var listeners = ni.dragListeners;
 					for(var i in listeners)
 						listeners[i](draggable);
 				}
