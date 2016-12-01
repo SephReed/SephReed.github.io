@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="../PINE_Core_4.8.js"></script>
+	<!-- <script src="../../public/js/detect-element-resize.js"></script> -->
+	<needle src="../needles/hotkeys.html"></needle>
+	<needle src="../needles/switch.html"></needle>
+	<!-- <needle src="../needles/boxSelectArea.html"></needle> -->
+
+	<script>
+	function setBg(onOff, color) {
+		if(onOff) 
+			document.body.style.background = color;
+		
+		else document.body.style.background = "";
+	}
+	</script>
+</head>
+<body>
+
+<div hotkey="shift U" mode="hold" keyGroup="lists" switch="setBg(_switchState, 'red')">Click Me</div>
+
+<div hotkeyArea="lists">
+	lalalalalalal
+</div>
+
+
+
+</body>
+
+<style type="text/css">
+body, html {
+	height: 100%;
+	width: 100%;
+}
+	
+</style>
+</html>

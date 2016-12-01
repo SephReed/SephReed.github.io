@@ -220,6 +220,8 @@ PINE.class.Needle = function(matchCase, args) {
 	this.supers = {};
 	this.FNS = {};
 	this.inits = {};
+	this.inits.list = [];
+	this.inits.byOp = {};
 	this.attArgs = {};
 	this.selectors = {};
 	this.selectors.list = [];
@@ -265,7 +267,8 @@ PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
 	else PINE.err("bad addInitFn() call", needle);
 
 	if(watchSelector) {
-	 	var attArg = needle.attArgs[watchSelector];
+	 	// var attArg = needle.attArgs[watchSelector];
+	 	var attArg = needle.selectors.byName[watchSelector];
 
 	 	if(attArg === undefined)
 			return PINE.err("selector for '"+watchSelector+"' must be added before watcher", needle);
@@ -290,14 +293,20 @@ PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
 		var instance = this;
 		return new SyncPromise(function(resolve) {
 			var args = {};
+
+			if(addMe.watchSelector !== undefined) {
+				var selector = instance.selectors[addMe.watchSelector];
+				args.addedNodes = selector.fnBacklogs[addMe.ID];
+				selector.fnBacklogs[addMe.ID] = [];
+			}
+
 			if(addMe.isAsync)  {
-				console.log("async instance called")
+				// console.log("async instance called")
 				PINE.NEEDLES.runningInits.push(addMe);
 				args.complete = function() {
 					U.removeFromArray(addMe, PINE.NEEDLES.runningInits);
 					resolve();
 				}
-				args.addedNodes = instance._selector_fn_backlogs[addMe.ID];
 				fn.call(instance, args);
 			}
 
@@ -309,10 +318,11 @@ PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
 	}
 
 
-	if(this.inits[addMe.opType] == undefined)
-		this.inits[addMe.opType] = [];
+	if(this.inits.byOp[addMe.opType] == undefined)
+		this.inits.byOp[addMe.opType] = [];
 
-	this.inits[addMe.opType].push(addMe);
+	this.inits.byOp[addMe.opType].push(addMe);
+	this.inits.list.push(addMe);
 }
 
 
@@ -336,32 +346,32 @@ PINE.class.Needle.prototype.addAttArg = function(name, attNames, type, defaultVa
 }
 
 
-PINE.class.Needle.prototype.onLiveSelectorAddItem = function(name, arg1, arg2) {
-	var needle = this;
-	var selector = needle.selectors.byName[name];
+// PINE.class.Needle.prototype.onLiveSelectorAddItem = function(name, arg1, arg2) {
+// 	var needle = this;
+// 	var selector = needle.selectors.byName[name];
 
-	if(selector == undefined)
-		return PINE.err("selector for '"+name+"' must be added before watcher", needle);
+// 	if(selector == undefined)
+// 		return PINE.err("selector for '"+name+"' must be added before watcher", needle);
 
-	var fn, opType
-	if(typeof arg1 == "function" && arg2 == undefined) {
-		opType = PINE.ops.COMMON; 
-		fn = arg1;
-	}
-	else if(typeof arg1 == "string" && typeof arg2 == "function") {
-		opType = arg1;
-		fn = arg2;
-	}
+// 	var fn, opType
+// 	if(typeof arg1 == "function" && arg2 == undefined) {
+// 		opType = PINE.ops.COMMON; 
+// 		fn = arg1;
+// 	}
+// 	else if(typeof arg1 == "string" && typeof arg2 == "function") {
+// 		opType = arg1;
+// 		fn = arg2;
+// 	}
 
-	var addMe = {};
-	addMe.opType = opType;
-	addMe.fn = fn;
+// 	var addMe = {};
+// 	addMe.opType = opType;
+// 	addMe.fn = fn;
 
-	if(selector.fns[opType] == undefined)
-		selector.fns[opType] = [];
+// 	if(selector.fns[opType] == undefined)
+// 		selector.fns[opType] = [];
 
-	selector.fns[opType].push(addMe);
-}
+// 	selector.fns[opType].push(addMe);
+// }
 
 
 PINE.class.Needle.prototype.tryInject = function(domNode) {
@@ -425,19 +435,20 @@ PINE.class.Needle.prototype.extend = function(extendNeedleOrName) {
 	if(extendMe === undefined)
 		return PINE.err("can not extend a non existant needle", extendNeedleOrName, needle);
 
-	console.log("extending", extendMe);
+	// console.log("extending", extendMe);
 
 	needle.supers[extendMe.matchCase] = extendMe;
 
 	for(var key in extendMe.FNS)
 		needle.FNS[key] = extendMe.FNS[key];
 
-	for(var opType in extendMe.inits) {
-		if(needle.inits[opType] == undefined)
-			needle.inits[opType] = [];
+	for(var opType in extendMe.inits.byOp) {
+		if(needle.inits.byOp[opType] == undefined)
+			needle.inits.byOp[opType] = [];
 
-		needle.inits[opType] = needle.inits[opType].concat(extendMe.inits[opType]);
+		needle.inits.byOp[opType] = needle.inits.byOp[opType].concat(extendMe.inits.byOp[opType]);
 	}
+	needle.inits.list = needle.inits.list.concat(extendMe.inits.list);
 
 	for(var att in extendMe.attArgs)
 		needle.attArgs[att] = extendMe.attArgs[att];
@@ -488,62 +499,96 @@ PINE.class.Instance = function(needle, domNode) {
 
 
 
-	// var selectors = instance.needle.selectors.list;
-	instance._selector_fn_backlogs = {};
+	var selectors = instance.needle.selectors.list;
+	instance.selectors = {};
 
 	// var all_watcher_fns = [];
-	// for(var i in selectors) {
-	// 	(function(selector) {
+	for(var i in selectors) {
+		(function(selector) {
 
-	// 		// var addMe = {};
-	// 		// addMe.items = [];
-	// 		// addMe.fns = {};
-	// 		// instance._selectors[selector.name] = addMe;
-
-	// 		for(var i_f in selector.fns) {
-	// 			var addFn = {};
-	// 			instance._selector_fn_backlogs
-	// 			addFn.backlog = [];
-	// 			addFn.fn = selector.fns[i_f];
-	// 			addMe.fns[i_f] = addFn;
-
-	// 			all_watcher_fns.push(addFn);
-	// 		}
-
-	// 		Object.defineProperty(instance.attArg, selector.name, {
-	// 			get: function() {
-	// 				return selector.items;
-	// 			}
-	// 		});	
+			var addMe = {};
+			addMe.items = [];
+			addMe.name = selector.name;
+			addMe.fnBacklogs = {};
+			addMe.cssQuery = El.attArg(instance.domNode, selector.attNames, "string", selector.defaultVal);
 			
-	// 	})(selectors[i])
-	// }
+			var items = El.attArg(instance.domNode, selector.attNames, "selector", undefined, selector.defaultVal);
+			// addMe.items = items.splice(0);
+			for(var i = 0; i < items.length; i++) 
+				addMe.items.push(items[i]);
+			
 
-	// instance.domNode.__pine__.nodeAddListeners.push(function(addedNodes) {
-	// 	for (var i in all_watcher_fns) {
-	// 		var watch = all_watcher_fns[i];
-	// 		watch.backlog = watch.backlog.concat(addedNodes);
-	// 	}
+			Object.defineProperty(instance.attArg, selector.name, {
+				get: function() {
+					return addMe.items;
+				}
+			});	
 
-	// 	for (var key in instance._selector_fn_backlogs) {
-	// 		var selector = instance._selector_fn_backlogs[key];
-	// 		selector.items = selector.items.concat(addedNodes);
-	// 	}
-	// });
+			instance.selectors[addMe.name] = addMe;
+			
+		})(selectors[i])
+	}
+
+	var inits = needle.inits.list;
+	for(var i in inits) {
+		var init = inits[i];
+
+		if(init.watchSelector !== undefined) {
+			// console.log("init watch", init)
+			var selector = instance.selectors[init.watchSelector];
+
+			if(selector)
+				selector.fnBacklogs[init.ID] = selector.items.splice(0);
+			
+			else PINE.err("adding fn for non existant selector ", init, instance);
+		}
+	}
+
+	if(instance.domNode.__pine__.nodeAddListeners) {
+			//
+		instance.domNode.__pine__.nodeAddListeners.push(function(addedNodes) {
+			for(var i in instance.selectors) {
+				var selector = instance.selectors[i];
+				var cssQuery = selector.cssQuery;
+				// console.log("added nodes", addedNodes, cssQuery);
+
+				for(var a = 0; a < addedNodes.length; a++) {
+					for(var n = 0; n < addedNodes[a].length; n++) {
+						var addMe = addedNodes[a][n];
+
+						// console.log(instance.domNode, addMe, cssQuery);
+
+						if(PINE.inBoundsNode(addMe) && El.relativeMatch(addMe, cssQuery, instance.domNode)) {
+							// console.log("is relativeMatch", addMe, instance);
+							
+							selector.items.push(addMe);
+
+							for(var id in selector.fnBacklogs) {
+								selector.fnBacklogs[id].push(addMe);
+							}
+						}
+					}
+				}
+			}
+		});
+	}	
 }
 
 
 
 PINE.class.Instance.prototype.tryInit = function(opType) {
 	var instance = this;
-	var inits = instance.needle.inits[opType];
+	var inits = instance.needle.inits.byOp[opType];
 
 	var promises = []
 	for(var i in inits) {
 		var init = inits[i];
 		var preRan = instance.ranInits.includes(init);
+		var hasSelectorsBacklog;
+		var selector = init.watchSelector ? instance.selectors[init.watchSelector] : undefined;
+		hasSelectorsBacklog = selector && selector.fnBacklogs[init.ID].length;
 
-		if(init.isMultirun || preRan == false) {
+		if(init.isMultirun || preRan == false || hasSelectorsBacklog) {
 			promises.push(init.fn.call(instance));
 
 			if(preRan == false)
@@ -755,7 +800,7 @@ PINE.sprout = function() {
 //TODO: micro improve performance by not running empty updates
 PINE.updateAt = function(root, passedOps) {
 
-	console.log("updateAt", root);
+	// console.log("updateAt", root);
 
 	var newRoot = (root.__pine__ === undefined);
 	if(newRoot) {
@@ -764,7 +809,7 @@ PINE.updateAt = function(root, passedOps) {
 	}
 	
 	else if(root.__pine__.held) {
-		console.log("held root");
+		// console.log("held root");
 		return SyncPromise.resolved();
 	}
 
@@ -1142,7 +1187,7 @@ PINE.debug.logRunningAsyncs = function() {
 **********************************/
 
 
-U.docReady = function(callback) {
+U.domReady = U.docReady = function(callback) {
 	document.addEventListener("DOMContentLoaded", callback);
 }
 
@@ -1511,14 +1556,14 @@ SyncPromise.all = function(promises) {
 			promises.splice(i, 1);
 			i--;
 		}
-		else console.log("syncable not fulfilled" + promises[i].syncable.state)
+		// else console.log("syncable not fulfilled" + promises[i].syncable.state)
 	}
 
 	if(promises.length == 0)
 		return SyncPromise.resolved();
 
 	else
-		return new SyncPromise(function(resolve) { console.log("default promise all", promises); Promise.all(promises).then(resolve); });
+		return new SyncPromise(function(resolve) { Promise.all(promises).then(resolve); });
 }
 
 Promise.prototype.syncThen = function (nextFn) {
@@ -1535,7 +1580,7 @@ Promise.prototype.syncThen = function (nextFn) {
 	}
 
 	else {
-		console.log("default promise");
+		// console.log("default promise");
 		return this.then(nextFn);
 	}
 }
@@ -1576,7 +1621,7 @@ El.relativeMatch = function(target, selector, root) {
 	if(root.id == '')
 	   tmp_used = root.id = "tmp_match_id";
 
-	var doesMatch = element.matches("#"+root.id+selector);
+	var doesMatch = target.matches("#"+root.id+selector);
 	if(tmp_used !== false)
 	    root.id = '';
 
@@ -1676,6 +1721,18 @@ El.waitForDisplay = function(domNode) {
 			    }
 			}
 		 	document.addEventListener('animationstart', onStart);
+		}
+	});
+}
+
+El.onBlur = function(domNode, fn) {
+	document.body.addEventListener("mousedown", function(event) {
+		if(domNode == event.target || domNode.contains(event.target)) 
+			domNode.__pine__.focused = true;
+		
+		else if(domNode.__pine__.focused === true) {
+			domNode.__pine__.focused = false;
+			fn();
 		}
 	});
 }
@@ -1879,6 +1936,10 @@ ElementHelper.prototype.attr = function(name, value) {
 
 ElementHelper.prototype.waitForDisplay = function() {
 	return El.waitForDisplay(this.domNode);
+}
+
+ElementHelper.prototype.onBlur = function(fn) {
+	return El.onBlur(this.domNode, fn);
 }
 
 ElementHelper.prototype.getRootNode = function() {

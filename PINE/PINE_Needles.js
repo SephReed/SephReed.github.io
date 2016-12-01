@@ -68,7 +68,7 @@ PINE.createNeedle("[spawner]", function() {
 
 			for(var i = 0; i < domNode.childNodes.length;) {
 				var child = domNode.childNodes[i];
-				console.log(child);
+				// console.log(child);
 				
 				if(El.attr(child, "spawn") !== undefined)
 			    	domNode.removeChild(child);
@@ -363,7 +363,54 @@ PINE.createNeedle("[treeSpawner]", function(tree) {
 
 
 
+var TEMPLATES = PINE.TEMPLATES = {};
 
+
+PINE.createNeedle("defineTemplate", function(defTempl) {
+
+	defTempl.addAttArg("name", "templateName", "string")
+
+	defTempl.addInitFn(PINE.ops.INIT, function() {
+		var mod = this;
+		TEMPLATES[mod.attArg.name] = mod.domNode;
+		mod.domNode.remove();
+		mod.domNode.removeAttribute("templateName");
+	});
+});
+
+
+
+PINE.createNeedle("[template]", function(templ) {
+
+	templ.addAttArg("name", "template", "string")
+	templ.addAttArg("alreadyRan", "templateRan", "exists")
+
+	templ.addInitFn(function() {
+		var mod = this;
+		var copyMe = TEMPLATES[mod.attArg.name];
+		var initMe = mod.domNode;
+
+		if(mod.attArg.alreadyRan)
+			return;
+
+		if(copyMe) {
+			for(var i = 0; i < copyMe.attributes.length; i++) {
+				var attName = copyMe.attributes[i].name;
+				if(El.attr(initMe, attName) == undefined) {
+					var value = copyMe.attributes[i].value;
+					El.attr(initMe, attName, value);	
+				}
+			}
+
+			for(var i = 0; i < copyMe.childNodes.length; i++) {
+				initMe.appendChild(copyMe.childNodes[i].cloneNode(true));
+			}
+
+			El.attr(initMe, "templateRan", '');
+		}
+		else PINE.err("template must be defined before being inserted", mod.domNode);
+	});
+});
 
 
 

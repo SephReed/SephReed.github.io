@@ -3,6 +3,9 @@
 <head>
 	<title>Robot Soul</title>
 	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+	
+	<link rel="stylesheet" type="text/css" href="public/styles/bitwig.css">
+	<link rel="stylesheet" type="text/css" href="public/styles/space.css">
 
 	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
 	<!-- <script type="text/javascript"> U.runScriptMode = "fast" </script> -->
@@ -10,16 +13,17 @@
 	<script type="text/javascript" src="../PINE/PINE_Needles.js"></script>
 	<script type="text/javascript" src="../PINE/PINE_Includes.js"></script>
 	<script type="text/javascript" src="../public/js/WebMIDIAPI.min.js"></script>
-	<script type="text/javascript" src="../public/js/detect-element-resize.js"></script>
-	<!-- <needle src="../PINE/needles/suggestions.html"></needle>	
-	<needle src="../PINE/needles/showHide.html"></needle> -->
-	<!-- <needle src="../PINE/needles/selectablelist.html"></needle> -->
+	
+
 	<needle src="../PINE/needles/knobsAndSliders.html"></needle>
 	<needle src="../PINE/needles/dragArea.html"></needle>
-	<needle src="../PINE/needles/boxSelectArea.html"></needle>
+	<!-- <needle src="../PINE/needles/boxSelectArea.html"></needle> -->
 	<needle src="../PINE/needles/dropdownMenu.html"></needle>
 	<needle src="../PINE/needles/fileChooser.html"></needle>
 	<needle src="../PINE/needles/modal.html"></needle>
+	<needle src="../PINE/needles/switch.html"></needle>
+	<needle src="../PINE/needles/hotkeys.html"></needle>
+	<needle src="../PINE/needles/selectableList.html"></needle>
 
 
 
@@ -32,6 +36,7 @@
 	<needle src="cableOverlay.html"></needle>
 
 
+	<needle src="devices/basic/RackIO.html"></needle>
 	<needle src="devices/basic/Oscillator.html"></needle>
 	<needle src="devices/MidiFreq.html"></needle>
 	<needle src="devices/basic/Gain.html"></needle>
@@ -39,101 +44,13 @@
 	<needle src="devices/basic/Knob.html"></needle>
 	<needle src="devices/basic/LinearRange.html"></needle>
 	<needle src="devices/Tween.html"></needle>
+	<needle src="devices/basic/RackHeader.html"></needle>
+	<needle src="devices/BasicAnalogSynth.html"></needle>
+	<needle src="devices/basic/Modulus.html"></needle>
+	<needle src="devices/YBricks.html"></needle>
+	<needle src="devices/XBricks.html"></needle>
 
 	<script type="text/javascript">
-
-		// var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-		// var oscillator = audioCtx.createOscillator();
-		// oscillator.type = 'triangle';
-		// oscillator.frequency.value = 300; // value in hertz
-		// oscillator.connect(audioCtx.destination);
-		// oscillator.start();
-		
-	var loadMe = {
-		projectName : "First File",
-		devices : {
-			templates : {
-				// nextID : 3,
-				byID : {
-					0 : "DeviceRack",
-					1 : "MidiToFreq",
-					2 : "Oscillator",
-					3 : "Gain",	
-					4 : "Knob"
-				}
-			},
-			clones : {
-				nextID : 5,
-				list : [
-					{	ID : 0,		template : 0 },
-					{	ID : 1,		template : 1 },
-					{	ID : 2,		template : 2 },
-					{	ID : 3,		template : 3 },
-					{	ID : 4,		template : 4 },
-				]
-			}
-		},
-
-		racks : [
-			{
-				ID: 0,
-				devices : [1, 2, 3, 4]
-			}
-		],
-
-		tracks : [
-			{
-				ID: 0,
-				racks : [0]
-			}
-		],
-
-		connections : [
-			{	ID : 0,		
-				output : {
-					device : 0,
-					name : "midi"
-				},
-				input : {
-					device : 1,
-					name : "midi_in"
-				}
-			},
-
-			{	
-				ID : 1,		
-				output : {
-					device : 1,
-					name : "frequency_out"
-					
-				},
-				input : {
-					device : 2,
-					name : "osc_frequency"
-				}
-			},
-			{	ID : 2,		
-				output : {
-					device : 2,
-					name : "wave_out"
-				},
-				input : {
-					device : 3,
-					name : "in"
-				}
-			},
-			{	ID : 3,		
-				output : {
-					device : 4,
-					name : "knob"
-				},
-				input : {
-					device : 3,
-					name : "gain"
-				}
-			}
-		]
-	}
 
 
 
@@ -147,92 +64,8 @@
 
 
 	function viewTrackDetails(trackId) {
-		
 		El.byId("details").FNS.changeSrc("modules/Rack.html?id="+trackId);
 	}
-
-
-
-	// document.addEventListener("keydown", function(event) {
-	//   if(event.key == "Escape") {
-	//     toggleFullScreen();
-	//   }
-	// }, false);
-
-	// function toggleFullScreen() {
-	//   if (!document.fullscreenElement) {
-	//       document.documentElement.requestFullscreen();
-	//   } else {
-	//     if (document.exitFullscreen) {
-	//       document.exitFullscreen(); 
-	//     }
-	//   }
-	// }
-
-	function newFile() {
-		El.byID("save_first_modal").FNS.showModal();
-		El.byID("save_first_rename").value = RS.projectName;
-	}
-
-	function save_first_new(doSave) {
-		
-		if(doSave === true) {
-			RS.projectName = El.byID("save_first_rename").value;
-			RS.save();
-		}
-
-		if(doSave !== undefined) {
-			RS.new();
-			El.byId("all_tracks").FNS.spawnerUpdate();	
-			El.byId("details").FNS.dropAllViews(true);
-			viewTrackDetails(0);
-		}
-
-		El.byID("save_first_modal").FNS.hideModal();
-	}
-
-	function loadFile(file) {
-		var reader = new FileReader();
-		reader.onload = function(event) {
-			var contents = event.target.result;
-			RS.load(contents);
-
-			El.byId("all_tracks").FNS.spawnerUpdate();	
-			El.byId("details").FNS.dropAllViews(true);
-			viewTrackDetails(0);
-		};
-		reader.readAsText(file);
-	}
-
-
-	function saveFileAs() {
-		El.byID("save_as_rename").value = RS.projectName;
-		El.byID("save_as_modal").FNS.showModal();
-	}
-
-	function rename_and_save() {
-		RS.projectName = El.byID("save_as_rename").value;
-		RS.save();
-		El.byID("save_as_modal").FNS.hideModal();
-	}
-
-
-
-	U.docReady(function() {
-		document.body.addEventListener("keydown", function(event) {
-			if(event.key == "s" && (event.metaKey == true || event.ctrlKey == true)) {
-				event.preventDefault();
-				if(event.shiftKey == true) 
-					saveFileAs();
-				
-				else RS.save();
-			}
-			else if(event.key == "N") {
-				event.preventDefault();
-				newFile();
-			}
-		});
-	});
 
 	
 	
@@ -246,7 +79,7 @@
 
 
 
-<body>
+<body class="style_space_">
 <!-- <a href="path/to/file" download>Click here to download</a> -->
 
 <!-- <button onclick="Noodler()">Noodles</button> -->
@@ -265,94 +98,21 @@
 	<button onclick="save_first_new()">Cancel</button>
 </modal>
 
-<div id="topbar">
-	<span id="fullscreen_btn" onclick="RS.switchFullscreen()"></span>
-	<div menu>
-		<div showMenu="file_menu" 
-			menuPos="below"
-			secondClickExit>
-			File
 
-		</div><div 
-			showMenu="edit_menu" 
-			menuPos="below"
-			secondClickExit>
-			Edit
-
-		</div><div 
-			showMenu="options_menu" 
-			menuPos="below"
-			secondClickExit>
-			Options
-
-		</div><div 
-			showMenu="about_menu" 
-			menuPos="below"
-			secondClickExit>
-			About
-		</div> 
-	</div>
-	
-	<div id="rack_tabs">
-		<span>DeviceRack 1</span>
-		<span>DeviceRack 2</span>
-	</div>
-
-</div>
-
-<div id="file_menu" dropdownMenu>
-	<div onclick="newFile()"">New</div>
-	<div onclick="RS.save()">Save</div>
-	<div onclick="saveFileAs()">Save As</div>
-	<div fileChooser onFileChoose="loadFile">Load</div>
-</div>
-
-<div id="edit_menu" dropdownMenu>
-	<div>Copy</div>
-	<div>Paste</div>
-	<div>Delete</div>
-</div>
-
-<div id="options_menu" dropdownMenu>
-	<div>Set Layout</div>
-	<div>Set Theme</div>
-	<div>Advanced</div>
-</div>
-
-<div id="about_menu" dropdownMenu>
-	<div>About RobotSoul</div>
-	<div>Hotkey Cheat Sheet</div>
-	<div showMenu>
-		How to >
-		<div dropdownMenu>
-			<div>Connect Devices</div>
-			<div>Live Perform</div>		
-			<div>Create Your Own Devices</div>		
-			<div>Create Your Own Theming</div>		
-		</div>
-	</div>
-	<div>About Creators</div>
-</div>
+<view src="modules/topbar.html"></view>
 
 
 
-
+<view src="modules/deviceBrowser.html"></view>
 <view src="nosrc" id="details"></view>
 
 
-<!-- <trackList spawner="TRACKS.list">
-	<trackItem spawn changeSrc="modules/TrackDevices.html?id={{TRACKS.list[i].ID}}" changeSrcTarget="details">
-		<solo>S</solo>
-		<mute>M</mute>
-		{{TRACKS.list[i].name}}
-	</trackItem>
-</trackList> -->
 
 
 <trackList id="all_tracks" spawner="TRACKS.list">
 	<trackItem spawn changeSrc="modules/Rack.html?id={{TRACKS.list[i].ID}}" changeSrcTarget="details">
-		<solo>S</solo>
-		<mute>M</mute>
+		<!-- <solo>S</solo>
+		<mute>M</mute> -->
 		{{TRACKS.list[i].name}}
 	</trackItem>
 </trackList>
@@ -451,83 +211,6 @@ modal {
 	z-index: 1;
 }
 
-#topbar {
-	position: relative;
-	height: 30px;
-	line-height: 28px;
-	width: 100%;
-	background-color: #555;
-	border-bottom-style: solid;
-}
-
-
-
-
-	#fullscreen_btn {
-		display: inline-block;
-		cursor: zoom-in;
-		vertical-align: middle;
-		height: 20px;
-		width: 20px;
-		margin: 2px 6px;
-		background-color: #7ba77b;
-		background-size: 66% auto;
-		background-image: url("public/images/fullscreen_icon.png");
-		border-style: solid;
-		border-radius: 20px;
-	}
-
-		/*#fullscreen_btn:hover {
-			
-		}*/
-
-		body:fullscreen #fullscreen_btn {
-			cursor: zoom-out;
-			background-color: #bc3e3e;
-			background-image: url("public/images/close_fullscreen_icon.png");
-		}
-
-	#topbar > [menu], #topbar > [menu] > [showmenu]{
-		display: inline-block;
-	}
-
-	#topbar > [menu] > [showmenu]{
-		padding: 0px 9px;
-	}
-
-		#load {
-			position: relative;
-		}
-
-			#load input {
-				position: absolute;
-				height: 100%;
-				width: 100%;
-				top: 0px;
-				left: 0px;
-				opacity: 0;
-			}
-
-
-
-
-
-	#rack_tabs {
-		display: inline-block;
-		position: absolute;
-		right: 0px;
-		width: 400px;
-		padding: 0px 3px;
-		overflow-x: scroll;
-	}
-
-		#rack_tabs > span {
-			border-style: solid solid none solid;
-			position: relative;
-			top: 3px;
-			padding: 1px 2px;
-		}
-
 
 tracklist {
 	position: absolute;
@@ -567,12 +250,16 @@ tracklist {
 			color: #333;
 		}
 
-			trackItem solo {
-				background: #c6b326;
+			tracklist trackItem solo {
+				/*background: #c6b326;*/
+				background: #f8de1f;
+				border-color: #fff150;
 			}
 
-			trackItem mute {
-				background: #c08b2b;;
+			tracklist trackItem mute {
+				/*background: #c08b2b;;*/
+				background: #ff8700;
+				border-color: #ffb966;
 			}
 
 #details {

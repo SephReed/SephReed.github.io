@@ -1,0 +1,164 @@
+<script type="text/javascript">
+
+// var APPELATION = {};
+var ELATE = {};
+
+ELATE.Abstract = function() {
+	console.error("can not call abstract fn", this);
+}
+
+ELATE.builds = {};
+ELATE.get = function(name) {
+	return ELATE.builds[name.toLowerCase()]
+}
+
+
+ELATE.create = function(name, planFn) {
+	var buildMe = new ELATE.class.ClassPlanner();
+	planFn.call(buildMe);
+
+	var out = buildMe.constructor || function(){};
+
+	out.prototype.__elate__ = {}
+	out.prototype.__elate__.isAbstract = buildMe.__elate__.isAbstract;
+	out.prototype.super = {};
+
+
+	for(var superName in buildMe.__elate__.supers) {
+			//
+		var superClass = buildMe.__elate__.supers[superName];
+		out.prototype.super[superName] = superClass;
+
+		for(var proto in superClass.prototype) {
+			if(proto !== "super" && proto !== "__elate__"){
+				out.prototype[proto] = superClass.prototype[proto];
+			}
+		}
+	}
+
+	for(var proto in buildMe) {
+		if(proto !== "constructor" && proto !== "__elate__") {
+			var addMe = buildMe[proto];
+			if(addMe == "abstract")
+				addMe = ELATE.Abstract;
+			out.prototype[proto] = addMe;
+		}
+	}
+
+
+	if(buildMe.__elate__.isAbstract == false) {
+		var badFns = [];
+		for(var proto in out.prototype) {
+			if(out.prototype[proto] == ELATE.Abstract)
+				badFns.push(proto);
+		}
+
+		if(badFns.length)
+			return console.error("non abstract class '"+name+"' has abstract functions:", badFns);
+	}
+
+	ELATE.builds[name.toLowerCase()] = out;
+
+	return out;
+}
+
+
+ELATE.class = {};
+ELATE.class.ClassPlanner = function() {
+	var private = this.__elate__ = {}
+	private.isAbstract = false;
+	private.supers = {};
+}
+
+ELATE.class.ClassPlanner.prototype.isAbstract = function() {
+	this.__elate__.isAbstract = true;
+};
+
+
+ELATE.class.ClassPlanner.prototype.extend = function(extend) {
+	var build = ELATE.get(extend);
+	this.__elate__.supers[extend] = build;
+};
+
+
+
+ELATE.create("guiable", function() {
+	this.isAbstract();
+
+	this.getGUI = function() {
+		if(this.GUI == undefined)
+			this.buildGUI();
+
+		return this.GUI;
+	}
+
+	this.buildGUI = "abstract";
+});
+
+
+
+ELATE.create("loadable", function() {
+	this.isAbstract();
+	this.toLoadable = "abstract";
+	this.load = "abstract";
+});
+
+
+
+
+ELATE.create("sequencer", function() {
+	this.extend("Guiable");
+	this.extend("loadable");
+
+	this.constructor = function(test) {
+		console.log(this, test);
+	}
+
+	this.buildGUI =  function() {
+		this.GUI = "lalal";
+	}
+
+	this.load = function() {
+		this.GUI = "lalal";
+	}
+
+	this.toLoadable = function() {
+		this.GUI = "lalal";
+	}
+});
+
+
+
+// ELATE.create("sequencer", function(seq) {
+// 	seq.extend(["guiable", "savable"]);
+
+
+
+// });
+
+// PINE.createNeedle("[defineGUI]", function(defGUI) {
+
+// });
+
+
+
+	
+
+// PINE.createNeedle("[sequencer]", function(seq) {
+	
+
+
+
+// })
+
+</script>
+
+
+
+<style>
+* [sequencer] {
+	height: 50px;
+	width: 200px;
+	background: #969;
+}
+</style>

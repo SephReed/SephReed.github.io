@@ -73,7 +73,7 @@ DEVICES.get = function(target) {
 		return DEVICES.templates.byId[asInt];
 
 	else if(typeof target == "string") 
-		return DEVICES.templates.byName[target];		
+		return DEVICES.templates.byName[target.toLowerCase()];		
 }
 
 
@@ -87,6 +87,8 @@ DEVICES.getClone = function(target) {
 
 DEVICES.registerTemplate = function(deviceName, initFn) {
 	var args = {};
+
+	deviceName = deviceName.toLowerCase();
 
 	var id;
 	var preID = DEVICES.templates.byName[deviceName];
@@ -118,6 +120,14 @@ DEVICES.new = function(deviceName, cloneArgs) {
 }
 
 
+
+
+/**************************
+*    DEVICE TEMPLATE
+***************************/
+
+
+
 var DeviceTemplate = RS.class.DeviceTemplate = function(deviceName, initFn) {
 	var template = this;
 	template.name = deviceName;
@@ -130,8 +140,12 @@ DeviceTemplate.prototype.setGUI = function(newGUI) {
 	if(template.GUI != undefined)
 		PINE.err("double setting GUI for ", template.name);
 
-	else
+	else  {
 		template.GUI = newGUI;
+		template.frontGUI = El.firstOfTag(template.GUI, "deviceFront");
+		template.backGUI = El.firstOfTag(template.GUI, "deviceBack");
+	}
+	
 }
 
 DeviceTemplate.prototype.clone = function(cloneArgs) {
@@ -142,10 +156,17 @@ DeviceTemplate.prototype.clone = function(cloneArgs) {
 
 
 
+/**************************
+*    DEVICE CLONE
+***************************/
+
+
+
 var DeviceClone = RS.class.DeviceClone = function(template, args) {
 	var clone = this;
 
 	clone.template = template;
+	clone.subdevices = {};
 	clone.ID = args.ID;
 	clone.name = template.name + " " + template.counter++;
 	clone.isEnabled = false;
@@ -175,10 +196,13 @@ var DeviceClone = RS.class.DeviceClone = function(template, args) {
 DeviceClone.prototype.setEnabled = function(onOff) {
 	var clone = this;
 
-	if(onOff == true && clone.start)
+	if(onOff == true && clone.start) 
 		clone.start();
 	else if (onOff == false && clone.stop)
 		clone.stop();
+
+	for(var id in clone.subdevices)
+		clone.subdevices[id].setEnabled(onOff);
 
 	clone.isEnabled = false || onOff;
 }
@@ -222,6 +246,23 @@ DeviceClone.prototype.toLoadable = function() {
 	return save;
 }
 
+DeviceClone.prototype.getInputOrOutput = function(subPath, inNotOut) {
+	var path = subPath.split('/');
+	console.log(subPath, this);
+	var ptr = this;
+	var socketName;
+	for(var i = 0; i < path.length; i++) {
+		if(i < path.length - 1)
+			ptr = ptr.subdevices[path[i]];
+		else
+			socketName = path[i];
+	}
+	console.log(ptr);
+
+	var sockets = inNotOut ? ptr.inputs.byName : ptr.outputs.byName;
+	return sockets[socketName];
+}
+
 DeviceClone.prototype.getConnections = function() {
 	return IOH.getConnections(this);
 }
@@ -232,6 +273,7 @@ DeviceClone.prototype.addOutput = function(outputName, valueType, audioNode) {
 }
 
 DeviceClone.prototype.getOutput = function(outputName) {
+	// return this.getInputOrOutput(outputName, false);
 	return this.outputs.byName[outputName];
 }
 
@@ -251,12 +293,15 @@ DeviceClone.prototype.addInput = function(name, valueType, audioNode) {
 }
 
 DeviceClone.prototype.getInput = function(name) {
+	// return this.getInputOrOutput(name, true);
 	return this.inputs.byName[name];
 }
 
+DeviceClone.prototype.addSubdevice = function(subname, deviceName) {
+	var sub = this.subdevices[subname] = DEVICES.new(deviceName);
+	return sub;
+}
 
-// Device.nextDeviceID = 0;
-// Device.nextCloneID = 0;
 
 
 
@@ -293,13 +338,51 @@ PINE.createNeedle("[defineRSDevice]", function(device) {
 		if(soul)
 			RS.connectGUI(soul, initMe);
 	});
-
-
 	
 });
 
 
+PINE.createNeedle("subdevice", function(subDev) {
+	subDev.addAttArg("device", ["subdeviceName", "deviceName", "name"], "string");
+	subDev.addAttArg("back", ["back"], "exists");
+	subDev.addAttArg("alreadyRan", ["subdeviceIncluded"], "exists");
 
+	subDev.addInitFn(function() {
+		var mod = this;
+
+		if(mod.attArg.alreadyRan !== true) {
+			var device = DEVICES.get(mod.attArg.device);
+			console.log(device, mod.attArg.device);
+
+			var addMe;
+			if(mod.attArg.back !== true) 
+				addMe = device.frontGUI.cloneNode(true);
+			else
+				addMe = device.backGUI.cloneNode(true);
+
+			mod.domNode.appendChild(addMe);
+			El.attr(mod.domNode, "subdeviceIncluded", "");
+		}
+	});
+});
+
+
+
+
+
+
+
+
+
+
+RS.connectGUI = function(soul, gui) {
+	RS.connectRanges(soul, gui);
+	// RS.connectSelects(soul, gui);
+	RS.connectIOSockets(soul, gui);
+	RS.connectSelectableLists(soul, gui);
+	// RS.connectButtons(soul, gui);	
+	// RS.connectRadioButtons(soul, gui);	
+}
 
 
 
@@ -315,7 +398,11 @@ RS.connectRanges = function(soul, gui) {
 
 		knob.FNS.onKnobChange(function(turnRatio) {
 			var inputName = El.attArg(knob, "deviceInput");
-			soul.getInput(inputName).reciever(turnRatio);
+			var input = soul.getInput(inputName);
+			if(input)
+				input.reciever(turnRatio);
+			else
+				PINE.err("input not found", inputName, soul);
 			// initMe.FNS.setRangeVal(newVal, [knob]);
 		});
 		// knob.addEventListener("change", function(event))
@@ -330,20 +417,46 @@ RS.connectRanges = function(soul, gui) {
 }
 
 
-RS.connectSelects = function(soul, gui) {
-	var selects = El.cssQuery(gui, "select");
+// RS.connectSelects = function(soul, gui) {
+// 	var selects = El.cssQuery(gui, "select");
 
-	for(var i = 0; i < selects.length; i++) {
-		// var args = RS.getNodeParam(selects[i]);
-		selects[i].addEventListener("change", function(event) {
-			var selector = event.target;
-			// soul.setParam(args.node, args.param, event.target.value);	
-			var inputName = El.attArg(selector, "deviceInput");
+// 	for(var i = 0; i < selects.length; i++) {
+// 		// var args = RS.getNodeParam(selects[i]);
+// 		selects[i].addEventListener("change", function(event) {
+// 			var selector = event.target;
+// 			// soul.setParam(args.node, args.param, event.target.value);	
+// 			var inputName = El.attArg(selector, "deviceInput");
 
-			console.log(selector, inputName);
-			if(inputName)
-				soul.getInput(inputName).reciever(selector.value);
-		});	
+// 			console.log(selector, inputName);
+// 			if(inputName)
+// 				soul.getInput(inputName).reciever(selector.value);
+// 		});	
+// 	}
+// }
+
+RS.connectSelectableLists = function(soul, gui) {
+	var selList = El.cssQuery(gui, "[selectableList]");
+
+	for(var i = 0; i < selList.length; i++) {
+		(function(selectable) {
+			selectable.addEventListener("selectionChange", function(event) {
+				console.log(event);
+				var selected = event.detail.currentlySelected[0];
+				var wave = El.attr(selected, "value");
+
+				var inputName = El.attArg(selectable, "deviceInput");
+				var input = soul.getInput(inputName);
+				if(input)
+					input.reciever(wave);
+				else
+					PINE.err("input not found", inputName, soul);
+
+				// console.log(selector, inputName);
+				// if(inputName)
+				// 	soul.getInput(inputName).reciever(selector.value);
+			});	
+		})(selList[i])
+		
 	}
 }
 

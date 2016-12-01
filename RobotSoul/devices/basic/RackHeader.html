@@ -1,0 +1,69 @@
+<script type="text/javascript">
+	DEVICES.registerTemplate("RackHeader", function(device) {
+		var input = audioCtx.createGain();
+		input.gain.value = 1;
+
+		var output = audioCtx.createGain();
+		output.gain.value = 1;
+
+		device.addOutput("midi", "midi");
+		device.addInput("rackMidi", "rackMidi", function(midiIn) {
+			device.sendOutputToRecievers("midi", midiIn);
+		});		
+
+		device.addOutput("in", "wave", input);
+		device.addInput("rackIn", "rackIn", input);
+
+		device.addInput("out", "wave", output);
+		device.addOutput("rackOut", "rackOut", output);
+
+
+		output.connect(RS.Out);
+	});
+</script>
+
+<rsDevice class="device_rackio" defineRSDevice="RackHeader" unitHeight="1" unitWidth="8">
+	<div class="device_front">
+		Rack Input/Output
+	</div>
+
+	<div class="device_back">
+		<rsOut name="midi">
+			Rack Midi
+			<socket></socket>
+			</rsOut>
+
+		<rsOut name="in">
+			Rack In
+			<socket></socket>
+			</rsOut>
+
+		<rsIn name="out">
+			Rack Out
+			<socket></socket>
+			</rsIn>
+	</div>
+
+</rsDevice>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

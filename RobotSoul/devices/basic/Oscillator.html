@@ -6,6 +6,7 @@
 
 		var type = "sine";
 		var typeIn = device.addInput("osc_type", "wave_type", function(newVal) {
+			console.log(newVal);
 			if(newVal) {
 				type = newVal;
 
@@ -38,17 +39,23 @@
 	});
 </script>
 
-<rsDevice class="device_oscillator quarter_size" defineRSDevice="Oscillator" unitHeight="1" unitWidth="2">
-	<div class="device_front">
-		<select deviceInput="osc_type">
-			<option value="sine" selected>Sine</option> 
-			<option value="triangle">Triangle</option>
-			<option value="square">Square</option>
-			<option value="sawtooth">Saw</option>
-		</select>
-	</div>
 
-	<div class="device_back">
+<defineTemplate templateName="analog_osc_selector" class="wave_types" selectablelist deselectAll="never">
+	<nBlock class="list_selected wave_sin" value="sine">
+	</nBlock><br><nBlock class="wave_triangle" value="triangle">
+	</nBlock><br><nBlock class="wave_square" value="square">
+	</nBlock><br><nBlock class="wave_saw" value="sawtooth"></nBlock>
+</defineTemplate>
+
+
+
+
+<rsDevice class="device_oscillator quarter_size" defineRSDevice="Oscillator" unitHeight="1" unitWidth="2">
+	<deviceFront>
+		<nBlock template="analog_osc_selector" deviceInput="osc_type"></nBlock>
+	</deviceFront>
+
+	<deviceBack>
 		<rsIn name="osc_frequency">
 			Freq
 			<socket></socket>
@@ -62,8 +69,8 @@
 		<rsOut name="wave_out">
 			Wave
 			<socket></socket>
-			</rsIn>
-	</div>
+			</rsOut>
+	</deviceBack>
 
 </rsDevice>
 
@@ -71,7 +78,54 @@
 
 
 
+<style>
 
+.wave_types {
+	line-height: 12px;
+}
+
+.wave_types nBlock{
+	width: 26px;
+	height: 10px;
+	/*padding-left: 16px;*/
+	background-position: right;
+	background-size: auto 8px;
+	cursor: pointer;
+	text-align: left
+}
+
+.wave_types nBlock::before {
+	display: inline-block;
+	position: relative;
+	content: '';
+	height: 8px;
+	width: 8px;
+	border-radius: 10px;
+	background-color: gray;
+	border: 2px solid white;
+	vertical-align: top;
+}
+
+.wave_types  nBlock.list_selected::before {
+	background-color: red;
+}
+
+	.wave_types .wave_sin {
+		background-image: url("public/images/icon_sin_wave.png");
+	}
+
+	.wave_types .wave_triangle {
+		background-image: url("public/images/icon_triangle_wave.png");
+	}
+
+	.wave_types .wave_square {
+		background-image: url("public/images/icon_square_wave.png");
+	}
+
+	.wave_types .wave_saw {
+		background-image: url("public/images/icon_saw_wave.png");
+	}
+</style>
 
 
 

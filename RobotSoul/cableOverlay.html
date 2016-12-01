@@ -44,7 +44,7 @@ PINE.createNeedle("[cableOverlay]", function(cables) {
 
 		var onResize = function() {
 			var bounds = initMe.PVARS.bounds = cableSpace.getBoundingClientRect();
-			console.log("bounds!", bounds)
+			// console.log("bounds!", bounds)
 			cableSpace.setAttributeNS(null, "width", bounds.width);
 			cableSpace.setAttributeNS(null, "height", bounds.height);
 		}
@@ -55,7 +55,7 @@ PINE.createNeedle("[cableOverlay]", function(cables) {
 		initMe.addEventListener("mousedown", function(event) {
 			var target = event.target;
 
-			console.log(target);
+			// console.log(target);
 
 			if(target.tagName == "SOCKET") {
 				onResize();

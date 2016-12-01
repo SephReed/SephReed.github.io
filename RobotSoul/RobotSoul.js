@@ -106,14 +106,6 @@ RS.redo = function() {
 
 
 
-RS.connectGUI = function(soul, gui) {
-	RS.connectRanges(soul, gui);
-	RS.connectSelects(soul, gui);
-	RS.connectIOSockets(soul, gui);
-	// RS.connectButtons(soul, gui);	
-	// RS.connectRadioButtons(soul, gui);	
-}
-
 
 
 

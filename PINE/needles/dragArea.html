@@ -10,11 +10,18 @@ PINE.createNeedle("[dragArea]", function(drags) {
 	drags.addAttArg("snap", ["dragAreaSnapToGrid", "dragAreaSnap", "dragSnap"], "exists", false);
 	drags.addAttArg("dispersion", ["dragAreaDispersion", "dispersion"], "string", "leftToRight");
 	drags.addAttArg("bound", ["dragAreaBound", "dragBound", "bound"], "boolean", true);
+	drags.addAttArg("initOff", ["dragAreaInitOff", "dragInitOff"], "exists", false);
 
-	drags.onLiveSelectorAddItem("draggables",
-		function(addedItem) {
-			addedItem.classList.add("is_draggable");
-			drags.addListenersToDraggable(this, addedItem);
+	drags.addInitFn({ watchSelector: "draggables" },
+		function(args) {
+			var instance = this;
+			// console.log("new draggables!");
+			var addedNodes = args.addedNodes;
+			for(var i in addedNodes) {
+				addedNodes[i].classList.add("is_draggable");
+				drags.addListenersToDraggable(this, addedNodes[i]);	
+				drags.moveItemToNextSpace(instance, addedNodes[i]);
+			}
 		}
 	);
 
@@ -22,30 +29,17 @@ PINE.createNeedle("[dragArea]", function(drags) {
 
 
 	drags.addInitFn(function() {
-		console.log("running init fn drag")
+		// console.log("running init fn drag")
 		var ni = this;
 		var initMe = ni.domNode;
 		ni.dragListeners = [];
 
-		console.log(this);
+		// console.log(this);
 
-		var draggables = ni.attArg.draggables;
-		for(var i = 0; i < draggables.length; i++) {
-			draggables[i].classList.add("is_draggable");
-			drags.addListenersToDraggable(ni, draggables[i]);
-		}
-
-		ni.FNS.setDragEnabled(true);
-		El.waitForDisplay(initMe).then(initMe.FNS.dragAreaDisperse);
-
-		initMe.addEventListener("nodesPineInitiated", function(event) {
-			var addedNodes = event.detail.nodes;
-			console.log("nodes initiated");
-			for(var i in addedNodes) {
-				addedNodes[i].classList.add("is_draggable");
-				drags.addListenersToDraggable(ni, addedNodes[i]);
-			}
-		});
+		
+		ni.FNS.setDragEnabled(ni.attArg.initOff !== true);
+		
+		El.waitForDisplay(initMe).then(initMe.FNS.dragAreaDisperse(ni));
 	});
 
 
@@ -70,39 +64,75 @@ PINE.createNeedle("[dragArea]", function(drags) {
 
 
 
-	drags.FNS.dragAreaDisperse = function() {
+	
+	drags.FNS.dragAreaDisperse = function(instance) {
 		var bounds = {};
-		var domNode = this.domNode;
+		var domNode = instance.domNode;
 		bounds.width = domNode.offsetWidth;
 
-		console.log(domNode, bounds);
-		if(this.attArg.dispersion == "leftToRight") {
+		// console.log(domNode, bounds);
+		if(instance.attArg.dispersion == "leftToRight") {
 
-			var left = 0;
-			var top = 0;
+			var draggables = instance.attArg.draggables;
+			var nextLeft = 0;
+			var nextTop = 0;
 			var lineHeight = 0;
-			var draggables = this.attArg.draggables;
 
 			for(var i = 0; i < draggables.length; i++) {
 				var moveMe = draggables[i];
 
-				var tooBigForLine = (moveMe.offsetWidth + left) > bounds.width;
-				if (left > 0 && tooBigForLine) {
-					left = 0;
-					top += lineHeight;
+				var tooBigForLine = (moveMe.offsetWidth + nextLeft) > bounds.width;
+				if (nextLeft > 0 && tooBigForLine) {
+					nextLeft = 0;
+					nextTop += lineHeight;
 				}
 
-				moveMe.style.left = left+"px";
-				moveMe.style.top = top+"px";
+				moveMe.style.left = nextLeft+"px";
+				moveMe.style.top = nextTop+"px";
 
-				left += moveMe.offsetWidth;
+				nextLeft += moveMe.offsetWidth;
 				
 				lineHeight = Math.max(lineHeight, moveMe.offsetHeight);
 			}
 		}
 	}
 
+	drags.moveItemToNextSpace = function(instance, moveMe) {
+		var left = 0;
+		var top = 0;
+		var lineHeight = 0;
 
+		moveMe.style.left = left+"px";
+		moveMe.style.top = top+"px";
+
+		var overlap = -1;
+		while(overlap !== undefined) {
+			if(overlap != -1) {
+				left += overlap.offsetWidth;
+				lineHeight = Math.max(lineHeight, overlap.offsetHeight + overlap.offsetTop - top);
+
+				if(instance.domNode.offsetWidth < moveMe.offsetWidth + left) {
+					top += lineHeight;
+					lineHeight = 0;
+					left = 0;
+				}
+
+				moveMe.style.left = left+"px";
+				moveMe.style.top = top+"px";
+			}
+
+			overlap = drags.getFirstOverlap(instance, moveMe);
+		}
+		
+	}
+
+	drags.getFirstOverlap = function(instance, target) {
+		var draggables = instance.attArg.draggables;
+		for(var i = 0; i < draggables.length; i++) {
+			if(draggables[i] != target && El.overlap(draggables[i],target))
+				return draggables[i];
+		}
+	}
 
 
 
@@ -150,6 +180,32 @@ PINE.createNeedle("[dragArea]", function(drags) {
 			}
 			initMe.addEventListener("mousemove", onMove);
 
+			var updateOverlaps = function() {
+				var draggables = ni.attArg.draggables;
+				for(var i = 0; i < draggables.length; i++) {
+					var other = draggables[i];
+
+					if(other != draggable 
+					  && currentlyOver.indexOf(other) == -1 
+					  && El.overlap(draggable, other)) {
+							//
+						currentlyOver.push(other);
+						other.classList.add("drag_overlapped");
+						// console.log("overlap!!")
+					}
+					// else console.log("no overlap!!", other)
+				}
+
+				for(var i = 0; i < currentlyOver.length; i++) {
+					var other = currentlyOver[i];
+					if(El.overlap(draggable, other) == false) {
+						currentlyOver.splice(i, 1);
+						i--;
+						other.classList.remove("drag_overlapped");
+					}
+				}
+			}
+
 
 			var updateDraggablePosition = function() {
 				var top = currentTop - bounds.top;
@@ -177,29 +233,7 @@ PINE.createNeedle("[dragArea]", function(drags) {
 
 
 				if(ni.attArg.overlap != "all") {
-					var draggables = ni.attArg.draggables;
-					for(var i = 0; i < draggables.length; i++) {
-						var other = draggables[i];
-
-						if(other != draggable 
-						  && currentlyOver.indexOf(other) == -1 
-						  && El.overlap(draggable, other)) {
-								//
-							currentlyOver.push(other);
-							other.classList.add("drag_overlapped");
-							// console.log("overlap!!")
-						}
-						// else console.log("no overlap!!", other)
-					}
-
-					for(var i = 0; i < currentlyOver.length; i++) {
-						var other = currentlyOver[i];
-						if(El.overlap(draggable, other) == false) {
-							currentlyOver.splice(i, 1);
-							i--;
-							other.classList.remove("drag_overlapped");
-						}
-					}
+					updateOverlaps();
 				}
 
 				if(currentlyOver.length == 0) {
@@ -229,6 +263,7 @@ PINE.createNeedle("[dragArea]", function(drags) {
 				initMe.classList.remove("currently_dragging");	
 				draggable.classList.remove("being_dragged");
 
+				updateOverlaps();
 				if(ni.attArg.overlap != "all" && currentlyOver.length != 0) {
 					if(ni.attArg.overlapReset == "lastGood") {
 						draggable.style.top = lastGoodTop+"px";

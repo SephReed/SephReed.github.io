@@ -158,8 +158,11 @@ PINE.createNeedle("include", function(include) {
 				if(url.indexOf(".html") != -1) {
 					domNode.innerHTML = response;
 
-					if(El.attr(initMe, "ENDPINE") === undefined)
-						U.evalElementScripts(initMe, url);
+					if(El.attr(domNode, "ENDPINE") === undefined) {
+						return U.evalElementScripts(domNode, url).syncThen(function(){
+							return PINE.updateAt(domNode);
+						});
+					}
 				}
 
 				else if(url.indexOf(".css") != -1) 
@@ -173,15 +176,15 @@ PINE.createNeedle("include", function(include) {
 			
 		} 
 		else {
-			PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
+			PINE.err("include src for "+domNode+" in not set.  Set to 'nosrc' if this is intentional");
 			return SyncPromise.resolved();
 		}
 	}
 
 	include.addInitFn({
 		isAsync : true,
-		fn: function(resolve) {
-			this.FNS.update().syncThen(resolve);
+		fn: function(args) {
+			this.FNS.update().syncThen(args.resolve);
 		}
 	});
 
@@ -464,7 +467,7 @@ U.evalElementScripts = function(initMe, url) {
 
 	var injects = [];
 
-	console.log("evaling elementScripts")
+	// console.log("evaling elementScripts")
 	// var fakeLoc = {};
 	// var search = url.match(/\?.*/g);
 	// fakeLoc.search = search ? search[0] : "";
@@ -490,7 +493,7 @@ U.evalElementScripts = function(initMe, url) {
 		promises.push(U.runScript(hack.scripts[sc], undefined, url));
 	}
 
-	console.log(promises);
+	// console.log(promises);
 
 	return SyncPromise.all(promises);
 }

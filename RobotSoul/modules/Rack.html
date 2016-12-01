@@ -9,71 +9,81 @@
 	console.log(rack);
 
 	var device_rack = El.byId("device_rack");
-	var showingFront = true;
-
-	var deviceMappings = {
-		1 : "MidiToFreq",
-		2 : "Oscillator",
-		3 : "Knob",
-		4 : "Gain",
-		5 : "LinearRange",
-		6 : "Tween"
-	}
-
-	var mustUpdateCables = true;
-
-	var myKeyListener = function(event) {
-		var deviceName = deviceMappings[event.key];
-
-		if(deviceName != undefined) {
-			mustUpdateCables = mustUpdateCables || showingFront;
-
-			var addMe = DEVICES.new(deviceName);
-			rack.addDevice(addMe);
-			addMe.setEnabled(true);
-		}
-		else if(event.key == "Tab") {
-			if(showingFront) {
-
-				device_rack.classList.remove("show_front");
-				device_rack.classList.add("show_back");
-				rack.GUI.FNS.cableUpdatePositions();
-				if(mustUpdateCables) {
-					// rack.GUI.FNS.cableUpdatePositions();
-					mustUpdateCables = false;
-				}
-			}
-			else {
-				device_rack.classList.add("show_front");
-				device_rack.classList.remove("show_back");	
-			}
-			showingFront = !showingFront;
-
-			event.preventDefault();
-			
-		}
-	}
+	
 
 	if(rack) {
 		device_rack.appendChild(rack.getGUI());
-		// // console.log(device_rack, track);
-
-		device_rack.addEventListener("mouseenter", function() {
-			document.body.addEventListener("keydown", myKeyListener);
-		});
-
-		device_rack.addEventListener("mouseleave", function() {
-			document.body.removeEventListener("keydown", myKeyListener);
-		});
 	}
 
 
+	function addDevice(deviceName) {
+		var addMe = DEVICES.new(deviceName);
+		rack.addDevice(addMe);
+		addMe.setEnabled(true);
+	}
+
+
+	function showConnectios(onOff) {
+		if(onOff) {
+			device_rack.classList.remove("show_front");
+			device_rack.classList.add("show_back");
+			rack.GUI.FNS.cableUpdatePositions();
+		}
+		else {
+			device_rack.classList.add("show_front");
+			device_rack.classList.remove("show_back");	
+		}
+	}
+
+	function enableGrabMode(onOff) {
+		rack.getGUI().FNS.setDragEnabled(onOff);
+	}
+
+	function hideWires(onOff) {
+		if(onOff)
+			device_rack.classList.add("hide_cables")
+		else
+			device_rack.classList.remove("hide_cables")
+	}
+
+	
 		
 </script>
 
 
-<div id="device_rack" class="show_front">
-	<h1>{{rack.name}}</h1>
+<div id="device_rack" class="show_front" hotkeyArea="devices">
+	<!-- <h1>{{rack.name}}</h1> -->
+	<div id="rack_topbar">
+		<showPlugs class="button"
+			hotkey="tab" 
+			hotkeyMode="latch"
+			hotkeyGroup="devices" 
+			switch="showConnectios(_switchState)">
+		
+		</showPlugs><addDevice class="button"
+			showMenu="device_browser">+
+			
+		</addDevice><grab class="button"
+			hotkey="meta" 
+			hotkeyMode="hold" 
+			hotkeyGroup="devices" 
+			switch="enableGrabMode(_switchState)">
+				
+		</grab><hideWires class="button" 
+			hotkey="shift d" 
+			hotkeyMode="latch" 
+			hotkeyGroup="devices" 
+			switch="hideWires(_switchState)">
+				
+		</hideWires><loadRack class="button">
+			
+		</loadRack><saveRack class="button"></saveRack>
+
+		{{rack.name}}
+
+		
+		
+	</div>
 	
 	<!-- <div id="device_front">
 	</div>
@@ -84,14 +94,72 @@
 
 <style>
 #device_rack {
+	position: absolute;
+	top:0px;
+	bottom: 0px;
 	width: 100%;
-	height: 100%;
-	background: url("public/images/grid.png");
-	background-size: 12.5% 50px;
-	background-repeat: repeat;
 	line-height: 0px;
-	cursor: crosshair;
 }
+
+	
+
+
+	#rack_topbar {
+		border-bottom-style: solid;
+		box-shadow: 1px 1px 10px #3333;
+	}
+		#rack_topbar .button {
+			display: inline-block;
+			cursor: pointer;
+			height: 25px;
+			width: 25px;
+			border-style: solid;
+			margin: 4px 0px 4px 4px;
+			border-radius: 3px;
+			background-color: #C8C6D1;
+			color: #111;
+			vertical-align: middle;
+		}
+			#rack_topbar .button:active {
+				background-color: #fff;
+			}
+
+				#rack_topbar .button.switch_on {
+					background-color: #AAF;
+				}
+
+
+				#rack_topbar grab {
+					background-image: url("public/images/icon_grab.png");
+					background-size: 70%;
+				}
+
+				#rack_topbar hideWires {
+					background-image: url("public/images/icon_hide_cables.png");
+					background-size: 90%;
+				}
+
+				#rack_topbar  addDevice.button {
+					font-size: 20px;
+					padding: 0px 4px;
+				}
+
+				#rack_topbar  showplugs.button {
+					background-image: url("public/images/icon_device_connections.png");
+					/*background-size: 90%;*/
+				}
+
+				#rack_topbar  loadRack.button {
+					background-image: url("public/images/icon_load_file.png");
+					background-size: 95%;
+				}
+
+				#rack_topbar  saveRack.button {
+					background-image: url("public/images/icon_save_file.png");
+					background-size: 75%;
+				}
+
+
 	#device_rack > * > *{
 		line-height: normal;
 	}
@@ -106,6 +174,10 @@
 		width: 100%;
 	}
 
+	deviceFront, deviceBack {
+		display: inline-block;
+	}
+
 		.device_back {
 			/*background: green;*/
 		}
@@ -113,13 +185,13 @@
 			.device_back socket {
 			}
 
-		.show_front .device_back{
+		.show_front .device_back, .show_front deviceBack{
 			display: none;
 			/*visibility: hidden;*/
 			/*pointer-events: none;*/
 		}
 
-		.show_back .device_front{
+		.show_back .device_front, .show_back deviceFront{
 			display: none;
 			/*visibility: hidden;*/
 			/*pointer-events: none;*/
@@ -127,103 +199,123 @@
 
 	devicerack {
 		display: block;
-		height: 100%;
+		position: absolute;
+		top: 35px;
+		width: 100%;
+		bottom: 0px;
+		/*padding-top: 10px;*/
+		overflow-y: scroll;
+		background-image: url("public/images/grid.png");
+		background-position: 0px 0px;
+		background-size: 12.5% auto;
+		background-repeat: repeat;
 	}
 
-	.cable_space {
-		z-index: 20;
-	}
-
-		.show_front .cable_space {
-			display: none;
+		.cable_space {
+			z-index: 20;
 		}
 
-
-	rsDevice {
-		width: 400px;
-		height: 42px;
-		display: inline-block;
-		text-align: center;
-		/*margin-top: -4.5px;*/
-		border-style: solid;
-		border-color: #222;
-		background: linear-gradient(#555, #333 6px);
-		border-radius: 3px;
-		overflow: hidden;
-		font-size: 10px;
-	}
-		
-		rsDevice.half_size {
-			width: 200px;
-		}
-
-			rsDevice.half_size rsrange{
-				width: 25%;
+			.show_front .cable_space {
+				display: none;
 			}
 
 
-		rsDevice.quarter_size {
-			width: 100px;
-		}
-			rsDevice.quarter_size rsrange{
-				width: 50%;
-			}
-
-
-		rsIn, rsOut {
+		rsDevice {
+			width: 400px;
+			height: 42px;
 			display: inline-block;
-			width: 20px;
-			margin: 2px;
-			height: 30px;
 			text-align: center;
-			line-height: 10px;
+			/*margin-top: -4.5px;*/
+			border-style: solid;
+			border-color: #222;
+			background: linear-gradient(#555, #333 6px);
+			border-radius: 3px;
+			overflow: hidden;
+			font-size: 10px;
 		}
 
-			rsIn socket, rsOut socket {
+
+			.hide_cables .wire {
+				opacity: 0.25;
+			}
+
+				.hide_cables .wire:hover {
+					opacity: 0.9;
+				}
+			
+			rsDevice.half_size {
+				width: 200px;
+			}
+
+				rsDevice.half_size rsrange{
+					width: 25%;
+				}
+
+
+			rsDevice.quarter_size {
+				width: 100px;
+			}
+				rsDevice.quarter_size rsrange{
+					width: 50%;
+				}
+
+
+			rsIn, rsOut {
 				display: inline-block;
-				height: 18px;
-				width: 18px;
-				margin: 2px;
-				border-radius: 20px;
+				/*width: 20px;*/
+				/*margin-right: 2px;*/
+				/*height: 30px;*/
+				text-align: center;
+				line-height: 10px;
 			}
 
-			socket {
-				background: #000;
-				border: 3px solid;
-			}
+				rsIn socket, rsOut socket {
+					display: inline-block;
+					height: 18px;
+					width: 18px;
+					/*margin: 2px;*/
+					margin-right: 2px;
+					border-radius: 20px;
+					vertical-align: middle;
+				}
 
-			rsIn socket {
-				border-color: #E9E986;
-				box-shadow: inset 4px 4px 3px #333;
-				border-style: double;
-			}
+				socket {
+					background: #000;
+					border: 3px solid;
+				}
 
-			rsOut socket {
-				/*border-style: outset;*/
-				border-color: #E44A4A;
-				/*position: relative;
-				top: -1px;
-				left: -1px;*/
-				box-shadow: 2px 1px 0px #777, 4px 2px 1px #1115, inset 4px 4px 3px #333;
-			}
+				rsIn socket {
+					border-color: #E9E986;
+					box-shadow: inset 4px 4px 3px #333;
+					border-style: double;
+				}
+
+				rsOut socket {
+					/*border-style: outset;*/
+					border-color: #E44A4A;
+					/*position: relative;
+					top: -1px;
+					left: -1px;*/
+					box-shadow: 2px 1px 0px #777, 4px 2px 1px #1115, inset 4px 4px 3px #333;
+				}
 
 
-			/*
-			.valueType_freq > socket {
-				border-color: #3cc83c;
-			}*/
+				/*
+				.valueType_freq > socket {
+					border-color: #3cc83c;
+				}*/
 
-			.valueType_interval > socket, .valueType_gain > socket {
-				border-color: #c8773c;
-			}
+				.valueType_interval > socket, .valueType_gain > socket {
+					border-color: #c8773c;
+				}
 
-			.valueType_wave > socket{
-				border-color: #000;
-			}
+				.valueType_wave > socket{
+					border-color: #000;
+				}
 
-			.valueType_frequency > socket {
-				border-color: #98c83c;
-			}
+				.valueType_frequency > socket {
+					border-color: #98c83c;
+				}
 </style>
 
 

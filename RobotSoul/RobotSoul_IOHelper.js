@@ -27,6 +27,10 @@ IOH.registerValueType("midi", 		false, 	"midi");
 IOH.registerValueType("wave_type", 	false, 	"string");
 IOH.registerValueType("knob", 		false, 	"number");
 
+IOH.registerValueType("rackMidi", 	false, 	"midi");
+IOH.registerValueType("rackIn", 	false, 	"number");
+IOH.registerValueType("rackOut", 	false, 	"number");
+
 
 
 
@@ -152,24 +156,34 @@ IOH.getConnections = function(device) {
 
 
 
-IOH.ProtoFNS.addIO = function(modMe, isOutput, socketName, valueType, fnOrNode) {
-	valueType = IOH.getValueType(valueType || socketName);
+IOH.ProtoFNS.addIO = function(modMe, isOutput, socketName, arg1, fnOrNode) {
+	var newSocket;
 
-	var createSocket = isOutput ? IOH.createOutput : IOH.createInput;
-	var newSocket = createSocket(socketName, valueType, fnOrNode);
-	newSocket.device = modMe;
+	// console.log(arg1);
+	if(arg1 instanceof IOH.Socket) {
+		newSocket = arg1;
+		valueType = newSocket.valueType;
+	}
+	else {
+		valueType = IOH.getValueType(arg1 || socketName);
+
+		var createSocket = isOutput ? IOH.createOutput : IOH.createInput;
+		newSocket = createSocket(socketName, valueType, fnOrNode);
+		newSocket.device = modMe;
+	}
 
 	var filings = isOutput ? modMe.outputs : modMe.inputs;
 
 	// console.log(socketName, modMe, isOutput ? "output": "input");
 	filings.all.push(newSocket);
-	filings.byName[newSocket.name] = newSocket;
+	filings.byName[socketName] = newSocket;
 
 	var valType = valueType.name;
 	if(filings.byType[valType] == undefined)
 		filings.byType[valType] = [];
 
 	filings.byType[valType].push(newSocket);
+
 
 	return newSocket;
 }
@@ -209,7 +223,7 @@ IOH.ProtoFNS.outputTo = function(modMe, device, outputOrNameOf, inputOrNameOf) {
 				if(typeof inputOrNameOf == "string") {
 					input = device.getInput(inputOrNameOf);
 					if(input == undefined)
-						PINE.err("input: "+inputOrNameOf+" for device not found", device)
+						PINE.err("input '"+inputOrNameOf+"' does not exist in", device.inputs.byName, "\n for device \n", device);
 				}
 				else input = inputOrNameOf;
 			}
@@ -227,7 +241,8 @@ IOH.ProtoFNS.outputTo = function(modMe, device, outputOrNameOf, inputOrNameOf) {
 				return new IOH.Connection(output, input);
 			}
 		}
-		else PINE.err("output does not exist", outputOrNameOf, device);
+		else PINE.err("output '"+outputOrNameOf+"' does not exist in", modMe.outputs.byName, "\n for device \n", modMe);
+		
 	}
 }
 
@@ -708,6 +723,7 @@ RS.connectSockets = function(isInput, soul, gui) {
 
 		if(IOName) {
 			var soulIO = isInput ? soul.getInput(IOName) : soul.getOutput(IOName);
+			// console.log(soulIO, IOName);
 			if(soulIO != undefined) {
 				// console.log("valueType_"+soulIO.valueType.name);
 				guiIO.classList.add("valueType_"+soulIO.valueType.name);

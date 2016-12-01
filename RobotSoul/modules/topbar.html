@@ -1,0 +1,215 @@
+<script type="text/javascript">
+	
+	function newFile() {
+		El.byID("save_first_modal").FNS.showModal();
+		El.byID("save_first_rename").value = RS.projectName;
+	}
+
+	function save_first_new(doSave) {
+		
+		if(doSave === true) {
+			RS.projectName = El.byID("save_first_rename").value;
+			RS.save();
+		}
+
+		if(doSave !== undefined) {
+			RS.new();
+			El.byId("all_tracks").FNS.spawnerUpdate();	
+			El.byId("details").FNS.dropAllViews(true);
+			viewTrackDetails(0);
+		}
+
+		El.byID("save_first_modal").FNS.hideModal();
+	}
+
+	function loadFile(file) {
+		var reader = new FileReader();
+		reader.onload = function(event) {
+			var contents = event.target.result;
+			RS.load(contents);
+
+			El.byId("all_tracks").FNS.spawnerUpdate();	
+			El.byId("details").FNS.dropAllViews(true);
+			viewTrackDetails(0);
+		};
+		reader.readAsText(file);
+	}
+
+
+	function saveFileAs() {
+		El.byID("save_as_rename").value = RS.projectName;
+		El.byID("save_as_modal").FNS.showModal();
+	}
+
+	function rename_and_save() {
+		RS.projectName = El.byID("save_as_rename").value;
+		RS.save();
+		El.byID("save_as_modal").FNS.hideModal();
+	}
+
+
+</script>
+
+<div id="topbar">
+	<span id="fullscreen_btn" onclick="RS.switchFullscreen()"></span>
+	<div menu>
+		<div showMenu="file_menu" 
+			menuPos="below"
+			secondClickExit>
+			File
+
+		</div><div 
+			showMenu="edit_menu" 
+			menuPos="below"
+			secondClickExit>
+			Edit
+
+		</div><div 
+			showMenu="options_menu" 
+			menuPos="below"
+			secondClickExit>
+			Options
+
+		</div><div 
+			showMenu="about_menu" 
+			menuPos="below"
+			secondClickExit>
+			About
+		</div> 
+	</div>
+	
+	<div id="rack_tabs">
+		<span class="active_rack">DeviceRack 1</span>
+		<span>DeviceRack 2</span>
+	</div>
+
+</div>
+
+<div id="file_menu" dropdownMenu>
+	<div onclick="newFile()"">New</div>
+	<div hotkey="meta s" onclick="RS.save()">Save</div>
+	<div onclick="saveFileAs()">Save As</div>
+	<div fileChooser onFileChoose="loadFile">Load</div>
+</div>
+
+<div id="edit_menu" dropdownMenu>
+	<div>Copy</div>
+	<div>Paste</div>
+	<div>Delete</div>
+</div>
+
+<div id="options_menu" dropdownMenu>
+	<div>Set Layout</div>
+	<div>Set Theme</div>
+	<div>Advanced</div>
+</div>
+
+<div id="about_menu" dropdownMenu>
+	<div>About RobotSoul</div>
+	<div>Hotkey Cheat Sheet</div>
+	<div showMenu>
+		How to >
+		<div dropdownMenu>
+			<div>Connect Devices</div>
+			<div>Live Perform</div>		
+			<div>Create Your Own Devices</div>		
+			<div>Create Your Own Theming</div>		
+		</div>
+	</div>
+	<div>About Creators</div>
+</div>
+
+
+
+
+
+<style type="text/css">
+	
+#topbar {
+	position: relative;
+	height: 30px;
+	line-height: 28px;
+	width: 100%;
+	background-color: #555;
+	border-bottom-style: solid;
+}
+
+
+
+
+	#fullscreen_btn {
+		display: inline-block;
+		cursor: zoom-in;
+		vertical-align: middle;
+		height: 20px;
+		width: 20px;
+		margin: 2px 6px;
+		background-color: #7ba77b;
+		background-size: 66% auto;
+		background-image: url("public/images/fullscreen_icon.png");
+		border-style: solid;
+		border-radius: 20px;
+	}
+
+		/*#fullscreen_btn:hover {
+			
+		}*/
+
+		body:fullscreen #fullscreen_btn {
+			cursor: zoom-out;
+			background-color: #bc3e3e;
+			background-image: url("public/images/close_fullscreen_icon.png");
+		}
+
+	#topbar > [menu], #topbar > [menu] > [showmenu]{
+		display: inline-block;
+	}
+
+	#topbar > [menu] > [showmenu]{
+		padding: 0px 9px;
+	}
+
+		#load {
+			position: relative;
+		}
+
+			#load input {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+				top: 0px;
+				left: 0px;
+				opacity: 0;
+			}
+
+
+
+
+
+	#rack_tabs {
+		display: inline-block;
+		position: absolute;
+		right: 0px;
+		width: 400px;
+		padding: 0px 3px;
+		overflow-x: scroll;
+	}
+
+		#rack_tabs > span {
+			border-style: solid solid none solid;
+			position: relative;
+			top: 7px;
+			padding: 1px 2px;
+		}
+
+			#rack_tabs .active_rack {
+				top: 3px;
+				background: #4A465C;
+			}
+
+</style>
+
+
+
+
+

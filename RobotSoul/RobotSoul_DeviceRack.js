@@ -34,11 +34,12 @@ var DeviceRack = DEVICES.registerTemplate("DeviceRack" , function(rack) {
 			El.attr(rack.GUI, "dragAreaOverlap", "none");
 			El.attr(rack.GUI, "dragAreaOnResize", "redisperse");
 			El.attr(rack.GUI, "disperseOn", "show");
+			El.attr(rack.GUI, "dragInitOff", "");
 
 			El.attr(rack.GUI, "boxSelectArea", ">rsdevice");
 
-			El.attr(rack.GUI, "selectableList", "");
-			El.attr(rack.GUI, "selectableItems", ">rsdevice");
+			// El.attr(rack.GUI, "selectableList", "");
+			// El.attr(rack.GUI, "selectableItems", ">rsdevice");
 
 			for(var i in rack.devices){
 				// console.log("getting gui of device", rack.devices[i]);
@@ -117,8 +118,11 @@ var DeviceRack = DEVICES.registerTemplate("DeviceRack" , function(rack) {
 
 
 			if(rack.GUI) {
-				rack.GUI.appendChild(device.getGUI());
-				rack.addDeviceConnectionsToGUI(device);
+				var addMe = device.getGUI();
+				rack.GUI.appendChild(addMe);
+				El.waitForDisplay(addMe)
+				.then(function(){ return PINE.updateAt(rack.GUI) })
+				.then(function(){ rack.addDeviceConnectionsToGUI(device) });
 			}
 			
 		}
@@ -148,9 +152,9 @@ var DeviceRack = DEVICES.registerTemplate("DeviceRack" , function(rack) {
 
 
 
-	rack.addOutput("midi");
+	rack.addOutput("rackMidi");
 	rack.addInput("midi", "midi", function(midiIn) {
-		rack.sendOutputToRecievers("midi", midiIn.midi);
+		rack.sendOutputToRecievers("rackMidi", midiIn.midi);
 	});
 
 
