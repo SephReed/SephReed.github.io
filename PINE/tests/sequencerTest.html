@@ -3,14 +3,46 @@
 <head>
 	<title></title>
 	<script src="../PINE_Core_4.8.js"></script>
+	<script src="../tools/ELATE.js"></script>
+	<script src="../tools/ELATE_basics.js"></script>
 	<needle src="../needles/sequencer.html"></needle>
+
+
+	<script type="text/javascript">
+
+		var unce, sequins, group1, group2;
+		PINE.ready(function(argument) {
+			sequins = [];
+			for(var i = 0; i < 10; i++) {
+				var time = i;
+				sequins.push(new Sequencable(time/2));
+			}
+
+			group1 = new SequencableGroup(0, sequins);
+
+			sequins = [];
+			for(var i = 0; i < 10; i++) {
+				var time = i;
+				sequins.push(new Sequencable(time/2));
+			}
+
+			group2 = new SequencableGroup(.25, sequins);
+			// group2.setPosition(.25);
+
+
+
+			unce = new Sequencer([group1, group2]);	
+			unce.setLoopEnd(5);
+		})
+		
+	</script>
 
 </head>
 <body>
 
 
 
-<div sequencer>
+<div createAndShow="sequencer">
 
 </div>
 
