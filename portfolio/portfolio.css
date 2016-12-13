@@ -15,6 +15,9 @@
 
 
 
+fade {
+	background-image: radial-gradient(rgba(28, 63, 69, 0.44), rgba(15, 1, 6, 0.6));
+}
 
 
 html {
@@ -538,6 +541,10 @@ h1 + span, .undertitle {
 			border-bottom-right-radius: 0px*/
 
 		}
+
+			#popin_overlay span {
+				cursor: pointer
+			}
 
 
 		

@@ -39,7 +39,7 @@
 	<script src="portfolio.js"></script>
 	<script src="portfolio_needles.js"></script>
 	<needle src="../PINE/needles/bgimg.html"></needle>
-	<needle src="../PINE/needles/overlay.html"></needle>
+	<needle src="../PINE/needles/modal.html"></needle>
 
 
 	
@@ -134,14 +134,14 @@
 
 
 	<fade id="theFade" color="black" opacity="0.5"></fade>
-	<overlay id="myCardOverlay" fade="#theFade">
+	<modal id="myCardOverlay" fade="theFade">
 		<bgimg opacity="0.5" bgimgSize="auto 85%" bgimgSrc="public/images/ThumbzSymbol_black.png"></bgimg>
 		<bgimg opacity="0.1" bgimgSize="150% auto" bgimgSrc="public/images/ThumbzSymbol_black.png"></bgimg>
 		<bgimg opacity="0.2" bgimgSize="contain" bgimgSrc="public/images/ThumbzSymbol_black.png"></bgimg>
 		
 		<h1><pre>SEPH  REED</pre></h1>
 		<span selectOnClick>ShadyWillowCreek<span>@</span>gmail.com</span>
-	</overlay>
+	</modal>
 
 
 
@@ -190,7 +190,7 @@
 				<bgimg bgimgPos="bottom left" bgimgSize="250px auto" bgimgSrc="../public/images/Pine_hill_2.png"></bgimg>
 			</background>
 
-			<include src="portfolio_contact.html"></include>
+			<view src="portfolio_contact.html"></view>
 		</section>
 
 
@@ -202,29 +202,20 @@
 
 			<div class="show_item_group">
 				<changeSrc id="coding_btn" 
-					target="portfolio_view" 
-					scrollLink
-					scrollLinkDelay="20" 
-					src="portfolio_coding.html">
+					changeSrc="portfolio_coding.html">
 					<div>Coding</div></changeSrc>
 
 				<changeSrc id="digital_art_btn" 
-					target="portfolio_view"
-					scrollLink
-					scrollLinkDelay="20" 
-					src="portfolio_digital_art.html">
+					changeSrc="portfolio_digital_art.html">
 					<div>Digital Artist</div></changeSrc>
 
 				<changeSrc id="artisan_btn" 
-					scrollLink
-					scrollLinkDelay="20" 
-					target="portfolio_view" 
-					src="portfolio_artisan.html">
+					changeSrc="portfolio_artisan.html">
 					<div>Artisan</div></changeSrc>
 			</div>
 		</section>
 
-		<view id="portfolio_view" src="nosrc"></view>
+		<view id="portfolio_view" defaultChangeSrcTarget src="nosrc"></view>
 
 	</content>
 
@@ -250,17 +241,14 @@
 					<span>Back to Top</span>
 				</a>
 
-				<a 	href="#skillsets"
+				<a href="#skillsets"
 					scrollLink
 					bgImage="url('public/images/skillsets_icon.png')">
 					<span>Other Skillsets</span>
 				</a>
 
 				<span style="background-image: url('public/images/email_icon.png')"
-					trigger="click"
-					target="myCardOverlay"
-					fn="show"
-					args="">
+					onclick="El.byID('myCardOverlay').FNS.showModal()">
 					<span>Email</span>
 				</span>
 				

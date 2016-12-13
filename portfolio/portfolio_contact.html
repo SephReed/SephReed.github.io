@@ -6,6 +6,10 @@
 	right: 0px;
 }
 
+#contact_stuff span {
+	cursor: pointer;
+}
+
 
 #contact_stuff a, #contact_stuff span {
 	display: inline-block;
@@ -31,11 +35,7 @@
 
 <div id="contact_stuff">
 	<span style="background-image: url('public/images/email_icon.png')"
-		trigger="click"
-		target="myCardOverlay"
-		fn="show"
-		args=""
-		></span>
+		onclick="El.byID('myCardOverlay').FNS.showModal()"></span>
 
 	<a href="https://twitter.com/SephReed"
 		style="background-image: url('public/images/twitter_icon.png')"

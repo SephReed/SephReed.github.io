@@ -4,6 +4,42 @@
 		"selected_items":
 		[
 			[
+				"lig",
+				"lightSocket"
+			],
+			[
+				"two",
+				"twoSix8"
+			],
+			[
+				"led",
+				"ledBundle"
+			],
+			[
+				"con",
+				"contingency"
+			],
+			[
+				"spe",
+				"speakerWire"
+			],
+			[
+				"wire",
+				"wireBundle"
+			],
+			[
+				"tot",
+				"totalsOut"
+			],
+			[
+				"to",
+				"totals"
+			],
+			[
+				"inner",
+				"innerText"
+			],
+			[
 				"co",
 				"console"
 			],
@@ -20,24 +56,12 @@
 				"itemsOut"
 			],
 			[
-				"tot",
-				"totals"
-			],
-			[
-				"to",
-				"totalsOut"
-			],
-			[
 				"totals",
 				"totalsOut"
 			],
 			[
 				"scr",
 				"screwbox"
-			],
-			[
-				"two",
-				"twoFour8"
 			],
 			[
 				"tw",
@@ -126,10 +150,6 @@
 			[
 				"watc",
 				"watchSelector"
-			],
-			[
-				"con",
-				"concat"
 			],
 			[
 				"se",
@@ -494,36 +514,25 @@
 			[
 				"pass",
 				"passedOps"
-			],
-			[
-				"__",
-				"__pine__"
-			],
-			[
-				"mat",
-				"matches"
-			],
-			[
-				"matc",
-				"matchCase"
-			],
-			[
-				"T",
-				"TMP_PINE"
-			],
-			[
-				"func",
-				"function"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "/Users/seph/Desktop/effigy.html",
+			"file": "effigy.js",
 			"settings":
 			{
-				"buffer_size": 7825,
+				"buffer_size": 5570,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "effigy.html",
+			"settings":
+			{
+				"buffer_size": 11439,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -569,10 +578,11 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/seph/Code/Web/SephReed.github.io/Playwood Palace"
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace"
 	],
 	"file_history":
 	[
+		"/Users/seph/Desktop/effigy.html",
 		"/Users/seph/Desktop/effigy.txt",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/dragArea.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/boxSelectArea.html",
@@ -699,12 +709,11 @@
 		"/Users/seph/Desktop/radio.html",
 		"/Users/seph/Desktop/chilloutzone.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/displayChildren.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/modules/account/mini.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/all_accounts.html"
+		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/modules/account/mini.html"
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -724,6 +733,9 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"ball pit",
+			"big steps",
+			"calming sounds",
 			"instance",
 			"items",
 			".then",
@@ -848,10 +860,7 @@
 			"AES_ECB",
 			"\\n",
 			"\"",
-			"\\n",
-			"cbcXor",
-			"\\n",
-			"xtime"
+			"\\n"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -997,32 +1006,62 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/Users/seph/Desktop/effigy.html",
+					"file": "effigy.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7825,
+						"buffer_size": 5570,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7640,
-								7640
+								1304,
+								1304
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax"
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3892.0,
+						"translation.y": 465.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "effigy.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11439,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7575,
+								7575
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

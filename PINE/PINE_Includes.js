@@ -262,7 +262,7 @@ var p_view = PINE.createNeedle("view", function(view) {
 
 	view.addAttArg("url", "src", "string");
 
-	view.FNS.update = function() {
+	view.FNS.updateView = function() {
 		var job = this;
 		var domNode = this.domNode;
 		var url = job.attArg.url;
@@ -291,55 +291,65 @@ var p_view = PINE.createNeedle("view", function(view) {
 				domNode.PVARS = {};
 			}
 
-			if(url == "nosrc"){
-				job.currentUrl = url;
-				return SyncPromise.resolved();
-			}
-
-
-			var view = job.views[url];
-				//
-			if(view !== undefined) {
-				var moveMe;
-				while (moveMe = view.childNodes.pop())  {
-					domNode.appendChild(moveMe);
-				}
-
-				domNode.PVARS = view.PVARS;
-				view.PVARS = {};
-			}
-			else {
-					//
-				return INC.get(url).syncThen(function(response) {
-					view = job.views[url] = new INC.View(url);
-						//
-					if(url.indexOf(".html") != -1) {
-						domNode.innerHTML = response;
-						return U.evalElementScripts(domNode, url).syncThen(function(){
-							return PINE.updateAt(domNode);
-						});
-					}
-					else if(url.indexOf(".css") != -1) {
-						domNode.innerHTML = "<style>"+response+"</style>"
-					}
-
-					else PINE.err("file is neither .html or .css");
-
-					return PINE.updateAt(domNode);
-				});
-			}
-
 			job.currentUrl = url;
+
+			var dispatch = function() {
+				domNode.dispatchEvent(new CustomEvent("viewChange", {
+					detail : {
+						url : url
+					},
+					bubbles : true,
+					cancelable : true
+				}));
+			}
+
+			if(url != "nosrc"){
+				var view = job.views[url];
+					//
+				if(view !== undefined) {
+					var moveMe;
+					while (moveMe = view.childNodes.pop())  {
+						domNode.appendChild(moveMe);
+					}
+
+					domNode.PVARS = view.PVARS;
+					view.PVARS = {};
+
+					dispatch();
+				}
+				else {
+						//
+					return INC.get(url).syncThen(function(response) {
+						view = job.views[url] = new INC.View(url);
+							//
+						if(url.indexOf(".html") != -1) {
+							domNode.innerHTML = response;
+							return U.evalElementScripts(domNode, url).syncThen(function(){
+								dispatch();
+								return PINE.updateAt(domNode);
+							});
+						}
+						else if(url.indexOf(".css") != -1) {
+							domNode.innerHTML = "<style>"+response+"</style>"
+						}
+
+						else PINE.err("file is neither .html or .css");
+
+						dispatch();
+						return PINE.updateAt(domNode);
+					});
+				}
+			}
 		
-		} else {
-			PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
-			return SyncPromise.resolved();
-		}
+		} 
+		else PINE.err("include src for "+initMe+" in not set.  Set to 'nosrc' if this is intentional");
+
+		return SyncPromise.resolved();
 	}
 
 	view.FNS.changeSrc = function(src) {
 		this.domNode.setAttribute("src", src);
-		return this.FNS.update();
+		return this.FNS.updateView();
 	}
 
 	view.FNS.dropView = function(url) {
@@ -352,7 +362,7 @@ var p_view = PINE.createNeedle("view", function(view) {
 
 		if(includeCurrent) {
 			domNode.setAttribute("src", "nosrc");
-			this.FNS.update(domNode)
+			this.FNS.updateView()
 		}
 
 		this.views = {};
@@ -376,7 +386,7 @@ var p_view = PINE.createNeedle("view", function(view) {
 			var job = this;
 			job.currentUrl = "unset";
 			job.views = {};
-			job.FNS.update(job.domNode).syncThen(args.complete);
+			job.FNS.updateView().syncThen(args.complete);
 		}
 	});
 
@@ -393,16 +403,16 @@ var p_view = PINE.createNeedle("view", function(view) {
 
 PINE.createNeedle("[changeSrc]", function(change) {
 	change.addAttArg("src", "changeSrc", "string");
-	change.addAttArg("target", ["changeSrcTarget", "target"], "id", INC.defaultChangeSrcTarget);
+	change.addAttArg("target", ["changeSrcTarget", "target"], "id");
 
 	change.addInitFn( function() {
 		var job = this;
 		var initMe = job.domNode;
 
 		initMe.addEventListener("click", function(event) {
-			var target = job.target;
+			var target = job.attArg.target || INC.defaultChangeSrcTarget;
 			if(target && target.FNS && target.FNS.changeSrc)
-				target.FNS.changeSrc(job.src);
+				target.FNS.changeSrc(job.attArg.src);
 		});
 	});
 });

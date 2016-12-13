@@ -12,33 +12,36 @@ PINE.createNeedle("modal", function(modal) {
 
 
 	modal.FNS.hideModal = function() {
-		var instance = this;
-		if(instance.currentlyShowing == false)
+		var job = this;
+		if(job.currentlyShowing == false)
 			return;
 
-		instance.currentlyShowing = false;
+		job.currentlyShowing = false;
 
-		instance.domNode.classList.remove("shown_overlay");
+		job.domNode.classList.remove("shown_overlay");
 
-		if(instance.fade !== undefined) 
-			instance.fade.classList.remove("shown_overlay");
+		if(job.attArg.fade !== undefined) 
+			job.attArg.fade.classList.remove("shown_overlay");
 	}
 
 	modal.FNS.showModal = function() {
-		var initMe = this.domNode;
-		var fade = this.fade;
+		var job = this;
+		var initMe = job.domNode;
+		var fade = job.attArg.fade;
 
-		if(this.currentlyShowing == true)
+		console.log("fade", fade);
+
+		if(job.currentlyShowing == true)
 			return;
 
-		this.currentlyShowing = true;
+		job.currentlyShowing = true;
 			//
 		initMe.classList.add("shown_overlay");
 
 		if(fade !== undefined) 
 			fade.classList.add("shown_overlay");
 
-		if(this.exitOut) {
+		if(job.attArg.exitOut) {
 			var mouseupFunc = function(event) {
 				if(initMe == event.target || initMe.contains(event.target)) return;	
 				initMe.FNS.hideModal();
