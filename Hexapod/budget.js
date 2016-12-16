@@ -35,7 +35,8 @@ components.build = {
  	hexMirror: 5,
  	tintRoll: 2,
  	rAndD: 1,
- 	labor: 4
+ 	labor: 4,
+ 	epoxysheet: 2
 }
 
 
@@ -128,7 +129,7 @@ var prices = {
 	glue: 12.00,
 	tintRoll: 120.00,
 	rAndD: 800.00,
-	labor: 400.00,
+	labor: 890.00,
 
 }
 
@@ -145,9 +146,11 @@ var bundeled = {
 
 var translations = {
 	alSheet: "0.040 Aluminum 4x10 Sheets",
+	bid: "Bid",
+	epoxysheet: "Epoxy and Resin",
 	glue: "Glue",
 	insurance: "Insurance",
-	labor: "Artist Labor",
+	labor: "Artist Fee/Labor",
 	plexy1_8: "1/8\" 2x4 Plexi Glass",
 	pvc: "30mm 4x8 PVC",
 	rAndD: "Research and Development (projectors, smoke machines, bubbles, lasers, etc.)",
@@ -163,7 +166,8 @@ var translations = {
 var units = {
 	truckRental: " day",
 	generator: " week",
-	total: " "
+	total: " ",
+	bid: " "
 }
 
 
@@ -176,7 +180,7 @@ for (var mat in build) {
 	build[mat] = Math.ceil(build[mat]);
 }
 
-var tax = 1.0825 * 1.125;
+var tax = 1.0825 * 1.125 * 1.012;
 
 
 var totalsOut = [];
@@ -213,7 +217,12 @@ for(var mat in build) {
 	addMe.name = translations[mat] || mat;
 	addMe.count = count + (units[mat] || " ct");
 	addMe.price = price * tax;
+
+	addMe.price = Math.round(addMe.price/5) * 5;
+
 	addMe.total = addMe.price * count;
+	// addMe.total = ~~addMe.total;
+	addMe.total = Math.round(addMe.total/20) * 20;
 
 	total.total += addMe.total;
 
@@ -221,6 +230,15 @@ for(var mat in build) {
 
 	
 }
+
+var bid = {};
+
+bid.name = "Project Bid";
+bid.price = "";
+bid.count = "";
+bid.total = (~~(total.total/100) + 1)*100;
+totalsOut.push(bid);
+
 
 totalsOut.sort(function(a, b) {
 	if(a.total < b.total)
