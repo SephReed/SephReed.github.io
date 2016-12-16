@@ -1,8 +1,21 @@
 var components = {};
 
+components.hexMirror = {
+	plexy1_8 : 2,
+	pvc: 0.5, 
+	glue: 2,
+	// plexy1_4 : 1,
+}
+
 components.hexagon = {
-	alSheet : 2,
-	tube: 3
+	alSheet : 1.5,
+	tube: 3,
+}
+
+components.squareMirror = {
+	plexy1_8 : 0.5,
+	pvc: 0.25,
+	glue: 1
 }
 
 components.square = {
@@ -15,8 +28,14 @@ components.centerPiece = {
 }
 
 components.build = {
- 	hexagon : 7,
- 	square : 6
+ 	hexagon : 8,
+ 	square : 6,
+ 	insurance: 1,
+ 	solarPanels: 3,
+ 	hexMirror: 5,
+ 	tintRoll: 2,
+ 	rAndD: 1,
+ 	labor: 4
 }
 
 
@@ -95,15 +114,27 @@ for (var compo in components) {
 
 
 
+
+
 var prices = {
 	alSheet: 59.00,
 	tube: 8.00,
-	epoxysheet: 80.00
+	epoxysheet: 80.00,
+	insurance: 650.00,
+	solarPanels: 100.00,
+	plexy1_4: 173.00,
+	plexy1_8: 94.00,
+	pvc: 35.00,
+	glue: 12.00,
+	tintRoll: 120.00,
+	rAndD: 800.00,
+	labor: 400.00,
 
 }
 
 
 var bundeled = {
+
 }
 
 
@@ -114,7 +145,17 @@ var bundeled = {
 
 var translations = {
 	alSheet: "0.040 Aluminum 4x10 Sheets",
-	tube: "3x4 12' Aluminum Square Tube",
+	glue: "Glue",
+	insurance: "Insurance",
+	labor: "Artist Labor",
+	plexy1_8: "1/8\" 2x4 Plexi Glass",
+	pvc: "30mm 4x8 PVC",
+	rAndD: "Research and Development (projectors, smoke machines, bubbles, lasers, etc.)",
+	solarPanels: "Solar Panels",
+	tintRoll: "Reflective Tinting Rolls",
+	tube: "3x4 12' Aluminum Square Tubes",
+
+	
 	total: "Total"
 }
 
@@ -131,7 +172,11 @@ var units = {
 
 
 var build = simples.build;
-var tax = 1.0825;
+for (var mat in build) {
+	build[mat] = Math.ceil(build[mat]);
+}
+
+var tax = 1.0825 * 1.125;
 
 
 var totalsOut = [];
