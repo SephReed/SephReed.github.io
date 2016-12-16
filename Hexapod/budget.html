@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="budget.js"></script>
+</head>
+<body>
+	<h2 id="budget">Budget</h2>
+	<table id="totals">
+		<tr>
+			<td>Item</td>
+			<td>Count</td>
+			<td>Price Per</td>
+			<td>Total</td>
+		</tr>
+	</table>
+
+</body>
+
+<script type="text/javascript">
+	function listOut(domNode, list) {
+		for(var i in list) {
+			var div = document.createElement("tr");
+			var mat = list[i];
+			for(var info in mat) {
+				var addMe = document.createElement("td");
+				var text = mat[info];
+				if(typeof text == "number") 
+					text = '$ '+text.toFixed(2);
+
+				addMe.textContent = text;
+				div.appendChild(addMe);	
+			}
+			domNode.appendChild(div);
+		}
+	}
+
+	listOut(document.getElementById("totals"), totalsOut);
+	// listOut(document.getElementById("items"), itemsOut);
+</script>
+
+<style>
+
+body {
+	font-family: arial;
+}
+#totals td {
+	border-style: none solid solid none;
+	border-width: 1px;
+	border-color: rgba(0,0,0,0.1);
+	padding-right: 50px;
+}
+
+#totals tr:first-child {
+	font-weight: bold;
+	
+}
+
+	#totals tr:first-child td{
+		border-bottom-width: 3px;
+	}
+
+
+</style>
+</html>

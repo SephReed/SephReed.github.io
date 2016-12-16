@@ -153,7 +153,7 @@ var translations = {
 	labor: "Artist Fee/Labor",
 	plexy1_8: "1/8\" 2x4 Plexi Glass",
 	pvc: "30mm 4x8 PVC",
-	rAndD: "Research and Development (projectors, smoke machines, bubbles, lasers, etc.)",
+	rAndD: "Interactive Lighting and Effects",
 	solarPanels: "Solar Panels",
 	tintRoll: "Reflective Tinting Rolls",
 	tube: "3x4 12' Aluminum Square Tubes",
