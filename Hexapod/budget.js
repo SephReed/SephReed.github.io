@@ -129,7 +129,7 @@ var prices = {
 	glue: 12.00,
 	tintRoll: 120.00,
 	rAndD: 800.00,
-	labor: 890.00,
+	labor: 895.00,
 
 }
 
@@ -231,13 +231,13 @@ for(var mat in build) {
 	
 }
 
-var bid = {};
+// var bid = {};
 
-bid.name = "Project Bid";
-bid.price = "";
-bid.count = "";
-bid.total = (~~(total.total/100) + 1)*100;
-totalsOut.push(bid);
+// bid.name = "Project Bid";
+// bid.price = "";
+// bid.count = "";
+// bid.total = (~~(total.total/100) + 1)*100;
+// totalsOut.push(bid);
 
 
 totalsOut.sort(function(a, b) {

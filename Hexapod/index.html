@@ -2,30 +2,49 @@
 <html>
 <head>
 	<title></title>
+	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
 	<script src="budget.js"></script>
 </head>
 <body>
+	<div class="background" style="background-color: #222;"></div>
+	<div class="background" style="background-image: url('polygons.png'); opacity: 0.1;"></div>
+
 	<h1>Hexapod</h1>
+	The Hexapod is a sphere like geodesic shape with the interior made of mirrors.  On the interior, anything can look amazing.  Upon building it, we have plans to test out everything including projectors, bubble machines, fog machines, lasers, and discoballs.
+	<br>
+	It stands at an inch short of 10 feet, has a max diameter of 12 feet, and is currently being submitted for the SXSW art grant.
 
 	<div id="images">
 		<div class="imgBlurb">
-			<img src="render_blue_purple4.png"></div>
+			The front outside view from about eye level.<br>
+			<img src="render_blue_purple4.png" style="background: white">
 		</div>
 
 		<div class="imgBlurb">
-			<img src="render_blue_purple5.png"></div>
+			The interior view, looking up at the ceiling.<br>
+			<img src="render_blue_purple5.png">
+			
 		</div>
 
 		<div class="imgBlurb">
-			<img src="render_orange_green.png"></div>
+			An exterior view at night with changed LED lighting colors.<br>
+			<img src="render_orange_green.png" style="background: #111">
+		</div>
+
+		<div class="imgBlurb">
+			The height of the piece<br>
+			<img src="spec_height.png">
+		</div>
+
+		<div class="imgBlurb">
+			The diameter of the piece<br>
+			<img src="spec_diameter.png">
 		</div>
 	</div>
 
-	<h2>About this build:</h2>
-	The Hexapod is a sphere like geodesic shape with the interior made of mirrors.  It stands at an inch short of 10 feet, has a max diameter of 12 feet, and is currently being submitted for the SXSW art grant.
-
-	<h2>About the builders:</h2>
-	<div>
+	
+	<h2>About the Artists:</h2>
+	<div id="artists">
 		<p>
 			<b>Leland Drexler-Russell</b> launched TransPlant Design to imbue the world with an added sense of enchantment. He use special effects techniques to create large scale interactive installations that envelop participants in surreal environs. His inspiration comes from the amazingly diverse flora and fauna found on our earth and speculative astrobiology of faraway worlds. Though he come from an architectural background, he has found creating intriguing experiences to be far more rewarding.
 		</p>
@@ -54,6 +73,7 @@
 		</tr>
 	</table>
 
+
 </body>
 
 <script type="text/javascript">
@@ -79,14 +99,52 @@
 </script>
 
 <style>
+.background {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	z-index: -1;
+	pointer-events: none;
+	background-size: auto;
+	background-repeat: repeat;
+}
+
 body {
 	font-family: arial;
+	color: #FAFAFA;
+	padding: 10px 10% 200px 10%;
 }
+	p {
+		margin-bottom: 30px;
+	}
+
+	h2 {
+		margin-top: 60px;
+		margin-bottom: 10px;
+		/*text-align: center;*/
+	}
+
+	#artists b {
+		color: #12A4B0;
+	}
+
+	.imgBlurb {
+		text-align: center;
+		margin-top: 60px;
+		font-style: italic;
+	}
+
+		.imgBlurb img{
+			width: 80%;
+			border-radius: 20px;
+		}
 
 #totals td {
 	border-style: none solid solid none;
 	border-width: 1px;
-	border-color: rgba(0,0,0,0.1);
+	border-color: rgba(250,250,250,0.1);
 	padding-right: 50px;
 }
 
