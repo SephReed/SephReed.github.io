@@ -39,9 +39,10 @@ ELATE.create("PineGuiable", function() {
 	}
 
 	this.buildGUI = function() {
-		this.GUI = PINE.GUIABLES[this.name].cloneNode(true);
-		PINE.updateAt(this.GUI).then(function() {
-			this.attachToGUI();	
+		var pGui = this;
+		pGui.GUI = PINE.GUIABLES[pGui.name].cloneNode(true);
+		PINE.updateAt(pGui.GUI).syncThen(function() {
+			pGui.attachToGUI();	
 		})
 	};
 

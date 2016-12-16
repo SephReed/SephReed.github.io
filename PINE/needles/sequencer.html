@@ -406,7 +406,7 @@ var Sequencer = ELATE.create("Sequencer", function() {
 
 
 	this.attachToGUI =  function() {
-		this.GUI = "lalal";
+		// this.GUI = "lalal";
 	}
 
 	this.insertSequinAt = function(addMe, index) {
@@ -422,9 +422,10 @@ var Sequencer = ELATE.create("Sequencer", function() {
 </script>
 
 
-<div defineGUI="Sequencer">
-	I'm the sequencer
-</div>
+<sequencer defineGUI="Sequencer" dragArea=">timebar">
+Unce
+	<timebar></timebar>
+</sequencer>
 
 
 
@@ -433,5 +434,19 @@ var Sequencer = ELATE.create("Sequencer", function() {
 	height: 50px;
 	width: 200px;
 	background: #969;
+}
+
+sequencer {
+	display: block;
+	position: relative;
+	height: 50px;
+	background: #969;
+}
+
+timebar {
+	position: absolute;
+	height: 100%;
+	width: 1px;
+	background: red;
 }
 </style>

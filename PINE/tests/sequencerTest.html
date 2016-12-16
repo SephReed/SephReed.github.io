@@ -2,10 +2,12 @@
 <html>
 <head>
 	<title></title>
+	<link rel="stylesheet" type="text/css" href="../../public/css/init.css">
 	<script src="../PINE_Core_4.8.js"></script>
 	<script src="../tools/ELATE.js"></script>
 	<script src="../tools/ELATE_basics.js"></script>
 	<needle src="../needles/sequencer.html"></needle>
+	<needle src="../needles/dragArea.html"></needle>
 
 
 	<script type="text/javascript">
@@ -33,7 +35,11 @@
 
 			unce = new Sequencer([group1, group2]);	
 			unce.setLoopEnd(5);
-		})
+
+
+			var domNode = unce.getGUI();
+			document.body.appendChild(domNode);
+		});
 		
 	</script>
 
@@ -42,19 +48,13 @@
 
 
 
-<div createAndShow="sequencer">
-
-</div>
 
 
 
 </body>
 
 <style type="text/css">
-body, html {
-	height: 100%;
-	width: 100%;
-}
+
 	
 </style>
 </html>

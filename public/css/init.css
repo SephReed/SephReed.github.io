@@ -25,3 +25,7 @@ block {
 nBlock {
 	display: inline-block;
 }
+
+needle {
+	display: none;
+}
