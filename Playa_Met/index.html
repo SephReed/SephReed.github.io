@@ -2,18 +2,43 @@
 <html>
 <head>
 	<title></title>
+	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+	<link rel="stylesheet" type="text/css" href="heaxpod.css">
 	<script src="budget.js"></script>
 </head>
 <body>
-	<h2 id="budget">Budget</h2>
-	<table id="totals">
-		<tr>
-			<td>Item</td>
-			<td>Count</td>
-			<td>Price Per</td>
-			<td>Total</td>
-		</tr>
-	</table>
+
+	<br><br>
+	<center><img id="cover_photo" src="cover_photo1.png"></center>
+
+	
+
+	<section id="images">
+		<h2 id="budget"><span style="font-size: 10px">Tiny</span> Gallery</h2>
+		<div>
+			<img src="playa_met_render_ideal.png"><br>
+			A render of exactly what stations will look like in real life.
+		</div>
+
+		<div>
+			<img src="specs.png"><br>
+			Specs for the pole, seating, and playa tokens.
+		</div>
+	</section>
+
+
+
+	<section id="budget">
+		<h2 >Budget</h2>
+		<table id="totals">
+			<tr>
+				<td>Item</td>
+				<td>Count</td>
+				<td>Price Per</td>
+				<td>Total</td>
+			</tr>
+		</table>
+	</section>
 
 </body>
 
@@ -40,21 +65,72 @@
 </script>
 
 <style>
-#totals td {
-	border-style: none solid solid none;
-	border-width: 1px;
-	border-color: rgba(0,0,0,0.1);
-	padding-right: 50px;
-}
+body {
+	background: #222;
+	background-image: radial-gradient(#66223f, #222);
+	color: #FAFAFA;
 
-#totals tr:first-child {
-	font-weight: bold;
-	
 }
-
-	#totals tr:first-child td{
-		border-bottom-width: 3px;
+	h2 {
+		font-size: 50px;
 	}
+
+	#cover_photo {
+		width: 50%;
+		border-radius: 500px;
+		border: 20px solid #111;
+		margin-bottom: 80px;
+	}
+
+	section {
+		padding: 40px 0px;
+	}
+
+		section:nth-child(2n) {
+			border-top: 10px solid rgba(20,20,20,0.4);
+			border-bottom: 10px solid rgba(20,20,20,0.4);
+			box-shadow: 2px 2px 20px rgba(20,20,20,0.2);
+		}
+
+		#images{
+			text-align: center;
+			/*background-color: rgba(250,250,250,0.5);*/
+			
+			background-color: rgba(135, 47, 106, 0.22);
+			
+		}
+
+			#images > div {
+				display: inline-block;
+				font-style: italic;
+				margin-bottom: 60px;
+			}
+
+				#images > div img{
+					border-radius: 20px;
+					border: 10px solid #111;
+				}
+
+
+	#budget {
+		margin: auto;
+	}
+
+		#totals td {
+			border-style: none solid solid none;
+			border-width: 1px;
+			border-color: rgba(250,250,250,0.1);
+			padding-right: 50px;
+		}
+
+		#totals tr:first-child {
+			font-weight: bold;
+			
+		}
+
+			#totals tr:first-child td{
+				border-bottom-width: 3px;
+			}
 
 
 </style>

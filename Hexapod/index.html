@@ -3,160 +3,58 @@
 <head>
 	<title></title>
 	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
-	<script src="budget.js"></script>
+	<link rel="stylesheet" type="text/css" href="hexapod.css">
+	<!-- <script type="text/javascript" src="remove_current_page_link.js"></script> -->
 </head>
 <body>
-	<div class="background" style="background-color: #222;"></div>
-	<div class="background" style="background-image: url('polygons.png'); opacity: 0.1;"></div>
-
-	<h1>Hexapod</h1>
-	The Hexapod is an infinite mirrored galaxy housed in a 10’ aluminum octahedron. The outside is built as a glistening monolith beaconing participants to explore more. Upon entering the structure the guest find a fractured universe of stars lights and mirrors. By manipulating a spire that juts through the center of the structure, guest can augment the cosmos to fit their dreams.<br><br>
-
-	Our goal is to build different versions of the Hexapod, using the same exterior form and unique interiors to create a large multifaceted installation that grows and changes over time.  Hexapods can stack in an infinite pattern, so each one we make will connect to the next.
-
-	<div id="images">
-		<div class="imgBlurb">
-			The front outside view from about eye level.<br>
-			<img src="render_blue_purple4.png" style="background: white">
-		</div>
-
-		<div class="imgBlurb">
-			The interior view, looking up at the ceiling.<br>
-			<img src="render_blue_purple5.png">
-			
-		</div>
-
-		<div class="imgBlurb">
-			An exterior view at night with changed LED lighting colors.<br>
-			<img src="render_orange_green.png" style="background: #111">
-		</div>
-
-		<div class="imgBlurb">
-			The height of the piece<br>
-			<img src="spec_height.png">
-		</div>
-
-		<div class="imgBlurb">
-			The diameter of the piece<br>
-			<img src="spec_diameter.png">
-		</div>
+	<div id="topbar">
+		<a href="index.html">Home</a>
+		<a href="gallery.html">Images</a>
+		<a href="bios.html">The Artists</a>
+		<a href="budget.html">Budget</a>
+		<a href="beliefs.html">Our Beliefs</a>
 	</div>
 
+	<div id="backdrop">
+		<div class="bgcolor"></div>
+		<!-- <div class="polygons"></div> -->
+		<div class="inside_view"></div>
+	</div>
 	
-	<h2>About the Artists:</h2>
-	<div id="artists">
-		<p>
-			<b>Leland Drexler-Russell</b> launched TransPlant Design to imbue the world with an added sense of enchantment. He use special effects techniques to create large scale interactive installations that envelop participants in surreal environs. His inspiration comes from the amazingly diverse flora and fauna found on our earth and speculative astrobiology of faraway worlds. Though he come from an architectural background, he has found creating intriguing experiences to be far more rewarding.
-		</p>
-		
-		<p>
-			<b>Dominique Davis</b> is a Projection artist and video technician.  The Focus of his work is connecting people to their environment through interactive art and technology.  His works include installations built for Austin Energy, UT neuroscience graduate program, and international video projection works in Zurich, Switzerland and Berlin, Germany.
-		</p>
+	<div id="content">
 
-		<p>
-			<b>Seph Reed</b> <i>(legal name: Scott Jaromin)</i>  is an all around builder and coder.  Having started on computers as a toddler, he began programming at age 10 and 3d modelling at 14, and has since moved into the world of fabrication with a focus on immersion and interactivity.  He was the build lead for the highly regarded Vessel by Vision Gland, has worked on large scale metal sculptures for Burning Man, and likes to spend his free time programming with experimental web technology. 
-		</p>
+		<div>
+			<center><h1>The Hexapod</h1>
+			<span>by: Leland, Seph, Dom, and Misty</span><br>
+			<img src="render_front_tall.png" style=""></center>
+			The Hexapod is an infinitly mirrored galaxy housed in a 10' aluminum octahedron. The outside is built as a glistening monolith beaconing participants to explore more. Upon entering the structure guests will find a fractured universe of stars, lights, and mirrors. By manipulating a spire that juts through the center of the structure, guests can augment the cosmos to fit their dreams.<br><br>
 
-		<p>
-			<b>Misty Nickle</b> is an experiential artist whose work centralizes on creating community and play.  She is a core member of the Iron Monkey Arts, a group which has received multiple honoraria grants to build large interactive metal sculptures for Burning Man, Critical Northwest, and Seacompression.  Her most recent work for the 2016 East Austin Studio Tours with Vision Gland was an immersive installation for people of all ages, which consisted of secret passageways and a slide into a ball pit.
-		</p>
+			Our goal is to build different versions of the Hexapod, using the same exterior form and unique interiors to create a large multifaceted installation that grows and changes over time.  Hexapods can stack in an infinite crystaline pattern, so each one we make will connect to the ones made before.
+		</div>
 	</div>
-
-
-	<h2 id="budget">Budget</h2>
-	<table id="totals">
-		<tr>
-			<td>Item</td>
-			<td>Count</td>
-			<td>Price Per</td>
-			<td>Total</td>
-		</tr>
-	</table>
-
 
 </body>
 
 <script type="text/javascript">
-	function listOut(domNode, list) {
-		for(var i in list) {
-			var div = document.createElement("tr");
-			var mat = list[i];
-			for(var info in mat) {
-				var addMe = document.createElement("td");
-				var text = mat[info];
-				if(typeof text == "number") 
-					text = '$ '+text.toFixed(2);
 
-				addMe.textContent = text;
-				div.appendChild(addMe);	
-			}
-			domNode.appendChild(div);
-		}
-	}
-
-	listOut(document.getElementById("totals"), totalsOut);
-	// listOut(document.getElementById("items"), itemsOut);
 </script>
 
 <style>
-.background {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	right: 0px;
-	bottom: 0px;
-	z-index: -1;
-	pointer-events: none;
-	background-size: auto;
+
+#backdrop .inside_view {
+	background-image: url('render_blue_purple5.png'); 
+	opacity: 0.25;
+	background-size: cover;
 	background-repeat: repeat;
+	position: fixed;
 }
 
-body {
-	font-family: arial;
-	color: #FAFAFA;
-	padding: 10px 10% 200px 10%;
+#content > div {
+	padding: 15px;
 }
-	p {
-		margin-bottom: 30px;
+	#content > div img {
+		width: 60%;
 	}
-
-	h2 {
-		margin-top: 60px;
-		margin-bottom: 10px;
-		/*text-align: center;*/
-	}
-
-	#artists b {
-		color: #12A4B0;
-	}
-
-	.imgBlurb {
-		text-align: center;
-		margin-top: 60px;
-		font-style: italic;
-	}
-
-		.imgBlurb img{
-			width: 80%;
-			border-radius: 20px;
-		}
-
-#totals td {
-	border-style: none solid solid none;
-	border-width: 1px;
-	border-color: rgba(250,250,250,0.1);
-	padding-right: 50px;
-}
-
-#totals tr:first-child {
-	font-weight: bold;
-	
-}
-
-	#totals tr:first-child td{
-		border-bottom-width: 3px;
-	}
-
 
 </style>
 </html>

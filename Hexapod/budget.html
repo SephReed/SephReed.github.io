@@ -2,18 +2,38 @@
 <html>
 <head>
 	<title></title>
-	<script src="budget.js"></script>
+	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+	<link rel="stylesheet" type="text/css" href="hexapod.css">
+	<script type="text/javascript" src="budget.js"></script>
 </head>
 <body>
-	<h2 id="budget">Budget</h2>
-	<table id="totals">
-		<tr>
-			<td>Item</td>
-			<td>Count</td>
-			<td>Price Per</td>
-			<td>Total</td>
-		</tr>
-	</table>
+	<div id="topbar">
+		<a href="index.html">Home</a>
+		<a href="gallery.html">Images</a>
+		<a href="bios.html">The Artists</a>
+		<a href="budget.html">Budget</a>
+		<a href="beliefs.html">Our Beliefs</a>
+	</div>
+
+	<div id="backdrop">
+		<div class="bgcolor" style=""></div>
+		<div class="bgimg" style=""></div>
+	</div>
+	
+	<div id="content">
+		<div id="budget">
+			<center><h1>Budget</h1></center>
+			<br><br>
+			<table id="totals">
+				<tr>
+					<td>Item</td>
+					<td>Count</td>
+					<td>Price Per</td>
+					<td>Total</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 
 </body>
 
@@ -41,14 +61,18 @@
 
 <style>
 
-body {
-	font-family: arial;
+#budget {
+	padding: 15px;
+}
+
+#totals {
+	width: 100%;
 }
 #totals td {
 	border-style: none solid solid none;
 	border-width: 1px;
-	border-color: rgba(0,0,0,0.1);
-	padding-right: 50px;
+	border-color: rgba(250,250,250,0.1);
+	padding-right: 25px;
 }
 
 #totals tr:first-child {
