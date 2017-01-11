@@ -1452,7 +1452,7 @@ U.helpfulEval = function(evalMe, filename) {
 U.ranScripts = [];
 U.ranScriptsNextId = 0;
 // U.runScriptMode = "debuggable";
-U.runScriptMode = "fast";
+U.runScriptMode = U.runScriptMode || "fast";
 U.runScript = function(scriptText, appendTo, src) {
 	// console.log(scriptText);
 	// var scriptText = scriptText + ' ';
