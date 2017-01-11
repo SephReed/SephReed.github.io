@@ -3,6 +3,15 @@
 <head>
 	<title></title>
 	<link rel="stylesheet" type="text/css" href="../../public/css/init.css">
+	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function(){
+			document.body.addEventListener("PINE_nodesChanged", function(event) {
+				console.log(event);
+			});
+		});
+		
+	</script>
+
 	<script src="../PINE_Core_4.8.js"></script>
 	<script src="../tools/ELATE.js"></script>
 	<script src="../tools/ELATE_basics.js"></script>

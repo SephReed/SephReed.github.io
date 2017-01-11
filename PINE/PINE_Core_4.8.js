@@ -48,6 +48,11 @@ PINE.createNeedle = function(matchCase, arg1, arg2) {
 		fn = arg2;
 		args = arg1;
 	}
+	else if(typeof arg1 == "string" && typeof arg2 == "function") {
+		fn = arg2;
+		args = {};
+		args.opType = arg1;
+	}
 
 	var out = PINE.NEEDLES.create(matchCase, args);
 
@@ -803,14 +808,21 @@ PINE.updateAt = function(root, passedOps) {
 	// console.log("updateAt", root);
 
 	var newRoot = (root.__pine__ === undefined);
+	console.log(root);
 	if(newRoot) {
+		console.log("new root", root, root.__pine__);
 		PINE.initiate(root);
 		PINE.spreadNeedles(root);
 	}
-	
-	else if(root.__pine__.held) {
-		// console.log("held root");
-		return SyncPromise.resolved();
+	else {
+		if(root.__pine__.held) {
+			// console.log("held root");
+			return SyncPromise.resolved();
+		}
+		else { 
+			console.log("non new root not held");
+			
+		}
 	}
 
 
@@ -820,10 +832,55 @@ PINE.updateAt = function(root, passedOps) {
 	// 	console.log("parentPassed", parentPassed ? parentPassed.length : undefined, passedOps.length);
 	// }
 		
-
-
+	console.log(root, "updateAt");
+	PINE.dispatchChildNodeChanges(root);
 	passedOps = passedOps || PINE.ops.order;
 	return PINE.growOps(root, passedOps);
+}
+
+PINE.dispatchChildNodeChanges = function(domNode) {
+
+	PINE.permeate(domNode, function(domNode) {
+		if(domNode.__pine__.knownChildren === undefined) {
+			domNode.__pine__.knownChildren = [];
+
+			for(var i = 0; i < domNode.childNodes.length; i++) {
+				var child = domNode.childNodes[i];
+				domNode.__pine__.knownChildren.push(child);
+			}
+		}
+		else {
+			console.log(domNode);
+
+			var removedChildren = domNode.__pine__.knownChildren;
+			var knownChildren = domNode.__pine__.knownChildren = [];
+			var addedChildren = [];
+
+			console.log("knownChildrenBefore", removedChildren);
+			for(var i = 0; i < domNode.childNodes.length; i++) {
+				var child = domNode.childNodes[i];
+				var target = knownChildren.indexOf(child);
+
+				if(target !== -1) 
+					removedChildren.splice(target, 1);
+				
+				else addedChildren.push(child);
+
+				knownChildren.push(child);
+			}
+
+			if(domNode.dispatchEvent && (removedChildren.length || addedChildren.length)) {
+				domNode.dispatchEvent(new CustomEvent("PINE_nodesChanged", {
+					detail : {
+						addedNodes : addedChildren,
+						removedNodes : removedChildren
+					},
+					bubbles : true,
+					cancelable : true
+				}));
+			}
+		}	
+	});	
 }
 
 
@@ -854,8 +911,6 @@ PINE.initiate = function(root) {
 	});
 	
 
-	// var dispatch = root.dispatchEvent || document.body.dispatchEvent;
-	// console.log("dispatch", dispatch);
 	if(root.dispatchEvent == undefined)
 		root = document.body;
 
@@ -1396,7 +1451,8 @@ U.helpfulEval = function(evalMe, filename) {
 
 U.ranScripts = [];
 U.ranScriptsNextId = 0;
-U.runScriptMode = "debuggable";
+// U.runScriptMode = "debuggable";
+U.runScriptMode = "fast";
 U.runScript = function(scriptText, appendTo, src) {
 	// console.log(scriptText);
 	// var scriptText = scriptText + ' ';
@@ -1609,7 +1665,19 @@ El.byTag = function(domNode, tag) {
 }
 
 El.firstOfTag = function(domNode, tag) {
+	if(domNode === undefined)
+		PINE.err("can not get by tag from undefined domNode", domNode, className);
 	var result = El.byTag(domNode, tag);
+	if(result.length)
+		return result[0];
+	else
+		return undefined;
+}
+
+El.firstOfClass = function(domNode, className) {
+	if(domNode === undefined)
+		PINE.err("can not get by class from undefined domNode", domNode, className);
+	var result = domNode.getElementsByClassName(className);
 	if(result.length)
 		return result[0];
 	else
@@ -1701,6 +1769,9 @@ El.attr = function(domNode, name, value) {
 // }
 
 El.waitForDisplay = function(domNode) {
+	if(domNode === undefined)
+		PINE.err("can not wait for display of undefined");
+
 	if(El.waitForDisplayInited == false)
 		El.initWaitForDisplay();
 
@@ -1882,7 +1953,7 @@ El.overlap = function(el1, el2) {
 El.getStyle = function (domNode, styleProp) {
     var out;
     if(!domNode)
-    	PINE.err("domNode not set", domNode, styleProp);
+    	PINE.err("can not get style of undefined domNode", domNode, styleProp);
 
     if(domNode.currentStyle) {
         out = domNode.currentStyle[styleProp];
@@ -1972,6 +2043,17 @@ ElementHelper.prototype.cloneAndInit = function(goDeep) {
 
 
 U.docReady(PINE.run);
+
+
+
+
+// PINE.createNeedle("nodeChangeDispatcher", function(dispatcher) {
+// 	dispatcher.setMatchCases('*');
+
+// 	dispatcher.addOpFn(PINE.ops.INIT, function() {
+// 		var domNode = this.domNode;
+// 	})
+// });
 
 
 

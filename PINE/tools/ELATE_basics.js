@@ -51,11 +51,12 @@ ELATE.create("PineGuiable", function() {
 
 
 
-PINE.createNeedle("[defineGUI]", function(defGUI) {
+PINE.createNeedle("[defineGUI]", PINE.ops.INIT, function(defGUI) {
 	defGUI.addAttArg("name", "defineGUI", "string");
 	defGUI.addInitFn(function() {
 		var name = this.attArg.name;
 		PINE.GUIABLES[name] = this.domNode;
+		this.domNode.remove();
 	});
 });
 

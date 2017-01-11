@@ -197,23 +197,22 @@ var MARKET_TREE = {
 					"piano" : null
 				}
 			},
-			"repair" : {
+			"repair/maintanence" : {
 				"automobile" : {
 					"oil change" : null,
 					"tune up" : null
 				},
 				"home" : {
-					"septic" : null
+					"septic" : null,
+					"yard" : null
+				},
+				"personal" : {
+					"mental" : null,
+					"physical" : null,
+
 				}
 			},
-			"rental" : {
-				"tools" : {
-
-				},
-				"spaces" : {
-
-				}
-			}
+			"transportation" : null,
 		}
 	},
 

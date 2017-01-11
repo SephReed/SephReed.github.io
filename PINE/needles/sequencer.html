@@ -1,5 +1,7 @@
 <script type="text/javascript">
 
+//Mark Mackenzie Millenial Groove (Fly Boy)
+
 var Sequencable = ELATE.create("Sequencable", function() {
 	this.extend("Comparable");
 
@@ -300,6 +302,7 @@ var Sequencer = ELATE.create("Sequencer", function() {
 		this.currentTimePosition = 0;
 		this.positionOffset = 0;
 		this.isRunning = false;
+		this.isAnimating = false;
 		this.runningTimer = undefined;
 		this.startTime = undefined;
 
@@ -316,6 +319,8 @@ var Sequencer = ELATE.create("Sequencer", function() {
 
 			this.isRunning = true;
 			this.runningTimer = this.startNextTimeout();
+
+			this.startAnimation();
 		}
 	}
 
@@ -385,6 +390,8 @@ var Sequencer = ELATE.create("Sequencer", function() {
 	this.stopSequence = function() {
 		this.pauseSequence();
 		this.setTimelinePosition(0);
+
+		this.stopAnimation();
 	}
 
 
@@ -397,7 +404,7 @@ var Sequencer = ELATE.create("Sequencer", function() {
 	}
 
 	this.setTimelinePosition = function(pos) {
-		this.currentTimePosition = pos
+		this.currentTimePosition = pos;
 	}
 
 	this.setLoopEnd = function(pos) {
@@ -406,8 +413,41 @@ var Sequencer = ELATE.create("Sequencer", function() {
 
 
 	this.attachToGUI =  function() {
-		// this.GUI = "lalal";
+		var sequencer = this;
+		// console.log(this);
+		var domNode = sequencer.GUI;
+
+		if(this.isRunning) {
+			this.startAnimation();
+		}
 	}
+
+	this.startAnimation = function() {
+		var seq = this;
+		if(seq.isAnimating == false) {
+			seq.isAnimating = true;
+			seq.animationRequest = window.requestAnimationFrame(function(){seq.animationFrame()});
+		}
+	}
+
+	this.stopAnimation = function() {
+		this.isAnimating = false;
+	}
+
+	this.animationFrame = function() {
+		var seq = this;
+		// console.log(seq);
+
+		seq.animationRequest = undefined;
+		if(seq.GUI) {
+			var pos = seq.currentTimePosition
+			seq.GUI.FNS.setTimebarPosition(pos);
+		}
+
+		if(seq.isAnimating)
+			seq.animationRequest = window.requestAnimationFrame(function(){seq.animationFrame()})
+	}
+
 
 	this.insertSequinAt = function(addMe, index) {
 		this.super.SequencableGroup.prototype.instertSequinAt.call(this, addMe, index);
@@ -419,12 +459,58 @@ var Sequencer = ELATE.create("Sequencer", function() {
 });
 
 
+
+PINE.createNeedle("sequencer", function(seq) {
+
+	seq.addInitFn(function() {
+		var job = this;
+		domNode = job.domNode;
+		job.timebarPos = 0;
+
+		job.timebar = El.firstOfClass(domNode, "timebar");
+
+		job.FNS.sizeUpdate();
+	});
+
+	seq.FNS.setTimebarPosition = function(pos) {
+		var job = this;
+		if(pos === job.timebarPos) return;
+		
+		job.timebarPos = pos;
+
+		var path = "M "+job.timebarPos+" 0 V "+job.bounds.height;
+		El.attr(job.timebar, "d", path); 
+	}
+
+	seq.FNS.sizeUpdate = function() {
+		var job = this;
+		var domNode = job.domNode;
+
+		return El.waitForDisplay(domNode).syncThen(function() {
+			var bounds = job.bounds = domNode.getBoundingClientRect();
+			var svg = El.firstOfTag(domNode, "svg");
+			
+			El.attr(svg, "width", bounds.width);
+			El.attr(svg, "height", bounds.height);
+		});
+	}
+
+});
+
+
 </script>
 
 
-<sequencer defineGUI="Sequencer" dragArea=">timebar">
+<sequencer defineGUI="Sequencer">
 Unce
-	<timebar></timebar>
+	<svg version="1.1"
+	    baseProfile="full"
+	    width="300" height="200"
+	    xmlns="http://www.w3.org/2000/svg"
+	    dragArea=".timebar">
+
+	    <path class="timebar" d="M 0 0 V 10000" cx="50" cy="0" stroke="blue"></path>
+	</svg>
 </sequencer>
 
 
@@ -442,6 +528,12 @@ sequencer {
 	height: 50px;
 	background: #969;
 }
+
+	sequencer > svg {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+	}
 
 timebar {
 	position: absolute;
