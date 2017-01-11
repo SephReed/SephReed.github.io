@@ -654,21 +654,22 @@ PINE.run = function() {
 	PINE.debug.init();
 	LOG("overview", "DOMContentLoaded");
 
-	PINE.loadResources().syncThen( function() {
-		
-		PINE.sprout().syncThen(function() {
-	  		PINE.loaded = true;
+	U.initScriptMode()
+	.syncThen(PINE.loadResources)
+	.syncThen(PINE.sprout)
+	.syncThen(function() {
+  		PINE.loaded = true;
 
 
-	  		U.log("success", "PINE Run complete");
-	  		LOG("overview", "PINE Finished");	
+  		U.log("success", "PINE Run complete");
+  		LOG("overview", "PINE Finished");	
 
-	  		var listeners = PINE.eventListeners[PINE.events.load];
+  		var listeners = PINE.eventListeners[PINE.events.load];
 
-	  		for(var i in listeners)
-	  			listeners[i]();
-		});
+  		for(var i in listeners)
+  			listeners[i]();
 	});
+	
 }
 
 
@@ -1451,8 +1452,25 @@ U.helpfulEval = function(evalMe, filename) {
 
 U.ranScripts = [];
 U.ranScriptsNextId = 0;
-U.runScriptMode = "debuggable";
+// U.runScriptMode = "debuggable";
 // U.runScriptMode = U.runScriptMode || "fast";
+
+
+U.initScriptMode = function() {
+	var	file = new Blob(["test"], {type: "text/javascript"});
+    var url = URL.createObjectURL(file) + "?test";
+
+    if(U.runScriptMode !== undefined)
+    	return SyncPromise.resolved();
+
+    else return U.Ajax.get(url).syncThen(function() {
+    	U.runScriptMode = "debuggable";
+    }).catch(function() {
+    	PINE.err("switching to eval mode");
+    	U.runScriptMode = "fast";
+    });
+}
+
 U.runScript = function(scriptText, appendTo, src) {
 	// console.log(scriptText);
 	// var scriptText = scriptText + ' ';
