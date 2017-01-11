@@ -834,7 +834,7 @@ PINE.updateAt = function(root, passedOps) {
 	// }
 		
 	console.log(root, "updateAt");
-	PINE.dispatchChildNodeChanges(root);
+	// PINE.dispatchChildNodeChanges(root);
 	passedOps = passedOps || PINE.ops.order;
 	return PINE.growOps(root, passedOps);
 }
@@ -1458,7 +1458,7 @@ U.ranScriptsNextId = 0;
 
 U.initScriptMode = function() {
 	var	file = new Blob(["test"], {type: "text/javascript"});
-    var url = URL.createObjectURL(file) + "?test";
+    var url = URL.createObjectURL(file) + "#test?test";
 
     if(U.runScriptMode !== undefined)
     	return SyncPromise.resolved();
@@ -1491,7 +1491,7 @@ U.runScript = function(scriptText, appendTo, src) {
 			var url = URL.createObjectURL(file);
 
 			var script = document.createElement("script");
-		    script.src = url+"?"+src;
+		    script.src = url+"#"+src;
 		    script.type = "text/javascript";
 
 			appendTo = appendTo || document.head;
