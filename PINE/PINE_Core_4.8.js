@@ -1452,7 +1452,7 @@ U.helpfulEval = function(evalMe, filename) {
 
 U.ranScripts = [];
 U.ranScriptsNextId = 0;
-// U.runScriptMode = "debuggable";
+U.runScriptMode = "debuggable";
 // U.runScriptMode = U.runScriptMode || "fast";
 
 
