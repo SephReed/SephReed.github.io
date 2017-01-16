@@ -373,16 +373,21 @@ var Sequencer = ELATE.create("Sequencer", function() {
 		return ~~(targetMilli - currentMilli);
 	}
 
+	this.estimatePos = function() {
+		var milliPassed = Date.now() - this.lastMilli;
+		var posPassed = milliPassed/this.milliPerUnit;
+
+		return this.currentTimePosition + posPassed;
+
+	}
+
 
 	this.pauseSequence = function() {
 		if(this.isRunning) {
 			if(this.runningTimer)
 				window.clearTimeout(this.runningTimer);
 
-			var milliPassed = Date.now() - this.lastMilli;
-			var posPassed = milliPassed/this.milliPerUnit;
-
-			this.setTimelinePosition(this.currentTimePosition + posPassed);
+			this.setTimelinePosition(this.estimatePos());
 			this.isRunning = false;
 		}
 	}
@@ -440,7 +445,7 @@ var Sequencer = ELATE.create("Sequencer", function() {
 
 		seq.animationRequest = undefined;
 		if(seq.GUI) {
-			var pos = seq.currentTimePosition
+			var pos = seq.estimatePos();
 			seq.GUI.FNS.setTimebarPosition(pos);
 		}
 
@@ -462,10 +467,13 @@ var Sequencer = ELATE.create("Sequencer", function() {
 
 PINE.createNeedle("sequencer", function(seq) {
 
+	seq.addAttArg("initZoom", ["sequencerInitZoom", "initZoom"], "number", 8);
+
 	seq.addInitFn(function() {
 		var job = this;
 		domNode = job.domNode;
 		job.timebarPos = 0;
+		job.zoom = job.attArg.initZoom;
 
 		job.timebar = El.firstOfClass(domNode, "timebar");
 
@@ -477,8 +485,9 @@ PINE.createNeedle("sequencer", function(seq) {
 		if(pos === job.timebarPos) return;
 		
 		job.timebarPos = pos;
+		job.timebarPxPos = job.timebarPos * job.pxPerMeasure;
 
-		var path = "M "+job.timebarPos+" 0 V "+job.bounds.height;
+		var path = "M "+job.timebarPxPos+" 0 V "+job.bounds.height;
 		El.attr(job.timebar, "d", path); 
 	}
 
@@ -489,9 +498,18 @@ PINE.createNeedle("sequencer", function(seq) {
 		return El.waitForDisplay(domNode).syncThen(function() {
 			var bounds = job.bounds = domNode.getBoundingClientRect();
 			var svg = El.firstOfTag(domNode, "svg");
+
+			job.pxWidth = bounds.width;
+			job.pxHeight = bounds.width;
+
+			job.pxPerMeasure = job.pxWidth/job.zoom; 
+
+			console.log(job);
 			
-			El.attr(svg, "width", bounds.width);
-			El.attr(svg, "height", bounds.height);
+			El.attr(svg, "width", job.pxWidth);
+			El.attr(svg, "height", job.pxHeight);
+
+			// El.attr(svg, "viewBox", "0 0 5 1");
 		});
 	}
 
@@ -507,7 +525,8 @@ Unce
 	    baseProfile="full"
 	    width="300" height="200"
 	    xmlns="http://www.w3.org/2000/svg"
-	    dragArea=".timebar">
+	    dragArea=".timebar"
+	    preserveAspectRatio="none">
 
 	    <path class="timebar" d="M 0 0 V 10000" cx="50" cy="0" stroke="blue"></path>
 	</svg>

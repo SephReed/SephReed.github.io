@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+    <link href='public/css/digiden.css' rel='stylesheet' type='text/css'>
+    <link href='public/css/themes.css' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="public/js/AES.js"></script>
+    <script type="text/javascript" src="public/js/SAFE.js"></script>
+    <script src="digiden.js"></script>
+
+    <script src="http://sephreed.github.io/PINE/PINE_Core_4.2.js"></script>
+	<script src="http://sephreed.github.io/PINE/PINE_Var.js"></script>
+	<script src="http://sephreed.github.io/PINE/PINE_Needles.js"></script>
+	<needle src="public/needles/selectableList.html"></needle>
+</head>
+
+
+<script type="text/javascript">
+	
+
+	var QUERY_CACHE = [];
+    var local_QUERY_CACHE = SAFE.get("QUERY_CACHE");
+    if(local_QUERY_CACHE != null) {
+        console.log(local_QUERY_CACHE);
+        QUERY_CACHE = JSON.parse(local_QUERY_CACHE);
+    }
+
+
+
+    var query_list;
+    PINE.ready(function() {
+    	query_list = El.byId("query_list");
+    	var select_all_btn = El.byId("select_all_btn");
+    	var delete_btn = El.byId("delete_btn");
+    	var query_btn = El.byId("query_btn");
+
+    	var updateButtonDisabledStates = function() {
+    		var selected = query_list.FNS.getSelected();
+    		
+    		console.log(selected)
+
+    		if(selected.length == 1)
+    			query_btn.classList.remove("disabled_btn");
+    		else
+    			query_btn.classList.add("disabled_btn");
+    		
+
+    		if(selected.length > 0) 
+    			delete_btn.classList.remove("disabled_btn");
+    		else
+    			delete_btn.classList.add("disabled_btn");
+
+    		if(QUERY_CACHE.length > 0 && selected.length != QUERY_CACHE.length)
+    			select_all_btn.classList.remove("disabled_btn");
+    		else
+    			select_all_btn.classList.add("disabled_btn");
+    	}
+
+    	updateButtonDisabledStates();
+
+    	query_list.FNS.setSelected.add(updateButtonDisabledStates);
+    });
+
+
+
+
+    function remove_selected() {
+    	var selected = query_list.FNS.getSelected();
+
+    	for(var i in selected) {
+    		var query_val = El.attr(selected[i], "itemValue");
+    		
+    		var spliceIndex = QUERY_CACHE.indexOf(query_val);
+    		console.log(query_val, spliceIndex)
+    		QUERY_CACHE.splice(spliceIndex, 1);
+    		// selected[i].remove();
+    		// query_list.FNS.refresh();
+    	}
+
+    	SAFE.set("QUERY_CACHE", JSON.stringify(QUERY_CACHE));
+
+    	query_list.FNS.update();
+
+    	query_list.FNS.selectionListRefresh();
+
+
+    }
+
+    function select_all() {
+    	query_list.FNS.selectAll();
+    }
+
+    function query_selection() {
+    	var selected = query_list.FNS.getSelected();
+    	if(selected.length) {
+    		var query = El.attr(selected[0], "itemValue");
+    		query = query.replace(/\+/g, '%2b');
+    		query = query.replace(/\s+/g, '+');
+    		document.location.href = "index.html?q="+query;	
+    	}
+    	
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+<bgimg></bgimg>
+
+<div id="tiny_topbar">
+	<div class="title"><a href="index.html">Digiden</a></div>
+</div>
+
+<pine>
+
+<div id="content">
+	<div id="query_list" 
+		spawner="QUERY_CACHE"
+		selectableList
+		selectableLimit="none"
+		selectionSwitch="alt_multi">
+		<toparea id="selection_functions">
+			<div id="select_all_btn" 
+				onclick="select_all()"
+				style="background-image: url('public/images/select_all.png')">
+				SELECT ALL</div>
+			<div id="delete_btn"
+				class="disabled_btn" 
+				onclick="remove_selected()"
+				style="background-image: url('public/images/recycle_bin.png')">
+				DELETE</div>
+			<div id="query_btn" 
+				class="disabled_btn" 
+				onclick="query_selection()"
+				style="background-image: url('public/images/search_glass.png')">
+				QUERY</div>
+			
+		</toparea>
+		<div spawn selectableItem itemValue="{{QUERY_CACHE[i]}}">{{QUERY_CACHE[i]}}</div>
+		<nospawn>It appears there are no cached queries...</nospawn>
+	</div>
+
+	</pine>
+</div>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+
+
+#content {
+	position: absolute;
+	top: 60px;
+	bottom: 0px;
+	width: 100%;
+	overflow: scroll;
+}
+
+#query_list {
+	background: #333;
+	margin: 15px 30px;
+	padding-bottom: 15px;
+	border-radius: 10px;
+	border: 1px solid rgba(0,0,0,0.1);
+	box-shadow: 3px 3px 6px rgba(0,0,0,0.1);
+	overflow: hidden;
+}
+
+.light_mode #query_list {
+	background: rgba(250,250,250,0.5);
+	border-color: rgba(0,0,0,0.3);
+}
+
+#query_list:focus {
+    outline: none;
+}
+
+
+
+#selection_functions {
+	text-align: center;
+	display: block;
+	/*padding: 5px 20px 15px 20px;*/
+	padding: 10px 15px;
+	margin-bottom: 15px;
+	background: linear-gradient(rgba(200,200,200,0.15), rgba(150,150,150,0.15) 5px, rgba(150,150,150,0.1));
+	border-bottom: solid 1px rgba(0,0,0,0.35);
+	box-shadow: 1px 3px 5px rgba(0,0,0,0.1);
+}
+
+#selection_functions > div {
+	display: inline-block;
+	cursor: pointer;
+	text-align: center;
+	width: 100px;
+	padding-top: 32px;
+	font-size: 20px;
+	color: #333;
+	margin: 4px 0px;
+	/*background-color: #777;*/
+	background-color: rgba(120,120,120,0.9);
+	background-position: 50% 5px;
+	background-size: 27px auto;
+	border: 1px solid rgba(0,0,0,0.4);
+	border-radius: 6px;
+	
+	opacity: 0.8;
+	box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1), inset -2px -2px 5px rgba(0,0,0,0.1), 0px 1px 1px rgba(255,255,255,0.1);
+}
+
+.light_mode #selection_functions > div {
+	background-color: white;
+}
+
+#selection_functions > div:hover{
+	filter: brightness(95%);
+}
+
+#selection_functions > div:active {
+	box-shadow: inset -2px -2px 5px rgba(255,255,255,0.05), inset 2px 2px 5px rgba(0,0,0,0.05), 0px 1px 1px rgba(255,255,255,0.1);
+}
+
+#selection_functions > div.disabled_btn {
+	opacity: 0.3;
+	cursor: initial;
+	pointer-events: none;
+}
+
+
+#query_list nospawn {
+	display: block;
+	padding: 30px;
+	text-align: center;
+	/*font-style: italic;*/
+
+
+}
+
+
+
+#query_list >div {
+	padding: 0px 10px;
+}
+
+#query_list >div:nth-child(2n) {
+	background: rgba(150, 150, 150, 0.03);
+}
+
+#query_list >div:nth-child(2n)[selected] {
+	background: rgba(25, 200, 200, 0.12);
+}
+
+#query_list >div[selected] {
+	background: rgba(25, 200, 200, 0.1);
+}
+
+.light_mode #query_list > div[selected] { 
+	background: rgba(0, 200, 200, 0.15);
+}
+
+.light_mode #query_list >div:nth-child(2n)[selected] {
+	background: rgba(0, 180, 180, 0.15);
+}
+
+
+@media all and (max-width: 400px) {
+	#query_list {
+		margin: 4px;
+	}
+
+	#selection_functions {
+		padding: 2px;
+	}
+
+	#selection_functions > div {
+		width: 95px;
+	}
+}
+
+
+</style>
+
+
+</html>
+
+
+
+
+
+
+

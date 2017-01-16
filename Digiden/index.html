@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+    <link href='public/css/digiden.css' rel='stylesheet' type='text/css'>
+    <link href='public/css/index.css' rel='stylesheet' type='text/css'>
+    <link href='public/css/themes.css' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="public/js/AES.js"></script>
+    <script type="text/javascript" src="public/js/SAFE.js"></script>
+    <script src="digiden.js"></script>
+
+    <script src="http://SephReed.github.io/PINE/PINE_Core_4.8.js"></script>
+	<script src="http://SephReed.github.io/PINE/PINE_Var.js"></script>
+	<script src="http://SephReed.github.io/PINE/PINE_Needles.js"></script>
+    <!-- <script src="http://SephReed.github.io/PINE/PINE_Includes.js"></script> -->
+    <!-- <needle src="http://SephReed.github.io/PINE/needles/overlay.html"></needle> -->
+    <!-- <needle src="http://SephReed.github.io/PINE/needles/bgimg.html"></needle> -->
+    <script src="http://SephReed.github.io/PINE/needles/onreturn.js"></script>
+    <needle src="http://SephReed.github.io/PINE/needles/dropdownMenu.html"></needle>
+    <!-- <needle src="http://SephReed.github.io/PINE/needles/selectablelist.html"></needle> -->
+    <!-- <needle src="http://SephReed.github.io/PINE/needles/suggestions.html"></needle> -->
+    <!-- <needle src="public/needles/selectableList.html"></needle> -->
+    <!-- <needle src="public/needles/suggestions.html"></needle> -->
+    <!-- <needle src="public/needles/tooltip.html"></needle> -->
+    
+    <!-- <needle src="public/needles/switch.html"></needle> -->
+
+    <style>
+
+    </style>
+
+    <script type="text/javascript">
+
+
+    var QUERY_CACHE = [];
+    var local_query_cache = SAFE.get("QUERY_CACHE");
+    if(local_query_cache != null) {
+        console.log(local_query_cache);
+        QUERY_CACHE = JSON.parse(local_query_cache);
+    }
+  
+
+    function search() {
+        var title = El.byId("digiden_link");
+        El.attr(title, "href", "index.html");
+        // title.textContent = "PIA";
+        title.classList.remove("help_icon");
+
+    	El.byId("main_body").classList.add("results_mode");
+        var query = El.byId("search_bar").value;
+        var new_url = window.location.href;
+        console.log(new_url)
+
+        var uri_query = query.replace(/\+/g, "%2b");
+        console.log(uri_query);
+        uri_query = uri_query.replace(/\s+/g, '+');
+        console.log(uri_query);
+        new_url = new_url.replace(/\?.*$/g, '') + "?q=" + uri_query;
+
+        
+        history.pushState(undefined, "", new_url);
+
+        if(ALLOW_QUERY_CACHING) {
+            if(QUERY_CACHE.indexOf(query) == -1) {
+                QUERY_CACHE.push(query);
+                SAFE.set("QUERY_CACHE", JSON.stringify(QUERY_CACHE));
+            }
+
+            enableQueryCacheWarning();
+        }
+    }
+
+    function clearDataWarning() {
+        if(ALLOW_QUERY_CACHING == null)
+            El.byId("data_warning").classList.add("choice_made");
+    }
+
+    function show_settings() {
+    	var dropdown =  El.byId("settings_dropdown");
+    	dropdown.className = "displayed";
+
+    	// if(ALLOW_QUERY_CACHING == null) {
+    	// 	El.byId("data_warning").classList.add("choice_made");
+    	// }
+
+    	var mouseupFunc = function(event) {
+			if(dropdown == event.target || dropdown.contains(event.target)) return;	
+			dropdown.className = "";
+			this.removeEventListener('mouseup', mouseupFunc, false);
+		}
+
+		document.addEventListener('mouseup', mouseupFunc);
+    }
+
+
+
+
+    
+
+    
+    
+    // console.log(SAFE.get("ALLOW_QUERY_CACHING"), ALLOW_QUERY_CACHING);
+
+
+
+    function setQueryCachingEnabled(yesNo) {
+    	ALLOW_QUERY_CACHING = yesNo;
+        console.log(ALLOW_QUERY_CACHING)
+    	SAFE.set("ALLOW_QUERY_CACHING", ALLOW_QUERY_CACHING);
+    	El.byId("data_warning").classList.add("choice_made");
+        El.byId("query_storage_btn").FNS.switchUpdate();
+    }
+
+
+    function getQuery(name){
+        if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(window.location.search))
+            return name[1];
+
+        else return undefined;
+    }
+
+
+    PAGE = {};
+
+    var ALLOW_QUERY_CACHING;
+    PAGE.init = function() {
+        var tmp = SAFE.get("ALLOW_QUERY_CACHING");
+        if(tmp == "true")
+            ALLOW_QUERY_CACHING = true;
+        else if (tmp == "false")
+            ALLOW_QUERY_CACHING = false;
+    }
+    PAGE.init();
+
+
+    PAGE.onContent = function() {
+        console.log(ALLOW_QUERY_CACHING, "ALL")
+        if(ALLOW_QUERY_CACHING === true || ALLOW_QUERY_CACHING === false)
+            El.byId("data_warning").style.display = "none";
+
+        // var preQuery = U.getHttpArg("q");
+        var preQuery = getQuery("q");
+        console.log("")
+        if(preQuery) {
+            console.log(preQuery)
+            preQuery = preQuery.replace(/\+/g, ' ');
+            preQuery = preQuery.replace(/%2b/g, '+');
+            console.log(preQuery)
+            El.byId("search_bar").value = preQuery;
+            search();
+        } 
+
+
+        if(QUERY_CACHE.length) {
+            enableQueryCacheWarning();
+
+            if(SAFE.isOpen())
+                alert("Session Key in Use");
+        }
+
+
+        /************************
+        *   Set Key Function
+        ***********************/
+        var set_key = El.byId("set_key");
+        set_key.addEventListener("keyup", function(event) {
+            var key = event.key;
+            if(key == "Enter") {
+                SAFE.session(set_key.value);
+                set_key.style.display = "none";
+                forget_key.style.display = "";
+            }
+        });
+
+        El.byId("search_bar").focus();
+
+        var forget_key = El.byId("forget_key");
+        forget_key.addEventListener("click", function() {
+            SAFE.lock();
+            set_key.style.display = "";
+            forget_key.style.display = "none";
+        });
+
+        if(SAFE.isOpen()) 
+            set_key.style.display = "none";
+
+        else
+            forget_key.style.display = "none";
+    }
+
+
+    PAGE.loadSettings = function() {
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if(ALLOW_QUERY_CACHING === true || ALLOW_QUERY_CACHING === false)
+                El.byId("data_warning").style.display = "none";    
+            else
+                El.byId("data_warning").style.display = "";    
+        });
+        
+        // else
+    }
+
+
+    
+    document.addEventListener("DOMContentLoaded", PAGE.onContent);
+    // El.domReady(PAGE.onContent);
+    // El.docReady(PAGE.onContent);
+
+
+    function enableQueryCacheWarning() {
+        var btn = El.byId("query_storage_btn");
+        El.attr(btn, "tooltip", 'You already have some queries cached.  To erase them, go to "View Cached Data"');
+        btn.classList.add("switch_warn");
+    }
+
+
+
+    PINE.ready(function() {
+        setTimeout(function() {
+            El.byId("main_body").classList.add("page_loaded");
+        }, 750);
+    });
+
+
+
+    var suggestion_list = [];
+
+
+
+    </script>
+
+   
+</head>
+
+
+
+
+
+<body id="main_body" class="">
+<bgimg></bgimg>
+<div id="fgimg"></div>
+
+<!-- <div id="settings" onclick="show_settings()"></div> -->
+<div id="settings" showMenu="settings_dropdown" onclick="clearDataWarning()"></div>
+
+<div id="settings_dropdown" menu="" menuShow="onEnter">
+
+    <div id="session_key">
+        <a href="about.html#sessionKey" class="plain help_icon">Session Key:</a>
+            <input displayItem="on" id="set_key" type="password" placeholder="your private key">
+            <button displayItem id="forget_key">Expire</button><br>
+    </div>
+
+    <div>
+        <a href="about.html#queryCaching" class="plain help_icon">Allow Query Caching</a>
+        <switch id="query_storage_btn"
+            tooltip=""
+            onswitch="setQueryCachingEnabled" 
+            switchInit="ALLOW_QUERY_CACHING">
+            </switch><br>
+    </div>
+
+    <div>
+        Allow Results Caching
+        <switch onswitch="" 
+            switchInit="false">
+            </switch><br>
+    </div>
+
+    <div showMenu>
+        < Choose Theme
+        <div id="theme_select" dropdownMenu>
+            <div id="light_theme_overview" onclick="setTheme('light_mode')">Light</div>
+            <div id="common_theme_overview" onclick="setTheme('common_theme')">Common</div>
+            <div id="bluesky_theme_overview" onclick="setTheme('bluesky_theme')">Blue Sky</div>
+            <div id="pine_theme_overview" onclick="setTheme('pine_theme')">PINE</div>
+            <div id="stash_theme_overview" onclick="setTheme('stash_theme')">Stash</div>
+            <div id="space_theme_overview" onclick="setTheme('space_theme')">Sci Fi</div>
+            <div id="dark_theme_overview" onclick="setTheme('')">Dark</div>
+            
+            <!-- Light Mode
+            <switch onswitch="setLightMode" 
+            switchInit="LIGHT_MODE_ENABLED">
+            </switch><br> -->
+        </div>
+    </div>
+
+    
+    
+
+
+    <div><a href="cache.html">View Cached Data</a></div>
+
+    <div><a href="about.html#privacy">Privacy Statement</a></div>
+
+    <div><a href="about.html#digiden">About Digiden</a></div>
+</div>
+
+
+<div id="top_pad"></div>
+
+<div id="searcharea">
+	<div id="title"><a id="digiden_link" class="help_icon" href="about.html">Digiden</a></div>
+    <!-- <div id="title"><a id="digiden_link" class="help_icon" href="about.html">Payment Info Address</a></div> -->
+	<div id="search_box">
+		<input id="search_bar" 
+            type="text" 
+            onreturn="search" 
+            suggestions="QUERY_CACHE"
+            suggOut="suggestion_list" 
+            suggLimit="10" 
+            suggSpawner="suggestion_dropdown">
+            </input>
+		<div id="search_button" onclick="search()" ></div>
+        <div id="suggestion_dropdown" 
+            spawner="suggestion_list" 
+            style="display: none" 
+            selectableList="onhover"
+            deselectAllOn="exit"
+            onclick="search()">
+            <div spawn 
+                spawner="suggestion_list[i].parts"
+                value="{{suggestion_list[i].text}}" 
+                indexer="j"
+                selectableItem>
+                <span class="highlight_{{suggestion_list[i].parts[j].isTarget}}" spawn>{{suggestion_list[i].parts[j].text}}</span>
+            </div>
+        </div>
+	</div>
+    
+</div>
+
+<div id="fade_top"></div>
+
+<div id="content">
+	
+	<div id="results">
+		<div><span>Wooooo</span>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+		</div>
+
+		<div><span>Wooooo</span>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+		</div>
+
+		<div><span>Wooooo</span>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+		</div>
+
+		<div><span>Wooooo</span>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+		</div>
+
+		<div><span>Wooooo</span>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+		</div>
+
+		<div><span>Wooooo</span>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+			-tenahnedhstoenadshotenadshotenahdsoeta<br>
+		</div>
+
+
+	</div>
+</div>
+
+<div id="data_warning">
+	Digiden can store your queries and results locally for use as suggestions.  Would you like this enabled?
+    <div style="display:inline-block">
+	   <button id="data_allow" onclick="setQueryCachingEnabled(true)">Yes Please</button>
+	   <button id="data_no" onclick="setQueryCachingEnabled(false)">No Thank You</button>
+    </div>
+</div>
+
+
+</body>
+
+
+
+
+
+
+
+</html>
+
+
+
+

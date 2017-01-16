@@ -1,0 +1,151 @@
+Stash Q&A with Chris:
+
+
+
+0. Plug in: power/ethernet
+1. turn on (always on)
+2. pro downloads/update full blockchain; personal wallet, key, queries blockchain servers
+3. get android wallet (before)
+4. small screen shows QR, USB keys plug into phone and Node.  Pair
+
+
+Node:
+Solves server side problems, like a treasor for servers
+When stolen, transfer off fast.
+Watches and verifies all blockchain hashes.
+
+
+
+Node Security:
+Open to a few protocols.  Deposit, Witdrawl, Send
+
+
+
+
+Stash App:
+1. Can keep money on phone.
+2. Treasor does signing.
+	-piece of hardware which stores private key
+3. Uses BIP47, 2 way reusable address but private
+4. Just app, no node accounts, all on chain
+5. Connect to friend node, not paired deposit check fast
+
+
+Treasor Endorsing: none
+
+
+
+BIP47 Security:
+1. Anonymous on chain.
+2. Solves address reuse
+3. Comes with a return address.
+
+
+
+
+Stash App Security:
+1. phone get's lost reseed
+2. phone get's hacked
+	1. without node or treasor - bitcoin
+	2. with node - OT access
+3. ECC Ed25519, AES
+4. End to End Encrypted messaging.
+
+
+
+
+App vs Banking App:
+Not yet as secure
+
+
+
+
+
+
+
+
+
+
+OT Notary:
+1. incluig cheques (fully analogous o paper cheques)
+2. including untraceable digtal cash
+3. recurring payment plans
+ scriptable (customizable) smart contracts 16:36
+ bid/ask markets 16:37
+ (exchange) 16:37
+ end-t-end encrypted messaging with decentralized identity credentials 16:37
+ vouhers (cashier's cheques) 16:37
+ basket curencies
+
+
+
+OT vs Blockchain:
+Average use case, move back to blockchain.
+
+
+OT Security:
+
+
+
+Ricardian Contract:
+Contract with human readable terms
+
+
+
+Personal Edition:
+Not a full node, must trust other full nodes, does not have privacy, can't do color coins.
+Does have all the OT stuff.  Still stores coin, but less anonymous.
+
+Lookup: SPD
+
+
+Entrepise Edition:
+Support, Stash Pools, Scalable & Powerful
+
+Stash Pool:
+Prevents theft and fraud.  Multiple servers form a pool.  Only works for enterprise due to overhead.
+
+
+
+
+uses Tor so no need for opening Ports
+
+don't have to trust others, more privacy.
+
+
+full can do colored coins.
+
+
+enterprise can do stash pool.
+
+has encrypted messaging
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Stash Q&A with Justus:
+
+
+
+
+
+
+
+

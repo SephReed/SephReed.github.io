@@ -1,0 +1,19 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  	box-sizing: inherit;
+  	margin: 0px;
+	padding: 0px;
+	background-size: contain;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+html, body {
+	/*position: relative;*/
+	font-family: arial;
+	height: 100%;
+	width: 100%;
+}

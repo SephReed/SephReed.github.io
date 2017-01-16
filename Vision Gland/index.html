@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vision Gland?</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.00" />
+	<link rel="stylesheet" type="text/css" href="vision_gland.css">
+	<script type="text/javascript" src="text_color_changer.js"></script>
+	<script type="text/javascript" src="remove_current_link.js"></script>
+</head>
+<body>
+<div id="background"></div>
+<div id="foreground">
+	<div id="links">
+		<a href="index.html">Home</a>
+		<a href="bios.html">Artists</a>
+		<a href="projects.html">Projects</a>
+		<a href="beliefs.html">Our Beliefs</a>
+	</div>
+
+	<div id="cutout">
+		<img src="vision_gland_cutout.png">
+		<div id="hidden_link"></div>
+	</div>
+	<br>
+	<div style="background:#333; display: inline-block; padding:10px">You can watch us.  We have big plans:</div><br>
+	<div id="watch_us">
+		<a href="https://www.facebook.com/visiongland">
+			<img src="facebook_icon.png"></a>
+		<a href="https://www.instagram.com/visiongland/">
+			<img src="instagram_icon.png"></a>
+	</div>
+</div>
+
+</body>
+<script type="text/javascript">
+	var currentFrame;
+	var cutout = document.getElementById("cutout");
+	document.body.addEventListener("mousemove", function(event) {
+		if(currentFrame == undefined) {
+			currentFrame = window.requestAnimationFrame(function() {
+				currentFrame = undefined;
+				var x = event.clientX;
+				var y = event.clientY;
+				console.log(x, y);
+				var setbg = "radial-gradient(ellipse farthest-corner at "
+				+x+"px "
+				+y+"px ,"
+				+" #FF00FF 0%, rgba(0, 0, 255, 0.5) 50%, #00FFAA 95%)"
+				cutout.style.backgroundImage = setbg;
+			});	
+		}
+	});
+
+	var hiddenLink = document.getElementById("hidden_link");
+	hiddenLink.addEventListener("mouseenter", function() {
+		document.body.classList.add("deblur");
+	});
+
+	hiddenLink.addEventListener("mouseleave", function() {
+		document.body.classList.remove("deblur");
+	});
+
+</script>
+
+
+<style>
+
+	#cutout {
+		position: relative;
+		display: inline-block;
+		max-width: 70%;
+		margin: 10px;
+		padding: 5px;
+		background-image: radial-gradient(ellipse farthest-corner at 10px 10px ,#FF00FF 0%, rgba(0, 0, 255, 0.5) 50%, #00FFAA 95%)
+	}
+
+		#cutout img {
+			width: 100%;
+		}
+
+		#hidden_link {
+			position: absolute;
+			top: 53%;
+			left: 48.7%;
+			transform: translateX(-50%) translateY(-50%);
+			padding: 5%;
+			border-radius: 200px;
+		}
+
+			#hidden_link:hover {
+				cursor: none;
+				animation-name: blinky;
+				animation-duration: 0.25s;
+				animation-direction: alternate;
+				animation-iteration-count: infinite;
+			}
+
+			@keyframes blinky {
+				0% {
+					background: white;
+					padding: 2%;
+				}
+				100% {
+					background: #318;
+					padding: 6%;
+				}
+			}
+
+
+	#watch_us {
+		position: relative;
+	}
+
+	#watch_us >*{
+		filter: invert(100%);
+		border-color: inherit;
+	}
+		#watch_us img {
+			width: 10%;
+			margin: 4px;
+			border-radius: 200px;
+			background: #FFFD;
+		}
+
+		#watch_us span {
+			background: black;
+			color: white;
+			display: inline-block;
+			padding: 10px;
+			vertical-align: top;
+			margin: 8px;
+		}
+
+		#watch_us img:hover, #watch_us>span:hover{
+			box-shadow: 0px 0px 20px #FF0;
+		}
+			#watch_us img:hover{
+				background: #00FF00;
+			}
+			#watch_us span:hover{
+				color: #00FF00;
+			}
+
+
+</style>
+
+</html>

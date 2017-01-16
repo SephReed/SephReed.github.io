@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="public/js/AES.js"></script>
+    <script type="text/javascript" src="public/js/SAFE.js"></script>
+    <title></title>
+
+    <script type="text/javascript">
+        var pass = "heyYou";
+        // var secret = AES_CBC.encrypt("lalalalla", pass);
+        // console.log(secret);
+
+        // console.log(AES_CBC.decrypt(secret, pass));
+
+        SAFE.store("hat", "fez");
+
+        SAFE.open(pass)
+        SAFE.store("hat", "beanie");
+
+
+
+        
+    </script>
+</head>
+<body>
+
+</body>
+</html>

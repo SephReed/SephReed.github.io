@@ -1,0 +1,365 @@
+
+
+/*
+orange #FF5722
+dark gray #212121
+gray #303030
+
+gold linear-gradient(#FFCD64, #F7B256 3px, #AC6225)
+glossy orange linear-gradient(#F39F84, #BF5532 3px, #FF5722);
+glossy grey linear-gradient(#F39F84, #BF5532 3px, #FF5722);
+*/
+
+
+@font-face {
+    font-family: "Oswald";
+    src: url("public/fonts/Oswald/Oswald-Regular.ttf");
+}
+@font-face {
+    font-family: "Oswald";
+    src: url("public/fonts/Oswald/Oswald-Bold.ttf");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Oswald";
+    src: url("public/fonts/Oswald/Oswald-Light.ttf");
+    font-weight: lighter;
+}
+
+
+
+.bgimg {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.bgimg_over {
+	z-index: 1;
+}
+
+.fancy {
+	font-family: times;
+	font-style: italic;
+}
+
+
+h1, .super_title, .super_title_sub {
+	text-shadow: 1px -1px rgba(0,0,0,0.2), 1px 1px rgba(0,0,0,0.2), -1px 1px rgba(0,0,0,0.2), -1px -1px rgba(0,0,0,0.2);
+	color: #FAFAFA;
+	font-weight: normal;
+}
+
+	.super_title {
+		font-size: 80px;
+		color: #FFF;
+		font-weight: lighter;
+	}
+
+	.super_title_sub {
+		position: relative;
+		top: -15px;
+		color: #EAEAEA;
+		font-size: 32px;
+	}
+
+
+html {
+	background: #222;
+	color: #FAFAFA;
+}
+
+
+tr:not(:last-child) td {
+	border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+	tr:nth-child(2n+2) {
+		background: rgba(0,0,0,0.08);
+	}
+
+	tr:not(:first-child) td:not(:last-child) {
+		border-right: 1px solid rgba(0,0,0,0.2);
+	}
+
+	td {
+		min-width: 100px;
+	}
+
+body {
+	font-family: Oswald;
+	font-size: 20px;
+}
+	#topbar {}
+
+		#topbar .menu, #topbar .logo {
+			position: fixed;
+			top: 0px;
+			height: 50px;
+			z-index: 10;
+			/*background: linear-gradient(#F39F84, #BF5532 3px, #FF5722);*/
+			background: linear-gradient(#4A4A4A 1px, #333 3px);
+			/*background: linear-gradient(#FFCD64, #F7B256 3px, #AC6225);*/
+			border-style: solid;
+			border-color: #222;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.3);	
+		}
+
+		#topbar .logo {
+			left: 50%;
+			width: 50px;
+			border-width: 0px 3px 3px 3px;
+			border-bottom-right-radius: 32px;		
+			border-bottom-left-radius: 32px;	
+		}
+
+		#topbar .menu {
+			right: 0px;
+			line-height: 50px;
+			color: #333;
+			font-size: 20px;
+			/*vertical-align: center;*/
+			/*text-align: right;*/
+			padding: 0px 90px 0px 20px;
+			
+			/*width: 400px;*/
+			max-width: 99%;
+			border-width: 0px 0px 3px 3px;
+			border-bottom-left-radius: 32px;		
+		}
+
+			#topbar .menu img {
+				margin-top: 4px;
+			}
+
+			#topbar .menu tab, #topbar .menu button {
+				background: none;
+				cursor: pointer;
+				color: inherit;
+				border-radius: 10px;
+				padding: 3px 3px 0px 3px;
+				border: none;
+
+			}
+
+				#topbar .menu tab {
+					color: #FAFAFA;
+					margin-right: 20px;
+					/*text-decoration-color: #FF5722;
+					text-decoration-line: 3px;*/
+					transition: 0.3s ease background;
+				}
+
+				#topbar .menu tab:hover {
+					background: #FFF1;
+				}
+
+				#topbar .menu tab[tabSelected] {
+					/*background: #FFF4;*/
+					
+					cursor: default;
+					background: transparent;
+					text-decoration: none;
+					border-bottom: 3px solid #FF5722;
+					/*opacity: 0.9;*/
+					/*border: 1px solid #FFF4;*/
+				}
+
+			#topbar .menu img {
+				vertical-align: top;
+			}
+
+			#topbar #buy {
+				/*vertical-align: center;*/
+				color: #333;
+				line-height: 25px;
+				font-size: 20px;
+				font-family: -apple-system;
+				position: absolute;
+				right: 20px;
+				top: 4px;
+				background: linear-gradient(#FFCD64, #F7B256 3px, #AC6225);
+				font-size: inherit;
+				border: 2px solid #222;
+				padding: 3px 7px;
+				border-radius: 10px;
+				margin-top: 4px;
+				margin-right: 0px;
+				/*display: inline-block;*/
+			}
+
+				#buy:hover {
+					opacity: 0.9;
+				}
+
+				#topbar #buy:active {
+					background: linear-gradient(#AC6225, #F7B256 3px, #FFCD64);
+				}
+
+	
+
+	#blackline_top, #blackline_bottom {
+		position: fixed;
+		z-index: 9;
+		height: 8px;
+		width: 100%;
+		background: #222D;
+	}
+
+		#blackline_top {
+			top: 0px;
+		}
+
+		#blackline_bottom {
+			bottom: 0px;
+		}
+
+
+
+	#main {
+		position: relative;
+		background: linear-gradient(#555 4px, #444 8px);
+		/*background: linear-gradient(#F39F84, #BF5532 3px, #FF5722);*/
+		/*padding-bottom: 100px;*/
+		z-index: 2;
+		/*color: #333;*/
+		/*color: #000;*/
+		/*min-height: 30%;*/
+		/*min-height: calc(100% - 100px);*/
+		overflow-x: hidden;
+		min-height: 80%;
+		padding-bottom: 100px;
+		/*border-top: 3px solid #222;*/
+		box-shadow: 1px 1px 30px rgba(0,0,0,0.8);
+	}
+
+		#content, #content > div {
+			/*padding: 10px 8%;*/
+			/*min-height: calc(100% - 100px);*/
+			/*height: 100%;*/
+			text-align: center;
+
+		}
+
+			#header {
+				background: black;
+				background-image: url("public/images/large/bitcoin.jpg");
+				height: 20%;
+				width: 100%;
+				border-bottom: 3px solid #222;
+			}
+
+				#header h1 {
+					padding: 200px 0px 0px 50px;
+					color: white;	
+				}
+
+
+			.section {
+				
+			}
+				.section:not(:last-child) {
+					border-bottom: 3px solid #222;	
+				}
+
+				.section:nth-child(2n+2) {
+					background: rgba(0,0,0,0.2);
+				}
+
+
+		#footer {
+			position: absolute;
+			/*position: relative;*/
+			background: #333;
+			border-top: 3px solid #222;
+			height: 100px;
+			width: 100%;
+			bottom: 0px;	
+		}
+
+			#footer .bgimg {
+				background-image: url("public/images/repeating/polygons.png");
+				background-size: 300px auto;
+				background-repeat: repeat;
+				opacity: 0.07;
+			}
+
+
+
+
+
+@media all and (max-width: 600px) {
+  	#topbar .menu {
+  		padding: 0px 10px;
+  		max-width: 100%;
+  		width: 100%;
+  		
+  		border-left-width: 0px;
+  		border-bottom-left-radius: 0px;
+  	}
+}
+
+
+@media all and (max-width: 500px) {
+  	#topbar .menu {
+  		font-size: 18px;
+  	}
+  		#topbar .menu tab {
+  			margin-right: 15px;
+  		}
+
+  		#topbar #buy {
+  			top: 2px;
+  		}
+}
+
+@media all and (max-width: 420px) {
+	.super_title {
+		font-size: 60px;
+	}
+
+  	#topbar .menu {
+  		padding: 0px 2px;
+  		font-size: 17px;
+  	}
+
+  		#topbar .menu tab {
+  			padding: 5px;
+  			margin-right: 5px;
+  		}
+
+
+  		#topbar .menu img {
+  			height: 38px;
+  		}
+
+  		#topbar #buy {
+  			top: 3px;
+  			right: 2px;
+  		}
+}
+
+@media all and (max-width: 350px) {
+	#topbar .menu {
+  		font-size: 15px;
+  	}
+
+  		#topbar #buy {
+  			top: 4px;
+  		}
+}
+
+
+
+
+
+
+
+
+
+
