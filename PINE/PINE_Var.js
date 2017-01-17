@@ -174,7 +174,8 @@ PINE.createNeedle("[pnvatts]").addInitFn( {
 	opType: PINE.ops.STATIC, 
 	isAsync: true,
 	// isMultirun: true,
-	fn: function(resolve) {
+	fn: function(args) {
+		var resolve = args.complete;
 		var initMe = this.domNode;
 
 		var rulesIndex = El.attr(initMe, "pnvatts");

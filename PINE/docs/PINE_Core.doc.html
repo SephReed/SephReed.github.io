@@ -5,10 +5,10 @@
 	<h2 id="coreQRE" aIndex="Q.R.E.">Quick Reference Example</h2>
 	<pine>
 		Source:
-		<pre><include src="PINE_Core.QRE.html" pretifyCode="html" ENDPINE></include></pre>
+		<pre><view src="PINE_Core.QRE.html" pretifyCode="html" pineend></view></pre>
 		Output:
 		<div class="output">
-			<include src="PINE_Core.QRE.html"></include>
+			<view src="PINE_Core.QRE.html"></view>
 		</div>
 	</pine>
 
@@ -185,10 +185,10 @@
 				<funcDoc id="coreStopAtts" aIndex>
 					<h1>PINE Stop Attributes</h1>
 					<br>
-					There are two other stop attributes in PINE.  endpine will make all nodes afterwards unreachable.  nopine will turn PINE around immedaitely<br>
+					There are two other stop attributes in PINE.  pineend will make all nodes afterwards unreachable.  nopine will turn PINE around immedaitely<br>
 					<br>
 					<pre pretifyCode="html">
-						<!-- specialAtt runs with endpine -->
+						<!-- specialAtt runs with pineend -->
 						<div specialAtt ENDPINE>
 							<!-- otherSpecialAtt does not run-->
 							<div otherSpecialAtt></div>
@@ -307,7 +307,7 @@
 						<br>
 						Get's all of the first matches to a keyword within the children of root node.  If a match has more matches as children those child matches are not sought after.  If skipRoot is not set to false the root will not be returned if it matches the keyword.<br>
 
-						<pre pretifyCode="html" endpine>
+						<pre pretifyCode="html" pineend>
 							<div id="parent">
 								<div id="child1"></div>
 								<div id="child2">

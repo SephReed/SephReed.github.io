@@ -809,9 +809,9 @@ PINE.updateAt = function(root, passedOps) {
 	// console.log("updateAt", root);
 
 	var newRoot = (root.__pine__ === undefined);
-	console.log(root);
+	// console.log(root);
 	if(newRoot) {
-		console.log("new root", root, root.__pine__);
+		// console.log("new root", root, root.__pine__);
 		PINE.initiate(root);
 		PINE.spreadNeedles(root);
 	}
@@ -821,7 +821,7 @@ PINE.updateAt = function(root, passedOps) {
 			return SyncPromise.resolved();
 		}
 		else { 
-			console.log("non new root not held");
+			// console.log("non new root not held");
 			
 		}
 	}
@@ -833,7 +833,7 @@ PINE.updateAt = function(root, passedOps) {
 	// 	console.log("parentPassed", parentPassed ? parentPassed.length : undefined, passedOps.length);
 	// }
 		
-	console.log(root, "updateAt");
+	// console.log(root, "updateAt");
 	// PINE.dispatchChildNodeChanges(root);
 	passedOps = passedOps || PINE.ops.order;
 	return PINE.growOps(root, passedOps);

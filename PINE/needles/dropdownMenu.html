@@ -279,6 +279,11 @@ p_MENUS.watchOutClicks = function() {
 			var checkMe = p_MENUS.showers[i];
 			onMenu = (checkMe == event.target || checkMe.contains(event.target));
 		}
+
+		for(var i  = 0; i < p_MENUS.displayed.length && !onMenu; i++)  {
+			var checkMe = p_MENUS.displayed[i];
+			onMenu = (checkMe == event.target || checkMe.contains(event.target));
+		}
 		
 		if(onMenu == false) {
 			for (var i in p_MENUS.showers)

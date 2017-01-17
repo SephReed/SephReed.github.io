@@ -6,17 +6,17 @@
 
 
 
-PINE.createNeedle("[pretifyCode]").addFunction({
-	opType : PINE.ops.GATHER,
-	fn : function(initMe, needle) {
-		// console.log("HEY");
+PINE.createNeedle("[pretifyCode]", function(pretty) {
+	pretty.addInitFn(PINE.ops.GATHER, function(){
 		var codeType = El.attr(initMe, "pretifyCode") || "html";
 
 		console.log("codeType "+codeType);
 
 		initMe.innerHTML = pretifyCode(initMe.innerHTML, codeType);
-	}
+	});
 });
+
+
 
 
 

@@ -24,7 +24,7 @@ switch {
         background-image: url("../images/on_off_warn.png");
     }
 
-    switch[selected] {
+    switch.switch_on {
         background-image: url("../images/on_off1.png");
     }
 

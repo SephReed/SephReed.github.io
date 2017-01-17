@@ -1,18 +1,26 @@
 
 
 
-PINE("[onreturn]", function(initMe) {
+PINE.createNeedle("[onreturn]", function(onreturn) {
+
+	onreturn.addAttArg("fnName", ["onreturn"], "string")
+
+	onreturn.addInitFn(function() {
+		var domNode = this.domNode;
+		domNode.addEventListener("keypress", function(event) {
+			if(event.keyCode == 13) {
+				domNode.FNS.return();
+			}
+		});
+	});
+
+	onreturn.FNS.return = function() {
+		var job = this;
+		var fn = window[job.attArg.fnName];
+
+		console.log("pressed");
+		if(fn) fn(job.domNode.innerHTML);
+	}
 	
-	PINE.addFunctionToNode(initMe, "return", function() {
-		var submitFn = El.attr(initMe, "onreturn");
-		var fn = window[submitFn];
-
-		if(fn) fn(initMe.innerHTML);
-	});
-
-	initMe.addEventListener("keypress", function(event) {
-		if(event.keyCode == 13) {
-			initMe.FNS.return();
-		}
-	});
+	
 });

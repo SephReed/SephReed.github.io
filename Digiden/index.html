@@ -13,21 +13,18 @@
     <script type="text/javascript" src="public/js/SAFE.js"></script>
     <script src="digiden.js"></script>
 
-    <script src="http://SephReed.github.io/PINE/PINE_Core_4.8.js"></script>
-	<script src="http://SephReed.github.io/PINE/PINE_Var.js"></script>
-	<script src="http://SephReed.github.io/PINE/PINE_Needles.js"></script>
-    <!-- <script src="http://SephReed.github.io/PINE/PINE_Includes.js"></script> -->
-    <!-- <needle src="http://SephReed.github.io/PINE/needles/overlay.html"></needle> -->
-    <!-- <needle src="http://SephReed.github.io/PINE/needles/bgimg.html"></needle> -->
-    <script src="http://SephReed.github.io/PINE/needles/onreturn.js"></script>
-    <needle src="http://SephReed.github.io/PINE/needles/dropdownMenu.html"></needle>
-    <!-- <needle src="http://SephReed.github.io/PINE/needles/selectablelist.html"></needle> -->
-    <!-- <needle src="http://SephReed.github.io/PINE/needles/suggestions.html"></needle> -->
-    <!-- <needle src="public/needles/selectableList.html"></needle> -->
-    <!-- <needle src="public/needles/suggestions.html"></needle> -->
-    <!-- <needle src="public/needles/tooltip.html"></needle> -->
+    <script src="../PINE/PINE_Core_4.8.js"></script>
+	<script src="../PINE/PINE_Var.js"></script>
+	<script src="../PINE/PINE_Needles.js"></script>
+    <!-- <script src="../PINE/PINE_Includes.js"></script> -->
+    <!-- <needle src="../PINE/needles/overlay.html"></needle> -->
+    <!-- <needle src="../PINE/needles/bgimg.html"></needle> -->
+    <script src="../PINE/needles/onreturn.js"></script>
+    <needle src="../PINE/needles/dropdownMenu.html"></needle>
+    <needle src="../PINE/needles/selectablelist.html"></needle>
+    <needle src="../PINE/needles/suggestions.html"></needle>
     
-    <!-- <needle src="public/needles/switch.html"></needle> -->
+    <needle src="../PINE/needles/switch.html"></needle>
 
     <style>
 
@@ -112,7 +109,7 @@
         console.log(ALLOW_QUERY_CACHING)
     	SAFE.set("ALLOW_QUERY_CACHING", ALLOW_QUERY_CACHING);
     	El.byId("data_warning").classList.add("choice_made");
-        El.byId("query_storage_btn").FNS.switchUpdate();
+        El.byId("query_storage_btn").FNS.switchSet(yesNo);
     }
 
 
@@ -261,14 +258,14 @@
         <a href="about.html#queryCaching" class="plain help_icon">Allow Query Caching</a>
         <switch id="query_storage_btn"
             tooltip=""
-            onswitch="setQueryCachingEnabled" 
+            switch="setQueryCachingEnabled(_switchState)" 
             switchInit="ALLOW_QUERY_CACHING">
             </switch><br>
     </div>
 
     <div>
         Allow Results Caching
-        <switch onswitch="" 
+        <switch switch="" 
             switchInit="false">
             </switch><br>
     </div>

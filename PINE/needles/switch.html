@@ -12,7 +12,11 @@ PINE.createNeedle("[switch]", function(swch) {
 
 		mod.FNS.switchSet(initState);
 
+		// alert("hey");
+
 		mod.domNode.addEventListener("mousedown", function(event) {
+			console.log("hit")
+
 			var mode = mod.attArg.mode;
 			if(mode == "latch")
 				mod.FNS.switchFlip();
