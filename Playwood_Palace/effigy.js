@@ -1,60 +1,257 @@
 var components = {};
-components["stud"] = {
+components["leg"] = {
 	twoFour8: 2,
 	screw: 5
 }
 components["deck"] = {
 	twoFour8 : 7,
-	screw: 3 * 10
+	screw: (7*3) + (8*3)
 }
 
 components["wall"] = {
 	twoFour8 : 2,
-	screw: 4,
-	oneFour8 : 10
+	screw: 8,
+	oneFour8 : 11
 }
+
+components["ladder"] = {
+	twoFour8: 6,
+	screw: (4*8) + (2*3)
+}
+
+components["panel"] = {
+	twoTwo8: 3,
+	luan: 1,
+	screw: 4 + 4
+}
+
+components["rail"] = {
+	twoFour8: 3,
+	oneFour8: 2,
+	screw: 18,
+}
+
+components["diagonals"] = {
+	twoFour8: 2,
+	screw: 12,
+}
+
+components["slide"] = {
+	twoSix8: 2,
+	twoFour8: 3,
+	luan : 3,
+	thickPly : 2,
+	screw: (5*8) + (4*3)
+}
+
+
+// SIDES
 
 components["side12"] = {
-	stud : 4,
-	twoSix12: 1
+	leg : 4,
+	twoFour8: 3,
+	twoSix12: 1,
+	screw: (4*3) + (2*2*4)
 }
+
+	components["side12double"] = {
+		side12: 1,
+		twoSix12: 1,
+		screw: (4*3)
+	}
+
 components["side8"] = {
-	stud : 3,
-	twoSix8: 1
+	leg : 3,
+	twoFour8: 2,
+	twoSix8: 1,
+	screw: (3*3) + (2*2*3)
 }
+
+	components["side8double"] = {
+		side8: 1,
+		twoSix8: 1,
+		screw: (3*3)
+	}
 
 components["side4"] = {
-	stud : 2
+	leg : 2,
+	twoSix8: 0.5,
+	twoFour8: 1,
+	screw: (2*3) + (2*2*2)
 }
 
-components["block8_12"] = {
-	side12 : 3,
-	deck : 6,
-	wall : 9
-}
 
-components["block12_12"] = {
-	side12 : 4,
-	deck : 9,
-	wall : 12
-}
 
-components["block8_8"] = {
-	side8 : 3,
-	deck : 4,
-	wall : 6
-}
+var sections = {};
 
-components["block4_8"] = {
-	side8 : 2,
-	deck : 2,
-	wall : 3
-}
 
+//BLOCKS
 components["block4_4"] = {
 	side4 : 2,
 	wall : 2
 }
+
+
+
+components["block4_8"] = {
+	side8 : 2,
+	diagonals : (2*2) + 3,
+}
+
+	sections.A_1_3 = 1;
+	components["A_1_3"] = {	//red entry room
+		block4_8: 1,
+		deck : 2,
+		ladder: 1,
+		rail: 3,
+		panel: 2,
+	}
+
+	sections.A_2_3 = 1;
+	components["A_2_3"]	= {  //under daft couch
+		block4_8: 1,
+		deck: 2,
+	}
+
+	sections.A_2_4 = 1;
+	components["A_2_4"]	= {  //curvy stairs
+		block4_8: 1,
+		deck: 2,
+		panel: 1,
+		wall: 0.5
+	}
+
+	sections.A_4_4 = 1;
+	components["A_4_4"]	= {  //ball pit room red
+		block4_8: 1,
+		deck: 2,
+		panel: 1
+	}
+
+	sections.A_4_6 = 1;
+	components["A_4_6"]	= {  //back ladder entrance
+		block4_8: 1,
+		deck: 1,
+		panel: 3,
+		rail: 1,
+		ladder: 2,
+		wall: 2
+	}
+
+	sections.B_1_6 = 1;
+	components["B_1_6"]	= {  //stair start
+		block4_8: 1,
+		deck: 2,
+		rail: 2
+	}
+
+	sections.B_1_7 = 1;
+	components["B_1_7"]	= {  //stair end
+		block4_8: 1,
+		deck: 2,
+		rail: 4,
+		wall: 4
+	}
+
+	sections.B_6_7 = 1;
+	components["B_6_7"]	= {  //slide start
+		block4_8: 1,
+		deck: 2,
+		rail: 4
+	}
+
+
+
+
+components["block8_8"] = {
+	side8 : 2,
+	side8double: 1,
+	diagonals: (4*2) + 4
+}
+	sections.A_4_6 = 1;
+	components["A_4_6"]	= {  //back blue corner
+		block8_8: 1,
+		deck: 4,
+		panel: 1,
+		rail: 4,
+		wall: 4
+	}
+
+
+
+
+
+components["block8_12"] = {
+	side12 : 2,
+	side12double : 1,
+	diagonals : (2*6) + 5
+}
+
+	sections.A_1_1 = 1;
+	components["A_1_1"] = { //black board room
+		block8_12: 1,
+		deck: 6,
+		ladder: 5,
+		panel: 2,
+		rail: 3,
+	}
+
+	sections.A_5_4 = 1;
+	components["A_5_4"] = { //blue entrance room
+		block8_12: 1,
+		deck: 6,
+		panel: 6,
+		rail: 1,
+		slide: 1,
+	}
+
+	sections.B_3_6 = 1;
+	components["B_3_6"] = { //back center
+		block8_12: 1,
+		deck: 6,
+		rail: 5,
+		wall: 4,
+	}
+
+
+
+components["block12_12"] = {
+	side12 : 2,
+	side12double: 2,
+	diagonals: (9*2) + 6
+}
+
+	sections.A_1_5 = 1;
+	components["A_1_5"] = {	  //back red corner
+		block12_12: 1,
+		deck: 7,
+		rail: 5,
+		panel: 5,
+		wall : 6
+	}
+
+	sections.A_5_1 = 1;
+	components["A_5_1"] = {	  //front blue corner
+		block12_12: 1,
+		deck: 5,
+		rail: 6,
+		wall : 13,
+		slide: 1,
+	}
+
+	sections.B_3_3 = 1;
+	components["B_3_3"] = {	  //top center
+		block12_12: 1,
+		deck: 10,
+		rail: 9,
+		wall : 9 + 3,
+		ladder: 1,
+	}
+
+
+components["sections"] = sections;
+
+
 
 
 components["tower"] = {
@@ -64,11 +261,7 @@ components["tower"] = {
 	switch : 1
 }
 
-components["slide"] = {
-	twoSix8: 2,
-	plywood : 3,
-	thickPly : 2,
-}
+
 
 components["lighting"] = {
 	ledwire : 28*4 + 2*(8*4) + (28+8+8+8+ (3*12)),
@@ -90,13 +283,14 @@ components["baseboard"] = {
 
 
 components["build"] = {
-	block8_12 : 3,
-	block12_12 : 3,
-	block8_8 : 2,
-	block4_8 : 6,
-	slide: 2,
+	sections: 1,
+	// block8_12 : 3,
+	// block12_12 : 3,
+	// block8_8 : 2,
+	// block4_8 : 6,
+	// slide: 2,
 	tower : 6,
-	baseboard: 1,
+	// baseboard: 1,
 	lighting : 1,
 	sound: 1,
 	contingency : 1,
@@ -140,13 +334,16 @@ for (var compo in components) {
 
 
 var prices = {
+	twoTwo8: 1.85,
 	oneFour8 : 1.99,
 	twoFour8 : 2.81,
+	twoFour12 : 4.82, 
 	twoSix8 : 4.33,
 	twoSix12 : 9.57,
 	screwbox : 98.5,
 	wireBundle : 30.57,
 	speakerWireBundle : 37.57,
+	luan: 9.99,
 	plywood : 8.00,
 	thickPly : 20.00,
 	lightSocket : 1.39,
@@ -160,7 +357,7 @@ var prices = {
 	replacementDaftTools: 100.00,
 	paint: 20.00,
 	mylarRoll: 35.38,
-	ballBundle: 220.00,
+	ballBundle: 125.00,
 	ropeBundle: 72.00,
 	pulley: 4.00
 }
