@@ -89,11 +89,28 @@ The timing on everything is hard to estimate, but with so few cuts, and everythi
 <br>
 <b>Budget:</b> Itemized below.
 <br>
-<h2>Computed Item Counts</h2>
-<div id="items"></div>
+<!-- <h2>Computed Item Counts</h2>
+<div id="items"></div> -->
 
-<h2>Computed Totals</h2>
-<div id="totals"></div>
+<h2>Ideal Budget</h2>
+<table id="totals">
+	<tr>
+		<td>Item</td>
+		<td>Count</td>
+		<td>Price Per</td>
+		<td>Total</td>
+	</tr>
+</table>
+
+<h2>Minimun Viable Budget</h2>
+<table id="mvp">
+	<tr>
+		<td>Item</td>
+		<td>Count</td>
+		<td>Price Per</td>
+		<td>Total</td>
+	</tr>
+</table>
 
 
 
@@ -103,10 +120,10 @@ The timing on everything is hard to estimate, but with so few cuts, and everythi
 <h2>Graphics:</h2>
 <div class="graphics">
 	Basic Layout<br>
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/DLdMxA0PMGI" frameborder="0" allowfullscreen></iframe>
+	<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/DLdMxA0PMGI" frameborder="0" allowfullscreen></iframe> -->
 	<br><br>
 	Board by Board (WIP)<br>
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/wn00-45b488" frameborder="0" allowfullscreen></iframe>
+	<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/wn00-45b488" frameborder="0" allowfullscreen></iframe> -->
 
 	<br><graphic id="update_dec_6">
 		Board by Board (Dec 6 2016)<br>
@@ -175,7 +192,7 @@ The timing on everything is hard to estimate, but with so few cuts, and everythi
 
 
 </body>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function listOut(domNode, list) {
 		for(var i in list) {
 			var pre = document.createElement("pre");
@@ -188,10 +205,52 @@ The timing on everything is hard to estimate, but with so few cuts, and everythi
 	listOut(document.getElementById("items"), itemsOut);
 	
 	// document.getElementById("items").textContent = itemsOut;
+</script> -->
+
+<script type="text/javascript">
+	function listOut(domNode, list) {
+		for(var i in list) {
+			var div = document.createElement("tr");
+			var mat = list[i];
+			for(var info in mat) {
+				var addMe = document.createElement("td");
+				var text = mat[info];
+				if(typeof text == "number") 
+					text = '$ '+text.toFixed(2);
+
+				addMe.textContent = text;
+				div.appendChild(addMe);	
+			}
+			domNode.appendChild(div);
+		}
+	}
+
+	listOut(document.getElementById("totals"), totalsOut);
+	listOut(document.getElementById("mvp"), mvp);
+	// listOut(document.getElementById("items"), itemsOut);
 </script>
 
 
 <style>
+table {
+	width: 100%;
+}
+table td {
+	border-style: none solid solid none;
+	border-width: 1px;
+	border-color: rgba(250,250,250,0.1);
+	padding-right: 25px;
+}
+
+table tr:first-child {
+	font-weight: bold;
+	
+}
+
+	table tr:first-child td{
+		border-bottom-width: 3px;
+	}
+
 /*.colorful {
 	background-image: linear-gradient(
         rgba(255, 0, 0, 0.05) 0%,
