@@ -73,10 +73,10 @@ ELATE.create = function(name, planFn) {
 		var superClass = buildMe.__elate__.supers[superName];
 		out.prototype.super[superName] = superClass;
 
-		console.log(superName);
+		// console.log(superName);
 
 		for(var subClass in superClass.prototype.super) {
-			console.log("sub - ",subClass);
+			// console.log("sub - ",subClass);
 			out.prototype.super[subClass] = superClass.prototype.super[subClass];
 		}
 

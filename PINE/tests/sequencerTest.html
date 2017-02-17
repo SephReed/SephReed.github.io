@@ -26,23 +26,26 @@
 			sequins = [];
 			for(var i = 0; i < 10; i++) {
 				var time = i;
-				sequins.push(new Sequencable(time/2));
+				// sequins.push(new Sequencable(time/2));
+				// sequins.push(new SequencerSpan(time/2));
+				sequins.push(new MidiNote(i, 120, time/2));
 			}
 
-			group1 = new SequencableGroup(0, sequins);
+			// group1 = new SequencableGroup(0, sequins);
 
-			sequins = [];
-			for(var i = 0; i < 10; i++) {
-				var time = i;
-				sequins.push(new Sequencable(time/2));
-			}
+			// sequins = [];
+			// for(var i = 0; i < 10; i++) {
+			// 	var time = i;
+			// 	sequins.push(new Sequencable(time/2));
+			// }
 
-			group2 = new SequencableGroup(.25, sequins);
+			// group2 = new SequencableGroup(.25, sequins);
 			// group2.setPosition(.25);
 
 
 
-			unce = new Sequencer([group1, group2]);	
+			// unce = new Sequencer([group1, group2]);	
+			unce = new Sequencer(sequins);
 			unce.setLoopEnd(5);
 
 

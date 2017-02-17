@@ -73,7 +73,7 @@ PINE.evals = [];
 
 
 
-
+PINE.SVGNS = "http://www.w3.org/2000/svg";
 
 
 /**********************************
@@ -629,9 +629,10 @@ PINE.keyApplies = function(keyword, domNode)  {
 		//
 	else if(keyword && domNode)  {
 		keyword = keyword.toUpperCase();
-		if(domNode.attributes && keyword.charAt(0) == '[')  {
+		if(keyword.charAt(0) == '[')  {
 			var att = keyword.replace(/\[|\]/g, '');
-			return domNode.attributes[att] != null;
+			return domNode.hasAttribute 
+				&& (domNode.hasAttribute(att) || domNode.hasAttribute(att.toLowerCase()));	
 		}
 		else return domNode.tagName == keyword;
 	}
@@ -1761,7 +1762,7 @@ El.attr = function(domNode, name, value) {
 		domNode = El.byId(domNode);
 
 	if(domNode && domNode.attributes) {
-		var target = domNode.attributes[name];
+		var target = domNode.attributes[name] || domNode.attributes[name.toLowerCase()];
 
 		if(target == null){
 			if(value === undefined)

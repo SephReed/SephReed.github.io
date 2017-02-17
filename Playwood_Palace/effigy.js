@@ -31,6 +31,7 @@ components["joistAttach"] = {
 
 components["deck"] = {
 	// twoFour8 : 7,
+	// util_twoFour8: 5,
 	twoFour8: 5,
 	frameNail: (7*3),
 	joistAttach: 6
@@ -94,7 +95,8 @@ components["boltAttach"] = {
 
 components["side12"] = {
 	leg : 4,
-	twoFour8: 3,
+	// twoFour8: 3,
+	twoFour12: 2,
 	twoSix12: 1,
 	screw: (4*3) + (2*2*4)
 }
@@ -184,11 +186,10 @@ components["block12_12"] = {
 *
 ********************/
 
-var sections = {};
 
 //Lower Red Side
-
-sections.A_1_1 = 1;
+var lowerFloor = {};
+lowerFloor.A_1_1 = 1;
 components["A_1_1"] = { //black board room
 	block8_12: 1,
 	deck: 6,
@@ -199,7 +200,7 @@ components["A_1_1"] = { //black board room
 	foot: 12,
 }
 
-	sections.A_1_3 = 1;
+	lowerFloor.A_1_3 = 1;
 	components["A_1_3"] = {	//red entry room, curvy stairs
 		block8_12: 1,
 		deck : 6,
@@ -211,7 +212,7 @@ components["A_1_1"] = { //black board room
 		foot: 12,
 	}
 
-	sections.A_1_5 = 1;
+	lowerFloor.A_1_5 = 1;
 	components["A_1_5"] = {	  //back red corner
 		block12_12: 1,
 		deck: 7,
@@ -227,14 +228,14 @@ components["A_1_1"] = { //black board room
 
 //Entry Stairs
 
-sections.A_4_1 = 1;
+lowerFloor.A_4_1 = 1;
 components["A_4_1"] = {	//entry stairs
 	deck : 1.5,
 	twoFour8 : 8,
 	screw : 2 * (2*8)
 }
 
-	sections.A_4_2 = 1;
+	lowerFloor.A_4_2 = 1;
 	components["A_4_2"] = {	//entry stairs top
 		deck : 1,
 		leg: 2,
@@ -246,7 +247,7 @@ components["A_4_1"] = {	//entry stairs
 
 
 //Lower Blue Side
-sections.A_4_4 = 1;
+lowerFloor.A_4_4 = 1;
 components["A_4_4"] = {	  //ball pit room
 	block8_12: 1,
 	deck: 6,
@@ -258,7 +259,7 @@ components["A_4_4"] = {	  //ball pit room
 	foot: 12,
 }
 
-	sections.A_5_1 = 1;
+	lowerFloor.A_5_1 = 1;
 	components["A_5_1"] = {	  //front blue corner
 		block12_12: 1,
 		deck: 5,
@@ -271,7 +272,7 @@ components["A_4_4"] = {	  //ball pit room
 		foot: 16,
 	}
 
-	sections.A_6_4 = 1;
+	lowerFloor.A_6_4 = 1;
 	components["A_6_4"] = {	  //back blue corner
 		block8_12: 1,
 		deck: 6,
@@ -284,10 +285,13 @@ components["A_4_4"] = {	  //ball pit room
 	}
 
 
+components["lowerFloor"] = lowerFloor;
+
 
 
 //Upper Floor
-sections.B_1_6 = 1;
+var upperFloor = {};
+upperFloor.B_1_6 = 1;
 components["B_1_6"]	= {  //upper stair start
 	block8_8: 1,
 	triangleStep: 3,
@@ -297,7 +301,7 @@ components["B_1_6"]	= {  //upper stair start
 	wall: 4,
 }
 
-	sections.B_3_3 = 1;
+	upperFloor.B_3_3 = 1;
 	components["B_3_3"] = {	  //top center
 		block8_12: 1,
 		deck: 5 + 2,
@@ -307,7 +311,7 @@ components["B_1_6"]	= {  //upper stair start
 		boltAttach: 4,
 	}
 
-	sections.B_3_5 = 1;
+	upperFloor.B_3_5 = 1;
 	components["B_3_5"] = { //back center
 		block8_12: 1,
 		deck: 6,
@@ -316,7 +320,7 @@ components["B_1_6"]	= {  //upper stair start
 		boltAttach: 2,
 	}
 
-	sections.B_6_6 = 1;
+	upperFloor.B_6_6 = 1;
 	components["B_6_6"]	= {  //slide start
 		block4_8: 1,
 		deck: 2,
@@ -326,7 +330,7 @@ components["B_1_6"]	= {  //upper stair start
 
 
 //Turrets
-	sections.B_1_1 = 1;
+	upperFloor.B_1_1 = 1;
 	components["B_1_1"] = {	//red turret
 		turret: 1,
 		deck : 2,
@@ -334,7 +338,7 @@ components["B_1_6"]	= {  //upper stair start
 		rail: 4,
 	}
 
-	sections.B_7_1 = 1;
+	upperFloor.B_7_1 = 1;
 	components["B_7_1"] = {	//blue turret
 		turret: 1,
 		deck : 2,
@@ -342,7 +346,7 @@ components["B_1_6"]	= {  //upper stair start
 		rail: 4,
 	}
 
-
+components["upperFloor"] = upperFloor;
 
 
 
@@ -356,9 +360,6 @@ components["B_1_6"]	= {  //upper stair start
 *
 ********************/
 	
-
-
-components["sections"] = sections;
 
 
 
@@ -429,7 +430,8 @@ components["spaceRoom"] = {
 
 
 components["build"] = {
-	sections: 1,
+	lowerFloor: 1,
+	upperFloor: 1,
 
 	face : 1,
 	towerShort : 4,
@@ -478,6 +480,7 @@ for (var compo in components) {
 var prices = {
 	twoTwo8: 1.85,
 	oneFour8 : 1.99,
+	util_twoFour8 : 2.40,
 	twoFour8 : 2.50,
 	twoFour10 : 3.98,
 	twoFour12 : 4.82, 
@@ -611,6 +614,7 @@ var bundeled = {
 var translations = {
 	twoTwo8: "2x2 x 8'",
 	oneFour8: "1x4 x 8'",
+	util_twoFour8: "Utility 2x4 x 8'",
 	twoFour8: "2x4 x 8'",
 	twoSix8: "2x6 x 8'",
 	twoSix12: "2x6 x 12'",
@@ -755,7 +759,7 @@ var droppable = {
 
 
 
-var tax = 1.0825;
+var tax = 0.0825;
 var mvp = [];
 var totalsOut = [];
 
@@ -805,7 +809,7 @@ for(var mat in build) {
 	var addMe = {};
 	addMe.name = translations[mat] || mat;
 	addMe.count = count + (units[mat] || " ct");
-	addMe.price = price * tax;
+	addMe.price = price;// * tax;
 
 	addMe.total = addMe.price * count;
 
@@ -837,6 +841,7 @@ for(var mat in build) {
 }
 
 
+
 totalsOut.push({
 	name : "Total w/o Contingency",
  	price : '',
@@ -850,17 +855,6 @@ mvp.push({
 	count : '',
 	total : mvpTotal.total - 2000,
 });
-
-// totalsOut.noContingecy = totalsOut.total - totalsOut.contingency;
-
-// var bid = {};
-
-// bid.name = "Project Bid";
-// bid.price = "";
-// bid.count = "";
-// bid.total = (~~(total.total/100) + 1)*100;
-// totalsOut.push(bid);
-
 
 totalsOut.sort(function(a, b) {
 	if(a.total < b.total)
@@ -877,5 +871,54 @@ mvp.sort(function(a, b) {
 		return 1;
 	return 0;
 })
+
+
+
+var totalTax = {
+	name : "Tax",
+ 	price : '',
+	count : '',
+	total : total.total * tax,
+};
+totalsOut.push(totalTax);
+
+totalsOut.push({
+	name : "Total w/ Tax",
+ 	price : '',
+	count : '',
+	total : total.total + totalTax.total,
+});
+
+
+
+
+
+var mvpTax = {
+	name : "Tax",
+ 	price : '',
+	count : '',
+	total : mvpTotal.total * tax,
+}
+mvp.push(mvpTax);
+
+mvp.push({
+	name : "Total w/ Tax",
+ 	price : '',
+	count : '',
+	total : mvpTotal.total + mvpTax.total,
+});
+
+// totalsOut.noContingecy = totalsOut.total - totalsOut.contingency;
+
+// var bid = {};
+
+// bid.name = "Project Bid";
+// bid.price = "";
+// bid.count = "";
+// bid.total = (~~(total.total/100) + 1)*100;
+// totalsOut.push(bid);
+
+
+
 
 

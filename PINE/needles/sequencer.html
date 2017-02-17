@@ -13,7 +13,7 @@ var Sequencable = ELATE.create("Sequencable", function() {
 	}
 
 	this.setPosition = function(i_pos) {
-		console.log(i_pos, this, this.position)
+		// console.log(i_pos, this, this.position)
 		if(i_pos === this.position) return;
 
 		this.position = i_pos;
@@ -74,7 +74,12 @@ var Sequencable = ELATE.create("Sequencable", function() {
 			return 1;
 		else return NaN;
 	};
+
+	this.trigger = function (argument) {
+		console.log(this.absolutePosition);
+	}
 });
+
 
 
 
@@ -90,7 +95,7 @@ var SequencableGroup = ELATE.create("SequencableGroup", function() {
 		this.sequinsChanges = [];
 		this.allSequinsIncomplete = true;
 
-		console.log(this);
+		// console.log(this);
 
 		this.super.Sequencable.call(this, position);
 
@@ -110,7 +115,7 @@ var SequencableGroup = ELATE.create("SequencableGroup", function() {
 
 
 	this.devalidateAbsolutePosition = function() {
-		console.log(this.super);
+		// console.log(this.super);
 		this.super.Sequencable.prototype.devalidateAbsolutePosition.call(this);
 
 		for(var i in this.childSequins)
@@ -221,7 +226,7 @@ var SequencableGroup = ELATE.create("SequencableGroup", function() {
 				return a.sequin.compareTo(b.sequin);
 			});
 
-			console.log(updateUs);
+			// console.log(updateUs);
 
 
 			var startPos = 0;
@@ -229,7 +234,7 @@ var SequencableGroup = ELATE.create("SequencableGroup", function() {
 				var moveMe = updateUs.shift();
 				var moveSequin = moveMe.sequin;
 
-				console.log('sequin update');
+				// console.log('sequin update');
 
 				U.removeFromArray(moveMe, moveSequin.changeRegisters);
 
@@ -336,15 +341,18 @@ var Sequencer = ELATE.create("Sequencer", function() {
 			}
 
 			else if(nextPos <= this.currentTimePosition)
-				console.log(nextPos)
+				sequin.trigger();
+				// console.log(nextPos)
 			else {
 				var milliTill = this.getMilliTill(nextPos + this.positionOffset);
 				if(milliTill <= 2) 
-					console.log(nextPos)
+					sequin.trigger();
+					// console.log(nextPos)
 
 				else {
 					return window.setTimeout(function() {
-						console.log(nextPos);
+						// console.log(nextPos);
+						sequin.trigger();
 						sequencer.nextSequin++;
 						sequencer.currentTimePosition = nextPos;
 						sequencer.lastMilli = Date.now();
@@ -417,10 +425,15 @@ var Sequencer = ELATE.create("Sequencer", function() {
 	}
 
 
-	this.attachToGUI =  function() {
+	this.attachToGUI = function() {
 		var sequencer = this;
 		// console.log(this);
 		var domNode = sequencer.GUI;
+
+		var sequins = sequencer.childSequins;
+		for(var i in sequins) {
+			domNode.FNS.addSequencable(sequins[i]);
+		}
 
 		if(this.isRunning) {
 			this.startAnimation();
@@ -465,6 +478,102 @@ var Sequencer = ELATE.create("Sequencer", function() {
 
 
 
+
+var SequencerSpan = ELATE.create("SequencerSpan", function() {
+	this.extend("SequencableGroup");
+	this.extend("PineGuiable");
+
+	this.constructor = function(start, length) {
+		var span = this;
+		span.super.PineGuiable.call(this, "SequencerSpan");
+		span.super.SequencableGroup.call(span, 0, []);
+		
+		span.length = length !== undefined ? length : 0.25;
+		span.startSequin = new Sequencable(0);
+		span.endSequin = new Sequencable(span.length);
+
+		span.addSequencable(span.startSequin)
+		span.addSequencable(span.endSequin);
+
+
+		span.setPosition(start);
+	}
+
+	this.setLength = function (i_length) {
+		this.length = i_length;
+		var start = this.startSequin;
+		var end = this.endSequin;
+
+		end.setPosition(start.position + i_length);
+	}
+
+	this.attachToGUI = function() {
+		this.rect = El.firstOfTag(this.GUI, "rect");
+	}
+
+	this.updateGUI = function (pxPerMeasure) {
+		// alert("updating");
+		var span = this;
+		var startPx = span.startSequin.position * pxPerMeasure;
+		var endPx = span.endSequin.position * pxPerMeasure;
+		console.log("updating", startPx, endPx, span.getAbsolutePosition());
+		// span.rect.setAttributeNS(PINE.SVGNS, "x", startPx);
+		// span.rect.setAttributeNS(PINE.SVGNS, "width", endPx - startPx);
+		span.rect.setAttribute("width", endPx - startPx);
+	}
+});
+
+
+var MidiNote = ELATE.create("MidiNote", function() {
+	this.extend("SequencerSpan");
+
+	this.constructor = function(midiNum, vel, start, length) { 
+		var note = this;
+		note.super.SequencerSpan.call(note, start, length);
+
+		note.midiVel = vel;
+		note.midiNum = midiNum;
+
+		note.startSequin.trigger = function() {
+			console.log(this);
+			console.log("note on "+note.midiNum);
+			var domNode = note.GUI;
+			domNode.dispatchEvent(new CustomEvent("MIDI", {
+				detail : {
+					noteNum : note.midiNum,
+					vel : note.midiVel,
+				},
+				bubbles : true,
+				cancelable : true
+			}));
+		}
+		note.endSequin.trigger = function() {
+			console.log("note off "+note.midiNum);
+			var domNode = note.GUI;
+			domNode.dispatchEvent(new CustomEvent("MIDI", {
+				detail : {
+					noteNum : note.midiNum,
+					vel : 0,
+				},
+				bubbles : true,
+				cancelable : true
+			}));
+		}
+	}
+});
+
+
+
+// var MidiNoteGroup = ELATE.create("MidiNoteGroup", function() {
+// 	this.extend("PineGuiable");
+// 	this.extend("SequencableGroup");
+// });
+
+
+
+
+
+
 PINE.createNeedle("sequencer", function(seq) {
 
 	seq.addAttArg("initZoom", ["sequencerInitZoom", "initZoom"], "number", 8);
@@ -473,11 +582,12 @@ PINE.createNeedle("sequencer", function(seq) {
 		var job = this;
 		domNode = job.domNode;
 		job.timebarPos = 0;
+		job.SVG = El.firstOfTag(domNode, "svg");
 		job.zoom = job.attArg.initZoom;
-
+		job.sequencables = [];
 		job.timebar = El.firstOfClass(domNode, "timebar");
 
-		job.FNS.sizeUpdate();
+		job.FNS.sequencerSizeUpdate();
 	});
 
 	seq.FNS.setTimebarPosition = function(pos) {
@@ -491,7 +601,7 @@ PINE.createNeedle("sequencer", function(seq) {
 		El.attr(job.timebar, "d", path); 
 	}
 
-	seq.FNS.sizeUpdate = function() {
+	seq.FNS.sequencerSizeUpdate = function() {
 		var job = this;
 		var domNode = job.domNode;
 
@@ -504,13 +614,65 @@ PINE.createNeedle("sequencer", function(seq) {
 
 			job.pxPerMeasure = job.pxWidth/job.zoom; 
 
-			console.log(job);
+			// console.log(job);
 			
 			El.attr(svg, "width", job.pxWidth);
 			El.attr(svg, "height", job.pxHeight);
 
 			// El.attr(svg, "viewBox", "0 0 5 1");
+			job.FNS.updateSequenceablePosition();
 		});
+	}
+
+	seq.FNS.addSequencable = function(addMe) {
+		// console.log(addMe);
+		var job = this;
+		// var domNode = job.domNode;
+
+		job.sequencables.push(addMe);
+
+		// if(addMe.getGUIItem) {
+
+		// }
+		// else {
+		// 	var line = document.createElement("path");
+		// 	var pos = addMe.getAbsolutePosition() * job.pxPerMeasure;
+
+		// 	var path = "M "+pos+" 0 V "+job.bounds.height;
+		// 	El.attr(line, "d", path); 
+		// 	El.attr(line, "stroke", "black"); 
+
+		// 	domNode.appendChild(line);
+		// 	job.sequencables.push(line);
+		// }
+	}
+
+	seq.FNS.updateSequenceablePosition = function() {
+		var job = this;
+		var sequins = job.sequencables;
+
+		for (var i in sequins) {
+			var addMe = sequins[i];
+
+			var pxPos = addMe.getAbsolutePosition() * job.pxPerMeasure;
+			console.log(addMe);
+
+			var addGUI;
+			if(addMe.getGUI) {
+				addGUI = addMe.getGUI();
+				addMe.updateGUI(job.pxPerMeasure);
+				addGUI.setAttribute("transform", "translate("+(~~pxPos)+")");
+			}
+			else {
+				addGUI = document.createElementNS(PINE.svgns, "path");
+				
+				var path = "M "+pxPos+" 0 V "+job.bounds.height;
+				El.attr(addGUI, "d", path); 
+				El.attr(addGUI, "stroke", "black"); 
+			}
+
+			job.SVG.appendChild(addGUI);
+		}
 	}
 
 });
@@ -531,6 +693,17 @@ Unce
 	    <path class="timebar" d="M 0 0 V 10000" cx="50" cy="0" stroke="blue"></path>
 	</svg>
 </sequencer>
+
+
+<svg version="1.1"
+    baseProfile="full"
+    width="1" height="1"
+    xmlns="http://www.w3.org/2000/svg">
+
+	<g defineGUI="SequencerSpan" >
+		<rect x="10" y="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="5"/>
+	</g>
+</svg>
 
 
 
