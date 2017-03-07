@@ -1,1 +1,35 @@
-There are over 40,000 Zip Codes in the US.  
+
+
+Overall idea:
+-----------------
+Rent page theming and header space as advertisement/virtue signaling based off of currently searched zip code.
+
+
+In detail:
+---------------------------
+When a user chooses a zip code to search in, change the page css to display the theming and logo of the company renting said zip code.  That zip code is used as the default for theming until a new zip is chosen.  
+
+
+Rental Process:
+-------------------
+The price to rent is based off of demand, with higher population density areas having a higher price, and low population areas being rentable at a minimum of 1 cent a day.
+
+When a organization rents a zip, they are aware before and during rental of what style attributes they are allowed to change.  Renters are also given the option to pay Aunt Bertha to design one for them?  All updates to theme are checked before going live for functionality on tablet, phone, and desktop.  For organizations paying less than $50? a month, a fee is required to update.  Organizations updating more than once a day are also given a fee?
+
+
+Pros:
+-----------------------
+1. There are 40,000 Zip codes in the US, so there's no shortage of product.
+2. Theming becomes localized naturally.  The style of the page is likely to suit the local population better if being themed by a local organization.
+3. Profit
+4. Companies get to virtue signal while advertising.  By putting their name on a public service, they are doing a good thing that everyone gets to see.
+5. Doesn't interfere with company goal.  If someone doens't want to put their name on a site that promotes x, they don't have to, and you don't need them.  Most money will come from metropolitan areas, which also tend to be more progressive.
+6. HIGHLY DIVERSIFIED CLIENTS.  "Diversify your portfolio."  Diversity is immunity, by having many different types of clients, the odds of losing a majority of your revenue all at once is unlikely.
+
+
+Cons:
+-----------------------
+1. Whitelables are rendered even more useless.
+
+
+
