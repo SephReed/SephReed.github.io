@@ -30,9 +30,10 @@ body {
 
 	bottombar {
 		background-color: #006BA6;
+		color: #AAA;
 
 	}
 
 		bottombar > a {
-			color: #E9EBEE;
+			color: #FFF;
 		}
