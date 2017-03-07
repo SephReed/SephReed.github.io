@@ -1,0 +1,38 @@
+body {
+	background-image: url(../../images/sponsors/bg_kaiser.png) ;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: bottom;
+}
+
+	navbar {
+		background-color: white;
+		border-color: #bdbdbd;
+		border-top-style: none;
+	}
+
+		tabletbuttons > * {
+			border-color: #1B455C;
+		}
+
+			tabletbuttons .button {
+				background-color: #006BA6;
+			}
+
+		navbar .navlinks {
+			filter: invert(50%);
+		}
+
+		headerbar > #corporate_logo {
+			top: 4px;
+			height: 33px;
+		}
+
+	bottombar {
+		background-color: #006BA6;
+
+	}
+
+		bottombar > a {
+			color: #E9EBEE;
+		}

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
+
+
+	<script type="text/javascript">
+		PINE.ready(function() {
+			var corporate = U.getHtmlQuery("co");
+
+			if(corporate) {
+				var addCss = document.createElement("link");
+				addCss.rel="stylesheet";
+				addCss.type="text/css";
+				addCss.href= "public/css/sponsors/"+corporate+".css";
+				console.log(addCss);
+				document.body.appendChild(addCss);
+
+
+				El.byId("corporate_logo").src = "public/images/sponsors/logo_"+corporate+".png";
+			}
+			else {
+				document.body.classList.add("default_theme");
+			}
+		});
+	</script>
+</head>
+<body>
+	<quicktheme>
+		Quick Theme Picker
+		<hr>
+		<a href="index.html">Default</a>
+		<a href="index.html?co=seton">Seton</a>
+		<a href="index.html?co=planned_parenthood">Planned Parenthood</a>
+		<a href="index.html?co=salvation_army">Salvation Army</a>
+		<a href="index.html?co=kaiser">Kaiser</a>
+		<a href="index.html?co=amerigroup">Amerigroup</a>
+		<a href="index.html?co=robin_hood">Robin Hood</a>
+
+	</quicktheme>
+
+	<topbar>
+		<headerbar>
+			<img class="bertha_logo" src="public/images/logo.png"> 
+			<span class="tag_line">| Connecting Needs with Good Deeds</span>
+			<img id="corporate_logo">
+			<loginarea>
+				<a href='#'>Sign In</a>
+				<a href='#'>Sign Up</a>
+				<a href='#'>? Support</a>
+			</loginarea>
+		</headerbar>
+		<navbar>
+			<img class="" src="public/images/searchbox.png"> 
+			<img class="navlinks" src="public/images/navbar.png"> 
+
+			<tabletbuttons>
+				<searcharea>
+					<searchbutton class="button">
+						<img src="public/images/icon_search.png">
+					</searchbutton>
+					search by keyword
+				</searcharea>
+				<a class="button" href="#">Browse Categories</a>
+			</tabletbuttons>
+		</navbar>
+	</topbar>
+
+	<instructions>
+		<h1>It look's like there's plenty of helpful hands in your area!</h1>
+		<br>
+		Use the searchbar or categories above to find a the public service that specializes in what you're looking for.
+	</instructions>
+
+	<bottombar>
+		<img class="bertha_logo" src="public/images/logo.png"> 
+		<a href="#">Browse Programs</a> | 
+		<a href="#">Add Programs</a> | 
+		<a href="#">For Organizations</a> | 
+		<a href="#">About Us</a> | 
+		<a href="#">Terms</a> | 
+		<a href="#">Privacy</a>
+		<br>
+		&#169; 2012-2017. Made with love in Austin.
+	</bottombar>
+
+</body>
+
+
+<style>
+	body {
+		background-color: #f0f0f0;
+		font-family: arial;
+		padding-bottom: 2px;
+
+		background-image: url("public/images/bg_bertha.png");
+		background-position: bottom 40px center;
+		background-size: auto 50%;
+	}
+
+		quicktheme {
+			display: block;
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			opacity: 0;
+			color: #FAFAFA;
+			z-index: 10;
+			background-color: #333;
+			border-radius: 5px;
+			border: 3px solid #222;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
+			padding: 10px;
+		}
+
+			quicktheme:hover {
+				opacity: 1;
+			}
+
+			quicktheme > a {
+				color: #1EDDDD;
+				display: block;
+				padding: 2px 0px;
+			}
+
+
+		topbar {
+			display: block;
+			box-shadow: 1px 1px 9px rgba(0,0,0,0.3);
+		}
+
+			headerbar {
+				position: relative;
+				display: block;
+				background-color: white;
+				padding: 14px 20px;
+				color: #777;
+				font-size: 16px;
+				/*line-height: 20px;*/
+
+			}
+
+				headerbar > .bertha_logo {
+					vertical-align: top;
+					margin-right: 20px;
+				}
+
+					.bertha_logo {
+						height: 20px;
+					}
+
+				headerbar > #corporate_logo {
+					position: absolute;
+					left: 50%;
+					transform: translate(-50%);
+					top: 0px;
+					height: 100%;
+				}
+
+				loginarea {
+					display: block;
+					position: absolute;
+					top: 0px;
+					right: 0px;
+					bottom: 0px;
+				}
+
+					loginarea > a {
+						display: inline-block;
+						padding: 4px 7px;
+						font-size: 13px;
+						height: 100%;
+						line-height: 36px;
+						text-decoration: none;
+						color: inherit;
+					} 
+
+						loginarea > a:hover {
+							color: black;
+						}
+
+			navbar {
+				display: block;
+				position: relative;
+				height: 90px;
+				padding: 10px;
+				background-color: #167E8E;
+				border-style: solid none;
+				border-color: #1B7280;
+				border-width: 2px;
+				/*overflow: auto;*/
+			}
+
+
+				navbar .navlinks {
+					position: absolute;
+					right: 30px;
+				}
+
+				tabletbuttons {
+					display: none;
+					/*height: 60px;*/
+					text-align: center;
+				}
+
+					tabletbuttons > * {
+						display: inline-block;
+						width: 40%;
+						height: 40px;
+						margin: 0px 3%;
+						color: white;
+						padding: 10px;
+						border-radius: 8px;
+						border: 1px solid #2d3d4d;
+						text-align: center;
+						text-decoration: none;
+					}
+
+					tabletbuttons > searcharea {
+						display: inline-block;
+						position: relative;
+						/*padding: 0px 0px ;*/
+						background-color: white;
+						overflow: hidden;
+						color: #AAA;
+						vertical-align: top;
+						text-align: left;
+					}
+
+						searcharea > searchbutton {
+							display: block;
+							position: absolute;
+							top: 0px;
+							right: 0px;
+							height: 100%;
+							width: 50px;
+							/*background-image: url("public/images/icon_search.png");*/
+							background-size: 60% auto;
+							cursor: pointer;
+							border-left-style: solid;
+							border-width: 1px;
+							border-color: inherit;
+						}
+
+							searcharea > searchbutton > img {
+								position: relative;
+								top: 4px;
+								left: 4px;
+							}
+
+					tabletbuttons .button {
+						background-color: #34495E;
+					}
+
+
+		instructions {
+			display: block;
+			color: #333;
+			margin: 50px 20%;
+			font-size: 20px;
+			text-align: center;
+			/*text-shadow: 2px 2px rgba(0,0,0,0.5), -2px 2px rgba(0,0,0,0.5),  2px -2px rgba(0,0,0,0.5),  -2px -2px rgba(0,0,0,0.5);*/
+			filter: drop-shadow(0px 0px 3px white);
+		}
+
+			instructions h1 {
+				font-size: 30px;
+			}
+
+		bottombar {
+			display: block;
+			position: absolute;
+			background-color: white;
+			bottom: 0px;
+			height: 45px;
+			width: 100%;
+			box-shadow: 1px 1px 9px rgba(0,0,0,0.3);
+			text-align: right;
+			color: #777;
+			font-size: 12px;
+			padding: 6px 10px 0px 10px; 
+		}
+
+			bottombar > .bertha_logo {
+				display: none;
+			}
+
+			bottombar > a {
+				text-decoration: none;
+				color: #167E8E;
+				padding: 4px;
+			}
+
+
+	@media all and (max-width: 1100px) {
+		headerbar > .bertha_logo {
+			margin-right: 10px;
+		}
+		headerbar .tag_line {
+			display: inline-block;
+			font-size: 15px;
+			width: 20%;
+			text-align: center;
+		}
+	}
+
+	@media all and (max-width: 1000px) {
+		headerbar .tag_line {
+			display: none;
+		}
+
+		instructions {
+			margin-left: 3%;
+			margin-right: 3%;
+		}
+
+		navbar {
+			height: 60px;
+		}
+
+			navbar tabletbuttons {
+				display: block;
+			}
+
+			navbar > img {
+				display: none;
+			}  	
+	}
+
+	@media all and (max-width: 700px) {
+		loginarea {
+			height: 40px;
+			width: 40px;
+			right: 5px;
+			top: 5px;
+			border: 1px solid rgba(0,0,0,0.2);
+			border-radius: 5px;
+			background-image: url("public/images/icon_user.png");
+			background-size: 70% auto;
+			background-color: rgba(250,250,250,0.5);
+		}
+			loginarea > a {
+				display: none;
+			}
+
+		instructions {
+			margin-top: 10px;
+		}
+	}
+
+
+	@media all and (max-width: 620px) {
+		body {
+			/*padding-bottom: 60px;*/
+		}
+
+		headerbar {
+			/*height: 50px;*/
+		}
+
+			body:not(.default_theme)  headerbar > .bertha_logo {
+				height: initial;
+				width: 18%;
+			}
+
+		navbar {
+			padding: 5px;
+			height: 53px;
+		}
+			navbar tabletbuttons > *{
+				margin: 0px 1%;
+				width: 47%;
+				padding-left: 2px;
+				padding-right: 2px;
+			}
+				navbar searcharea {
+					font-size: 14px;
+				}
+
+
+		bottombar {
+			text-align: center;
+			height: 60px;
+		}
+			
+	}
+
+
+	@media all and (max-width: 500px) {
+		body {
+			padding-bottom: 75px;
+		}
+			headerbar {
+				height: 50px;
+			}
+
+				body:not(.default_theme)  headerbar > .bertha_logo {
+					display: none;
+				}
+
+				headerbar > #corporate_logo {
+					transform: none;
+					left: 20px;
+				}
+
+			bottombar {
+				
+				height: 75px;
+			}
+
+				body:not(.default_theme) bottombar > .bertha_logo {
+					display: block;
+					margin: auto;
+				}
+	}
+}
+</style>
+</html>

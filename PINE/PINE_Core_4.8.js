@@ -1580,7 +1580,7 @@ U.cookie = U.setCookie = U.getCookie = U.deleteCookie = function() {
 
 
 
-U.getHttpArg = function(varName, url){
+U.getHtmlQuery = U.getHttpArg = function(varName, url){
 	if(url === undefined)
 		url = window.location.href;
    	// if(varName=(new RegExp('[?&]'+encodeURIComponent(varName)+'=([^&]*)')).exec(url))
