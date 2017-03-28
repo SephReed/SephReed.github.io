@@ -45,14 +45,15 @@ components["triangleStep"] = {
 }
 
 components["wall"] = {
-	twoFour8 : 2,
+	twoFour8 : 1/2,
+	twoThree8 : 1.5,
 	screw: 8,
-	oneFour8 : 11,
+	oneFour8 : 12,
 	frameNail : 3*11, 
 }
 
 components["ladder"] = {
-	twoFour8: 6,
+	twoFour8: 6 + 2,
 	screw: (4*8) + (2*3)
 }
 
@@ -64,8 +65,8 @@ components["panel"] = {
 }
 
 components["rail"] = {
-	twoFour8: 3,
-	oneFour8: 2,
+	twoFour8: 8/2,
+	// oneFour8: 2,
 	frameNail: 2 * (4*2),
 	screw: 2 * (4*2),
 }
@@ -82,6 +83,18 @@ components["slide"] = {
 	luan : 4,
 	plyThreeQuart : 2,
 	screw: (5*8) + (4*3)
+}
+
+components["slideChunk"] = {
+	twoSix12: 1,
+	whiteboard: 0.6666,
+	leg: 3,
+	twoFour8: 10,
+	plyThreeQuart: 0.6666,
+	boltAttach: 3
+
+
+
 }
 
 components["boltAttach"] = {
@@ -446,6 +459,47 @@ components["build"] = {
 	pulley: 2
 }
 
+// components["bulbLighting"] = {
+// 	// clampLight: 4 + 6,
+// 	outletToSocket: 4+6,
+// 	colorLight: 6 
+// }
+
+// components["electrical"] = {
+// 	gfci: 1,
+// 	malePlug: 12,
+// 	femalePlug: 8,
+// 	silicone: 2,
+// 	extensionCord: 1,
+// 	bulbLighting: 1,
+// }
+
+// components["build"] = {
+// 	deck: 2 + 4 + 12 + 2,
+// 	rail: 2 + 4 + 4 + 4 + 3  + 6 + (3 + 4 + 4 + 3),
+// 	wall: (3 + 3 + 4 + 6) + (2+4+3+3+2), 
+// 	twoSix12: 2,
+// 	side12: 1,
+// 	side8: 2 + 2 + 2,
+// 	side8double: 2 + 1,
+// 	slideChunk: 3,
+// 	tower: 5,
+// 	turret: 2,
+// 	ladder: 10,
+// 	whiteboard: 2,
+// 	foot: 12+6+12 + 16+8+8,
+
+// 	luan: 8 + 3 +3 + 3 + 3,
+// 	twoTwo8: 6 * (8+2),
+
+// 	electrical: 1,
+
+// 	plasticRoll: 1,
+// 	washer: 50,
+// 	nut: 50,
+// 	boltHalfIn: 25,
+// }
+
 
 
 
@@ -481,6 +535,7 @@ var prices = {
 	twoTwo8: 1.85,
 	oneFour8 : 1.99,
 	util_twoFour8 : 2.40,
+	twoThree8 : 2.08,
 	twoFour8 : 2.50,
 	twoFour10 : 3.98,
 	twoFour12 : 4.82, 
@@ -489,6 +544,11 @@ var prices = {
 	shortScrewbox : 9.37,
 	screwbox : 98.5,
 	frameNailBox : 20.98,
+	gfci: 33.00,
+	malePlug: 2.97,
+	femalePlug: 4.58,
+	extensionCord: 50.00,
+	silicone: 12.92,
 	joistNailBox: 22.98,
 	wireBundle : 30.57,
 	speakerWireBundle : 37.57,
@@ -506,6 +566,8 @@ var prices = {
 	rpi3: 50.00,
 	replacementDaftTools: 100.00,
 	paint: 20.00,
+	plasticRoll: 25.00,
+	outletToSocket: 2.50,
 	mylarRoll: 35.38,
 	ballBundle: 115.00,
 	ropeBundle: 72.00,
@@ -515,15 +577,19 @@ var prices = {
 	washer: 0.18,
 	joistHanger: 0.67,
 	christmas: 6.95,
+	whiteboard: 12.97,
 }
 
 var build = simples["build"];
 
-build["screw"] *= 1.333;
+if(build["screw"])
+	build["screw"] *= 1.333;
 // build["screwbox"] = ~~(build["screw"]/1950)+1;
 
 // build["wire"] = 
-build["wire"] *= 1.333;
+
+if(build["wire"])
+	build["wire"] *= 1.333;
 // build["wireBundle"] = ~~(build["wire"]/100)+1;
 
 // build["ledwire"] = 28*4 + 2*(8*4) + (28+8+8+8+ (3*12));
@@ -615,11 +681,13 @@ var translations = {
 	twoTwo8: "2x2 x 8'",
 	oneFour8: "1x4 x 8'",
 	util_twoFour8: "Utility 2x4 x 8'",
+	twoThree8: "2x3 x 8'",
 	twoFour8: "2x4 x 8'",
 	twoSix8: "2x6 x 8'",
 	twoSix12: "2x6 x 12'",
 	twoFour12: "2x4 x 12'",
 	paint: "Paint",
+	silicone: "High Temp Silicone",
 	replacementDaftTools: "Replacement DaFT Tools",
 	speakerWireBundle: "Speaker Wire Bundles",
 	miniProjector: "Mini Projectors",
@@ -628,6 +696,9 @@ var translations = {
 	mylarRoll: "Mylare Rolls",
 	colorLight: "Color LED Lights",
 	wire: "Electrician Wire Bundles",
+	gfci: "15 Amp GFCI outlet (3 pack)",
+	malePlug: "Male Plug",
+	extensionCord: "12/3 50ft Extension Cord",
 	// wire: "Wire",
 	ledwire: "LED Wire",
 	luan: "Luan Board",
@@ -756,6 +827,18 @@ var droppable = {
 	screw: 1,
 }
 
+droppable = {
+	screw: 1,
+	shortScrew: 1,
+	twoFour8: 86,
+	oneFour8: 87,
+	plyThreeQuart: 5,
+	plyHalfIn: 6,
+	twoFour12: 22,
+	luan: 2,
+	joistHanger: 106,
+}
+
 
 
 
@@ -830,7 +913,7 @@ for(var mat in build) {
 		mvpAddMe.count = (count - dropCount) + (units[mat] || " ct");
 		mvpAddMe.price = addMe.price
 
-		mvpAddMe.total = mvpAddMe.price * (count - dropCount);
+		mvpAddMe.total = Math.max(0, mvpAddMe.price * (count - dropCount));
 
 		mvp.push(mvpAddMe);
 		mvpTotal.total += mvpAddMe.total;

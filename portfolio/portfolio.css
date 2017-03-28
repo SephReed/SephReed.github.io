@@ -15,6 +15,13 @@
 
 
 
+@font-face {
+	font-family: 'Josefin Slab';
+  	src:  url('../public/fonts/Josefin_Slab/JosefinSlab-Regular.ttf') format('truetype');
+}
+
+
+
 fade {
 	background-image: radial-gradient(rgba(28, 63, 69, 0.44), rgba(15, 1, 6, 0.6));
 }
@@ -177,10 +184,11 @@ h1 + span, .undertitle {
 	}
 
 
-	#artisan_btn {
-		background-image: url('public/images/construction.png');
+	#fabrication_btn {
+		background-image: url('public/images/fabrication.jpg');
 		background-size: cover;
 		background-position: center center;
+		font-family: "Josefin Slab", times;
 	}
 
 	#digital_art_btn {
@@ -215,7 +223,7 @@ h1 + span, .undertitle {
 	}
 
 	#skillsets a > div, #skillsets changeSrc > div{ 
-		background-color: rgba(0,0,0,0.3);
+		background-color: rgba(0,0,0,0.5);
 	}
 
 	#skillsets changeSrc:hover {  
@@ -314,11 +322,24 @@ h1 + span, .undertitle {
 	padding-top: 10px;
 }
 
-	.project_and_description > div, .project_and_description > p, .project_and_description > img  {
+	.project_and_description > div, 
+	.project_and_description > p, 
+	.project_and_description > img, {
 		display: inline-block;
 	}
 
-	.project_and_description > img {
+	imagewrap {
+		display: inline-block;
+		position: relative;
+		line-height: 0px;
+		overflow: hidden;
+	}
+
+		imagewrap > img {
+			width: 100%;
+		}
+
+	.project_and_description > img,  .project_and_description > imagewrap {
 		position: relative;
 		width: 96%;
 		/*max-width: 480px;*/
@@ -420,6 +441,40 @@ h1 + span, .undertitle {
 
 
 
+
+columns {
+	display: block;
+
+	-moz-column-count: 2;
+	-moz-column-gap: 0px;
+	-webkit-column-count: 2;
+	-webkit-column-gap: 0px;
+	column-count: 2;
+	column-gap: 0px;
+
+	-webkit-column-rule-width: 2px;
+   	-moz-column-rule-width: 2px;
+    column-rule-width: 2px;
+	-webkit-column-rule-style: solid;
+   	-moz-column-rule-style: solid;
+    column-rule-style: solid;
+
+
+	width: 100%;
+	line-height: 0px;
+}
+
+	columns > div {
+		display: inline-block;
+		overflow: hidden;	
+		/*border-left: solid 2px;*/
+		/*border-right: solid 1px;*/
+		line-height: initial;
+	}
+
+		.multi_column columns > div {
+			width: 100%;
+		}
 
 
 
@@ -539,37 +594,36 @@ h1 + span, .undertitle {
 
 
 
-
+.regal {
+	border-top: 10px solid #222;
+	background: linear-gradient(rgb(60, 37, 38), rgb(53, 27, 33) 6px);
+	color: #CC905C;
+}
 		
+
+
+
+.tabletop {
+	background-image: radial-gradient(transparent, rgba(230, 155, 100, 0.58)), url("public/images/boards.jpg");
+	box-shadow: 0px 10px 15px rgba(0,0,0,0.2);
+	border-top: 1px solid #222;
+}
 
 	
 
-		.tabletop {
-			/*background: url("public/images/WoodRough0089_1_S.jpg");*/
-			background: url("public/images/PlywoodNew0050_1_S.jpg");
-			box-shadow: inset 0px 10px 3px rgba(0,0,0,0.2);
-			border-top: 3px solid #222;
-		}
+	
 
-		.regal {
-			border-top: 10px solid #222;
-			background: linear-gradient(rgb(60, 37, 38), rgb(53, 27, 33) 6px);
-			color: #CC905C;
-		}
+	.tabletop .detail_block_group {
+		text-align: center;
+	}
 
-		
-
-		.tabletop .detail_block_group {
-			text-align: center;
-		}
-
-		.tabletop .detail_block_group > div {
-			width: 93%;
-			/*transform: rotate(0.5deg);*/
-			border-color: rgba(256,256,256,0.1);
-			background-color: #EEE;
-			box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-		}
+	.tabletop .detail_block_group > div {
+		width: 93%;
+		/*transform: rotate(0.5deg);*/
+		border-color: rgba(256,256,256,0.1);
+		background-color: #EEE;
+		box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+	}
 	
 
 

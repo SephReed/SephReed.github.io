@@ -1,0 +1,23 @@
+
+
+sudo git clone https://github.com/sarfata/pi-blaster.git
+
+sudo apt-get install autoconf
+./autogen.sh
+./configure
+make
+sudo make install
+
+// sudo apt-get install node &&
+// sudo apt-get install npm
+
+
+// npm install gpio
+// npm install pi-blaster.js
+
+sudo apt-get install netatalk 
+sudo nano /etc/netatalk/AppleVolumes.default 
+
+sudo apt-get install lighttpd
+sudo nano /etc/lighttpd/lighttpd.conf
+sudo service lighttpd force-reload

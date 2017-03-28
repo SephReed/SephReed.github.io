@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Humanitarian Backlog</title>
+	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+</head>
+<body>
+	<bgimg id="symbol"></bgimg>
+	<bgimg id="space"></bgimg>
+	<bgimg id="gradient"></bgimg>
+	<content>
+		<h1>Seph's Humanitarian Backlog</h1>
+
+		<issue class="focus">
+			<name>Freeing the Minds of North Koreans</name>
+			<spreadables>
+				<hashtag>
+					<a href="">#freeNKorea</a> 
+				</hashtag>
+				<a class="youtube" href="https://www.youtube.com/watch?v=ufhKWfPSQOw">Escaping North Korea for Freedom</a>
+			</spreadables>
+			<challenges>Issues: Getting into North Korea</challenges>
+		</issue>
+
+		<issue class="focus">
+			<name>Male Birth Control</name>
+			<spreadables>
+				<hashtag>
+					<a href="">#maleBirthControl</a> 
+				</hashtag>
+
+				<a href="http://www.medicaldaily.com/male-birth-control-vasalgel-closer-becoming-reality-heres-everything-we-know-so-far-343032">Article on it</a>
+			</spreadables>
+			<challenges>Issues: Pharmaceutical Industry</challenges>
+		</issue>
+
+
+
+		<issue>
+			<name>Gender Relations, specifically as related to the Disposable Male</name>
+			<spreadables>
+				<hashtag>
+					<a href="">#disposedOf</a> 
+					<a href="">#notDisposable</a>
+				</hashtag>
+				<a class="youtube" href="https://www.youtube.com/watch?v=vp8tToFv-bA">Karen Straughan on the Disposable Male</a>
+				
+			</spreadables>
+			<challenges>Issues: The destruction of many peoples realities</challenges>
+		</issue>
+
+		<issue>
+			<name>International Relations Channel</name>
+			<spreadables>
+				<hashtag>
+					<a href="">#worldChat</a> 
+				</hashtag>
+			</spreadables>
+			<challenges>Issues: Infrastructure, citizen personal challenge</challenges>
+		</issue>
+
+		<issue>
+			<name>Localized Economies.  Save Capitalism</name>
+			<spreadables>
+				<hashtag>
+					<a href="">#saveCapitalism</a> 
+				</hashtag>
+			</spreadables>
+			<challenges>Issues: Corporate investments</challenges>
+		</issue>		
+	</content>
+
+</body>
+<style type="text/css">
+
+	@font-face {
+		font-family: 'JosefinSans';
+	  	src:  url('../public/fonts/Josefin_Sans/JosefinSans-Regular.ttf') format('truetype');
+	}
+
+	@font-face {
+		font-family: 'Open_Sans_Condensed';
+	  	src:  url('../public/fonts/Open_Sans_Condensed/OpenSans-CondLight.ttf') format('truetype');
+	}
+
+
+
+	body {
+		font-family: "Open_Sans_Condensed";
+		/*font-family: 'JosefinSans';*/
+		background-color: #000;
+		/*background-image: linear-gradient(#ec0039, #00d2ff);*/
+		color: #FFF;
+		font-size: 17px;
+		
+	}
+
+		body bgimg {
+			z-index: -1;
+			display: block;
+			position: fixed;
+			left: 0px;
+			right: 0px;
+			top: 0px;
+			bottom: 0px;
+			pointer-events: none;
+		}
+			bgimg#gradient {
+				z-index: 10;
+				background-image: radial-gradient(#00d2ff, #ec0039);
+				opacity: 0.1;
+			}
+
+			bgimg#symbol {
+				background-image: url("../public/images/ThumbzSymbol_thin_white.png");
+				opacity: 0.2;
+				background-position: right;
+			}
+
+			bgimg#space {
+				background-image: url("../public/images/stars.png");
+				opacity: 0.1;
+				background-size: cover;
+			}
+
+		body a {
+			display: inline-block;
+			color: #DA006B;
+			background-color: rgba(0,0,0,0.3);
+			border-radius: 5px;
+			padding: 3px 5px;
+			text-decoration: none;
+		}
+
+			a.youtube {
+				position: relative;
+				color: #FFF;
+				background-image: linear-gradient(#ff5e5e, #e70d0d 12%, #930e0e 90%);
+			}
+
+				a.youtube:hover {
+					color: transparent;
+					background-image: url("../public/images/icon_play.png"), linear-gradient(#ff5e5e, #e70d0d 12%, #930e0e 90%);
+					background-size: auto 70%, auto auto;
+				}
+
+		content {
+			display: block;
+			margin: 0px 30% 0px 5%;
+			/*background-color: rgba(60, 17, 35, 0.9);*/
+		}
+
+			content > h1 {
+				text-align: center;
+				font-size: 35px;
+				text-decoration: underline;
+			}
+
+			issue {
+				display: block;	
+				background-color: rgba(44, 43, 43, 0.75);
+				border-radius: 5px;
+				box-shadow: 0px 0px 20px rgba(185, 185, 185, 0.27);
+				color: #FAFAFA;
+				margin-top: 20px;
+				padding: 10px;
+				border: 1px solid #83bdc21a;;
+			}
+
+				issue.focus {
+					border-color: rgba(0, 255, 129, 0.7);
+				}
+
+				issue > name {
+					display: block;
+					font-size: 25px;
+				}
+
+				issue > spreadables {
+					display: block;
+				}
+
+				issue > challenges {
+					display: block;
+				}
+
+			issue hashtag > a {
+				color: #0CA2D6;
+			}
+				issue hashtag > a:hover {
+					color: transparent;
+					background-image: url("../public/images/icon_twitter.png");
+					background-size: auto 70%;
+				}
+</style>
+
+
+</html>
