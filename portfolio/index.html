@@ -41,6 +41,7 @@
 	<needle src="../PINE/needles/bgimg.html"></needle>
 	<needle src="../PINE/needles/modal.html"></needle>
 	<needle src="../PINE/needles/flowColumns.html"></needle>
+	<needle src="../PINE/needles/gallery.html"></needle>
 
 
 	
@@ -134,8 +135,9 @@
 
 
 
-	<fade id="theFade" color="black" opacity="0.5"></fade>
-	<modal id="myCardOverlay" fade="theFade">
+	<fade id="blueAuraFade" color="black" opacity="0.5"></fade>
+	<fade id="thickBlackFade"></fade>
+	<modal id="myCardOverlay" fade="blueAuraFade">
 		<bgimg opacity="0.5" bgimgSize="auto 85%" bgimgSrc="public/images/ThumbzSymbol_black.png"></bgimg>
 		<bgimg opacity="0.1" bgimgSize="150% auto" bgimgSrc="public/images/ThumbzSymbol_black.png"></bgimg>
 		<bgimg opacity="0.2" bgimgSize="contain" bgimgSrc="public/images/ThumbzSymbol_black.png"></bgimg>
@@ -249,7 +251,10 @@
 				</a>
 
 				<span style="background-image: url('public/images/email_icon.png')"
-					onclick="El.byID('myCardOverlay').FNS.showModal()">
+					
+					showModal="myCardOverlay">
+
+					<!-- onclick="El.byID('myCardOverlay').FNS.showModal()" -->
 					<span>Email</span>
 				</span>
 				

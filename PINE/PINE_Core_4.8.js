@@ -331,7 +331,7 @@ PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
 }
 
 
-
+//Change job.attArg.whatevs to job.getArg("lalal")
 PINE.class.Needle.prototype.addAttArg = function(name, attNames, type, defaultVal, defaultAttVal) {
 	var addMe = {};
 	addMe.attNames = attNames;
@@ -602,6 +602,15 @@ PINE.class.Instance.prototype.tryInit = function(opType) {
 	}
 	return SyncPromise.all(promises);
 };
+
+
+// PINE.class.Instance.prototype.getArg = function(argName) {
+// 	var instance = this;
+// 	var arg = instance.att
+
+// 	return El.attArg(instance.domNode, attArg.attNames, attArg.type, attArg.defaultVal, attArg.defaultAttVal);
+// 	return instance
+// }
 
 
 
@@ -1641,6 +1650,8 @@ SyncPromise.all = function(promises) {
 		return new SyncPromise(function(resolve) { Promise.all(promises).then(resolve); });
 }
 
+
+//TODO make into ".then"  create ".forceAsyncThen"
 Promise.prototype.syncThen = function (nextFn) {
 	if(this.syncable && this.syncable.state == "fulfilled") {
 			//
@@ -1795,8 +1806,10 @@ El.waitForDisplay = function(domNode) {
 		El.initWaitForDisplay();
 
 	return new SyncPromise(function(resolve, reject) {
-		var inWindow = El.getRootNode(domNode) == window;
+		var inWindow = El.getRootNode(domNode).tagName == "HTML";
 		var isDisplayed = El.getStyle(domNode, "display") != "none";
+
+		console.log(inWindow, isDisplayed);
 
 		if(inWindow && isDisplayed) {
 			resolve();
@@ -1827,6 +1840,11 @@ El.onBlur = function(domNode, fn) {
 	});
 }
 
+El.makeFocusable = function(domNode, tabIndex) {
+	tabIndex = tabIndex || "0";
+	El.attr(domNode, "tabIndex", tabIndex);
+}
+
 
 //unfortunate hack used for El.waitForDisplay().  
 //Very useful for any elements which make use of their dimensions on screen.
@@ -1843,9 +1861,10 @@ El.initWaitForDisplay = function() {
 	
 
 
-El.getRootNode = function(branch) {
-	var out = branch
-	while(out.parentNode)
+El.getRootNode = function(branch, matchCase) {
+	var out = branch;
+	matchCase = matchCase || "HTML";
+	while(out.parentNode && out.matches(matchCase) == false && out.tagName !== "HTML")
 		out = out.parentNode;
 
 	return out;

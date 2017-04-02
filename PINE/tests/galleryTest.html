@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="../PINE_Core_4.8.js"></script>
+	<script type="text/javascript">
+		PINE.createNeedle("[gallery]", function(gal) {
+
+			gal.addAttArg("presentables", "gallery", "pvar");
+			gal.addAttArg("subPath", ["gallerySubPath", "subPath"], "string");
+			
+			gal.addAttArg("doesLoop", ["galleryLoop", "loop"], "boolean", true);
+			gal.addAttArg("startIndex", ["galleryStartIndex", "startIndex"], "number", 0);
+
+
+			gal.addInitFn(function() {
+				var job = this;
+
+				var domNode = job.domNode;
+
+				var addUs = job.attArg.presentables;
+				var items = job.items = [];
+
+				var subpath = job.attArg.subPath;
+				for(var i in addUs) {
+					var addMe = {};
+
+
+					var src;
+					if(subpath)
+						src = U.get(addUs[i], subpath);
+					else 
+						src = addUs[i];
+
+					addMe.origin = addUs[i];
+
+					addMe.src = src;
+					items.push(addMe);
+				}
+			});
+
+
+			gal.addInitFn(PINE.ops.GATHER, function() {
+				var job = this;
+				job.FNS.gallerySetIndex(job.attArg.startIndex);
+			});
+
+			gal.FNS.galleryNext = function() {
+				this.FNS.galleryMoveIndex(1);
+			}
+
+			gal.FNS.galleryPrev = function() {
+				this.FNS.galleryMoveIndex(-1);
+			}
+
+			gal.FNS.galleryMoveIndex = function(numSpaces) {
+				var job = this;
+				var target = job.index + numSpaces;
+
+				job.FNS.gallerySetIndex(target);
+			}
+
+
+			gal.FNS.gallerySetIndex = function(target) {
+				var job = this;
+				
+				job.index = gal.inBound.call(job, target);
+
+				console.log(job.index);
+
+				gal.update.call(job);
+			}
+
+			gal.inBound = function(target) {
+				var job = this;
+				//looping
+				if(job.doesLoop) {
+					target %= job.items.length;
+
+					if(target < 0)
+						target += job.items.length;
+				}
+
+				else {
+					target = Math.max(0, target);
+					target = Math.min(job.items.length-1, target);
+				}
+
+				return target;
+			}
+
+
+			gal.FNS.galleryGetCurrentIndex = function() {
+				return this.index;
+			}
+
+			gal.FNS.galleryGetCurrentItem = function() {
+				return this.items[this.index];
+			}
+
+			gal.FNS.galleryGetItems = function() {
+				return this.items;
+			}
+
+			gal.FNS.galleryGetTotalCount = function() {
+				return this.items.length;
+			}
+
+
+		
+
+			gal.update = function() {
+				var job = this;
+
+				job.domNode.dispatchEvent(new CustomEvent("galleryUpdate", {
+					detail : {
+						index: job.FNS.galleryGetCurrentIndex(),
+						item: job.FNS.galleryGetCurrentItem()
+					},
+					bubbles : false,
+					cancelable : true
+				}));
+			}
+
+			gal.initItem = function(target) {
+				var job = this;
+				var index = gal.inBound.call(job, target);
+				var item = job.items[index];
+				
+				job.domNode.dispatchEvent(new CustomEvent("galleryPrep", {
+					detail : {
+						index: job.FNS.galleryGetCurrentIndex(),
+						item: job.FNS.galleryGetCurrentItem()
+					},
+					bubbles : false,
+					cancelable : true
+				}));
+			}
+
+			// gal.createImageStretch = function(src) {
+			// 	var img = document.createElement("img");
+			// 	img.src = src;
+
+			// 	var stretch = document.createElement("imageStretch");
+			// 	stretch.style.backgroundImage = "url('"+src+"')";
+
+			// 	stretch.appendChild(img);
+			// 	return stretch;
+			// }
+
+		});
+
+
+
+
+
+		/**********************
+		*	IMAGE
+		***********************/
+
+
+		PINE.createNeedle("[galleryImage]", function(galImg) {
+
+			galImg.addAttArg("pos", ["galleryImagePos", "imagePos"], "string", "center center");
+			galImg.addAttArg("size", ["galleryImageSize", "imageSize"], "string", "contain");
+
+			galImg.addInitFn(function() {
+				var job = this;
+				var domNode = job.domNode;
+
+				domNode.style.backgroundSize = job.attArg.size;
+				domNode.style.backgroundPosition = job.attArg.pos;
+
+				job.gallery = El.getRootNode(domNode, "*[gallery]");
+
+				job.gallery.addEventListener("galleryPrep", function(event) {
+					galImg.initItem.call(job, event.detail.item);
+				});				
+
+				job.gallery.addEventListener("galleryUpdate", function(event) {
+					galImg.setFromItem.call(job, event.detail.item);
+									console.log("test")
+				});
+			});
+
+
+			galImg.setFromItem = function(item) {
+				var job = this;
+
+				// if(job.updatePromise == undefined) {
+
+					// job.updatePromise = El.waitForDisplay(job.domNode).syncThen(function() {
+						// var addMe = job.items[job.index];
+
+						galImg.initItem(item);
+						// galImg.initItem.call(job, job.index-1);
+						// galImg.initItem.call(job, job.index+1);
+							
+
+						if(job.lastItem && job.lastItem.imageStretch)
+							job.lastItem.imageStretch.remove();
+						
+						job.domNode.appendChild(item.imageStretch);
+
+						job.lastItem = item;
+					// });
+
+					// job.updatePromise.syncThen(function(){
+					// 	job.updatePromise = undefined;
+					// });
+				// }
+			}
+
+
+			galImg.initItem = function(item) {
+				if(item && item.imageStretch == undefined)
+					item.imageStretch = galImg.createImageStretch(item.src);
+			}
+
+			galImg.createImageStretch = function(src) {
+				var img = document.createElement("img");
+				img.src = src;
+
+				var stretch = document.createElement("imageStretch");
+				stretch.style.backgroundImage = "url('"+src+"')";
+
+				stretch.appendChild(img);
+				return stretch;
+			}
+		});
+
+
+
+
+		/**********************
+		*	KEYBOARD
+		***********************/
+
+
+		PINE.createNeedle("[galleryKeyboardControl]", function(galKey) {
+
+			galKey.addInitFn(function() {
+				var job = this;
+				var domNode = job.domNode;
+
+				El.makeFocusable(domNode);
+
+				job.gallery = El.getRootNode(domNode, "*[gallery]");
+
+				domNode.addEventListener("keydown", function(event) {
+					if(event.key == "ArrowRight")
+						job.gallery.FNS.galleryNext();
+					else if(event.key == "ArrowLeft")
+						job.gallery.FNS.galleryPrev();
+					
+				});
+
+			});
+
+		});
+
+
+
+		/**********************
+		*	NEXT & PREV
+		***********************/
+
+
+		PINE.createNeedle("[galleryNext]", function(galNext) {
+				//
+			galNext.addInitFn(function() {
+				var job = this;
+				var domNode = job.domNode;
+				domNode.addEventListener("click", function() {
+
+					var parent = El.getRootNode(domNode, "*[gallery]")
+
+					if(parent !== undefined) {
+						job.FNS.act(parent);
+					}
+				});
+			});
+
+			galNext.FNS.act = function(target) {
+				target.FNS.galleryNext();
+			}
+		});
+
+		PINE.createNeedle("[galleryPrev]", {extend: "[galleryNext]"}, function(galPrev) {
+			galPrev.FNS.act = function(target) {
+				target.FNS.galleryPrev();
+			}
+		});
+
+
+
+		/**********************
+		*	TEXT
+		***********************/
+
+
+		PINE.createNeedle("[galleryText]", function(galText) {
+			galText.addAttArg("path", "galleryText", "string");
+				//
+			galText.addInitFn(function() {
+				var job = this;
+				var domNode = job.domNode;
+
+				job.defaultText = domNode.textContent;
+				
+				job.gallery = El.getRootNode(domNode, "*[gallery]")
+				
+				// galText.setFromItem.call(job, job.gallery.FNS.galleryGetCurrentItem());
+
+				job.gallery.addEventListener("galleryUpdate", function(event) {
+					galText.setFromItem.call(job, event.detail.item);
+				});
+			});
+
+			galText.setFromItem = function(item) {
+				var job = this;
+				var text = U.get(item.origin, job.attArg.path);
+
+				job.domNode.textContent = text || job.defaultText;
+			}
+		});
+
+
+
+		/**********************
+		*  	POSITION
+		***********************/
+
+		//{subNeedleOf: "[gallery]"}, 
+		PINE.createNeedle("[galleryIndexPosition]", function(galIndex) {
+			galIndex.addAttArg("outOf", ["galleryIndexDivider", "indexDivider"], "string", "/");
+				//
+			galIndex.addInitFn(function() {
+				var job = this;
+				var domNode = job.domNode;
+
+				job.gallery = El.getRootNode(domNode, "*[gallery]")
+				
+				// galIndex.update.call(job);
+
+				job.gallery.addEventListener("galleryUpdate", function(event) {
+					galIndex.update.call(job);
+				});
+			});
+
+			galIndex.update = function(index) {
+				var job = this;
+				var text = job.gallery.FNS.galleryGetCurrentIndex()+1;
+
+				if(job.attArg.outOf !== "none")
+					text = text + job.attArg.outOf + job.gallery.FNS.galleryGetTotalCount();
+
+				job.domNode.textContent = text;
+			}
+		});
+
+
+
+
+	</script>
+
+
+	<style>
+	*[gallery] {
+		
+		position: absolute;
+		top:0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+	}
+
+		*[galleryKeyboardControl] {
+			outline: 0;
+		}
+
+		*[gallery] > *[galleryImage] {
+			background-color: black;
+			position: relative;
+			height: 100%;
+			width: 100%;
+			padding: 10px 6%;	
+			box-sizing: border-box;
+		}
+
+			*[gallery] imageStretch {
+				display: block;
+				height: 100%;
+				width: 100%;
+				background-size: inherit;
+				background-position: inherit;
+				background-repeat: no-repeat;
+				box-sizing: border-box;
+			}
+
+				*[gallery] imageStretch > img{
+					width: 100%;
+					height: 100%;
+					opacity: 0;
+					box-sizing: border-box;
+				}
+
+		*[gallery] *[galleryNext], *[gallery] *[galleryPrev] {
+			display: block;
+			position: absolute;
+			
+			border-color: white;
+			opacity: 0.5;
+			border-width: 3px;
+			border-radius: 3px;
+			padding: 2%;
+			/*width: 10%;*/
+			/*height: 10%;*/
+			bottom: 45%;
+			background-color: transparent;
+			cursor: pointer;
+			z-index: 2;
+			filter: drop-shadow(1px 1px 3px black);
+		}
+
+			*[gallery] *[galleryNext]:hover, *[gallery] *[galleryPrev]:hover {
+				opacity: 1.0;
+			}
+
+			*[gallery] *[galleryNext] {
+				right: 2.5%;
+				transform: rotate(45deg);
+				border-style: solid solid none none;
+			}
+
+			*[gallery] *[galleryPrev] {
+				left: 2.5%;
+				transform: rotate(-45deg);
+				border-style: solid none none solid ;
+			}
+
+		*[gallery] > galleryBlurb {
+			display: block;
+			position: absolute;
+		}
+			*[gallery] > galleryBlurb > h1 {
+				margin: 0px;
+			}
+
+		*[gallery].blurbOnBottom {
+			padding-bottom: 120px;
+			background-color: black;
+			color: white;
+		}
+
+			*[gallery].blurbOnBottom > galleryBlurb {
+				bottom: 0px;
+				left: 0px;
+				height: 120px;
+				width: 100%;
+				text-align: center;
+			}
+
+
+		*[gallery].blurbOnRight {
+			padding-right: 300px;
+		}
+
+			*[gallery].blurbOnRight > galleryBlurb {
+				top: 0px;
+				bottom: 0px;
+				right: 0px;
+				width: 280px;
+			}
+
+		*[galleryIndexPosition] {
+			position: absolute;
+			bottom: 0px;
+			left: 50%;
+			transform: translate(-50%, 0%);
+		}
+
+
+
+	@media all and (max-width: 600px) {
+		 *[gallery].fullPageGallery.blurbOnBottom > *[galleryImage]{
+			padding: 3px;
+		}
+			*[gallery].fullPageGallery.blurbOnBottom *[galleryNext], 
+			*[gallery].fullPageGallery.blurbOnBottom *[galleryPrev] {
+				bottom: -5px;
+				padding: 15px;
+			}
+	} 
+
+	
+	</style>
+
+
+	<style>
+	body {
+		/*background-color: black;*/
+	}
+
+	boxes {
+		display: block;
+		/*width: 500px;*/
+		/*height: 400px;*/
+	}
+
+	</style>
+	
+</head>
+<body>
+	<boxes id="images" gallery="IMAGES" subPath="src" class="blurbOnBottom fullPageGallery">
+		<div galleryImage galleryKeyboardControl>
+			<button galleryNext></button>
+			<button galleryPrev></button>
+		</div>
+
+		<galleryBlurb>
+			<h1 galleryText="name"></h1>
+			<div galleryText="desc"></div>
+			<div galleryIndexPosition indexDivider=" of "></div>
+		</galleryBlurb>
+
+
+		<script type="text/javascript">
+			var IMAGES = [
+				{  	src: "../../public/images/PINEScreen.png",
+					name: "PINE Screenshot", 
+					desc: "lalalal"  },
+
+				{  	src: "../../public/images/PortfolioScreen.png",
+					name: "Portfolio", 
+					desc: "lalalal"  },
+
+
+				{  	src: "../../public/images/WalkscapeScreen.png",
+					name: "3d Walkscape", 
+					desc: "lalalal"  },
+
+
+				{  	src: "../../public/images/stars.png",
+					name: "Space", 
+					desc: "lalalal"  },
+			]
+		</script>
+
+	</boxes>
+	
+</body>
+
+</html>

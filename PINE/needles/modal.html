@@ -19,6 +19,7 @@ PINE.createNeedle("modal", function(modal) {
 		job.currentlyShowing = false;
 
 		job.domNode.classList.remove("shown_overlay");
+		document.body.classList.remove("stop_scrolling");
 
 		if(job.attArg.fade !== undefined) 
 			job.attArg.fade.classList.remove("shown_overlay");
@@ -37,6 +38,7 @@ PINE.createNeedle("modal", function(modal) {
 		job.currentlyShowing = true;
 			//
 		initMe.classList.add("shown_overlay");
+		document.body.classList.add("stop_scrolling");
 
 		if(fade !== undefined) 
 			fade.classList.add("shown_overlay");
@@ -62,6 +64,26 @@ PINE.createNeedle("modal", function(modal) {
 		}
 	};
 });
+
+
+PINE.createNeedle("[showModal]", function(showModal) {
+
+	showModal.addAttArg("modal", "showModal", "id");
+
+	showModal.addInitFn(function() {
+		var job = this;
+
+
+
+		job.domNode.addEventListener("click", function() {
+			var target = job.attArg.modal;
+
+			if(target)
+				target.FNS.showModal();
+		});
+	});
+
+});
 </script>
 
 
@@ -84,6 +106,18 @@ modal {
 .shown_overlay {
 	display: block;
 	animation: fade_in_overlay ease 0.5s forwards;
+}
+
+.stop_scrolling {
+	/*position: fixed;*/
+	overflow: hidden;
+}
+
+exitX {
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	pointer-events: none;
 }
 
 @keyframes fade_in_overlay {

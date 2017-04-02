@@ -79,6 +79,8 @@
 
 			var smallest = columns[0];
 			for(var i = 1; i < columns.length; i++) {
+				console.log("offsetHeight "+columns[i].offsetHeight)
+
 				if(columns[i].offsetHeight < smallest.offsetHeight) 
 					smallest = columns[i];
 			}				
