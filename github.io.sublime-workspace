@@ -4,558 +4,599 @@
 		"selected_items":
 		[
 			[
-				"tr",
-				"trigger"
+				"border-to",
+				"border-top-style"
 			],
 			[
-				"cli",
-				"clickFirstEnabled"
+				"padd",
+				"padding-bottom"
 			],
 			[
-				"click",
-				"clickFirst"
+				"te",
+				"text-align"
 			],
 			[
-				"on",
-				"onOff"
+				"t",
+				"text-align"
 			],
 			[
-				"add",
-				"addFunctionToNode"
+				"border-right",
+				"border-right-style"
 			],
 			[
-				"clic",
-				"clickFirst"
-			],
-			[
-				"po",
-				"pointer-events"
-			],
-			[
-				"h",
-				"hidden"
-			],
-			[
-				"of",
-				"offsetWidth"
-			],
-			[
-				"o",
-				"offsetWidth"
-			],
-			[
-				"just",
-				"justOne"
-			],
-			[
-				"re",
-				"removeMe"
-			],
-			[
-				"selection",
-				"selectionSwitch"
-			],
-			[
-				"de",
-				"deselectOnBlur"
-			],
-			[
-				"sel",
-				"selectOnClick"
-			],
-			[
-				"cl",
-				"classList"
-			],
-			[
-				"me",
-				"menuShowers"
-			],
-			[
-				"he",
-				"helpfulEval"
-			],
-			[
-				"se",
-				"selectOn_att"
-			],
-			[
-				"selectOn",
-				"selectOnClick"
-			],
-			[
-				"select",
-				"selectOnHover"
-			],
-			[
-				"des",
-				"deselectOnBlur"
-			],
-			[
-				"borde",
+				"bo",
 				"border-radius"
 			],
 			[
-				"set",
-				"setLeft"
+				"border-le",
+				"border-left-style"
 			],
 			[
-				"ta",
-				"target"
+				"backgr",
+				"background-image"
 			],
 			[
-				"wi",
-				"windowOffset"
+				"pad",
+				"padding-bottom"
 			],
 			[
-				"spe",
-				"specialPos"
+				"mar",
+				"margin-bottom"
 			],
 			[
-				"win",
-				"windowPosition"
+				"pa",
+				"padding"
 			],
 			[
-				"b",
-				"bounds"
+				"li",
+				"link\tTag"
 			],
 			[
-				"le",
-				"length"
+				"box",
+				"box-shadow"
 			],
 			[
-				"di",
-				"displayedSubMenus"
+				"boa",
+				"border-radius"
 			],
 			[
-				"d",
-				"displayedSubMenus"
+				"mi",
+				"min-height"
 			],
 			[
-				"dis",
-				"displayMenu"
+				"sc",
+				"stop_scrolling"
 			],
 			[
-				"tar",
-				"targetRight"
+				"border-co",
+				"border-color"
 			],
 			[
-				"dro",
-				"dropdownDisplay"
+				"add",
+				"addInitFn"
 			],
 			[
-				"dr",
-				"dropdownDisplay"
-			],
-			[
-				"target",
-				"target_att"
-			],
-			[
-				"brac",
-				"branches"
-			],
-			[
-				"s",
-				"sameSizeRand"
+				"in_ps",
+				"in_space_gallery"
 			],
 			[
 				"co",
-				"control"
+				"color"
 			],
 			[
-				"ra",
-				"randString"
+				"ma",
+				"margin"
 			],
 			[
-				"ad",
-				"adminBlock"
+				"text",
+				"text-align"
 			],
 			[
-				"e",
-				"email"
+				"de",
+				"details"
 			],
 			[
-				"email",
-				"emailSize"
+				"get",
+				"getCurrentItem"
 			],
 			[
-				"bloc",
-				"blocksize"
-			],
-			[
-				"blo",
-				"blockEmail"
-			],
-			[
-				"block",
-				"blockEmail"
-			],
-			[
-				"en",
-				"encodeMe"
-			],
-			[
-				"par",
-				"parseMe"
-			],
-			[
-				"p",
-				"parseMe"
+				"relat",
+				"relativeMatch"
 			],
 			[
 				"a",
-				"afterSize"
+				"addUs"
 			],
 			[
-				"shor",
-				"shortOneBlock"
+				"max",
+				"max-width"
 			],
 			[
-				"sho",
-				"shortOne"
+				"gal",
+				"galNext"
 			],
 			[
-				"E",
-				"AES_ECB"
+				"ga",
+				"galleryNext"
 			],
 			[
-				"test",
-				"testSizeString"
+				"gall",
+				"galleryNext"
 			],
 			[
-				"f",
-				"floor"
+				"ima",
+				"imageStretch"
 			],
 			[
-				"enc",
-				"encryptions"
+				"ad",
+				"addMe"
 			],
 			[
-				"encr",
-				"encryptedFile"
+				"is",
+				"isDisplayed"
 			],
 			[
-				"xo",
-				"xorString"
+				"g",
+				"galleryNext"
 			],
 			[
-				"cbc",
-				"cbcXor"
+				"star",
+				"startIndex"
 			],
 			[
-				"cb",
-				"cbcXor"
+				"last",
+				"lastItem"
 			],
 			[
-				"cha",
-				"chainBlocks"
+				"upd",
+				"updatePromise"
 			],
 			[
-				"che",
-				"checkMe"
+				"nu",
+				"numSpaces"
 			],
 			[
-				"ch",
-				"chunk"
+				"n",
+				"numSkips"
 			],
 			[
-				"key",
-				"keyText"
+				"dom",
+				"domNode"
 			],
 			[
-				"ke",
-				"keyText"
-			],
-			[
-				"l",
-				"length"
-			],
-			[
-				"cu",
-				"currentTopVal"
-			],
-			[
-				"un",
-				"unCommonThreshold"
-			],
-			[
-				"j",
-				"jargonRating"
+				"fu",
+				"function"
 			],
 			[
 				"in",
 				"index"
 			],
 			[
-				"so",
-				"sortMeLimit"
+				"do",
+				"domNode"
 			],
 			[
-				"edi",
-				"editDist"
+				"pr",
+				"presentables"
 			],
 			[
-				"ed",
-				"editDistances"
+				"flowColu",
+				"flowColumn"
 			],
 			[
-				"str",
-				"stringEditDistance"
+				"flow",
+				"flowCol"
 			],
 			[
-				"char",
-				"charCodeAt"
+				"or",
+				"originalOrder"
 			],
 			[
-				"stri",
-				"stringHammingDistance"
-			],
-			[
-				"xor",
-				"xorString"
-			],
-			[
-				"st",
-				"str2"
-			],
-			[
-				"con",
-				"console"
-			],
-			[
-				"to",
-				"hexToString"
-			],
-			[
-				"spl",
-				"split"
-			],
-			[
-				"c",
-				"console"
-			],
-			[
-				"NUM",
-				"NUM_SHUFFLES"
-			],
-			[
-				"sh",
-				"shuffleMe"
-			],
-			[
-				"NU",
-				"NUM_SHUFFLES"
-			],
-			[
-				"pil",
-				"pileNum"
-			],
-			[
-				"shu",
-				"shuffle"
-			],
-			[
-				"pi",
-				"pileDraws"
-			],
-			[
-				"dec",
-				"decryptMe"
-			],
-			[
-				"ecr",
-				"encryptMe"
-			],
-			[
-				"ec",
-				"encryptMe"
-			],
-			[
-				"fun",
-				"function"
-			],
-			[
-				"tra",
-				"transition"
-			],
-			[
-				"font",
-				"font-family"
-			],
-			[
-				"call",
-				"callback"
-			],
-			[
-				"DO",
-				"DOMContentLoaded"
-			],
-			[
-				"wa",
-				"watchUs"
-			],
-			[
-				"log",
-				"logType"
-			],
-			[
-				"event",
-				"events"
-			],
-			[
-				"ma",
-				"mapbox"
-			],
-			[
-				"bg",
-				"bgcolor"
-			],
-			[
-				"pon",
-				"potential_matches_att"
+				"flo",
+				"flowCol"
 			],
 			[
 				"back",
-				"background"
+				"background-color"
 			],
 			[
-				"spawn",
-				"spawnFrom"
+				"out",
+				"outletToSocket"
 			],
 			[
-				"var",
-				"varCode"
+				"han",
+				"joistHanger"
 			],
 			[
-				"sta",
-				"startsWith"
+				"ligh",
+				"lightSocket"
 			],
 			[
-				"check",
-				"checkMe"
+				"bu",
+				"bulbLighting"
 			],
 			[
-				"chek",
-				"checkMe"
+				"compo",
+				"components"
 			],
 			[
-				"crea",
-				"createConditionTree"
+				"el",
+				"electrical"
 			],
 			[
-				"comp",
-				"comparitor"
+				"tw",
+				"twoTwo8"
 			],
 			[
-				"com",
-				"comparitor"
+				"two",
+				"twoFour12"
 			],
 			[
-				"ar",
-				"args"
+				"ply",
+				"plyHalfIn"
 			],
 			[
-				"eq",
-				"eqLayers"
+				"twoFour",
+				"twoFour8"
 			],
 			[
-				"brea",
-				"breakMe"
+				"screw",
+				"shortScrew"
 			],
 			[
-				"br",
-				"breakMe"
+				"d",
+				"droppable"
 			],
 			[
-				"last",
-				"lastBreak"
+				"slide",
+				"slideChunk"
 			],
 			[
-				"paren",
-				"parenDepth"
+				"thr",
+				"plyThreeQuart"
 			],
 			[
-				"break",
-				"breakByParenthesis"
+				"twoFou",
+				"twoFour8"
 			],
 			[
-				"node",
-				"nodeScopedVar"
+				"side",
+				"side8double"
 			],
 			[
-				"pvar",
-				"pvarCode"
+				"sid",
+				"side12"
 			],
 			[
-				"pa",
-				"padding-top"
+				"dro",
+				"droppable"
 			],
 			[
-				"margin-",
-				"margin-left"
+				"bac",
+				"background-color"
 			],
 			[
-				"tree",
-				"treeSpawner"
+				"po",
+				"position"
 			],
 			[
-				"mo",
-				"modMe"
+				"background",
+				"background-size"
 			],
 			[
-				"paus",
-				"paused"
+				"rg",
+				"rgba()"
 			],
 			[
-				"targ",
-				"target"
+				"backg",
+				"background-color"
 			],
 			[
-				"gt",
-				"getArgs"
+				"margin",
+				"margin-top"
+			],
+			[
+				"bxo",
+				"box-shadow"
+			],
+			[
+				"fon",
+				"font-size"
+			],
+			[
+				"r",
+				"rgba()"
+			],
+			[
+				"il",
+				"inline-block"
+			],
+			[
+				"wid",
+				"width"
+			],
+			[
+				"tex",
+				"text-align"
+			],
+			[
+				"bor",
+				"border-radius"
+			],
+			[
+				"backgou",
+				"background-repeat"
+			],
+			[
+				"background-i",
+				"background-image"
+			],
+			[
+				"v",
+				"vertical-align"
+			],
+			[
+				"font-s",
+				"font-size"
+			],
+			[
+				"ba",
+				"background-color"
+			],
+			[
+				"bord",
+				"border"
+			],
+			[
+				"sr",
+				"script\tTag"
+			],
+			[
+				"uppe",
+				"upperFloor"
+			],
+			[
+				"lowe",
+				"lowerFloor"
+			],
+			[
+				"up",
+				"upperFloor"
+			],
+			[
+				"lo",
+				"lowerFloor"
+			],
+			[
+				"b",
+				"branches"
+			],
+			[
+				"rem",
+				"removeMe"
+			],
+			[
+				"ch",
+				"channel"
+			],
+			[
+				"re",
+				"removeMe"
+			],
+			[
+				"roo",
+				"rootSystem"
+			],
+			[
+				"cha",
+				"channel"
+			],
+			[
+				"ro",
+				"rootSystem"
+			],
+			[
+				"eve",
+				"eventListeners"
+			],
+			[
+				"ca",
+				"cancelled"
+			],
+			[
+				"con",
+				"constructor"
+			],
+			[
+				"start",
+				"startSequin"
+			],
+			[
+				"Seq",
+				"SequencerSpan"
+			],
+			[
+				"pxP",
+				"pxPerMeasure"
+			],
+			[
+				"SV",
+				"SVGNS"
+			],
+			[
+				"px",
+				"pxPos"
+			],
+			[
+				"end",
+				"endPx"
+			],
+			[
+				"first",
+				"firstOfTag"
+			],
+			[
+				"st",
+				"startSequin"
+			],
+			[
+				"se",
+				"sequins"
+			],
+			[
+				"upda",
+				"updateGUI"
+			],
+			[
+				"ge",
+				"getGUI"
+			],
+			[
+				"set",
+				"setPosition"
+			],
+			[
+				"Midi",
+				"MidiNoteGroup"
+			],
+			[
+				"svg",
+				"svgns"
+			],
+			[
+				"sequ",
+				"sequencables"
+			],
+			[
+				"led",
+				"ledBundle"
+			],
+			[
+				"twoFo",
+				"twoFour12"
+			],
+			[
+				"sp",
+				"spacerHalf"
+			],
+			[
+				"le",
+				"ledwire"
+			],
+			[
+				"spe",
+				"speakerWire"
+			],
+			[
+				"lig",
+				"lightSocket"
+			],
+			[
+				"un",
+				"undefined"
+			],
+			[
+				"drop",
+				"dropCount"
+			],
+			[
+				"mv",
+				"mvpAddMe"
+			],
+			[
+				"mvp",
+				"mvpTotal"
+			],
+			[
+				"coun",
+				"dropCount"
+			],
+			[
+				"ri",
+				"rpi3"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "PINE/needles/dropdownMenu.html",
+			"file": "portfolio/index.html",
 			"settings":
 			{
-				"buffer_size": 4996,
+				"buffer_size": 6009,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "PINE/tests/testDropdown.html",
+			"file": "portfolio/portfolio.css",
 			"settings":
 			{
-				"buffer_size": 1234,
+				"buffer_size": 13071,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/Users/seph/Code/Web/stash_node/init.css",
+			"file": "portfolio/portfolio_fabrication.html",
 			"settings":
 			{
-				"buffer_size": 280,
+				"buffer_size": 15183,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "PINE/needles/selectablelist.html",
+			"file": "PINE/needles/flowColumns.html",
 			"settings":
 			{
-				"buffer_size": 12065,
+				"buffer_size": 2368,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "PINE/PINE_Core_4.2.js",
+			"file": "portfolio/resume.html",
 			"settings":
 			{
-				"buffer_size": 39829,
+				"buffer_size": 8612,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "resume.html"
+			}
+		},
+		{
+			"file": "/Users/seph/Downloads/.localized",
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PINE/needles/modal.html",
+			"settings":
+			{
+				"buffer_size": 2688,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PINE/needles/gallery.html",
+			"settings":
+			{
+				"buffer_size": 9899,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PINE/PINE_Core_4.8.js",
+			"settings":
+			{
+				"buffer_size": 45650,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		}
@@ -601,141 +642,146 @@
 	"expanded_folders":
 	[
 		"/Users/seph/Code/Web/SephReed.github.io",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests",
+		"/Users/seph/Code/Web/SephReed.github.io/Humanitarian",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio",
 		"/Users/seph/Code/Web/SephReed.github.io/public",
-		"/Users/seph/Code/Web/SephReed.github.io/public/css"
+		"/Users/seph/Code/Web/SephReed.github.io/public/fonts",
+		"/Users/seph/Code/Web/SephReed.github.io/public/fonts/Josefin_Slab",
+		"/Users/seph/Code/Web/SephReed.github.io/public/fonts/Oswald",
+		"/Users/seph/Code/Web/SephReed.github.io/public/images",
+		"/Users/seph/Code/Web/SephReed.github.io/public/js",
+		"/Users/seph/Code/Web/SephReed.github.io/Testktop"
 	],
 	"file_history":
 	[
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/showHide.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Includes.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Needles.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Var.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test_spawner.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/suggestions.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_13.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_14.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_12.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/CryptoTools.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.2.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/dropdownMenu.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_8.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_11.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_10.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_7.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_2/challenge_9.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_2.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_3.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_5.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_1.js",
-		"/Users/seph/Code/Web/SephReed.github.io/public/js/jsaes.js",
-		"/Users/seph/Code/Web/SephReed.github.io/public/js/testPublicJs.html",
-		"/Users/seph/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_6.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/set_1/challenge_4.js",
-		"/Users/seph/Code/Web/SephReed.github.io/public/js/Kaz.c",
-		"/Users/seph/Code/Web/SephReed.github.io/public/js/KazKylhekuRijndaelCipher.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/graspingCommonCripto.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/creep.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/public/js/ARTsinn.js",
-		"/Users/seph/Code/Web/SephReed.github.io/barter/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/public/js/THUMBZ.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/treeSpawnerTest.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/logWatcher.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/mapbox.html",
-		"/Users/seph/Code/Web/SephReed.github.io/barter/modules/map.html",
-		"/Users/seph/Code/Web/SephReed.github.io/public/css/init.css",
-		"/Users/seph/Code/Web/SephReed.github.io/barter/modules/searchbar.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/selectablelist.html",
-		"/Users/seph/Code/Web/SephReed.github.io/barter/SephMarketTree.js",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/needles/show.html",
-		"/Users/seph/Desktop/radio.html",
-		"/Users/seph/Desktop/chilloutzone.html",
-		"/Users/seph/Code/Web/SephReed.github.io/barter/testWayPoints.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/displayChildren.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/modules/account/mini.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/all_accounts.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/modules/account/view.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/modules/account_history/view.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/home.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Core.doc.html",
-		"/Users/seph/Code/Web/SephReed.github.io/barter/SephMarketTree.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/the shift",
-		"/Users/seph/Code/Web/SephReed.github.io/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/browsertools/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/modal.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.css",
-		"/Users/seph/Code/Web/SephReed.github.io/walkscape/fps.js",
-		"/Users/seph/Code/Web/SephReed.github.io/walkscape/THREE_translater.js",
-		"/Users/seph/Code/Web/SephReed.github.io/walkscape/3dHTML.js",
-		"/Users/seph/Code/Web/SephReed.github.io/walkscape/fps_scene.js",
-		"/Users/seph/Code/Web/SephReed.github.io/walkscape/testsceneloader.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/metaverse_devs/bai.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/walkscape/fps_update.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test.html",
-		"/Users/seph/Code/Web/SephReed.github.io/walkscape/ImprovedNoise.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/dragArea.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/js/AES.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/flowColumns.html",
+		"/Users/seph/Code/Web/SephReed.github.io/public/css/init.css",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.2.js",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/buildBook.html",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/Paint_Colors.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/dad_light_unix.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/effigy.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Humanitarian/index.html",
+		"/Users/seph/Code/Pi/dad_light/PINE_Core_4.8.js",
+		"/Volumes/boot/ssh",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.8.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/seton.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/kaiser.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/robin_hood.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/salvation_army.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/explanation.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/planned_parenthood.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/sequencerTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/BMC_quote_items.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/sequencer.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE_basics.js",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/noob.html",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/rules.html",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/boardcheck.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/quick_poetry.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/a_moment_of_introspection.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/cableOverlay.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/selectableList.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/effigy.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/budget.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/budget.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/effigy_old.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/Kylas_Song.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/hexapod.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Digiden/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/css/digiden.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/css/index.css",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/troll_tricks.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_digital_art.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Core.doc.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Includes.doc.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/onreturn.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/autoIndex.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/doc.css",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Template.QRE.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Template.doc.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/pay.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/overlay.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/share.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/needles/filter.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/contact_chooser.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/account.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/public/themes/default.css",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/peephole.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/bgimg.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Var.doc.html",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp/views/account_history.html",
-		"/Users/seph/Code/Web/SephReed.github.io/BankingAppGui/home.html",
-		"/Users/seph/Code/Web/SephReed.github.io/BankingAppGui/phone.css",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_needles.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Core.QRE.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Prettify.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Ajax.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/test.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/helloplace.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/space.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.0.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/docs/PINE_Var.doc.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/suggestions.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/selectablelist.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/switch.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/dropdownMenu.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/onreturn.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Var.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/public/css/gentrific.css",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/blobInclude.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/nodeAddTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/barter/SephMarketTree.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/gallery.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/beliefs.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/bios.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/remove_current_page_link.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Playa_Met/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/images.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_contact.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/test5.html",
-		"/Users/seph/Code/Web/RealmeChat.github.io/PINE_Core_4.0.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/test_spawner.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/PINE_Var_3.0.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Includes.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Playa_Met/character_counter.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Playa_Met/budget.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/overlay.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/bgimg.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/modules/Rack.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/public/styles/space.css",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/devices/basic/RackHeader.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/modules/deviceBrowser.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/devices/XBricks.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/devices/basic/Modulus.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/devices/MidiFreq.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/devices/basic/Knob.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/templateTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/devices/BasicAnalogSynth.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/devices/basic/Oscillator.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/devices/basic/RackIO.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/RobotSoul_IOHelper.js",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/devices/basic/Gain.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/RobotSoul_Devices.js",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/RobotSoul.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/hotkeys.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/RobotSoul_DeviceRack.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/selectableListTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/boxSelectArea.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/modules/topbar.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/hotKeyTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/nodeAddListenTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/barter/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/PINE_Needles_3.0.js",
-		"/Users/seph/Code/Web/RealmeChat.github.io/public/PINE_Core_4.0.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_3.0.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/paradox.html",
-		"/Users/seph/Code/Web/SephReed.github.io/anonchat.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/fallback.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/map.html",
-		"/Users/seph/Downloads/earthquakes.geojson",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/posts.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/testmap.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/test.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/modWall.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/wallTopics.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/createWall.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/views/settings.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/commandLine.css",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Needles.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/app.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/needles/overlay.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_pined.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/needles/Needle_CommentBox.html",
-		"/Users/seph/Code/Web/SephReed.github.io/handle_chooser/PINE_Core.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Anonchat/public/styles/testing.css"
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/4.2/PINE_Var.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/4.2/PINE_Needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/spawnerTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/promiseHackTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/dragAreaTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/scriptInjectTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/knobsAndSliders.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/fileChooser.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/includesTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/testincluder.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test_spawner.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/4.2/needles/dropdownMenu.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/needleExtendTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/pine_4.8_test.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Template.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/inheritanceTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Run_Explanation.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/RobotSoul_Tracks.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/saveFileTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/mutationTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/testDropdown.html",
+		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/ESVG.js"
 	],
 	"find":
 	{
@@ -747,150 +793,225 @@
 		"where_history":
 		[
 			"/Users/seph/Code/Web/SephReed.github.io/PINE",
+			"/Users/seph/Code/Web/SephReed.github.io/RobotSoul",
+			"/Users/seph/Code/Web/SephReed.github.io",
+			"/Users/seph/Code/Web/SephReed.github.io/PINE",
 			"/Users/seph/Code/Web/SephReed.github.io/CryptoBankingApp",
 			""
 		]
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
-			"childrenOfKey",
-			"eval",
-			"displayMenu",
-			"showMenu",
-			"AES_ECB",
-			"\\n",
-			"\"",
-			"\\n",
-			"cbcXor",
-			"\\n",
-			"xtime",
-			"expandK",
-			"\\n",
-			" ",
-			"\"\\n",
-			"limit",
-			"\\n",
-			"MUNGER",
-			"\\n",
-			"THUMBZ",
-			"rijn_128",
-			"debug.init",
-			"LOG(",
-			"LOG",
-			"addEvent",
-			"registerP",
-			"goog",
-			"THIS MAY",
-			"window",
-			"isAs",
-			"searchFor",
-			"left",
-			"\\.push\\(new Comparitor\\(",
-			"\\.push(new Comparitor\\(",
-			".push(new Comparitor(",
-			"scope, ",
-			"args",
-			"args\\[1\\]",
-			"args\\[0\\]",
-			"args",
-			"conditionalList",
-			"registerPine",
-			"addFunction",
-			"show",
-			"display",
-			"out",
-			"displayChildren",
-			"eval",
-			"assertKey",
-			"assertVar",
-			"asertVar",
-			"assert",
-			"spending",
-			"name",
-			"cookie",
-			"stopTags",
-			"growingSpro",
-			"err",
-			"limit",
-			"selectable_list",
-			"slice",
-			"splice",
-			"suggSubObject",
-			"potential",
-			";",
-			"ephemer",
-			"\\n",
-			"\\[.*\\] ",
-			"/\\[.*\\]/g",
-			"/\\[.+?\\]/g",
-			"/[.+?]/g",
-			"reques",
-			"temp",
-			"conso",
-			"#reciever_choices",
-			"$",
-			"needle",
-			"i ",
-			"for(",
-			"$",
-			".account",
-			"step_type",
-			"evalElementScripts2",
-			"index>",
-			"PINE.getFirstsOf",
+			"3d",
+			"0.5in",
+			"”",
+			"“",
+			"–",
+			"fade",
+			"getCurrent",
+			"instance",
+			"parent",
+			"focus",
+			"attArg",
+			"size",
+			"multi_co",
+			"single_",
+			"artisan",
+			"wire",
+			"2px 2px",
+			"black",
+			"0.2",
+			"bolt",
+			"extends",
+			"svgns",
+			"console.log",
+			"keyAppli",
+			"keyApplie",
+			"checkForM",
+			"match",
+			"plyHa",
+			"plyTh",
+			"screw",
+			"nailOneAndHalf",
+			"nail",
+			"ply",
+			"plywood",
+			"thickP",
+			"1",
+			"bottomFloor",
+			"rail",
+			"<a ",
 			"endpine",
-			"getEleme",
-			"pinefuncHist",
-			"needle",
-			"needle.",
-			"needle",
-			" needle,",
-			"needle",
-			", needle)",
-			"needle",
-			"Complete",
+			"hellow",
+			"include",
+			"attArg",
+			"searchable_subObject",
+			"http://SephReed.github.io",
+			"colu",
+			"U.initSc",
+			"U.runS",
+			"pash",
+			"\"",
+			"currentTime",
+			"fade",
+			"changeSrc",
+			"include",
+			"insertSe",
+			"inWithTheNew",
+			"outWithTheOld",
+			"Universal",
+			"universal",
+			"builds",
+			".toLowerCase()",
+			"docReady",
+			"domReady",
+			"ready",
+			"mute",
+			"bitwig",
+			"PINE.up",
+			"for(var",
+			"inits",
+			"view",
 			"complete",
-			".compl",
-			"getVar",
-			"COMMON",
-			" a ",
-			"a ",
-			"INITIALIZER",
-			"addFunctionToNode",
-			"step_t",
-			"addFunctionToNode",
+			"pnv",
+			"complete",
+			"instance",
+			"items",
+			".then",
+			" Promise",
+			"p_cable",
+			"highlig",
+			"eval",
+			"ready",
+			"PINE.varCode",
+			"rootClickExit",
+			"target",
+			"attArg = ",
+			":1617",
+			"instance",
+			"attArg",
+			"jab",
+			"attArg",
+			"._pine_",
+			"_pine_",
+			"initMe",
+			"initiate",
+			"p_spawner",
+			"PINE.showRu",
+			"TMP_PINE",
+			"PINE.keyApplies",
+			"PINE.init",
+			".resolve()",
+			".resolved()",
 			"root",
-			"registerFunction",
-			"registerFunction2",
-			"U.attr",
-			"domNode",
-			"for(",
-			"LOG",
-			"\"info\"",
-			"U.attr",
-			"async\"",
-			"false",
-			"PINE.err =",
-			"permeate =",
-			"for(",
-			"searchFor",
-			"newVar",
-			"PINE.var",
-			"getVarFrom",
-			"$",
-			"parseTex",
-			"permeate",
-			">L"
+			"U.Go",
+			"then",
+			"U.Go",
+			"Ove",
+			"over",
+			"check",
+			"console.log",
+			"outputs",
+			"modMe",
+			"masters",
+			"devOut",
+			"output",
+			"ouptput",
+			".id",
+			"2",
+			"i_c",
+			"bounds",
+			"MidiFreq",
+			"MidiToFreq",
+			"midiFreq",
+			"input",
+			"intervalsGain",
+			"out",
+			"startPoint",
+			"head",
+			"addMe"
 		],
 		"highlight": true,
 		"in_selection": false,
 		"preserve_case": false,
-		"regex": true,
+		"regex": false,
 		"replace_history":
 		[
+			"3D",
+			"0.333in",
+			"\"",
+			"-",
+			"galleryGetCurrent",
+			"1px 1px",
+			"rgba(0,0,0,0.8)",
+			"0.5",
+			"0.8",
+			"0.5",
+			"joistNail",
+			"nailOneAndHalf",
+			"2",
+			"sections",
+			"<a target=\"_newtab\" ",
+			"pineend",
+			"view",
+			"..",
+			"",
+			"newInned",
+			"oldOuted",
+			"Absolute",
+			"absolute",
+			"",
+			"space",
+			"ni",
+			".syncThen",
+			"secondClickExit",
+			"job",
+			"domNode",
+			"needle",
+			"PINE",
+			"domNode",
+			"syncThen",
+			"SyncPromise",
+			"new SyncPromise",
+			"inputs",
+			"device",
+			"benefactor",
+			"templates",
+			"save",
+			"input",
+			".ID",
+			"MidiInterval",
+			"MidiToInterval",
+			"midiInterval",
+			"output",
+			"interval",
+			"step",
+			"endPoint",
+			"plug",
+			"head",
+			"modMe",
+			"IOH",
+			"modMe",
+			"device",
+			"midiTrack",
+			"rack",
+			"device_rack",
+			"deviceRack",
+			"GATHER",
+			"defaultVal",
+			"rs",
+			"RS",
+			"range",
+			"superRootId",
+			"parentId",
+			"sidebar > content",
+			"offer",
+			"\"tabSelected\"",
+			"tab",
+			"tabs",
 			"queryChildren",
 			"menuDisplay",
 			"displayedMenu",
@@ -946,35 +1067,7 @@
 			"registerFunction",
 			"El.attr",
 			"U",
-			"El.attr",
-			"true",
-			".isAsync",
-			"passed",
-			"this",
-			"cache",
-			"addFu",
-			"addFunction",
-			"evalElementScripts",
-			"MDI_focusedLiveTrack",
-			"MDI_selected_tra",
-			"MDI_seleced_track",
-			"stalledMidi",
-			"currentlyStallingMidi",
-			"LIVE_BANK_WIDTH",
-			"LIVE_BANK_HEIGHT",
-			"LIVE_BANK_TOTAL_SCENES",
-			"LIVE_BANK_WIDTH",
-			"MDI_liveBank",
-			"LIVE_BANK_HEIGHT",
-			"MDI_superBank",
-			"masterTrackName",
-			"MDI_liveBankPosition",
-			"MDI_liveBankPos",
-			"MDI_liveBankPosition",
-			" masterTrackName",
-			"masterTrackName",
-			"createGridObserver",
-			"quneoPortNames"
+			"El.attr"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -985,24 +1078,24 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 5,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "PINE/needles/dropdownMenu.html",
+					"file": "portfolio/index.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4996,
+						"buffer_size": 6009,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4881,
-								4881
+								2414,
+								2414
 							]
 						],
 						"settings":
@@ -1011,27 +1104,86 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2242.0,
+						"translation.y": 1708.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "PINE/tests/testDropdown.html",
+					"file": "portfolio/portfolio.css",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1234,
+						"buffer_size": 13071,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								298,
-								298
+								690,
+								690
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 714.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "portfolio/portfolio_fabrication.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15183,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								11707,
+								11707
+							]
+						],
+						"settings":
+						{
+							"spell_check": true,
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5854.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "PINE/needles/flowColumns.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2368,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2036,
+								2036
 							]
 						],
 						"settings":
@@ -1043,29 +1195,59 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "/Users/seph/Code/Web/stash_node/init.css",
+					"buffer": 4,
+					"file": "portfolio/resume.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 280,
+						"buffer_size": 8612,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								113,
-								113
+								4764,
+								4764
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/CSS/CSS.sublime-syntax"
+							"auto_name": "resume.html",
+							"spell_check": true,
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1653.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/Users/seph/Downloads/.localized",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1075,20 +1257,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "PINE/needles/selectablelist.html",
+					"buffer": 6,
+					"file": "PINE/needles/modal.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 12065,
+						"buffer_size": 2688,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1952,
-								1952
+								2321,
+								2321
 							]
 						],
 						"settings":
@@ -1097,27 +1279,56 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 283.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "PINE/PINE_Core_4.2.js",
+					"buffer": 7,
+					"file": "PINE/needles/gallery.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 39829,
+						"buffer_size": 9899,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								38382,
-								38382
+								9078,
+								9026
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 6305.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "PINE/PINE_Core_4.8.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 45650,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								40729,
+								40735
 							]
 						],
 						"settings":
@@ -1126,10 +1337,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 27957.0,
+						"translation.y": 28258.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 8,
 					"type": "text"
 				}
 			]
@@ -1184,6 +1395,298 @@
 		"selected_items":
 		[
 			[
+				"flowc",
+				"PINE/needles/flowColumns.html"
+			],
+			[
+				"modal",
+				"PINE/needles/modal.html"
+			],
+			[
+				"por",
+				"portfolio/portfolio.css"
+			],
+			[
+				"drag",
+				"PINE/needles/dragArea.html"
+			],
+			[
+				"aes",
+				"Digiden/public/js/AES.js"
+			],
+			[
+				"init.",
+				"public/css/init.css"
+			],
+			[
+				"4.8",
+				"PINE/PINE_Core_4.8.js"
+			],
+			[
+				"pine",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"effy",
+				"Playwood_Palace/effigy.js"
+			],
+			[
+				"pine4.8",
+				"PINE/PINE_Core_4.8.js"
+			],
+			[
+				"build",
+				"DaFT_2017/Docs/buildBook.html"
+			],
+			[
+				"noo",
+				"DaFT_2017/Docs/noob.html"
+			],
+			[
+				"eff",
+				"Playwood_Palace/effigy.js"
+			],
+			[
+				"ela",
+				"PINE/tools/ELATE.js"
+			],
+			[
+				"el",
+				"PINE/tools/ELATE.js"
+			],
+			[
+				"elat",
+				"PINE/tools/ELATE_basics.js"
+			],
+			[
+				"seque",
+				"PINE/tests/sequencerTest.html"
+			],
+			[
+				"daft",
+				"DaFT_2017/index.html"
+			],
+			[
+				"codin",
+				"portfolio/portfolio_coding.html"
+			],
+			[
+				"coding",
+				"portfolio/portfolio_coding.html"
+			],
+			[
+				"pvar",
+				"PINE/PINE_Var.js"
+			],
+			[
+				"init",
+				"public/css/init.css"
+			],
+			[
+				"mid",
+				"RobotSoul/devices/MidiFreq.html"
+			],
+			[
+				"mod",
+				"RobotSoul/devices/basic/Modulus.html"
+			],
+			[
+				"space",
+				"RobotSoul/public/styles/space.css"
+			],
+			[
+				"soulin",
+				"RobotSoul/index.html"
+			],
+			[
+				"ra",
+				"RobotSoul/modules/Rack.html"
+			],
+			[
+				"io",
+				"RobotSoul/RobotSoul_IOHelper.js"
+			],
+			[
+				"soulind",
+				"RobotSoul/index.html"
+			],
+			[
+				"brow",
+				"RobotSoul/modules/deviceBrowser.html"
+			],
+			[
+				"sel",
+				"PINE/needles/selectablelist.html"
+			],
+			[
+				"se",
+				"PINE/needles/selectablelist.html"
+			],
+			[
+				"ca",
+				"RobotSoul/cableOverlay.html"
+			],
+			[
+				"cabl",
+				"RobotSoul/cableOverlay.html"
+			],
+			[
+				"ho",
+				"PINE/needles/hotkeys.html"
+			],
+			[
+				"osc",
+				"RobotSoul/devices/basic/Oscillator.html"
+			],
+			[
+				"rack",
+				"RobotSoul/modules/Rack.html"
+			],
+			[
+				"osci",
+				"RobotSoul/devices/basic/Oscillator.html"
+			],
+			[
+				"sele",
+				"PINE/needles/selectablelist.html"
+			],
+			[
+				"cable",
+				"RobotSoul/cableOverlay.html"
+			],
+			[
+				"box",
+				"PINE/needles/boxSelectArea.html"
+			],
+			[
+				"dra",
+				"PINE/needles/dragArea.html"
+			],
+			[
+				"nee",
+				"PINE/PINE_Needles.js"
+			],
+			[
+				"inclu",
+				"PINE/PINE_Includes.js"
+			],
+			[
+				"inc",
+				"PINE/PINE_Includes.js"
+			],
+			[
+				"hotke",
+				"PINE/needles/hotkeys.html"
+			],
+			[
+				"boxse",
+				"PINE/needles/boxSelectArea.html"
+			],
+			[
+				"da",
+				"PINE/needles/dragArea.html"
+			],
+			[
+				"spawne",
+				"PINE/tests/spawnerTest.html"
+			],
+			[
+				"knobs",
+				"PINE/needles/knobsAndSliders.html"
+			],
+			[
+				"fil",
+				"PINE/needles/fileChooser.html"
+			],
+			[
+				"incl",
+				"PINE/PINE_Includes.js"
+			],
+			[
+				"over",
+				"RobotSoul/cableOverlay.html"
+			],
+			[
+				"soul",
+				"RobotSoul/index.html"
+			],
+			[
+				"var",
+				"PINE/PINE_Var.js"
+			],
+			[
+				"drop",
+				"PINE/needles/dropdownMenu.html"
+			],
+			[
+				"file",
+				"PINE/needles/fileChooser.html"
+			],
+			[
+				"mo",
+				"PINE/needles/modal.html"
+			],
+			[
+				"4.2",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"index",
+				"RobotSoul/index.html"
+			],
+			[
+				"in",
+				"RobotSoul/index.html"
+			],
+			[
+				"r",
+				"RobotSoul/modules/Rack.html"
+			],
+			[
+				"soul/in",
+				"RobotSoul/index.html"
+			],
+			[
+				"4.",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"robo",
+				"RobotSoul/RobotSoul.js"
+			],
+			[
+				"pi",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"pin",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"wire",
+				"RobotSoul/tests/wiretest.html"
+			],
+			[
+				"",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"device",
+				"RobotSoul/RobotSoul_Devices.js"
+			],
+			[
+				"sc",
+				"PINE/tests/scriptInjectTest.html"
+			],
+			[
+				"core",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
+				"pine_",
+				"PINE/PINE_Core_4.2.js"
+			],
+			[
 				"4.s",
 				"PINE/PINE_Core_4.2.js"
 			],
@@ -1192,48 +1695,16 @@
 				"public/js/jsaes.js"
 			],
 			[
-				"index",
-				"barter/index.html"
-			],
-			[
-				"inc",
-				"PINE/PINE_Includes.js"
-			],
-			[
 				"testtr",
 				"PINE/tests/treeSpawnerTest.html"
-			],
-			[
-				"4.2",
-				"PINE/PINE_Core_4.2.js"
-			],
-			[
-				"var",
-				"PINE/PINE_Var.js"
-			],
-			[
-				"nee",
-				"PINE/PINE_Needles.js"
 			],
 			[
 				"mark",
 				"barter/SephMarketTree.js"
 			],
 			[
-				"core",
-				"PINE/PINE_Core_4.2.js"
-			],
-			[
 				"vars",
 				"PINE/PINE_Var.js"
-			],
-			[
-				"sele",
-				"PINE/needles/selectablelist.html"
-			],
-			[
-				"pine_",
-				"PINE/PINE_Core_4.2.js"
 			],
 			[
 				"dis",
@@ -1272,28 +1743,12 @@
 				"PINE/PINE_Includes.js"
 			],
 			[
-				"inclu",
-				"PINE/PINE_Includes.js"
-			],
-			[
 				"doc/in",
 				"PINE/docs/index.html"
 			],
 			[
 				"pine_doc",
 				"PINE/docs/PINE_Core.doc.html"
-			],
-			[
-				"",
-				"PINE/PINE_Needles.js"
-			],
-			[
-				"pvar",
-				"PINE/PINE_Var.js"
-			],
-			[
-				"over",
-				"PINE/needles/overlay.html"
 			],
 			[
 				"pa",
@@ -1376,10 +1831,6 @@
 				"PINE/PINE_Core_4.0.js"
 			],
 			[
-				"pine",
-				"portfolio/portfolio_pined.html"
-			],
-			[
 				"pos",
 				"Anonchat/views/posts.html"
 			],
@@ -1406,10 +1857,6 @@
 			[
 				"an",
 				"anonchat.html"
-			],
-			[
-				"mod",
-				"Anonchat/views/modWall.html"
 			],
 			[
 				"top",
@@ -1448,10 +1895,6 @@
 				"Anonchat/views/posts.html"
 			],
 			[
-				"por",
-				"portfolio/portfolio.html"
-			],
-			[
 				"co",
 				"handle_chooser/PINE_Core.js"
 			],
@@ -1462,26 +1905,6 @@
 			[
 				"testing",
 				"Anonchat/public/styles/testing.css"
-			],
-			[
-				"pnv",
-				"handle_chooser/PINE_Var.js"
-			],
-			[
-				"pineva",
-				"handle_chooser/PINE_Var.js"
-			],
-			[
-				"zep",
-				"portfolio/zepto.js"
-			],
-			[
-				"hello",
-				"handle_chooser/helloplace.html"
-			],
-			[
-				"pine_c",
-				"handle_chooser/PINE_Core.js"
 			]
 		],
 		"width": 0.0
@@ -1512,7 +1935,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 202.0,
+	"side_bar_width": 198.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
