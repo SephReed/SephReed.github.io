@@ -71,6 +71,13 @@ components["rail"] = {
 	screw: 2 * (4*2),
 }
 
+components["cheapRail"] = {
+	twoFour8: 3,
+	oneFour8: 2,
+	// frameNail: 2 * (4*2),
+	// screw: 2 * (4*2),
+}
+
 components["diagonals"] = {
 	// twoFour10: 1,
 	twoFour8: 2,
@@ -502,6 +509,12 @@ components["build"] = {
 
 
 
+components["build"] = {
+	cheapRail: 28,
+	ladder: 2,
+}
+
+
 
 var simples = {};
 for (var compo in components) {
@@ -808,38 +821,43 @@ var units = {
 // })
 
 
+// var droppable = {
+// 	mylar : -1,
+// 	wire: 2,
+// 	pulley: -1,
+// 	rpi3: -1,
+// 	miniProjector: -1,
+// 	luan: 16,
+// 	speaker: -1,
+// 	ropeBundle: -1,
+// 	switch: -1,
+// 	lightSocket: 5,
+// 	speakerWire: -1,
+// 	colorLight: 5,
+// 	ledwire: 85,
+// 	twoTwo8: -1,
+// 	paint: 8,
+// 	screw: 1,
+// }
+
+// var droppable = {
+// 	screw: 1,
+// 	shortScrew: 1,
+// 	twoFour8: 86,
+// 	oneFour8: 87,
+// 	plyThreeQuart: 5,
+// 	plyHalfIn: 6,
+// 	twoFour12: 22,
+// 	luan: 2,
+// 	joistHanger: 106,
+// }
+
+
 var droppable = {
-	mylar : -1,
-	wire: 2,
-	pulley: -1,
-	rpi3: -1,
-	miniProjector: -1,
-	luan: 16,
-	speaker: -1,
-	ropeBundle: -1,
-	switch: -1,
-	lightSocket: 5,
-	speakerWire: -1,
-	colorLight: 5,
-	ledwire: 85,
-	twoTwo8: -1,
-	paint: 8,
+	twoFour8: 40,
+	oneFour8: 20,
 	screw: 1,
 }
-
-droppable = {
-	screw: 1,
-	shortScrew: 1,
-	twoFour8: 86,
-	oneFour8: 87,
-	plyThreeQuart: 5,
-	plyHalfIn: 6,
-	twoFour12: 22,
-	luan: 2,
-	joistHanger: 106,
-}
-
-
 
 
 var tax = 0.0825;
