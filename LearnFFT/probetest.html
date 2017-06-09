@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<style>
+		#wave {
+			display: block;
+			/*height: 300px;*/
+			/*width: 100%;*/
+			background-color: #EEE;
+		}
+	</style>
+</head>
+<body>
+
+<canvas id="wave" width="800px"  height="300px"></canvas>
+
+<script>
+
+
+	var WAVE = [];
+	// var SAMPLE_RATE = 44100;
+	var SAMPLE_RATE = 1500;
+	var PI = 3.14159;
+	var TAU = 2*PI;
+	var dSample = TAU/SAMPLE_RATE;
+	// var SAMPLE_RATE = 44100;
+
+
+
+	//https://en.wikipedia.org/wiki/English_phonology#Transcription_variants
+
+	// i 		u
+	// ɪ 		ʊ
+	// e 	ɚ 	o
+	// ɛ 	ʌ 	ɔ
+	// æ 		ɑ
+
+
+	var vowel_freqs = {
+		i : [],  				//i		FLEECE
+		I : [],       			//I		KIT
+		e : [],					//e		FACE
+		epsilon : [],			//ɛ   	DRESS
+		ash: [], 				//æ		TRAP
+		shwa: [],				//ə		STRUT
+		u: 	[],					//u		GOOSE
+		upsilon: [],			//ʊ		FOOT
+		o: [],					//o 	GOAT
+		openO: [],				//ɔ 	THOUGHT
+		a: [],					//a 	PALM
+	}
+		
+
+
+
+	// var LENGTH = 1000000;
+	var LENGTH = 1500;
+	var initFreqs = [
+		[10, 1],
+		[17, 1],
+		[14, 1],
+		[13, 1],
+		[50, 1],
+		[8, 1],
+	]
+
+
+	var probe_freqs = [10, 20, 17];
+	var PROBES = [];
+
+
+	addFreqs();
+	drawWave();
+	initProbes();
+	tryProbes();
+
+
+
+
+	function addFreqs() {
+
+		for (var f in initFreqs) {
+			var freq = initFreqs[f][0];
+			var amp = initFreqs[f][1];
+
+			fillWave(WAVE, freq, amp, LENGTH, (Math.random() * 300));
+		}
+	}
+
+
+	function fillWave(wave, freq, amp, length, offset) {
+		var dSin = dSample*freq;
+
+		offset = offset || 0;
+
+		for(var i = 0; i < length; i++) {
+			var wavePoint = Math.sin(dSin * (i+offset)) * amp;
+
+			if(wave[i])
+				wave[i] += wavePoint;
+			else
+				wave[i] = wavePoint;
+		}	
+	}
+
+
+
+
+	function drawWave() {
+		var canvas = document.getElementById('wave');
+		var ctx = canvas.getContext('2d');
+
+		var canvasWidth = canvas.offsetWidth;
+		var pxPerAmp = ~~(.75*canvas.offsetHeight)/2;
+		pxPerAmp /= initFreqs.length;
+		var centerPx = canvas.offsetHeight/2;
+
+		ctx.beginPath();
+		ctx.strokeStyle = 'green';
+		// ctx.moveTo(0,0);
+		// ctx.lineTo(100,100);
+		// ctx.stroke();
+		ctx.moveTo(0, (WAVE[0]*pxPerAmp) + centerPx);
+		
+		for(var i = 0; i < canvasWidth; i++) {
+			var ratio = i/canvasWidth;
+			var point = ~~(ratio * WAVE.length);
+
+			ctx.lineTo(i, (WAVE[point]*pxPerAmp) + centerPx);
+		}
+
+		ctx.stroke();
+	}
+
+
+
+	
+
+	function initProbes() {
+		for(var i = 0; i < probe_freqs.length; i++) {
+			var probe = PROBES[i] = {};
+			probe.freq = probe_freqs[i];
+
+			var sampleLength = ~~(SAMPLE_RATE/probe.freq);
+
+			probe.cosOffset = ~~(sampleLength/4.0);
+
+			probe.wave = [];
+			fillWave(probe.wave, probe.freq, 1, sampleLength);
+		}
+	}
+
+
+
+
+	function tryProbes() {
+		for(var i = 0; i < PROBES.length; i++) {
+			var probe = PROBES[i];
+
+			var magnitude = doProbe(probe);
+
+			// console.log(freq + " :: " + magnitude);
+
+			if(magnitude > 0.3)
+				console.log(probe.freq + "Hz exists");
+		}
+	}
+	
+
+	function doProbe(probe) {
+
+
+		var sumSin = 0;
+		var sumCos = 0;
+		var probeLength = probe.wave.length;
+		for(var i = 0; i < WAVE.length; i++) {
+			sumSin += probe.wave[i%probeLength] * WAVE[i];
+
+			var cosIndex = (i + probe.cosOffset) % probeLength;
+			sumCos += probe.wave[cosIndex] * WAVE[i];
+		}
+
+		sumSin /= WAVE.length;
+		sumCos /= WAVE.length;
+
+		// console.log(probe.freq + " :: " + sumSin + " :: "+ sumCos);
+
+		return Math.abs(sumSin)+Math.abs(sumCos);
+	}
+	
+</script>
+
+</body>
+</html>

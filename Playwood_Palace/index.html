@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Playwood Palace - Flipside 2017 Effigy</title>
+	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
+	<needle src="../PINE/needles/gallery.html"></needle>
+	<needle src="../PINE/needles/modal.html"></needle>
+
+	<style>
+		body {
+			background-color: #111;
+			font-family: arial;
+			color: #FAFAFA;
+		}
+
+			body>bgimg {
+				background-image: url("public/images/sunset_booshers.png");
+				background-size: cover;
+
+				top: 20px;
+				bottom: 20px;
+
+				filter: blur(0.5px);
+				box-shadow: inset 0px 0px 50px #111;
+			}
+
+			body>fadeout {
+				left: 0px;
+				right: 0px;
+				height: 30px;
+				
+			}
+
+				body>fadeout.top {
+					top: 0px;
+					background-image: linear-gradient(#111, transparent);	
+				}
+
+				body>fadeout.bottom {
+					bottom: 0px;
+					background-image: linear-gradient(transparent, #111);	
+				}
+
+			body>content {
+				/*background-color: rgba(0,0,0,0.8);*/
+				padding-top: 20px;
+				padding-bottom: 800px;
+			}
+
+
+				body>content>item {
+					background-color: rgba(0,0,0,0.8);
+					border-radius: 15px 3px 15px 3px;
+					color: #FAFAFA;
+					padding: 20px;
+					margin-top: 25px;
+					text-align: center;
+					border: solid 5px;
+				}
+
+
+					imgcontainer {
+						display: block;
+						position: relative;
+						overflow: auto;
+					}
+
+						imgcontainer>fadeout {
+							position: absolute;
+							left: 0px;
+							right: 0px;
+							top: 0px;
+							bottom: 0px;
+							background-color: black;
+							opacity: 0;
+						}
+
+							imgcontainer:hover>fadeout {
+								opacity: 0.7;
+							}
+
+						imgcontainer>playbutton {
+							position: absolute;
+							display: block;
+							left: 50%;
+							top: 50%;
+							transform: translate(-50%, -50%);
+							padding: 10%;
+							/*background-color: #e70074;*/
+							border-radius: 200px;
+							opacity: 0;
+							background-image: url('../public/images/icons/Youtube_icon.png');
+							filter: invert(100%);
+						}
+
+							imgcontainer:hover>playbutton {
+								opacity: 1.0;
+
+							}
+
+		bgimg {
+			display: block;
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			z-index: -1;
+		}
+
+		content {
+			display: block;
+			margin-left: 75px;
+			width: 50%;
+		}
+
+		content>item {
+			display: block;
+		}
+
+			content>item:nth-child(6n+2) {
+				border-color: #e70074;
+			}
+
+			content>item:nth-child(6n+3) {
+				border-color: #ffbb00;
+			}
+
+			content>item:nth-child(6n+4) {
+				border-color: #c5ff00;
+			}
+
+			content>item:nth-child(6n+5) {
+				border-color: #00f588;
+			}
+
+			content>item:nth-child(6n) {
+				border-color: #04c9ff;
+			}
+
+			content>item:nth-child(6n+1) {
+				border-color: #5a57ff;
+			}
+
+		img {
+			max-width: 100%;
+			border-radius: 2px;
+		}
+
+
+		fadeout {
+			display: block;
+			position: fixed;
+		}
+
+		a { color: #04c9ff; }
+		a:visited { color: #5a57ff; }
+		a:hover { color: #00f588; }
+
+
+
+
+		@media all and (max-width:980px) {
+			content {width: 60%;}
+		}
+
+		@media all and (max-width:800px) {
+			content {width: 80%;}
+		}
+
+		@media all and (max-width:600px) {
+			content {
+				width: 95%;
+				margin-left: 2.5%;
+			}
+		}
+
+	</style>
+</head>
+<body>
+<bgimg></bgimg>
+<fadeout class="top"></fadeout>
+<fadeout class="bottom"></fadeout>
+
+
+<content>
+	<h1>Digital Media from the Playwood Palace</h1>
+
+	<item>
+		<a href="public/docs/Rainbows_Vs_Unicorns.html">
+			<img src="public/docs/Childrens_Book/overview.png">
+			<br>Unicorns Vs. Rainbows the Book
+		</a>
+		<br><br>
+		A short story about Rainbows, Unicorns, Science, and Mysticism.
+		<br><br>
+		<a href="public/docs/Childrens_Book/quarter/RainbowsVsUnicorns.pdf">Quarter Page Booklet Version</a><br>
+		<i>(to make a booklet, print double sided with no extra margin)</i>
+	</item>
+
+	<item>
+		<h3>Effigy soundscape (background audio)</h3>
+		<video src="public/audio/Effigy_Soundscape.mp3" controls style="display: block; width: 100%;" poster="public/images/little_city.jpg"></video><br>
+		Audio Soundcape for Effigy (Waves, windchimes, and sweet songs). <br>
+		Good for a napping!<br>
+		<a href="public/audio/Effigy_Soundscape.mp3" download="Flipside 2017 - Playwood Palace Soundcape.mp3">Download</a>
+	</item>
+
+	<item><img src="public/images/unicornxrainbow_decal.png">Decal for the secret stickers and buttons found in the Treasure Room</item>
+
+	<item><img src="public/images/build_timelapse/Timelapse_Small.gif"><br>Timelapse of the build</item>
+
+	
+	<item>
+		<video src="public/video/PlaywoodPalace_exploration.mov" controls style="display: block; width: 100%;" poster="public/images/exploration_video.png"></video>
+		<br>Exploration video of the Effigy
+		<br><a href="public/video/PlaywoodPalace_exploration.mov" download="Flipside 2017 - Playwood Palace Exploration.mov">Download</a>
+	</item>
+
+
+
+	<item>
+		<video src="public/video/Dance_Party.mov" controls style="display: block; width: 100%;"></video>
+		<br>Dance Party at the Palace (please let us know if you're capable of recognizing anybody)
+		<br><a href="public/video/Dance_Party.mov" download="Flipside 2017 - Playwood Palace Dance Party.mov">Download</a>
+	</item>
+
+
+	<item><img src="public/video/sunrise_boosh_full.gif"><br>Sunrise Boosh</item>
+
+
+	<item><img src="public/images/fireworks/fireworks_small.gif"><br>Fireworks!</item>
+
+	
+
+	
+
+	<item>
+		<a href="../DaFT_2017/docs/buildBook.html">
+			<img src="../DaFT_2017/docs/DaFT_Cover.png" style="background-color:#DDD;">
+			HTML Build Book
+		</a>
+		<br>
+		<a href="../DaFT_2017/docs/BuildBook.pdf">
+			PDF Version of Build Book
+		</a>
+	</item>
+
+	<item>
+		<img src="public/images/playwood_loop3.gif">
+		<br>Sketchup Model of Build
+		<br><a href="https://raw.githubusercontent.com/SephReed/Models/master/SketchUp/2016/plywood_play_palace_voxels(rev3).skp" download="Playwood_Palace.skp">Link to raw data for Model (.skp)</a><br>
+		<small>(to download, right click link and choose "Save Link As")</small>
+	</item>
+
+
+
+	<item>
+		<a href="#" onclick="return false;" showModal="glamorGallery">
+			<img src="public/images/glamor/glamor_gallery_overview.png">
+			View Glamor Shots Gallery
+		</a>
+	</item>
+
+</content>
+Thank you!
+
+
+
+<style>
+/**[gallery] {
+	color: white;
+}
+
+	*[gallery] > galleryBlurb > h1 {
+		font-size: 25px;
+	}
+
+	*[galleryImage] {
+		padding: 15px;
+		border-radius: 2px;
+		background-color: black;
+	}
+
+
+		*[gallery] *[galleryNext] {
+			right: -5%;
+			opacity: 0.9;
+		}
+
+		*[gallery] *[galleryPrev] {
+			left: -5%;
+			opacity: 0.9;
+		}
+
+		*[gallery] *[galleryNext]:hover,  
+		*[gallery] *[galleryPrev]:hover {
+			border-color: #7ebfce;		
+		}*/
+
+
+*[galleryImage] {
+	padding: 15px;
+	/*border-radius: 10px;*/
+	background-color: black;
+}
+
+galleryBlurb {
+	background-color: rgba(0,0,0,0.66);
+}
+
+
+#glamorGallery {
+	height: 92%;
+	width: 80%;
+}
+/*
+@media all and (max-width: 900px) {
+	#glamorGallery {
+		width: 97%;
+	}
+
+	*[gallery] *[galleryNext] {
+		right: 2.5%;
+	}
+
+	*[gallery] *[galleryPrev] {
+		left: 2.5%;
+	}
+}*/
+</style>
+
+
+
+<script type="text/javascript">
+	window.GLAMOR_SHOTS = [
+		{  	src: "public/images/glamor/bebes_and_fire.png",
+			name: "Bebes and Fire",
+			desc: "Misty Nickle and Seph Reed watching the climax of this project"},
+
+		{  	src: "public/images/glamor/firemen_and_fire.png",
+			name: "Firemen and Fire",
+			desc: "It looks like they're just shooting the shit there."},
+
+		{  	src: "public/images/glamor/face_shot_night.png",
+			name: "Face Shot at Night",
+			desc: ""},
+
+		{  	src: "public/images/glamor/night_time_effigy.jpg",
+			name: "Night Time Effigy",
+			desc: ""},
+
+		{  	src: "public/images/glamor/dustin_boosh.png",
+			name: "Dustin Booshing",
+			desc: "Dustin was a huge help throughout the project.  Thanks Dustin!"},
+
+		// {  	src: "public/images/glamor/misty_boosh.png",
+		// 	name: "Misty Booshing",
+		// 	desc: "A wild Misty (the Colead for this Project), sleep deprived and worked hard, plays with fire."},
+
+		{  	src: "public/images/glamor/obelisc_and_effigy.png",
+			name: "The Obelisk and the Effigy",
+			desc: "Jake (who built the obelisk), was always building along side DaFT, so much so that him and the City Signage crew were pretty much part of the team."},
+
+
+		{  	src: "public/images/glamor/inner_adults.png",
+			name: "In Dedication",
+			desc: ""},
+
+		{  	src: "public/images/glamor/blackboard.png",
+			name: "The Blackboard",
+			desc: "I did it for that sauce Morty"},
+
+		{  	src: "public/images/glamor/in_the_forest.png",
+			name: "In the Forest",
+			desc: "Many thanks to Becca for crafting this magical place!"},
+
+		{  	src: "public/images/glamor/forest_trees.png",
+			name: "Forest Trees",
+			desc: ""},
+
+		{  	src: "public/images/glamor/little_fire.png",
+			name: "Little Fire",
+			desc: ""},
+
+		{  	src: "public/images/glamor/sitting_logs.png",
+			name: "Sitting Logs",
+			desc: "I heard someone playing harmonica while hanging out on these."},
+
+
+		{  	src: "public/images/glamor/hobbit_door.png",
+			name: "Hobbit Door",
+			desc: "We need more pictures of the interior!  Shoutout to Eric and Annie!"},
+		
+
+		{  	src: "public/images/glamor/stairs.png",
+			name: "Alpha's Heavy Ass Stairs",
+			desc: "These stairs came out beautifully, and really weren't unbearably heavy.  Just heavy enough to give Alpha a hard time."},
+
+		{  	src: "public/images/glamor/treasure_room.png",
+			name: "Treasure Room",
+			desc: "The least seen of all spaces.  Created by Tiffany, out of the blue."},
+
+
+		{  	src: "public/images/glamor/ready_to_burn.jpg",
+			name: "All Ready to Burn",
+			desc: "A thousand little notes, and million little memories."},
+
+		{  	src: "public/images/glamor/dafties_and_fire.png",
+			name: "DaFTies and the Fire",
+			desc: "Spirits were high, for it was a good crew and a journey filled with fortune."},
+
+		{  	src: "public/images/glamor/engulfed.png",
+			name: "Engulfed",
+			desc: ""},
+
+		{  	src: "public/images/glamor/collapse.png",
+			name: "Collapse",
+			desc: "This is the moment when the center collapsed."},
+	]
+</script>
+
+
+<fade id="thickBlackFade" style="background-color: rgba(0,0,0,0.5)"></fade>
+
+
+<modal id="glamorGallery" fade="thickBlackFade">
+	<exitX>X</exitX>
+	<div gallery="GLAMOR_SHOTS" 
+	subPath="src" 
+	galleryKeyboardControl
+	class="blurbOnBottom fullPageGallery">
+		<div galleryImage>
+			<button galleryNext></button>
+			<button galleryPrev></button>
+		</div>
+
+		<galleryBlurb>
+			<h1 galleryText="name"></h1>
+			<div galleryText="desc"></div>
+			<div galleryIndexPosition indexDivider=" of "></div>
+		</galleryBlurb>
+	</div>
+</modal>
+
+
+
+</body>
+</html>
