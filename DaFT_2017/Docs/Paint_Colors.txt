@@ -1,4 +1,4 @@
-Magenta = Exotict Bloom 16/397
+Magenta = Secrets or Exotict Bloom 16/397
 Orange = Spice Orange 51/682
 Yellow = Zesty 65/510
 Green = Carousel 57/217 ##Folk Tale
