@@ -4,6 +4,126 @@
 		"selected_items":
 		[
 			[
+				"vo",
+				"vowel_freqs"
+			],
+			[
+				"tmp",
+				"tmp_sumCos"
+			],
+			[
+				"tmp_",
+				"tmp_sumSin"
+			],
+			[
+				"su",
+				"sumCos"
+			],
+			[
+				"sum",
+				"sumSin"
+			],
+			[
+				"sa",
+				"sample"
+			],
+			[
+				"sam",
+				"sampleLength"
+			],
+			[
+				"pro",
+				"probeMax"
+			],
+			[
+				"fre",
+				"initFreqs"
+			],
+			[
+				"co",
+				"console"
+			],
+			[
+				"cos",
+				"cosOffset"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"ca",
+				"canvasWidth"
+			],
+			[
+				"in",
+				"initFreqs"
+			],
+			[
+				"Black",
+				"blackboard"
+			],
+			[
+				"border-ra",
+				"border-radius"
+			],
+			[
+				"pa",
+				"padding"
+			],
+			[
+				"ba",
+				"background-clip"
+			],
+			[
+				"a",
+				"auto"
+			],
+			[
+				"background-c",
+				"background-color"
+			],
+			[
+				"pad",
+				"padding"
+			],
+			[
+				"back",
+				"background-color"
+			],
+			[
+				"mar",
+				"margin-top"
+			],
+			[
+				"di",
+				"display"
+			],
+			[
+				"margin",
+				"margin-right"
+			],
+			[
+				"i",
+				"italic"
+			],
+			[
+				"scre",
+				"Screws"
+			],
+			[
+				"screw",
+				"screwbox"
+			],
+			[
+				"Two",
+				"twoFour8"
+			],
+			[
+				"drop",
+				"droppable"
+			],
+			[
 				"border-to",
 				"border-top-style"
 			],
@@ -34,18 +154,6 @@
 			[
 				"backgr",
 				"background-image"
-			],
-			[
-				"pad",
-				"padding-bottom"
-			],
-			[
-				"mar",
-				"margin-bottom"
-			],
-			[
-				"pa",
-				"padding"
 			],
 			[
 				"li",
@@ -80,10 +188,6 @@
 				"in_space_gallery"
 			],
 			[
-				"co",
-				"color"
-			],
-			[
 				"ma",
 				"margin"
 			],
@@ -102,10 +206,6 @@
 			[
 				"relat",
 				"relativeMatch"
-			],
-			[
-				"a",
-				"addUs"
 			],
 			[
 				"max",
@@ -168,10 +268,6 @@
 				"function"
 			],
 			[
-				"in",
-				"index"
-			],
-			[
 				"do",
 				"domNode"
 			],
@@ -194,10 +290,6 @@
 			[
 				"flo",
 				"flowCol"
-			],
-			[
-				"back",
-				"background-color"
 			],
 			[
 				"out",
@@ -238,10 +330,6 @@
 			[
 				"twoFour",
 				"twoFour8"
-			],
-			[
-				"screw",
-				"shortScrew"
 			],
 			[
 				"d",
@@ -292,10 +380,6 @@
 				"background-color"
 			],
 			[
-				"margin",
-				"margin-top"
-			],
-			[
 				"bxo",
 				"box-shadow"
 			],
@@ -338,10 +422,6 @@
 			[
 				"font-s",
 				"font-size"
-			],
-			[
-				"ba",
-				"background-color"
 			],
 			[
 				"bord",
@@ -400,10 +480,6 @@
 				"eventListeners"
 			],
 			[
-				"ca",
-				"cancelled"
-			],
-			[
 				"con",
 				"constructor"
 			],
@@ -438,101 +514,36 @@
 			[
 				"st",
 				"startSequin"
-			],
-			[
-				"se",
-				"sequins"
-			],
-			[
-				"upda",
-				"updateGUI"
-			],
-			[
-				"ge",
-				"getGUI"
-			],
-			[
-				"set",
-				"setPosition"
-			],
-			[
-				"Midi",
-				"MidiNoteGroup"
-			],
-			[
-				"svg",
-				"svgns"
-			],
-			[
-				"sequ",
-				"sequencables"
-			],
-			[
-				"led",
-				"ledBundle"
-			],
-			[
-				"twoFo",
-				"twoFour12"
-			],
-			[
-				"sp",
-				"spacerHalf"
-			],
-			[
-				"le",
-				"ledwire"
-			],
-			[
-				"spe",
-				"speakerWire"
-			],
-			[
-				"lig",
-				"lightSocket"
-			],
-			[
-				"un",
-				"undefined"
-			],
-			[
-				"drop",
-				"dropCount"
-			],
-			[
-				"mv",
-				"mvpAddMe"
-			],
-			[
-				"mvp",
-				"mvpTotal"
-			],
-			[
-				"coun",
-				"dropCount"
-			],
-			[
-				"ri",
-				"rpi3"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "portfolio/index.html",
+			"file": "LearnFFT/analyzerTest.html",
 			"settings":
 			{
-				"buffer_size": 6009,
+				"buffer_size": 9328,
 				"encoding": "UTF-8",
-				"line_ending": "Unix"
+				"line_ending": "Unix",
+				"name": "probetest"
 			}
 		},
 		{
-			"file": "portfolio/portfolio.css",
+			"file": "Writing/porch_mat.txt",
 			"settings":
 			{
-				"buffer_size": 13071,
+				"buffer_size": 317,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "(3) 2x6 x 10 @ $8.88 = $26.64"
+			}
+		},
+		{
+			"file": "DaFT_2017/Docs/Paint_Colors.txt",
+			"settings":
+			{
+				"buffer_size": 185,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -542,60 +553,14 @@
 			"settings":
 			{
 				"buffer_size": 15183,
-				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "PINE/needles/flowColumns.html",
+			"file": "Playwood_Palace/index.html",
 			"settings":
 			{
-				"buffer_size": 2368,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "portfolio/resume.html",
-			"settings":
-			{
-				"buffer_size": 8612,
-				"encoding": "UTF-8",
-				"line_ending": "Unix",
-				"name": "resume.html"
-			}
-		},
-		{
-			"file": "/Users/seph/Downloads/.localized",
-			"settings":
-			{
-				"buffer_size": 0,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "PINE/needles/modal.html",
-			"settings":
-			{
-				"buffer_size": 2688,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "PINE/needles/gallery.html",
-			"settings":
-			{
-				"buffer_size": 9899,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "PINE/PINE_Core_4.8.js",
-			"settings":
-			{
-				"buffer_size": 45650,
+				"buffer_size": 11019,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -641,35 +606,45 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/seph/Code/Web/SephReed.github.io",
-		"/Users/seph/Code/Web/SephReed.github.io/Humanitarian",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio",
-		"/Users/seph/Code/Web/SephReed.github.io/public",
-		"/Users/seph/Code/Web/SephReed.github.io/public/fonts",
-		"/Users/seph/Code/Web/SephReed.github.io/public/fonts/Josefin_Slab",
-		"/Users/seph/Code/Web/SephReed.github.io/public/fonts/Oswald",
-		"/Users/seph/Code/Web/SephReed.github.io/public/images",
-		"/Users/seph/Code/Web/SephReed.github.io/public/js",
-		"/Users/seph/Code/Web/SephReed.github.io/Testktop"
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/public",
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/public",
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/public/video"
 	],
 	"file_history":
 	[
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/gallery.html",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/buildBook.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/public/docs/Rainbows_Vs_Unicorns.html",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/gallery.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/Paint_Colors.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/Paradox_Mentality.html",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/RvSBooklet.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/The absolution of incongruety/story.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/cover_letter.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/test.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/effigy.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/genders.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/RainbowsVSUnicorns.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.8.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/modal.html",
+		"/Users/seph/Downloads/.localized",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.css",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_fabrication.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/flowColumns.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/resume.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/dragArea.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/js/AES.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/flowColumns.html",
 		"/Users/seph/Code/Web/SephReed.github.io/public/css/init.css",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.2.js",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/buildBook.html",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/Paint_Colors.txt",
 		"/Users/seph/Code/Web/SephReed.github.io/Writing/dad_light_unix.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/effigy.js",
 		"/Users/seph/Code/Web/SephReed.github.io/Humanitarian/index.html",
 		"/Users/seph/Code/Pi/dad_light/PINE_Core_4.8.js",
 		"/Volumes/boot/ssh",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.8.js",
 		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/seton.css",
 		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/kaiser.css",
 		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/robin_hood.css",
@@ -683,7 +658,6 @@
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE_basics.js",
 		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/noob.html",
 		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/rules.html",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/boardcheck.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE.js",
 		"/Users/seph/Code/Web/SephReed.github.io/Writing/quick_poetry.txt",
@@ -691,7 +665,6 @@
 		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/cableOverlay.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/selectableList.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/effigy.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/budget.js",
 		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/budget.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/index.html",
@@ -719,7 +692,6 @@
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/blobInclude.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/nodeAddTest.html",
 		"/Users/seph/Code/Web/SephReed.github.io/barter/SephMarketTree.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/gallery.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/beliefs.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/bios.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/remove_current_page_link.js",
@@ -768,20 +740,7 @@
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/scriptInjectTest.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/knobsAndSliders.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/fileChooser.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/includesTest.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/testincluder.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test_spawner.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/4.2/needles/dropdownMenu.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/needleExtendTest.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/pine_4.8_test.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Template.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/inheritanceTest.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Run_Explanation.html",
-		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/RobotSoul_Tracks.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/saveFileTest.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/mutationTest.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/testDropdown.html",
-		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/ESVG.js"
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/includesTest.html"
 	],
 	"find":
 	{
@@ -805,6 +764,17 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"17/docs",
+			"cover",
+			".tabletop ",
+			"galle",
+			"fade",
+			"Well",
+			"well",
+			"</paper>",
+			"<paper>",
+			"liked un",
+			"all the",
 			"3d",
 			"0.5in",
 			"”",
@@ -921,18 +891,7 @@
 			"output",
 			"ouptput",
 			".id",
-			"2",
-			"i_c",
-			"bounds",
-			"MidiFreq",
-			"MidiToFreq",
-			"midiFreq",
-			"input",
-			"intervalsGain",
-			"out",
-			"startPoint",
-			"head",
-			"addMe"
+			"2"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -940,6 +899,8 @@
 		"regex": false,
 		"replace_history":
 		[
+			"17/Docs",
+			"",
 			"3D",
 			"0.333in",
 			"\"",
@@ -1065,8 +1026,6 @@
 			"addNodeFunction",
 			"initMe",
 			"registerFunction",
-			"El.attr",
-			"U",
 			"El.attr"
 		],
 		"reverse": false,
@@ -1078,69 +1037,103 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "portfolio/index.html",
+					"file": "LearnFFT/analyzerTest.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6009,
+						"buffer_size": 9328,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2414,
-								2414
+								5761,
+								5761
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"auto_name": "probetest",
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 1708.0,
+						"translation.y": 2500.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Writing/porch_mat.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 317,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								317,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_name": "(3) 2x6 x 10 @ $8.88 = $26.64",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "DaFT_2017/Docs/Paint_Colors.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 185,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								152,
+								152
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "portfolio/portfolio.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 13071,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								690,
-								690
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 714.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
+					"file": "DaFT_2017/Docs/DaFT_Cover.png",
+					"semi_transient": true,
+					"stack_index": 3,
+					"type": "image"
 				},
 				{
-					"buffer": 2,
+					"buffer": 3,
 					"file": "portfolio/portfolio_fabrication.html",
 					"semi_transient": false,
 					"settings":
@@ -1152,38 +1145,8 @@
 						"selection":
 						[
 							[
-								11707,
-								11707
-							]
-						],
-						"settings":
-						{
-							"spell_check": true,
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 5854.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "PINE/needles/flowColumns.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2368,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2036,
-								2036
+								3630,
+								3630
 							]
 						],
 						"settings":
@@ -1192,85 +1155,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1572.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 4,
-					"file": "portfolio/resume.html",
+					"file": "Playwood_Palace/index.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8612,
+						"buffer_size": 11019,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4764,
-								4764
-							]
-						],
-						"settings":
-						{
-							"auto_name": "resume.html",
-							"spell_check": true,
-							"syntax": "Packages/HTML/HTML.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1653.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "/Users/seph/Downloads/.localized",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 0,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "PINE/needles/modal.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2688,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2321,
-								2321
+								5338,
+								5338
 							]
 						],
 						"settings":
@@ -1279,68 +1184,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 4190.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "PINE/needles/gallery.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 9899,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								9078,
-								9026
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 6305.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "PINE/PINE_Core_4.8.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 45650,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								40729,
-								40735
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 28258.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
@@ -1395,6 +1242,34 @@
 		"selected_items":
 		[
 			[
+				"playind",
+				"Playwood_Palace/index.html"
+			],
+			[
+				"colo",
+				"DaFT_2017/Docs/Paint_Colors.txt"
+			],
+			[
+				"galle",
+				"PINE/needles/gallery.html"
+			],
+			[
+				"portfolio/in",
+				"portfolio/index.html"
+			],
+			[
+				"build",
+				"DaFT_2017/Docs/buildBook.html"
+			],
+			[
+				"co",
+				"DaFT_2017/Docs/Paint_Colors.txt"
+			],
+			[
+				"par",
+				"Writing/Paradox_Mentality.html"
+			],
+			[
 				"flowc",
 				"PINE/needles/flowColumns.html"
 			],
@@ -1433,10 +1308,6 @@
 			[
 				"pine4.8",
 				"PINE/PINE_Core_4.8.js"
-			],
-			[
-				"build",
-				"DaFT_2017/Docs/buildBook.html"
 			],
 			[
 				"noo",
@@ -1881,30 +1752,6 @@
 			[
 				"wall",
 				"Anonchat/views/wallTopics.html"
-			],
-			[
-				"sett",
-				"Anonchat/views/settings.html"
-			],
-			[
-				"app",
-				"Anonchat/app.html"
-			],
-			[
-				"posts",
-				"Anonchat/views/posts.html"
-			],
-			[
-				"co",
-				"handle_chooser/PINE_Core.js"
-			],
-			[
-				"com",
-				"Anonchat/public/styles/commandLine.css"
-			],
-			[
-				"testing",
-				"Anonchat/public/styles/testing.css"
 			]
 		],
 		"width": 0.0
@@ -1935,7 +1782,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 198.0,
+	"side_bar_width": 262.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

@@ -20,8 +20,8 @@
 
 
 	var WAVE = [];
-	// var SAMPLE_RATE = 44100;
-	var SAMPLE_RATE = 1500;
+	var SAMPLE_RATE = 44100;
+	// var SAMPLE_RATE = 1500;
 	var PI = 3.14159;
 	var TAU = 2*PI;
 	var dSample = TAU/SAMPLE_RATE;
@@ -39,17 +39,18 @@
 
 
 	var vowel_freqs = {
-		i : [240, 2400],  				//i		FLEECE
-		I : [],       					//I		KIT
-		e : [390, 2300],				//e		FACE
-		epsilon : [610, 1900],			//ɛ   	DRESS
-		ash: [], 				//æ		TRAP
-		shwa: [],				//ə		STRUT
-		u: 	[],					//u		GOOSE
-		upsilon: [],			//ʊ		FOOT
-		o: [],					//o 	GOAT
-		openO: [],				//ɔ 	THOUGHT
-		a: [],					//a 	PALM
+		i : [240, 2400, 0],  				//i		FLEECE
+		I : [379, 1090, 0.25],       		//I		KIT
+		e : [390, 2300, 0],					//e		FACE
+		epsilon : [610, 1900, 0],			//ɛ   	DRESS
+		ash: [860, 1550, 0], 				//æ		TRAP
+		a: [850, 1610, 0],					//a 	PALM
+		hat: [600, 1170, 1], 				//ʌ		STRUT
+		// shwa: [],						//ə		UHHHHHH
+		u: 	[250, 595, 1],					//u		GOOSE
+		ramsHorns: [460, 1310, 1],			//ɤ		FOOT
+		o: [360, 640, 1],					//o 	GOAT
+		alpha: [750, 940, 1],				//ɑ 	THOUGHT	
 	}
 		
 
@@ -71,10 +72,10 @@
 	var PROBES = [];
 
 
-	addFreqs();
-	drawWave();
-	initProbes();
-	tryProbes();
+	// addFreqs();
+	// drawWave();
+	// initProbes();
+	// tryProbes();
 
 
 
@@ -190,6 +191,97 @@
 		return Math.abs(sumSin)+Math.abs(sumCos);
 	}
 	
+
+
+
+	var probeIndex = 0;
+	var probeMax;
+
+	probe_freqs = [860, 1550]
+
+
+	function initFormantProbes() {
+
+		var vowel = vowel_freqs[4];
+
+		
+
+		for(var i = 0; i < probe_freqs.length; i++) {
+			var probe = PROBES[i] = {};
+			probe.freq = probe_freqs[i];
+
+			var sampleLength = ~~(SAMPLE_RATE/probe.freq);
+
+			probe.cosOffset = ~~(sampleLength/4.0);
+
+			probeMax = Math.max(probeMax, sampleLength);
+
+			probe.wave = [];
+			fillWave(probe.wave, probe.freq, 1, sampleLength);
+
+			probe.sumSin = 0;
+			probe.sumCos = 0;
+		}
+	}
+
+
+	function gotStream(stream) {
+		console.log("HEY");
+		console.log(stream);
+
+	    var audioCtx = new AudioContext();
+		var source = audioCtx.createMediaStreamSource(stream);
+
+		// console.log(source);
+
+	    var scriptNode = audioCtx.createScriptProcessor(4096, 1, 1);
+	    scriptNode.onaudioprocess = function(audioProcessingEvent) {
+			// The input buffer is the song we loaded earlier
+			var inputBuffer = audioProcessingEvent.inputBuffer;			  
+		    var inputData = inputBuffer.getChannelData(0);
+
+
+		    var out = ""
+
+			for(var p = 0; p < PROBES.length; p++) {
+				var probe = PROBES[p];
+
+				var tmp_sumSin = 0;
+				var tmp_sumCos = 0;
+				var probeLength = probe.wave.length;
+
+			    for (var sample = 0; sample < inputBuffer.length; sample++) {
+			    	var tmp_sample = inputData[sample];
+
+				    tmp_sumSin += probe.wave[sample%probeLength] * tmp_sample;
+
+				    
+				    var cosIndex = (sample + probe.cosOffset) % probeLength;
+					tmp_sumCos += probe.wave[cosIndex] * tmp_sample;
+			    }
+
+			    // console.log(tmp_sumSin, tmp_sumCos);
+
+			    tmp_sumSin /= inputBuffer.length;
+				tmp_sumCos /= inputBuffer.length;
+
+				probe.sumSin = (probe.sumSin/3) + (tmp_sumSin * (2/3));
+				probe.sumCos = (probe.sumCos/3) + (tmp_sumCos * (2/3));
+
+				var found = (probe.sumSin + probe.sumCos) > 0.001
+
+				out += probe.freq + " " + found + "         " ;
+			}
+
+			console.log(out);
+			  
+		}
+
+	    source.connect( scriptNode );
+	}
+
+	initFormantProbes();
+	navigator.mediaDevices.getUserMedia( {audio:true}).then(gotStream);
 </script>
 
 </body>
