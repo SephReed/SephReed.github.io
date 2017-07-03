@@ -1,0 +1,181 @@
+<script type="text/javascript">
+var Pal = FLAT.Pallette = {};
+FLAT.Pallette.defaultChipSize = Pal.chipSize = 16;
+
+
+Pal.currentChipset = {};
+Pal.currentChipset.chipSize = 16;
+Pal.currentChipset.scale = 3;
+Pal.currentChipset.chips = [];
+Pal.selectedChip;
+Pal.UILayer;
+FLAT.Pallette.setChipSet = function(imageUrl, chipSize, scale) {
+
+	Pal.currentChipset.scale = scale;
+	Pal.currentChipset.chipSize = chipSize;
+
+	if(Pal.UILayer == undefined) {
+		Pal.UILayer = {};
+		Pal.UILayer.canvas = document.createElement("canvas");
+		Pal.UILayer.canvas.style.zIndex = 5;
+		Pal.UILayer.painter = Pal.UILayer.canvas.getContext("2d");
+		Pal.domNode.appendChild(Pal.UILayer.canvas);
+
+		Pal.UILayer.canvas.addEventListener("mousedown", function(event) {
+			var scale = Pal.currentChipset.scale;
+			var chipSize = Pal.currentChipset.chipSize;
+
+			var row = ~~(event.layerY / (scale*chipSize));
+			var col = ~~(event.layerX / (scale*chipSize));
+
+			var chipNum = row * Pal.currentChipset.chipWidth + col;
+			Pal.selectChip(chipNum);
+		});
+	}
+
+	return new Promise(function(resolve) {
+			//
+		Pal.chipSize = chipSize = chipSize || FLAT.Pallette.defaultChipSize;;
+
+
+		// var chipSetNode = document.createElement("chipSet");			
+
+		var img = Pal.currentChipset.imgNode = document.createElement("img");
+		img.src = imageUrl;
+
+		img.addEventListener("load", function() {
+
+			// var vChips = img.naturalHeight/chipSize;
+			var canvas = Pal.currentChipset.chipWidth = ~~(img.naturalWidth/chipSize);
+
+			var canvas = Pal.currentChipset.canvas = document.createElement("canvas");
+			var painter = Pal.currentChipset.painter = canvas.getContext("2d");
+			canvas.width = img.naturalWidth;
+			canvas.height = img.naturalHeight;
+
+			Pal.domNode.style.width = canvas.width * scale + "px";
+			Pal.domNode.style.height = canvas.height * scale + "px";
+
+			painter.drawImage(img, 0, 0)
+
+			Pal.domNode.appendChild(canvas);
+
+
+
+			// palletteNode.chipSizer = document.createElement("style");
+			// palletteNode.chipSizer.innerHTML = "chipSet > chip {  "
+			// 	+" background-size: "+((hChips)*100)+"% "+((vChips)*100)+"% }";
+
+			// palletteNode.appendChild(palletteNode.chipSizer);
+
+
+			// if(vChips % 1 !== 0 || hChips % 1 !== 0) {
+			// 	PINE.err("chipSize incorrect");
+			// 	vChips = ~~vChips;
+			// 	hChips = ~~hChips;
+			// }
+
+			
+
+			// var zoom = 3;
+
+			// console.log(hChips, vChips);
+			// El.setSize(chipSetNode, zoom*hChips*chipSize, zoom*vChips*chipSize);
+
+			// var styleUrl = "url('"+imageUrl+"')";
+			// 	//
+			// for(var v = 0; v < vChips; v++) {
+			// 	var top = v * chipSize * zoom;
+
+			// 	for(var h = 0; h < hChips; h++) {
+			// 		var left = h * chipSize * zoom;
+
+			// 		var addMe = document.createElement("chip");
+			// 		addMe.style.backgroundImage = styleUrl;
+			// 		addMe.style.backgroundPosition = "-"+left+"px -"+top+"px";
+			// 		addMe.style.height = addMe.style.width = chipSize*zoom+"px";
+
+			// 		addMe.chipCol = h;
+			// 		addMe.chipRow = v;
+			// 		addMe.chipNum = v*hChips + h;
+
+			// 		Pal.currentChipset.chips[addMe.chipNum] = addMe;
+
+			// 		chipSetNode.appendChild(addMe);
+
+			// 		(function(chipNum) { 
+			// 			addMe.addEventListener("mousedown", function() {
+			// 				Pal.selectChip(chipNum);
+			// 			});
+			// 		})(addMe.chipNum);
+			// 	}
+			// }
+			// Pal.selectChip(0);
+
+			// palletteNode.appendChild(chipSetNode);
+
+			resolve();
+		});
+		
+	});	
+}
+
+FLAT.Pallette.selectChip = function(chipNum) {
+	Pal.currentChipset.selectedChip = chipNum;
+}
+
+FLAT.Pallette.getCurrentChip = function() {
+	var out = {};
+	out.num = Pal.currentChipset.selectedChip;
+	out.row = ~~(out.num / Pal.currentChipset.chipWidth);
+	out.col = out.num % Pal.currentChipset.chipWidth;
+
+	return out; 
+}
+
+
+</script>
+
+
+<style>
+
+chipSet {
+	display: block;
+	position: relative;
+	z-index: 1;
+	line-height: 0px;
+	image-rendering: -moz-crisp-edges;
+}
+
+	chip {
+		position: relative;
+		display: inline-block;
+		/*background-size: auto auto;*/
+		background-repeat: repeat;
+		
+	}
+
+
+		chip::before {
+			display: block;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			content: '';
+			border: 3px solid rgba(250,250,250,0.5);
+			visibility: hidden;
+			pointer-events: none;
+		}
+			chip:hover::before {
+				visibility: initial;
+			}
+
+		chip.selectedChip::before {
+			visibility: initial;
+			border-color: #222;
+			
+		}
+
+</style>

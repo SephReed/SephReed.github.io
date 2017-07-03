@@ -13,7 +13,7 @@ PINE.createNeedle("[dragArea]", function(drags) {
 	drags.addAttArg("initOff", ["dragAreaInitOff", "dragInitOff"], "exists", false);
 
 	drags.addInitFn({ watchSelector: "draggables" },
-		function(args) {
+		function(state, args) {
 			var instance = this;
 			// console.log("new draggables!");
 			var addedNodes = args.addedNodes;

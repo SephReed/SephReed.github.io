@@ -244,7 +244,7 @@ PINE.class.Needle = function(matchCase, args) {
 
 
 PINE.NEEDLES.nextFnID = 0;
-PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
+PINE.class.Needle.prototype.addOp = PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
 	var needle = this;
 	var opType, fn, isAsync, isMultirun, watchSelector;
 	if(typeof arg1 == "string" && typeof arg2 == "function") {
@@ -312,11 +312,11 @@ PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
 					U.removeFromArray(addMe, PINE.NEEDLES.runningInits);
 					resolve();
 				}
-				fn.call(instance, args);
+				fn.call(instance, instance, args);
 			}
 
 			else {
-				fn.call(instance, args);
+				fn.call(instance, instance, args);
 				resolve();
 			}
 		});
@@ -332,20 +332,36 @@ PINE.class.Needle.prototype.addInitFn = function(arg1, arg2) {
 
 
 //Change job.attArg.whatevs to job.getArg("lalal")
-PINE.class.Needle.prototype.addAttArg = function(name, attNames, type, defaultVal, defaultAttVal) {
+PINE.class.Needle.prototype.addAttArg = function(nameOrObject, attNames, type, defaultVal, defaultAttVal) {
 	var addMe = {};
-	addMe.attNames = attNames;
-	addMe.type = type;
-	addMe.defaultVal = defaultVal;
-	addMe.defaultAttVal = defaultAttVal;
 
-	if(type.toLowerCase() !== "liveselector")
-		this.attArgs[name] = addMe;
+	if(typeof nameOrObject == "object") {
+		var args = nameOrObject;
+		addMe.name = args.argName;
+		addMe.attNames = args.attNames;
+		addMe.type = args.argType;
+		addMe.defaultVal = args.defaultVal;
+		addMe.defaultValFn = args.defaultAttVal;
+		addMe.defaultAttVal = args.defaultAttVal;
+		addMe.arrayed = args.isArrayable;
+	}
+	else if(typeof nameOrObject == "string") {
+		addMe.name = nameOrObject;
+		addMe.attNames = attNames;
+		addMe.type = type;
+		addMe.defaultVal = defaultVal;
+		addMe.defaultAttVal = defaultAttVal;
+	}
+
+	else PINE.err("attArg requires a string or argument object, not ", nameOrObject);
+	
+
+	if(addMe.type.toLowerCase() !== "liveselector")
+		this.attArgs[addMe.name] = addMe;
 	else {
 		addMe.fns = {};
-		addMe.name = name;
 		this.selectors.list.push(addMe);
-		this.selectors.byName[name] = addMe;
+		this.selectors.byName[addMe.name] = addMe;
 	}
 	
 }
@@ -378,7 +394,7 @@ PINE.class.Needle.prototype.addAttArg = function(name, attNames, type, defaultVa
 // 	selector.fns[opType].push(addMe);
 // }
 
-
+//check if the domNode matches the needles match case, if so, inject
 PINE.class.Needle.prototype.tryInject = function(domNode) {
 		//
 	if(domNode.__pine__.instances[this.matchCase] == undefined) {
@@ -583,24 +599,29 @@ PINE.class.Instance = function(needle, domNode) {
 
 PINE.class.Instance.prototype.tryInit = function(opType) {
 	var instance = this;
-	var inits = instance.needle.inits.byOp[opType];
+	var opFns = instance.needle.inits.byOp[opType];
 
 	var promises = []
-	for(var i in inits) {
-		var init = inits[i];
-		var preRan = instance.ranInits.includes(init);
+	for(var i in opFns) {
+		var opFn = opFns[i];
+		var preRan = instance.ranInits.includes(opFn);
 		var hasSelectorsBacklog;
-		var selector = init.watchSelector ? instance.selectors[init.watchSelector] : undefined;
-		hasSelectorsBacklog = selector && selector.fnBacklogs[init.ID].length;
+		var selector = opFn.watchSelector ? instance.selectors[opFn.watchSelector] : undefined;
+		hasSelectorsBacklog = selector && selector.fnBacklogs[opFn.ID].length;
 
-		if(init.isMultirun || preRan == false || hasSelectorsBacklog) {
-			promises.push(init.fn.call(instance));
+		if(opFn.isMultirun || preRan == false || hasSelectorsBacklog) {
+			promises.push(opFn.fn.call(instance));
 
 			if(preRan == false)
-				instance.ranInits.push(init);
+				instance.ranInits.push(opFn);
 		}
 	}
 	return SyncPromise.all(promises);
+};
+
+
+PINE.class.Instance.prototype.getArg = function(name) {
+	return this.attArg[name];
 };
 
 
@@ -1501,7 +1522,7 @@ U.runScript = function(scriptText, appendTo, src) {
 			var url = URL.createObjectURL(file);
 
 			var script = document.createElement("script");
-		    script.src = url+"#"+src;
+		    script.src = url+"#"+src+"?"+src;
 		    script.type = "text/javascript";
 
 			appendTo = appendTo || document.head;
@@ -1695,8 +1716,9 @@ El.byTag = function(domNode, tag) {
 }
 
 El.firstOfTag = function(domNode, tag) {
-	if(domNode === undefined)
-		PINE.err("can not get by tag from undefined domNode", domNode, className);
+	if(domNode == undefined)
+		domNode = document.body;
+		// PINE.err("can not get by tag from undefined domNode", domNode, className);
 	var result = El.byTag(domNode, tag);
 	if(result.length)
 		return result[0];
@@ -1740,7 +1762,16 @@ El.cssQuery = function(root, selector, limit) {
 	if(selector.charAt(0) == ">")
 		selector = ":scope "+selector;
 
-	if(limit == 1)
+	while(selector.charAt(0) == "~") {
+		root = root.parentNode;
+		console.log(selector);
+		selector = selector.slice(1);
+	}
+
+	if(selector == '')
+		return [root];
+
+	else if(limit == 1)
 		return [root.querySelector(selector)];
 
 	else
@@ -1870,6 +1901,20 @@ El.getRootNode = function(branch, matchCase) {
 	return out;
 }
 
+El.getSharedRoot = function(node1, node2) {
+	var out = undefined;
+	for(var ptr1 = node1; ptr1 && out == undefined; ptr1 = ptr1.parentNode) {
+			//
+		for(var ptr2 = node2; ptr2 && out == undefined; ptr2 = ptr2.parentNode) {
+				//
+			// console.log(ptr1, " ?==", ptr2);
+			if(ptr1 === ptr2 && ptr1 !== undefined)
+				out = ptr1;
+		}
+	}
+	return out;
+}
+
 
 
 
@@ -1924,7 +1969,7 @@ El.attArg = function(domNode, attNames, type, defaultVal, defaultAttVal) {
 	else if (type == "tagFirst")
 		return El.firstOfTag(domNode, out);
 
-	else if (type == "selector")
+	else if (type == "selector" || type == "element")
 		return El.cssQuery(domNode, out);
 
 	else if (type == "float" || type == "double" || type == "number")
@@ -1942,6 +1987,12 @@ El.makeSizeCalculatable = function(domNode) {
 	
 	if(positioning == undefined || positioning == 'static')
 		domNode.style.position = "relative";
+}
+
+
+El.setSize = function(domNode, width, height) {
+	domNode.style.width = width+"px";
+	domNode.style.height = height+"px";
 }
 
 El.windowOffset = function(target) {
@@ -1962,6 +2013,31 @@ El.relativePos = function(ofMe, toMe) {
 	var y = itemBounds.top - spaceBounds.top;
 
 	return {x: x, y: y};
+}
+
+El.getPxCoordinate = function(domNode, posString) {
+	var dimensions = posString.match(/[\S]+/g);
+	var out = [];
+
+	for(var i = 0; i < dimensions.length; i++) {
+			//
+		var dim = dimensions[i];
+		if(dim.endsWith('px')) {
+			out[i] = parseFloat(dim.replace('px', ''));
+		}
+		else {
+			var size = (i == 0) ? domNode.offsetWidth : domNode.offsetHeight;
+
+			var multiple;
+			if(dim.endsWith('%')) 
+				multiple = parseFloat(dim.replace('%', ''))/100.0;
+
+			if(multiple !== undefined)
+				out[i] = size * multiple;
+		}
+	}
+
+	return out;
 }
 
 
@@ -2007,6 +2083,99 @@ El.cloneAndInit = function(domNode, goDeep) {
 	var out = domNode.cloneNode(goDeep);
 	PINE.initiate(out);
 	return out;
+}
+
+
+
+
+El.resizeSensorNode = undefined;
+El.initResizeNode = function() {
+	var fillParent = "display: block; position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;";
+	var triggerStyle = "position: absolute; left: 0; top: 0; transition: 0s;";
+
+	var resizeSensor = El.resizeSensorNode = document.createElement("resizeSensor");
+	resizeSensor.style = fillParent;
+
+	var expandSensor = document.createElement("div");
+	expandSensor.style = fillParent;
+	resizeSensor.appendChild(expandSensor);
+
+	var trigger = document.createElement("div");
+	trigger.style = triggerStyle;
+	expandSensor.appendChild(trigger);
+
+	var shrinkSensor = expandSensor.cloneNode(true);
+	shrinkSensor.firstChild.style = triggerStyle + " width: 200%; height: 200%";
+	resizeSensor.appendChild(shrinkSensor);
+}
+
+
+El.onSizeChange = function(domNode, fn) {
+    if (!domNode) return;
+    if (domNode.resizeListeners) {
+        domNode.resizeListeners.push(fn);
+        return;
+    }
+
+    domNode.resizeListeners = [];
+    domNode.resizeListeners.push(fn);
+
+    if(El.resizeSensorNode == undefined)
+    	El.initResizeNode();
+
+    domNode.resizeSensor = El.resizeSensorNode.cloneNode(true);
+    domNode.appendChild(domNode.resizeSensor);
+
+    var expand = domNode.resizeSensor.firstChild;
+    var expandTrigger = expand.firstChild;
+    var shrink = domNode.resizeSensor.childNodes[1];
+
+    var reset = function() {
+        expandTrigger.style.width = '100000px';
+        expandTrigger.style.height = '100000px';
+
+        expand.scrollLeft = 100000;
+        expand.scrollTop = 100000;
+
+        shrink.scrollLeft = 100000;
+        shrink.scrollTop = 100000;
+    };
+
+    reset();
+
+	var hasChanged, frameRequest, newWidth, newHeight;
+    var lastWidth = domNode.offsetWidth;
+    var lastHeight = domNode.offsetHeight;
+
+
+    var onResized = function() {
+        frameRequest = undefined;
+
+        if (!hasChanged) return;
+
+        lastWidth = newWidth;
+        lastHeight = newHeight;
+
+        var listeners = domNode.resizeListeners;
+        for(var i = 0; listeners && i < listeners.length; i++) 
+        	listeners[i]();
+    };
+
+    var onScroll = function() {
+        newWidth = domNode.offsetWidth;
+        newHeight = domNode.offsetHeight;
+        hasChanged = newWidth != lastWidth || newHeight != lastHeight;
+
+        if (hasChanged && !frameRequest) {
+            frameRequest = requestAnimationFrame(onResized);
+        }
+
+        reset();
+    };
+
+
+   	expand.addEventListener("scroll", onScroll);
+   	shrink.addEventListener("scroll", onScroll);
 }
 
 

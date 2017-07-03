@@ -49,7 +49,7 @@ PINE.createNeedle("[selectableList]", function(selList) {
 	});
 
 	selList.addInitFn({ watchSelector: "selectables" },
-		function(args) {
+		function(state, args) {
 			var mod = this;
 			var addedNodes = args.addedNodes;
 			var selectMode = mod.attArg.selectMode;

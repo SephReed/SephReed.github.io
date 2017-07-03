@@ -84,6 +84,21 @@ CT.stringToHex = function(convertMe) {
     return out;
 }
 
+CT.stringToNumbers = function(convertMe, base, addSpace) {
+    base = base || 10;
+
+    var out = '';
+    for (var i in convertMe) {
+        var tmp = convertMe.charCodeAt(i).toString(base);
+        if(tmp.length == 1) 
+            tmp = '0'+tmp;
+        out += tmp;
+        if(addSpace)
+            out += ' ';
+    }
+    return out;
+}
+
 
 CT.randomBytes = function(length) {
     var out = [];

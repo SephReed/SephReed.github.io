@@ -1,0 +1,457 @@
+<script type="text/javascript">
+	
+	Tools.icons = [];
+	Tools.iconOrder = [
+		"draw",
+		"select",
+		"fill",
+		"pick"
+	]
+
+
+
+
+
+	var pullCanvas, pullSampler;
+	function getDataFromImage(image, dx, dy, dWidth, dHeight) {
+		if(pullCanvas == undefined) {
+			pullCanvas = document.createElement("canvas");
+			pullSampler = pullCanvas.getContext("2d");
+
+			// pullCanvas.style.imageRendering = "-moz-crisp-edges";
+			// pullCanvas.style.zIndex = "100";
+			// pullCanvas.style.position = "absolute";
+			// pullCanvas.style.right = "0px";
+			// pullCanvas.style.height = "256px";
+			// pullCanvas.style.width = "256px";
+			// pullCanvas.style.backgroundColor = "#777";
+
+			// Tools.domNode.appendChild(pullCanvas);
+		}
+
+		else pullSampler.clearRect(0, 0, pullCanvas.width, pullCanvas.height);
+
+		pullCanvas.width = dWidth;
+		pullCanvas.height = dHeight;
+
+		
+		pullSampler.drawImage(image, dx, dy, dWidth, dHeight, 0, 0, dWidth, dHeight);
+
+		return(pullSampler.getImageData(0, 0, dWidth, dHeight));
+
+	}
+
+
+	function drawScaledImage(image, painter, sx, sy, sWidth, sHeight, tx, ty, xScale, yScale) {
+		
+		var raw = getDataFromImage(image, sx, sy, sWidth, sHeight).data;
+
+		var count = 0;
+		for(var y = 0; y < sHeight; y++) {
+			for(var x = 0; x < sWidth; x++) {
+				var dataIndex = ((y*sWidth)+x)*4;
+				var r = raw[dataIndex], 
+					g = raw[dataIndex + 1],
+					b = raw[dataIndex + 2],
+					a = raw[dataIndex + 3];
+
+				// var color = "rgba("+r+", "+g+", "+b+", "+a+")"
+				// painter.fillStyle = color;
+				// console.log(color);
+
+				// console.log(dataIndex, r, g, b, a);
+
+				setColor(painter, r, g, b, a/256);
+				var rectX = (x*xScale)+tx;
+				var rectY = (y*yScale)+ty;
+
+				// setColor(painter, 250, 0, 250, 250)
+
+				painter.fillRect(rectX, rectY, xScale, yScale);
+
+
+				// painter.fillStyle = 'green';
+				// painter.fillRect(0, 0, 10, 10);
+
+				count++;
+			}
+		}
+	}
+
+	FLAT.pixelKey = [210, 42, 123, -1, 
+		102, 108, 97, -1, 
+		116, 119, 111, -1,
+		114, 108, 100, -1]
+
+
+
+	FLAT.pxToString = function(pxData) {
+	    var out = '';
+	    for(var i = 0; i < pxData.length; i++) {
+	    	if(i%4 != 3)
+	        	out += String.fromCharCode(pxData[i]);
+	    }
+
+	    return out;
+	}
+
+	// FLAT.stringToPx = function(convertMe, base, addSpace) {
+	//     base = base || 10;
+
+	//     var out = '';
+	//     for (var i in convertMe) {
+	//         var tmp = convertMe.charCodeAt(i).toString(base);
+	//         if(tmp.length == 1) 
+	//             tmp = '0'+tmp;
+	//         out += tmp;
+	//         if(addSpace)
+	//             out += ' ';
+	//     }
+	//     return out;
+	// }
+
+
+
+	FLAT.pixelKey = String.fromCharCode(234)+"*{flatworld";
+
+	FLAT.getPixelCodeHeader = function(image, key) {
+		var pixels = 7;
+
+		if(image.naturalWidth < pixels) return undefined;
+
+		var pointerData = getDataFromImage(image, image.naturalWidth - pixels, image.naturalHeight-1, pixels, 1).data;
+
+		
+		var passString = FLAT.pxToString(pointerData).slice(6);
+		if(passString == key+FLAT.pixelKey) {
+			var out = {};
+			out.length = pointerData[0];
+			out.startX = pointerData[1];
+			out.startY = pointerData[2];
+			out.width = pointerData[4]
+			out.height = pointerData[5]
+			
+
+			
+			return out
+		}
+	}
+
+	FLAT.getPixelCodeArgs = function(image, key) {
+		// if(FLAT.pixelCodeMatchesKey)
+
+		var args = FLAT.getPixelCodeHeader(image, key);
+
+		if(args) {
+
+			var data = getDataFromImage(image, args.startX, args.startY, args.width, args.height).data;
+
+			var out = {};
+
+			out.chipWidth = data[0];
+			out.chipHeight = data[1];
+			out.numChips = data[2];
+			out.pointers = [];
+
+			for(var i = 4; i < args.length * 4; i += 4) {
+				var addMe = {};
+				// addMe.iconNum = data[i];
+				addMe.x = data[i+1];
+				addMe.y = data[i+2];
+
+				out.pointers.push(addMe);
+			}
+
+			return out;
+		}
+	}
+
+
+	Tools.setIconSet = function(url, scale) {
+		scale = scale || 2;
+
+		var img = document.createElement("img");
+		img.src = url;
+
+		img.addEventListener("load", function() {
+
+			Tools.icons=[];
+
+			var args = FLAT.getPixelCodeArgs(img, "TUL");
+			
+			var chipSize = args ? args.chipWidth : img.naturalHeight;
+
+			var canvas = document.createElement("canvas");
+			canvas.width = canvas.height = chipSize * scale;
+			canvas.style.imageRendering = "-moz-crisp-edges";
+			// canvas.style.zIndex = "100";
+			// canvas.style.position = "absolute";
+			// canvas.style.height = "256px";
+			// canvas.style.width = "256px";
+			// canvas.style.backgroundColor = "#777";
+
+			// console.log(canvas);
+
+			// document.body.appendChild(canvas);
+
+			var painter = canvas.getContext("2d");
+
+
+			var hChips = args ? args.numChips : img.naturalWidth/chipSize;
+
+			if(hChips % 1 !== 0) {
+				PINE.err("chipSize incorrect");
+				hChips = ~~hChips;
+			}
+
+			for(var h = 0; h < hChips; h++) {
+				painter.clearRect(0, 0, scale*chipSize, scale*chipSize);
+
+				drawScaledImage(img, painter, 
+					h * chipSize, 0, chipSize, chipSize, 
+					0, 0, scale, scale);
+
+
+
+
+				var icon = {}
+				icon.actionPoint = args.pointers[h];
+				icon.url = canvas.toDataURL("image/png");
+
+				icon.bgStyling = "url('"+icon.url+"')";				
+				icon.cursorStyling = icon.bgStyling;
+
+				if(icon.actionPoint)
+					icon.cursorStyling += icon.actionPoint.x*scale+" "+icon.actionPoint.y*scale
+				else {
+					var center = ~~(chipSize*scale/2);
+					icon.cursorStyling += center+" "+center;
+				}
+
+				icon.cursorStyling += ", auto";
+
+
+				Tools.icons.push(icon);
+			}	
+
+			
+
+			for(var i = 0; i < Tools.icons.length; i++) {
+
+				var addMe = document.createElement("tool");
+				addMe.style.backgroundImage = "url('"+Tools.icons[i].url+"')";
+
+				var toolName = Tools.iconOrder[i];
+				var tool = Tools.getTool(toolName);
+				if(tool) {
+					tool.icon = Tools.icons[i];
+					tool.domNode = addMe;
+				}	
+
+				(function(i) {
+					addMe.addEventListener("mousedown", function() {
+						Tools.setTool(Tools.iconOrder[i]);
+					});
+				})(i);
+				
+
+				Tools.domNode.appendChild(addMe);
+			}
+		});
+
+
+
+	}
+
+
+	Tools.getTool = function(toolName) {
+		if(toolName == undefined) return;
+		toolName = toolName.charAt(0).toUpperCase() + toolName.slice(1).toLowerCase();
+		return Tools[toolName];
+	}
+
+
+
+
+
+
+
+	Tools.eventBindings = {};
+	Tools.eventBindings.mouseDown;
+	Tools.eventBindings.mouseDrag;
+	Tools.eventBindings.keyup;
+	Tools.eventBindings.keydown;
+	
+	Tools.setTool = function(toolName) {
+		var tool = Tools.getTool(toolName);
+
+		if(tool !== undefined) {
+
+			if(Tools.currentTool && Tools.currentTool.disengange)
+				Tools.currentTool.disengange();
+
+
+			Tools.currentTool
+				= Tools.eventBindings.keyup 
+				= Tools.eventBindings.keydown 
+				= Tools.eventBindings.mouseDrag 
+				= Tools.eventBindings.mouseDown 
+				= tool;
+
+			Tools.setDrawAreaCursor(toolName);
+			
+
+			if(Tools.currentTool.engage)
+				Tools.currentTool.engage();
+		}
+	}
+
+	Tools.setDrawAreaCursor = function(toolName) {
+		var tool = Tools.getTool(toolName);
+		console.log(toolName, tool);
+		if(tool && tool.icon)
+			FLAT.drawArea.style.cursor = tool.icon.cursorStyling;
+	}
+
+
+
+	Tools.mouseDown = function(row, col) {
+		if(Tools.eventBindings.mouseDown)
+			Tools.eventBindings.mouseDown.mouseDown(row, col);
+	}
+
+	Tools.mouseDrag = function(row, col) {
+		if(Tools.eventBindings.mouseDrag)
+			Tools.eventBindings.mouseDrag.mouseDrag(row, col);
+	}
+
+	Tools.keydown = function(key) {
+		if(Tools.eventBindings.keydown)
+			Tools.eventBindings.keydown.keydown(key);
+	}
+
+	Tools.keyup = function(key) {
+		if(Tools.eventBindings.keyup)
+			Tools.eventBindings.keyup.keyup(key);
+	}
+
+
+
+
+	Tools.makePickHotkey = function(baseTool) {
+
+	}
+
+
+
+	/**************************
+	*      TOOL TYPES         *
+	**************************/
+
+
+	Tools.Draw = {};
+	Tools.Draw.mouseDown = Tools.Draw.mouseDrag = function(row, col) {
+		CURRENT_LAYER.setChip(row, col, Pal.selectedChip.chipNum);
+	}
+
+	Tools.Draw.keydown = function(key) {
+		if(key == "Meta") {
+			Tools.setDrawAreaCursor("Pick");
+			Tools.eventBindings.mouseDown = Tools.getTool("Pick");
+		}
+	}
+
+	Tools.Draw.keyup = function(key) {
+		if(key == "Meta") {
+			Tools.setDrawAreaCursor("Draw");
+			Tools.eventBindings.mouseDown = Tools.getTool("Draw");
+		}
+	}
+
+	Tools.setTool("Draw");
+
+
+
+	Tools.Fill = {}
+	Tools.Fill.mouseDown = Tools.Fill.spread = function(row, col, targetID, allowDiagonals) {
+		if(row < 0 
+		|| col < 0 
+		|| CURRENT_LAYER.chips.length <= row 
+		|| CURRENT_LAYER.chips[0].length <= col)
+			return;
+
+		if(targetID === undefined)
+			targetID = CURRENT_LAYER.chips[row][col];
+
+		if(Pal.selectedChip.chipNum == targetID)
+			return;
+
+		if(CURRENT_LAYER.chips[row][col] == targetID) {
+			CURRENT_LAYER.setChip(row, col, Pal.selectedChip.chipNum);
+
+			Tools.Fill.spread(row-1, col, targetID, allowDiagonals);
+			Tools.Fill.spread(row+1, col, targetID, allowDiagonals);
+			Tools.Fill.spread(row, col-1, targetID, allowDiagonals);
+			Tools.Fill.spread(row, col+1, targetID, allowDiagonals);
+
+			if(allowDiagonals == true) {
+				Tools.Fill.spread(row-1, col-1, targetID, allowDiagonals);
+				Tools.Fill.spread(row+1, col+1, targetID, allowDiagonals);
+				Tools.Fill.spread(row+1, col-1, targetID, allowDiagonals);
+				Tools.Fill.spread(row-1, col+1, targetID, allowDiagonals);
+			}
+		}
+	}
+
+	Tools.Fill.keydown = Tools.Draw.keydown;
+	Tools.Fill.keyup = function(key) {
+		if(key == "Meta") {
+			Tools.setDrawAreaCursor("Fill");
+			Tools.eventBindings.mouseDown = Tools.getTool("Fill");
+		}
+	}
+
+	// var setBack;
+	// Tools.Fill.engage = Tools.Draw.engage = function() {
+	// 	console.log("extending");
+	// 	document.body.addEventListener("keydown", function(event) {
+	// 		// console.log(event);
+	// 		if(event.key == "Meta") {
+	// 			// setBack = Tool.currentTool;
+	// 			Tools.setTool("Pick");
+	// 		}
+	// 	});
+	// }
+	// Tools.Fill.disengage = Tools.Draw.disengage = function() {
+
+	// }
+
+
+	Tools.Replace = {}
+	Tools.Replace.mouseDown = function(row, col) {
+		var targetID = CURRENT_LAYER.chips[row][col];
+		for(var v = 0; v < 16; v++) {
+			for(var h = 0; h < 16; h++) {
+				if(CURRENT_LAYER.chips[v][h] == targetID)
+					CURRENT_LAYER.setChip(v, h, Pal.selectedChip.chipNum);
+			}
+		}
+	}
+
+
+	Tools.Pick = {}
+	Tools.Pick.mouseDown = function(row, col) {
+		var targetID = CURRENT_LAYER.chips[row][col];
+		FLAT.Pallette.selectChip(targetID);
+	}
+
+
+
+
+
+
+
+
+
+
+</script>

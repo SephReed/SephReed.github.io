@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Flat Story - 2D Game Maker</title>
+	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
+	<!-- <script type="text/javascript" src="ResizeSensor.js"></script> -->
+	<!-- <needle src="../PINE/needles/tether.html"></needle> -->
+	<needle src="../PINE/needles/resizeHandle.html"></needle>
+	<needle src="Pallette.html"></needle>
+	<needle src="World.html"></needle>
+	<needle src="Tools.html"></needle>
+
+	<script type="text/javascript">
+		PINE.createNeedle("[scalableCanvas]", function() {
+			this.addOp(function(state) {
+				var domNode = state.domNode;
+				var updateSizing = function() {
+					domNode.width = domNode.offsetWidth;
+					domNode.height = domNode.offsetHeight;
+				}
+				El.onSizeChange(domNode, updateSizing);
+				updateSizing();
+			});
+		});
+	</script>
+	
+
+	<script type="text/javascript">
+
+		function HSV_to_RGB(hue, saturation, value) {
+			hue %= 1;
+
+			var rgb;
+			if(saturation == 0 || value == 0)
+				rgb = [value, value, value];  //used car salesman rick jim here!
+
+			else {
+				rgb = [];
+				var oneThird = 1/3;
+				var twoThirds = 2/3;
+
+				var rgbPos = []
+				rgbPos[0] = ((hue+oneThird)%1)/twoThirds;  //at 0, red pos = 0.5 or peak of sine wave
+				rgbPos[1] = hue/twoThirds;  //at .3333, green pos = 0.5 or peak of sine wave
+				rgbPos[2] = (hue-oneThird)/twoThirds;  //at .6666, blue pos = 0.5 or peak of sine wave
+
+				for(var i in rgbPos) {
+					var pos = rgbPos[i];
+					if(pos > 0 && pos < 1)
+						rgb[i] = Math.sin(pos*Math.PI) * value;
+					else
+						rgb[i] = 0;
+				}
+
+
+				if(saturation < 1) {
+					var max = Math.max(Math.max(rgb[0], rgb[1]), rgb[2]);
+
+					for(var i in rgb)
+						rgb[i] += (max-rgb[i]) * (1-saturation);
+				}
+			}
+
+			for(var i in rgb) 
+				rgb[i] *= 256;
+
+			return rgb;
+		}
+
+		function setColor(painter, r, g, b, a) {
+			if(a !== undefined){
+				painter.strokeStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+				painter.fillStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+			}
+			else {
+				painter.strokeStyle = "rgb("+r+", "+g+", "+b+")";
+				painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
+			}
+
+		}
+
+
+		
+
+		
+
+		
+
+		// FLAT.Pallette.setViewSize;
+
+		// function updateCanvas() {
+			
+		// 	var row, col;
+		// 	if(Pal.selectedChip){
+		// 		row = Pal.selectedChip.chipRow;
+		// 		col = Pal.selectedChip.chipCol;
+		// 	}
+		// 	else 
+		// 	{  row = 4;  col = 0;  }
+
+  //       	for(var h = 0; h < 16; h++) {
+  //       		for(var v = 0; v < 16; v++) {
+	 //        		painter.drawImage(Pal.currentChipset.imgNode, col*16, row*16, 16, 16, h*16, v*16, 16, 16);
+	 //        	}	
+  //       	}
+		// }
+
+
+
+		// var chipSetUrls = ["chip_02.png", 
+		// 	"chipset01.png", 
+		// 	"chip_circus.png", 
+		// 	"chip_mc01.jpeg",
+		// 	"chip_mc02.png",
+		// 	"chip_mc03.jpg"];
+
+		var FLAT = {};
+		FLAT.World = {};
+		var Tools = FLAT.World.Tools = {};
+
+		var chipSetUrls = ["chipset01.png"];
+
+		
+		PINE.ready(function() {
+			FLAT.Pallette.domNode = El.firstOfTag(null, "pallette");
+			FLAT.World.domNode = El.firstOfTag(null, "world");
+			Tools.domNode = El.firstOfTag(null, "drawTools");
+			FLAT.drawArea = El.firstOfTag(null, "drawArea");
+
+
+			var chipUrl = chipSetUrls[~~(Math.random()*chipSetUrls.length)];
+
+			FLAT.Pallette.setChipSet(chipUrl, 16, 3).then(createWorld);	
+
+			// document.body.addEventListener("mousedown", function() {
+			// 	document.body.mozRequestFullScreen();
+			// });
+			
+			Tools.setIconSet("public/images/icons/icons_tools.png");
+
+			document.body.addEventListener("keydown", function(event) {
+				console.log(event);
+				Tools.keydown(event.key);
+			});
+
+			document.body.addEventListener("keyup", function(event) {
+				Tools.keyup(event.key);
+			});
+		});
+
+
+
+
+		
+
+
+
+		
+
+
+
+	</script>
+
+	
+
+</head>
+<body>
+	<topbar>FLAT.World | File | Help</topbar>
+	<mainArea>
+		<controlarea>
+			<palletteArea>
+				<resize class="resize-all"
+					resizeHandle="~~, ~" 
+					resizeDir="0 1 0 0, 0 0 1 0"></resize>
+				<!-- <palletteShadowOverlay></palletteShadowOverlay> -->
+				<palletteScroller>
+					<pallette></pallette>
+				</palletteScroller>
+			</palletteArea>
+			<layerSelect></layerSelect>
+		</controlarea>
+		<drawArea>
+			<drawTools>
+				<!-- <tool>
+					
+				</tool><tool>
+					
+				</tool><tool>
+					
+				</tool><tool>
+
+				</tool><tool>
+
+				</tool><tool>
+
+				</tool><tool>
+
+				</tool><tool>
+
+				</tool>
+
+				<button onclick="Tools.setTool('Draw')">Draw</button>
+				<button onclick="Tools.setTool('Select')">Select</button>
+				<button onclick="Tools.setTool('Fill')">Fill</button>
+				<button onclick="Tools.setTool('Replace')">Replace</button> -->
+			</drawTools>
+			<worldArea>
+				<world>
+					<!-- <canvas width="256px" height="256px"></canvas> -->
+				</world>
+			</worldArea>
+		</drawArea>
+	</mainArea>
+</body>
+
+<style>
+
+
+@font-face {
+	font-family: 'SilkScreen';
+  	src:  url('public/fonts/Silk_Screen/slkscr.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'SilkScreen';
+  	src:  url('public/fonts/Silk_Screen/slkscrb.ttf') format('truetype');
+  	font-weight: bold;
+}
+
+@font-face {
+	font-family: '8Bit';
+  	src:  url('public/fonts/8-bit pusab.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'FreePixel';
+  	src:  url('public/fonts/FreePixel.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'TypeWriter';
+  	src:  url('public/fonts/type_writer.ttf') format('truetype');
+}
+
+
+
+
+
+
+body {
+	/*font-family: "FreePixel";*/
+	font-family: arial;
+	/*font-family: "TypeWriter";*/
+	color: #EFD1A5;
+	background-color: #46514E;
+	border-color: #333;
+	border-width: 3px;
+	font-size: 13px;
+
+	/*cursor:  "draw";*/
+    /*cursor:  url(public/images/icons/icons_tools.png) 1 1, auto;*/
+	/*image-rendering: -moz-crisp-edges;*/
+}
+
+
+	topbar {
+		display: block;
+		height: 20px;
+		border-bottom-style: solid;
+		background-color: inherit;
+		border-color: inherit;
+	}
+
+	mainArea {
+		display: flex;
+		position: absolute;
+		top: 20px;
+		bottom: 0px;
+		width: 100%;
+		border-width: 3px;
+		/*background-color: #555;*/
+		background-color: inherit;
+		border-color: inherit;
+	}
+
+		controlarea {
+			display: flex;
+			width: 280px;
+			height: 100%;
+			top: 0px;
+			bottom: 0px;
+			/*background-color: #444;*/
+			background-color: inherit;
+			flex-direction: column;
+			border-color: inherit;
+			
+			border-right-style: solid;
+			box-shadow: 5px 5px 25px rgba(0,0,0,0.2);
+			z-index: 3;
+		}
+
+			palletteArea {
+				position: relative;
+				display: block;
+				height: 450px;
+				padding: 3px;
+				border-bottom-style: solid;
+				border-color: inherit;
+			}
+
+				palletteArea>resize {
+					position: absolute;
+					right: 0px;
+					bottom: 0px;
+					transform: translate(50%, 50%) rotate(45deg);
+					border-color: black !important;
+					background-color: #888;
+					opacity: 1 !important;
+				}
+
+				palletteArea::after {
+					position: absolute;
+					content: ' ';
+					top: 6px;
+					left: 6px;
+					right: 6px;
+					bottom: 6px;
+					box-shadow: inset 4px 4px 15px rgba(0,0,0,0.5);
+					z-index: 3;
+					pointer-events: none;
+				}
+				
+
+					palletteScroller {
+						display: block;
+						position: relative;
+						height: 100%;
+						width: 100%;
+						position: relative;
+						overflow: scroll;
+						border: 3px solid;
+						border-color: inherit;
+					}
+
+						pallette {
+							display: block;
+							position: relative;
+						}
+
+
+							pallette > canvas {
+								position: absolute;
+								top: 0px;
+								left: 0px;
+								image-rendering: -moz-crisp-edges;
+								height: 100%;
+								width: 100%;
+							}
+
+					
+
+					
+
+			layerSelect {
+				display: block;
+				height: 110px;
+				flex-grow: 1;
+				/*background-color: orange;*/
+			}
+
+
+
+		drawArea {
+			display: inline-block;
+			position: relative;
+			/*width: 200px;*/
+			/*padding: 200px;*/
+			flex-grow: 1;
+			height: 100%;
+			/*background-color: #06508E;*/
+			background-color: #2A2A2A;
+		}
+
+			drawTools {
+				display: block;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				background-color: #444;
+				border-style: none solid solid none;
+				border-color: #333;
+				border-width: 3px;
+				z-index: 30;
+				box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
+			}
+
+				drawTools > tool {
+					display: inline-block;
+					/*background-image: url("public/images/icons/icons_tools.png");*/
+					/*background-size: 800% 100%;*/
+					height: 32px;
+					width: 32px;
+					image-rendering: -moz-crisp-edges;
+				}
+/*
+					drawTools > tool:nth-child(8n-7) {
+						background-position: 0px 0px;	
+					}
+
+					drawTools > tool:nth-child(8n-6) {
+						background-position: -32px 0px;	
+					}
+
+					drawTools > tool:nth-child(8n-5) {
+						background-position: -64px 0px;	
+					}
+
+					drawTools > tool:nth-child(8n-4) {
+						background-position: -96px 0px;	
+					}
+
+					drawTools > tool:nth-child(8n-3) {
+						background-position: -128px 0px;	
+					}
+
+					drawTools > tool:nth-child(8n-2) {
+						background-position: -160px 0px;	
+					}
+
+					drawTools > tool:nth-child(8n-1) {
+						background-position: -192px 0px;	
+					}
+
+					drawTools > tool:nth-child(8n) {
+						background-position: -224px 0px;	
+					}*/
+
+			worldarea {
+				display: block;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				overflow: scroll;
+			}
+
+				world {
+					display: inline-block;
+					position: relative;
+					margin: 200px;
+					/*padding: 200px;*/
+					height: 768px;
+					width: 768px;
+					/*background: #828;*/
+				}
+
+					world>canvas {
+						/*display: none;*/
+						position: absolute;
+						top:0px;
+						left: 0px;
+						/*margin: 200px;*/
+						height: 768px;
+						width: 768px;
+						
+						image-rendering: -moz-crisp-edges;
+						
+					}
+
+						world>canvas:last-child {
+							background: #1F1F1F;
+							box-shadow: 5px 5px 25px rgba(0,0,0,0.3);
+						}
+
+
+</style>
+</html>

@@ -1,0 +1,325 @@
+<script type="text/javascript">
+
+
+var START_MAP = {};
+START_MAP.code = `96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
+	96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
+	96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
+	96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
+	96 96 96 96 96 96 96 96 96 96 96 217 217 217 217 217 
+	96 96 96 96 217 217 217 217 217 217 217 244 244 13 14 14 
+	217 217 217 217 244 244 244 244 244 244 244 244 268 37 196 196 
+	244 244 244 244 244 244 244 244 244 244 244 245 196 37 7 7 
+	268 268 268 268 268 133 133 133 133 133 133 269 7 37 7 7 
+	7 7 7 7 7 157 157 157 133 133 278 7 7 61 62 62 
+	7 7 7 7 7 276 279 278 157 157 278 7 7 85 86 86 
+	7 7 7 7 7 185 185 185 276 278 55 7 7 85 86 86 
+	7 7 7 7 7 276 277 277 279 278 7 7 7 85 86 86 
+	7 7 7 7 7 7 7 7 7 7 7 7 7 109 110 110 
+	7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+	7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7`;
+
+START_MAP.code = `151 151 151 151 151 151 151 60 60 60 60 84 84 55 55 55 
+60 60 60 151 151 151 60 60 84 84 84 55 55 55 55 55 
+84 84 60 60 60 60 84 84 55 55 55 96 96 96 55 55 
+55 55 84 84 84 84 55 55 55 55 96 96 96 96 96 55 
+55 55 55 55 55 55 55 55 55 55 96 96 96 96 96 55 
+313 313 313 313 314 55 55 55 55 55 96 96 96 96 96 55 
+361 361 361 361 337 313 314 55 55 55 55 55 96 96 96 55 
+137 137 137 9 360 361 112 313 313 313 314 55 55 55 55 55 
+108 108 108 137 137 137 360 361 361 361 337 313 313 313 314 55 
+137 137 108 108 108 137 137 137 9 137 360 361 361 361 337 313 
+137 112 137 137 108 108 108 108 108 137 137 137 137 137 360 361 
+313 314 137 137 9 137 137 137 108 108 108 108 108 137 137 9 
+361 337 313 314 137 137 137 112 137 137 112 137 108 108 108 108 
+55 360 361 337 313 313 313 314 137 137 9 137 137 137 137 137 
+55 55 55 360 361 361 361 337 313 313 313 314 137 112 137 137 
+55 55 55 55 55 55 55 360 361 361 361 337 313 313 313 313 `;
+
+START_MAP.chips = START_MAP.code.split(/\n/g);
+
+for(var i in START_MAP.chips) {
+	START_MAP.chips[i] = START_MAP.chips[i].match(/\S+/g);
+}
+
+console.log(START_MAP.chips);
+
+
+
+	
+
+	var CURRENT_MAP, CURRENT_LAYER;
+	var UILayer;
+	function createWorld() {
+		FLAT.World.Maps = [];
+
+		UILayer = FLAT.World.UILayer = createUILayer();	
+
+		var firstMap = createMap();
+		selectMap(firstMap);
+	}
+
+
+	function selectMap(map) {
+		if(map == CURRENT_MAP) return;
+
+		UILayer.domNode.width = map.pxWidth;
+		UILayer.domNode.height = map.pxHeight;
+		
+		console.log(map.layers.all)
+
+		for(var i = 0; i < map.layers.all.length; i++) {
+			FLAT.World.domNode.appendChild(map.layers.all[i].domNode);
+		}
+
+		CURRENT_MAP = FLAT.World.currentMap = map;
+		CURRENT_LAYER = CURRENT_MAP.currentLayer;
+	}
+
+	function createUILayer() {
+		var out = {};
+		var canvas = out.domNode = document.createElement("canvas");
+		canvas.style.zIndex = 20;
+		canvas.oncontextmenu = function() {return false;}
+		var painter = out.painter = canvas.getContext("2d");
+
+		FLAT.World.domNode.appendChild(canvas);
+
+		var currentCol = 0, currentRow = 0;
+		var mouseHeld;
+
+		var mouseTrails = [];
+		// var numFrames = 3;
+		// var alphaDrop = 0.2;
+		// var alphaFloor = 0.5;
+		var hueShift = 0.005;
+		// var saturation = 0.9;
+		// var hueChange = 0.05;
+		var hueOffset = 0;
+		// var numRainbows = 2;
+		// var mouseTrailsFrameRequest;
+
+		// if(true) {
+		// 	numRainbows = 3;
+		// 	alphaDrop = 0.005;
+		// 	dropOpacity = false;
+		// 	saturation = 1;
+		// } 
+
+		canvas.addEventListener("mousemove", function(event) {
+			var y = event.layerY;
+			var x = event.layerX;
+
+			var col = ~~(x/(Pal.chipSize*3));
+			var row = ~~(y/(Pal.chipSize*3));
+			
+			if(currentCol !== col || currentRow !== row) {
+				var clearX = (currentCol*16)-10;
+				var clearY = (currentRow*16)-10;
+				var clearSize = 16+20;
+
+				hueOffset = (hueOffset + hueShift)%1;
+
+				// var cursorGhost = {};
+				// cursorGhost.x = currentCol*16;
+				// cursorGhost.y = currentRow*16;
+				// cursorGhost.opacity = 0.8;
+				// cursorGhost.hue = hueOffset;
+				// cursorGhost.frame = 0;
+
+				// mouseTrails.push(cursorGhost);
+
+				painter.clearRect(clearX, clearY, clearSize, clearSize);
+
+				currentCol = col;
+				currentRow = row;
+
+				var rgb = HSV_to_RGB(hueOffset, 0.3, 1);
+				setColor(painter, rgb[0], rgb[1], rgb[2], 0.8);
+				painter.strokeRect(col*16, row*16, 16, 16);
+
+				if(mouseHeld)
+					Tools.mouseDrag(currentRow, currentCol);
+
+				// if(mouseHeld && Tools.currentTool.mouseDrag !== undefined) 
+				// 	Tools.currentTool.mouseDrag(currentRow, currentCol);
+			}
+
+			// if(mouseTrails.length && mouseTrailsFrameRequest == undefined) {
+			// 	var mouseTrailsAnimation = function() {
+					
+			// 		for(var i = 0; i < mouseTrails.length; i++) {
+			// 			var ghost = mouseTrails[i];
+
+			// 			ghost.frame++;
+			// 			painter.clearRect(ghost.x - 1, ghost.y - 1, 18, 18);
+
+			// 			if(ghost.opacity > alphaFloor)
+			// 				ghost.opacity -= alphaDrop;
+
+			// 			if(ghost.opacity < alphaFloor)
+			// 				ghost.opacity = alphaFloor
+
+
+			// 			if(ghost.frame >= numFrames) {
+			// 				mouseTrails.splice(i, 1);
+			// 				i--;
+			// 			}
+			// 			else {
+			// 				var progress = ghost.frame/numFrames;
+			// 				var rgb = HSV_to_RGB(ghost.hue + progress*numRainbows, saturation, ghost.opacity);
+			// 				setColor(painter, rgb[0], rgb[1], rgb[2], 1)
+			// 				painter.strokeRect(ghost.x, ghost.y, 16, 16);
+			// 			}
+			// 		}
+
+			// 		setColor(painter, 250, 250, 250, 1);
+			// 		painter.strokeRect(currentCol*16, currentRow*16, 16, 16);
+
+			// 		if(mouseTrails.length)
+			// 			mouseTrailsFrameRequest = window.requestAnimationFrame(mouseTrailsAnimation);
+			// 		else
+			// 			mouseTrailsFrameRequest = undefined;
+			// 	}
+
+			// 	fadeFrameRequest = window.requestAnimationFrame(mouseTrailsAnimation);
+			// }
+		});
+
+
+		canvas.addEventListener("mousedown", function(event) {
+			mouseHeld = true;
+			Tools.mouseDown(currentRow, currentCol);
+
+			// if(Tools.currentTool.mouseDown !== undefined)
+			// 	Tools.currentTool.mouseDown(currentRow, currentCol);
+		});
+
+		document.body.addEventListener("mouseup", function(event) {
+			mouseHeld = false;
+		});
+
+		return out;
+	}
+
+
+
+
+
+
+
+	function createMap() {
+		var out = {};
+
+		out.layers = {};
+		out.layers.all = [];
+		out.chipWidth = out.chipHeight = 16;
+		out.pxWidth = out.pxHeight = Pal.chipSize * out.chipWidth;
+
+		var chipLayer = out.currentLayer = createChipLayer(out.chipWidth, out.chipHeight);
+		out.layers.all.push(chipLayer);
+
+		FLAT.World.Maps.push(out);
+
+		return out;
+	}
+
+
+
+	function createChipLayer(width, height) {
+		var out = {};
+		var canvas = out.domNode = document.createElement("canvas");
+		out.domNode.width = width * Pal.chipSize;
+		out.domNode.height = height * Pal.chipSize;
+
+
+
+		out.chips = [];
+		for(var row = 0; row < height; row++) {
+			out.chips[row] = [];
+			for(var col = 0; col < width; col++) {
+				out.chips[row][col] = START_MAP.chips[row][col];
+			}
+		}
+
+		out.printChipNums = function() {
+			var printOut = ""
+			for(var row = 0; row < height; row++) {
+				for(var col = 0; col < width; col++) {
+					printOut += out.chips[row][col] + " ";
+				}
+				printOut += "\n";
+			}
+			console.log(printOut);
+		}
+
+		
+		out.unrenderedChips = "all";
+		out.renderFrame;
+		out.updateRender = function() {
+			if(out.renderFrame == undefined) {
+					//
+				out.renderFrame = window.requestAnimationFrame(function() {
+
+					if(out.unrenderedChips == "all") {
+						out.unrenderedChips = undefined;
+						for(var row = 0; row < height; row++) {
+							for(var col = 0; col < width; col++) {
+								out.renderChip(row, col)
+							}
+						}
+					}
+
+					else if (out.unrenderedChips.length) {
+						while(out.unrenderedChips.length) {
+							var renderMe = out.unrenderedChips.pop();
+							out.renderChip(renderMe[0], renderMe[1]);
+						}
+					}	
+
+					out.renderFrame = undefined	
+				});
+			}
+		}
+		out.updateRender();
+
+
+		out.renderChip = function(row, col) {
+			// var chipID = out.chips[row][col];
+			var chip = Pal.getCurrentChip();
+			// // console.log(chip, row, col);
+
+			out.painter.drawImage(Pal.currentChipset.imgNode, 
+				chip.col * 16,  chip.row * 16, 16, 16, 
+				col*16, row*16, 16, 16);
+		}
+
+		out.setChip = function(row, col, chipNum) {
+			if(out.chips[row][col] == chipNum) return;
+
+			//else
+			out.chips[row][col] = chipNum;
+
+			if(out.unrenderedChips != "all") {
+					//
+				if(out.unrenderedChips == undefined)
+					out.unrenderedChips = [];
+
+				out.unrenderedChips.push([row, col]);
+
+				out.updateRender();
+			}
+		}
+
+		
+
+		out.printChipNums();
+
+		var painter = out.painter = canvas.getContext("2d");
+
+		return out;
+	}
+
+
+	
+</script>	
