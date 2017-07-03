@@ -382,7 +382,7 @@ var p_view = PINE.createNeedle("view", function(view) {
 
 	view.addInitFn({
 		isAsync : true,
-		fn: function(args) {
+		fn: function(state, args) {
 			var job = this;
 			job.currentUrl = "unset";
 			job.views = {};

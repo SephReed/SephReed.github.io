@@ -1679,10 +1679,13 @@ Promise.prototype.syncThen = function (nextFn) {
 		if(nextFn instanceof Promise) {
 			return nextFn;
 		}
-		else {
+		else if(typeof nextFn == "function") {
 			var val = this.syncable.value;
 			var out = nextFn(val);
 			return new SyncPromise(function(resolve) { resolve(out); });
+		}
+		else {
+			PINE.err("nextFn is not a function or promise", nextFn);
 		}
 	}
 

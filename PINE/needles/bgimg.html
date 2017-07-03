@@ -6,6 +6,7 @@ PINE.createNeedle("bgimg", function(bgimg) {
 
 
 	bgimg.addAttArg("pos", ["bgimgPos", "bgPos", "pos"], "string", "center center");
+	bgimg.addAttArg("repeat", ["bgimgRepeat", "bgRepeat", "repeat"], "string", "no-repeat");
 
 	bgimg.addInitFn(function() {
 		var instance = this;
@@ -16,7 +17,7 @@ PINE.createNeedle("bgimg", function(bgimg) {
 		initMe.style.backgroundPosition = pos;
 
 		//REPEAT
-		var repeat = El.attr(initMe, "bgimgRepeat") || '';
+		var repeat = instance.getArg("repeat");
 		var repeatX = (repeat.indexOf('x') != -1);
 		var repeatY = (repeat.indexOf('y') != -1);
 
@@ -29,9 +30,6 @@ PINE.createNeedle("bgimg", function(bgimg) {
 		else if(repeatY)
 			initMe.style.backgroundRepeat = "repeat-y";
 
-		else if(repeat == "")
-			initMe.style.backgroundRepeat = "no-repeat";
-
 		else
 			initMe.style.backgroundRepeat = repeat;
 
@@ -42,9 +40,10 @@ PINE.createNeedle("bgimg", function(bgimg) {
 		initMe.style.backgroundSize = size;
 
 		//src
-		var src = El.attr(initMe, "bgimgSrc");
-		if(src)
-			initMe.style.backgroundImage = "url('"+src+"')";
+		// var src = instance.getArg("src");
+		// var src = El.attr(initMe, "bgimgSrc");
+		// if(src)
+		// 	initMe.style.backgroundImage = "url('"+src+"')";
 
 		// console.log("PARENT POS");
 		var parent = initMe.parentNode;
@@ -56,6 +55,18 @@ PINE.createNeedle("bgimg", function(bgimg) {
 	})
 
 	
+});
+
+
+
+PINE.createNeedle("[bgImgSrc]", function() {
+	this.addAttArg("src", ["bgImgSrc"], "string");
+
+	this.addOp(function(state) {
+		console.log(state.domNode);
+		var style = "url('"+state.getArg("src")+"')";
+		state.domNode.style.backgroundImage = style;
+	});
 });
 
 

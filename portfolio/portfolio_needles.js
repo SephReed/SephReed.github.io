@@ -27,10 +27,10 @@ PINE("[fontSize]", function(initMe) {
 	initMe.style.fontSize = fsize;
 });
 
-PINE("[bgImage]", function(initMe) {
-	var initMe = this.domNode;
-	initMe.style.backgroundImage = El.attr(initMe, "bgImage");
-});
+// PINE("[bgImage]", function(initMe) {
+// 	var initMe = this.domNode;
+// 	initMe.style.backgroundImage = El.attr(initMe, "bgImage");
+// });
 
 
 
