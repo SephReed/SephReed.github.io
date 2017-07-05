@@ -4,10 +4,15 @@ PINE.createNeedle("modal", function(modal) {
 		//	
 	modal.addAttArg("exitOut", "exitOnOutClick", "boolean", true);
 	modal.addAttArg("fade", ["modalFade", "fade"], "id")
+	modal.addAttArg("startShown", ["modalStartShown", "startShown"], "exists")
 
 
-	modal.addInitFn(function() {
-		this.currentlyShowing = false;
+	modal.addOp(function(state) {
+		if(state.getArg("startShown") == true)
+			state.domNode.FNS.showModal();
+
+		else
+			state.domNode.FNS.hideModal();
 	})
 
 

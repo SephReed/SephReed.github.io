@@ -351,7 +351,7 @@
 
 	Tools.Draw = {};
 	Tools.Draw.mouseDown = Tools.Draw.mouseDrag = function(row, col) {
-		CURRENT_LAYER.setChip(row, col, Pal.selectedChip.chipNum);
+		CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
 	}
 
 	Tools.Draw.keydown = function(key) {
@@ -383,11 +383,11 @@
 		if(targetID === undefined)
 			targetID = CURRENT_LAYER.chips[row][col];
 
-		if(Pal.selectedChip.chipNum == targetID)
+		if(Pal.currentChipset.selectedChip.num == targetID)
 			return;
 
 		if(CURRENT_LAYER.chips[row][col] == targetID) {
-			CURRENT_LAYER.setChip(row, col, Pal.selectedChip.chipNum);
+			CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
 
 			Tools.Fill.spread(row-1, col, targetID, allowDiagonals);
 			Tools.Fill.spread(row+1, col, targetID, allowDiagonals);
@@ -433,7 +433,7 @@
 		for(var v = 0; v < 16; v++) {
 			for(var h = 0; h < 16; h++) {
 				if(CURRENT_LAYER.chips[v][h] == targetID)
-					CURRENT_LAYER.setChip(v, h, Pal.selectedChip.chipNum);
+					CURRENT_LAYER.setChip(v, h, Pal.currentChipset.selectedChip.num);
 			}
 		}
 	}

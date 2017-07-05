@@ -4,9 +4,15 @@
 	<title>Flat Story - 2D Game Maker</title>
 	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
 	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
+	<script type="text/javascript" src="webAppBridge.js"></script>
 	<!-- <script type="text/javascript" src="ResizeSensor.js"></script> -->
 	<!-- <needle src="../PINE/needles/tether.html"></needle> -->
+	<needle src="../PINE/PINE_Var.js"></needle>
+	<needle src="../PINE/PINE_Needles.js"></needle>
 	<needle src="../PINE/needles/resizeHandle.html"></needle>
+	<needle src="../PINE/needles/fileBrowser.html"></needle>
+	<needle src="../PINE/needles/tempFeedback.html"></needle>
+	<needle src="../PINE/needles/modal.html"></needle>
 	<needle src="Pallette.html"></needle>
 	<needle src="World.html"></needle>
 	<needle src="Tools.html"></needle>
@@ -127,6 +133,8 @@
 			FLAT.World.domNode = El.firstOfTag(null, "world");
 			Tools.domNode = El.firstOfTag(null, "drawTools");
 			FLAT.drawArea = El.firstOfTag(null, "drawArea");
+			FLAT.fileBrowser = El.byID("mainFileBrowser");
+			FLAT.tempMessage = El.firstOfTag(null, "tempMessage").FNS.feedbackSetMessage;
 
 
 			var chipUrl = chipSetUrls[~~(Math.random()*chipSetUrls.length)];
@@ -147,12 +155,44 @@
 			document.body.addEventListener("keyup", function(event) {
 				Tools.keyup(event.key);
 			});
+
+
+			BRIDGE.loadFile("", "map.txt").then(function(request){
+				var mapPackage = request.response;
+				console.log("loaded!", mapPackage);
+				if(mapPackage.length > 0)
+					CURRENT_LAYER.unpackageMap(mapPackage);
+				else
+					CURRENT_LAYER.unpackageMap(START_MAP);
+			});
+
+
+
+			document.addEventListener("keydown", function(e) {
+			  if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+			    e.preventDefault();
+			    var saveMe = CURRENT_LAYER.packageMap();
+			    // console.log("saveMe", saveMe);
+			    BRIDGE.saveFile("", "map.txt", saveMe).then(function(request) {
+			    	FLAT.tempMessage("File 'map.txt' saved successfully!");
+			    });
+			  }
+
+			  if (e.keyCode == 79 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+			    e.preventDefault();
+			    FLAT.fileBrowser.FNS.showModal();
+			    // var saveMe = CURRENT_LAYER.packageMap();
+			    // // console.log("saveMe", saveMe);
+			    // BRIDGE.saveFile("", "map.txt", saveMe);
+
+
+			  }
+
+
+			}, false);
 		});
 
 
-
-
-		
 
 
 
@@ -166,6 +206,9 @@
 
 </head>
 <body>
+	<fade id="darken"></fade>
+	<modal id="mainFileBrowser" fade="darken" startShown filebrowser>
+	</modal>
 	<topbar>FLAT.World | File | Help</topbar>
 	<mainArea>
 		<controlarea>
@@ -177,35 +220,18 @@
 				<palletteScroller>
 					<pallette></pallette>
 				</palletteScroller>
+				<!-- <button onclick="switchChipDraw()">Chip Draw</button> -->
 			</palletteArea>
-			<layerSelect></layerSelect>
+			<layerSelect>
+				
+			</layerSelect>
 		</controlarea>
 		<drawArea>
 			<drawTools>
-				<!-- <tool>
-					
-				</tool><tool>
-					
-				</tool><tool>
-					
-				</tool><tool>
-
-				</tool><tool>
-
-				</tool><tool>
-
-				</tool><tool>
-
-				</tool><tool>
-
-				</tool>
-
-				<button onclick="Tools.setTool('Draw')">Draw</button>
-				<button onclick="Tools.setTool('Select')">Select</button>
-				<button onclick="Tools.setTool('Fill')">Fill</button>
-				<button onclick="Tools.setTool('Replace')">Replace</button> -->
 			</drawTools>
+			<tempMessage tempFeedback>Test, Test</tempMessage>
 			<worldArea>
+
 				<world>
 					<!-- <canvas width="256px" height="256px"></canvas> -->
 				</world>
@@ -262,6 +288,23 @@ body {
     /*cursor:  url(public/images/icons/icons_tools.png) 1 1, auto;*/
 	/*image-rendering: -moz-crisp-edges;*/
 }
+
+	#darken {
+		background-color: rgba(33,33,33,0.75);
+	}
+
+	#mainFileBrowser {
+		background-color: #46514E;
+		padding: 10px;
+		border-style: solid;
+		border-width: 3px;
+		border-color: inherit;
+		box-shadow: 5px 5px 25px rgba(0,0,0,0.2);
+	}
+
+		dirItem:hover {
+			background-color: rgba(250,250,250, 0.1);
+		}
 
 
 	topbar {
@@ -435,6 +478,17 @@ body {
 					drawTools > tool:nth-child(8n) {
 						background-position: -224px 0px;	
 					}*/
+
+			drawArea > tempMessage {
+				display: block;
+				position: absolute;
+				bottom: 0px;
+				background-color: rgba(0,0,0,0.3);
+				width: 100%;
+				font-size: 16px;
+				padding: 2px 10px;
+				z-index: 30;
+			}
 
 			worldarea {
 				display: block;

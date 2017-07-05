@@ -135,7 +135,7 @@ PINE.createNeedle("pnv", function(pnv){
 	pnv.addInitFn({ 
 		opType: PINE.ops.STATIC, 
 		isAsync: true,
-		fn:  function(args) {
+		fn:  function(state, args) {
 			this.FNS.pnvUpdate().syncThen(args.complete);
 		}
 	});
@@ -174,7 +174,7 @@ PINE.createNeedle("[pnvatts]").addInitFn( {
 	opType: PINE.ops.STATIC, 
 	isAsync: true,
 	// isMultirun: true,
-	fn: function(args) {
+	fn: function(state, args) {
 		var resolve = args.complete;
 		var initMe = this.domNode;
 

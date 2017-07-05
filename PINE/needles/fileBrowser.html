@@ -1,0 +1,83 @@
+<script type="text/javascript">
+
+
+if(BRIDGE === undefined) {
+	PINE.err("filebrowser requires BRIDGE to run");
+}
+
+
+else {
+	PINE.createNeedle("[filebrowser]", function() {
+		this.addAttArg("style", ["filebrowser"], "string", "singleDir");
+		this.addAttArg("path", ["filebrowserPath", "filepath"], "string", "");
+
+		this.addOp(function(state) {
+			var path = state.getArg("path");
+			// testList()
+			BRIDGE.getDirectory(path).then(function(request) {
+				var items = JSON.parse(request.response);
+
+				if(state.getArg("style") == "singleDir") {
+					var template = El.byID("singleDirBrowserTemplate");
+					var addMe = template.cloneNode(true);
+					addMe.id = "";
+
+					PINE.initiate(addMe);
+
+					console.log(addMe);
+					addMe.PVARS.directoryList = items;
+					
+					PINE.updateAt(addMe).then(function() {
+
+					});
+
+					state.domNode.appendChild(addMe);
+
+
+				}
+
+				// console.log(items);
+
+				// for(var i = 0; i < items.length; i++) {
+				// 	var addMe = document.createElement("dirItem");
+				// 	addMe.textContent = items[i].name + "  ::  " +items[i].size +"bytes"
+				// 	state.domNode.appendChild(addMe);
+				// }
+			});
+		});
+	});
+}
+	
+</script>
+
+
+
+<style>
+dirItem {
+	display: block;
+	border-bottom: 1px solid black;
+}
+
+singleDirBrowser {
+	display: table;
+}
+
+	singleDirBrowser > dirItem{
+		display: table-row;
+	}
+
+		singleDirBrowser > dirItem > name,
+		singleDirBrowser > dirItem > size {
+			display: table-cell;
+		}
+</style>
+
+
+
+<noDisplay style="display: none" nopine>
+
+	<singleDirBrowser id="singleDirBrowserTemplate" spawner="directoryList">
+		<dirItem spawn pvars="item=directoryList[i]"><name>{{item.name}}</name><size>{{item.size}}</size></dirItem>
+	</singleDirBrowser>
+	
+</noDisplay>

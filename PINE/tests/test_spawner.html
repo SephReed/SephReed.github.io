@@ -1,5 +1,11 @@
+<head>
+	<script src="../PINE_Core_4.8.js"></script>
+	<script src="../PINE_Needles.js"></script>
+	<script src="../PINE_Var.js"></script>
+</head>
+
 <script type="text/javascript">
-	
+	var LOOT = {};
 	LOOT.hats = ["fez", "beanie", "fedora"];
 	var order = [1, 2, 0];
 
@@ -10,7 +16,7 @@
 	// });
 </script>
 
-<div id="test" spawner="order" setpvar="hat=LOOT.hats[order[i]]">
+<div id="test" spawner="order">
 	<div>Always at Top</div>
-	<div spawn>{{hat}}</div>
+	<div spawn pvars="hat=LOOT.hats[order[i]]">{{hat}}</div>
 </div>

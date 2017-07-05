@@ -366,6 +366,10 @@ PINE.class.Needle.prototype.addAttArg = function(nameOrObject, attNames, type, d
 	
 }
 
+PINE.class.Needle.prototype.addFN = function(name, fn) {
+	this.FNS[name] = fn;
+}
+
 
 // PINE.class.Needle.prototype.onLiveSelectorAddItem = function(name, arg1, arg2) {
 // 	var needle = this;
@@ -853,7 +857,7 @@ PINE.updateAt = function(root, passedOps) {
 		}
 		else { 
 			// console.log("non new root not held");
-			
+			PINE.spreadNeedles(root);
 		}
 	}
 
@@ -1436,16 +1440,23 @@ U.removeFromArray = function(val, array) {
 
 
 U.Ajax = {};
-U.Ajax.get = function(url, responseType) {
+U.Ajax.send = function(getOrPost, url, dataType, data) {
 	return new SyncPromise( function(resolve, reject) {
-
 		var request = new XMLHttpRequest();
-		request.responseType = responseType || "text";
-		request.open('GET', url);
-		
+
+		if(getOrPost == "GET") {
+			request.responseType = dataType || "text";
+			request.open("GET", url);	
+		}
+		else {//getOrPost == "POST"
+			request.open("POST", url);	
+			// request.setRequestHeader('Content-type', dataType)
+		}
+
 
 		request.onload = function() {
-			if (request.status >= 200 && request.status < 400) {
+			if ((getOrPost == "GET" && (request.status >= 200 && request.status < 400))
+				|| getOrPost=="POST") {
 				LOG("ajax", request.status+" "+url, request);
 
 			    resolve(request);			    
@@ -1455,21 +1466,33 @@ U.Ajax.get = function(url, responseType) {
 			}
 		};
 
-		request.onerror = function() {
+		request.onerror = function(response) {
+			console.log(response);
+			console.log(request);
 			var err = "include src '"+url+"' does not exist";
 		  	PINE.err(err)
 		  	reject(err)
 		};
 
 		try {
-			request.send();	
+			request.send(data);	
 		}
 		catch(e) {
 			var err = "NS_ERROR_DOM_BAD_URI: Access to restricted URI '"+url+"' denied";
 			PINE.err(err)
 		  	reject(err)
 		}
+
+
 	});
+}
+
+U.Ajax.get = function(url, responseType) {
+	return U.Ajax.send("GET", url, responseType);
+}
+
+U.Ajax.post = function(url, contentType, data) {
+	return U.Ajax.send("POST", url, contentType, data);
 }
 
 

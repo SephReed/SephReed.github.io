@@ -7,7 +7,7 @@ Pal.currentChipset = {};
 Pal.currentChipset.chipSize = 16;
 Pal.currentChipset.scale = 3;
 Pal.currentChipset.chips = [];
-Pal.selectedChip;
+// Pal.selectedChip;
 Pal.UILayer;
 FLAT.Pallette.setChipSet = function(imageUrl, chipSize, scale) {
 
@@ -46,12 +46,10 @@ FLAT.Pallette.setChipSet = function(imageUrl, chipSize, scale) {
 		img.addEventListener("load", function() {
 
 			// var vChips = img.naturalHeight/chipSize;
-			var canvas = Pal.currentChipset.chipWidth = ~~(img.naturalWidth/chipSize);
-
 			var canvas = Pal.currentChipset.canvas = document.createElement("canvas");
 			var painter = Pal.currentChipset.painter = canvas.getContext("2d");
-			canvas.width = img.naturalWidth;
-			canvas.height = img.naturalHeight;
+			Pal.UILayer.canvas.width = canvas.width = img.naturalWidth;
+			Pal.UILayer.canvas.height = canvas.height = img.naturalHeight;
 
 			Pal.domNode.style.width = canvas.width * scale + "px";
 			Pal.domNode.style.height = canvas.height * scale + "px";
@@ -84,33 +82,24 @@ FLAT.Pallette.setChipSet = function(imageUrl, chipSize, scale) {
 
 			// var styleUrl = "url('"+imageUrl+"')";
 			// 	//
-			// for(var v = 0; v < vChips; v++) {
-			// 	var top = v * chipSize * zoom;
 
-			// 	for(var h = 0; h < hChips; h++) {
-			// 		var left = h * chipSize * zoom;
 
-			// 		var addMe = document.createElement("chip");
-			// 		addMe.style.backgroundImage = styleUrl;
-			// 		addMe.style.backgroundPosition = "-"+left+"px -"+top+"px";
-			// 		addMe.style.height = addMe.style.width = chipSize*zoom+"px";
+			
+			var chipHeight = Pal.currentChipset.chipHeight= ~~(img.naturalHeight/chipSize);
+			var chipWidth = Pal.currentChipset.chipWidth = ~~(img.naturalWidth/chipSize);
 
-			// 		addMe.chipCol = h;
-			// 		addMe.chipRow = v;
-			// 		addMe.chipNum = v*hChips + h;
-
-			// 		Pal.currentChipset.chips[addMe.chipNum] = addMe;
-
-			// 		chipSetNode.appendChild(addMe);
-
-			// 		(function(chipNum) { 
-			// 			addMe.addEventListener("mousedown", function() {
-			// 				Pal.selectChip(chipNum);
-			// 			});
-			// 		})(addMe.chipNum);
-			// 	}
-			// }
-			// Pal.selectChip(0);
+			for(var row = 0; row < chipHeight; row++) {
+				for(var col = 0; col < chipWidth; col++) {
+					var chip = {};
+					chip.num = (row * chipWidth) + col;
+					chip.row = row;
+					chip.col = col;
+					chip.imageX = chip.col * chipSize;
+					chip.imageY = chip.row * chipSize;
+					Pal.currentChipset.chips[chip.num] = chip;	
+				}
+			}
+			Pal.selectChip(0);
 
 			// palletteNode.appendChild(chipSetNode);
 
@@ -121,16 +110,34 @@ FLAT.Pallette.setChipSet = function(imageUrl, chipSize, scale) {
 }
 
 FLAT.Pallette.selectChip = function(chipNum) {
-	Pal.currentChipset.selectedChip = chipNum;
+	var chipSize = Pal.currentChipset.chipSize;
+	if(Pal.currentChipset.selectedChip) {
+		var clearX = Pal.currentChipset.selectedChip.col * chipSize;
+		var clearY = Pal.currentChipset.selectedChip.row * chipSize;
+
+		Pal.UILayer.painter.clearRect(clearX -5, clearY -5, chipSize +10, chipSize +10);
+	}
+
+	var chip = Pal.currentChipset.selectedChip = {};
+	chip.num = chipNum;
+	chip.row = ~~(chip.num / Pal.currentChipset.chipWidth);
+	chip.col = chip.num % Pal.currentChipset.chipWidth;
+
+
+	var x = chip.col * chipSize;
+	var y = chip.row * chipSize;
+
+	Pal.UILayer.painter.strokeStyle = "white";
+	Pal.UILayer.painter.strokeRect(x, y, chipSize, chipSize);
+
 }
 
 FLAT.Pallette.getCurrentChip = function() {
-	var out = {};
-	out.num = Pal.currentChipset.selectedChip;
-	out.row = ~~(out.num / Pal.currentChipset.chipWidth);
-	out.col = out.num % Pal.currentChipset.chipWidth;
+	return Pal.currentChipset.selectedChip; 
+}
 
-	return out; 
+FLAT.Pallette.getChip = function(chipNum) {
+	return Pal.currentChipset.chips[chipNum] 
 }
 
 
