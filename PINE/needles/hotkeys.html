@@ -9,6 +9,34 @@ HOTKEYS.holds = {};
 HOTKEYS.disableAll = false;
 HOTKEYS.disableTypables = false;
 
+
+HOTKEYS.layouts = {};
+HOTKEYS.layouts.qwerty = "'~ 1! 2@ 3# 4$ 5% 6^ 7& 8* 9( 0) -_ =+ "
+	+"qQ wW eE rR tT yY uU iI oO pP [{ ]} \\| "
+	+`aA sS dD fF gG hH jJ kK lL ;: '"`
+	+"zZ xX cC vV bB nN mM ,< .>";
+
+HOTKEYS.layouts.wonderplan = "'~ 1! 2@ 3# 4$ 5% 6^ 7& 8* 9( 0) -_ =+ "
+	+"qQ gG mM lL wW yY fF uU bB ;: [{ ]} \\| "
+	+`dD sS tT nN rR iI aA eE oO hH '" `
+	+"zZ xX cC vV jJ kK pP ,< .> /?";
+
+
+HOTKEYS.layout.currentMapping;
+HOTKEYS.setLayout = function(layout, argIsLayout) {
+	var qwerty = HOTKEYS.layouts.qwerty.replace(/\s/g, "");
+	var layout = argIsLayout : layout ? HOTKEYS.layouts[layout];
+
+	layout = layout.replace(/\s/g, "");
+
+	HOTKEYS.layout.currentMapping = {};
+	for(var c = 0; c < qwerty.length; c++) {
+		
+	}
+
+
+}
+
 HOTKEYS.eventMatches = function(hotkey, convertedKey, event) {
 	return hotkey.key == convertedKey 
 	  && hotkey.shift == event.shiftKey 

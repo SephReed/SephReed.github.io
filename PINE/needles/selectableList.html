@@ -48,11 +48,14 @@ PINE.createNeedle("[selectableList]", function(selList) {
 
 	});
 
-	selList.addInitFn({ watchSelector: "selectables" },
+	// opType: PINE.ops.GATHER, 
+	selList.addOp({  watchSelector: "selectables" },
 		function(state, args) {
 			var mod = this;
 			var addedNodes = args.addedNodes;
 			var selectMode = mod.attArg.selectMode;
+
+			// console.log("nodes added", addedNodes);
 
 			for(var i in addedNodes) {
 				(function(selectable) {
@@ -89,8 +92,11 @@ PINE.createNeedle("[selectableList]", function(selList) {
 	selList.FNS.listItemFlip = function(flipMe) {
 		var mod = this;
 		if(flipMe !== undefined) {
-			if(flipMe.classList.contains("list_selected"))
-				mod.FNS.listItemDeselect(flipMe);
+			if(flipMe.classList.contains("list_selected")) {
+				if(mod.getArg("flipMode") != "toOnOrMulti" || mod.currentlySelected.length > 1) {
+					mod.FNS.listItemDeselect(flipMe);
+				}
+			}
 			else
 				mod.FNS.listItemSelect(flipMe);
 		}

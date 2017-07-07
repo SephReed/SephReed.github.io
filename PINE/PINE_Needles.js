@@ -78,55 +78,59 @@ PINE.createNeedle("[spawner]", function() {
 
 			
 			var spawnerSource = this.attArg.source;
-			var count = this.attArg.count;
+			
 
-			if(spawnerSource == undefined && count == undefined)
-				PINE.err("unset spawner source");
+			if(spawnerSource) {
+				var count = this.attArg.count || spawnerSource.length;
+				var indexer = this.attArg.indexer;
+				var limit = this.attArg.limit;	
+				if(limit != -1)
+					count = Math.min(limit, count);
 
-			else if(count == undefined)
-				count = spawnerSource.length;
+				for(var i = 0; i < count; i++)  {
+						//
+					var addMe = spawn.cloneNode(true);
+					U.getnit(addMe, "PVARS."+indexer, i);
 
-
-			var indexer = this.attArg.indexer;
-			var limit = this.attArg.limit;	
-			if(limit != -1)
-				count = Math.min(limit, count);
-
-			for(var i = 0; i < count; i++)  {
-					//
-				var addMe = spawn.cloneNode(true);
-				U.getnit(addMe, "PVARS."+indexer, i);
-
-				domNode.appendChild(addMe);
+					domNode.appendChild(addMe);
+				}
 			}
-
+			// else console.log("spawner missing source", domNode)
 
 			return PINE.updateAt(domNode);
 		}
+		else return SyncPromise.resolved();
 	}
 
-	needle.addInitFn(function() {
-		var initMe = this.domNode;
+	needle.addInitFn({
+		isAsync: true,
+		fn: function(state, args) {
+			var initMe = this.domNode;
+
+			var branches = initMe.childNodes;
+			var spawn = null;
+			for(var i = 0; i < initMe.childNodes.length && !spawn; i++)  {
+				var branch = initMe.childNodes[i];
+				if(El.attr(branch, "spawn") !== undefined)
+					spawn = branch;
+			}
+
+			if(spawn)  {
+				this.spawn = spawn;
+				initMe.removeChild(spawn);
+			}
+
+			if(this.getArg("autorun"))
+				this.FNS.spawnerUpdate().then(args.resolve);
+			else
+				args.resolve();
+		}
+	});
+
+
+	// needle.addInitFn(function() {
 		
-		var branches = initMe.childNodes;
-		var spawn = null;
-		for(var i = 0; i < initMe.childNodes.length && !spawn; i++)  {
-			var branch = initMe.childNodes[i];
-			if(El.attr(branch, "spawn") !== undefined)
-				spawn = branch;
-		}
-
-		if(spawn)  {
-			this.spawn = spawn;
-			initMe.removeChild(spawn);
-		}
-	});
-
-
-	needle.addInitFn(function() {
-		if(this.attArg.autorun == true)
-			this.FNS.spawnerUpdate();
-	});
+	// });
 
 });
 

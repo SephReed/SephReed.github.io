@@ -21,7 +21,7 @@ var pnv = PINE.pnv = {};
 
 
 PINE.createNeedle("*", function() {
-	this.addInitFn( PINE.ops.INIT, function() {
+	this.addInitFn(function() {
 		var initMe = this.domNode;
 		for (var node = initMe.firstChild; node; node = node.nextSibling) {
 			if(node.nodeName == "#text")  
@@ -62,6 +62,7 @@ PINE.pnv.parseText = function(initMe)  {
 
 
 
+PINE.pnv.lastRulesID = 0;
 PINE.pnv.attrRules = [];
 
 PINE.pnv.parseAtts = function(initMe)  {
@@ -69,45 +70,58 @@ PINE.pnv.parseAtts = function(initMe)  {
 	if(El.attr(initMe, "pnvatts"))
 		return;
 
-	var pnvAttRules;
-	var pnvAttIndex;
+	var myRules = {};
+	
 
 	for(var i = 0; i < initMe.attributes.length; i++)  {
 		var att = initMe.attributes[i];
 
 		var watched_vars = att.value.match( /{{.+?}}/g );
 		if(watched_vars)  {
+
+			// console.log(watched_vars, initMe);
+
+			var attName = att.name;
+
 				//
-			if(pnvAttRules == undefined) {
-				pnvAttIndex = PINE.pnv.attrRules.length;
-				pnvAttRules = {};
-				PINE.pnv.attrRules.push(pnvAttRules);
+			if(myRules.ID == undefined) {
+				myRules.ID = PINE.pnv.lastRulesID++;
+				PINE.pnv.attrRules[myRules.ID] = myRules;
+				myRules.atts = {};
 			}
 
-			pnvAttRules[att.name] = att.value;
-			// El.attr(initMe, att.name, '');
-			// att.value = "";
+			var attRules = myRules.atts[att.name] = {};
+			attRules.originalText = att.value;
 
-			// console.log("watching "+att.name);
+			attRules.rules = [];
 
-			// if(pnvatt == null)  {
-			// 	pnvatt = document.createAttribute("pnvatt");
-			// 	initMe.setAttributeNode(pnvatt);
-			// }
+			// var allPromises = [];
+			var setAttValue = attRules.originalText;
 
-			// if(pnvatt.value.length > 0)  {
-			// 	//KLUDGE: fix me if you can
-			// 	pnvatt.value += ":+:";
-			// }
+			for(var r = 0; r < watched_vars.length; r++) {
+				var rule = {};
+				rule.targetText = watched_vars[r];
 
-			// // pnvatt.value += att.name+"="+watched_vars[0];
-			// pnvatt.value += att.name+"="+att.value;
-			// att.value = "";
+				PINE.varCode(initMe, rule.targetText, function(value){
+					// console.log(initMe, rule.targetText, value);
+					setAttValue = setAttValue.replace(rule.targetText, value);
+				});
+
+				// allPromises.push(El.getVar(rule.targetText).then(function(value) {
+				// 	setAttValue.replace(rule.targetText, value);
+				// }));	
+			}
+
+			// console.log(setAttValue)
+
+			// SyncPromise.all(allPromises).then(function() {
+				El.attr(initMe, attName, setAttValue);
+			// });
 		}
 	}
 
-	if(pnvAttIndex)
-		El.attr(initMe, "pnvatts", pnvAttIndex);
+	if(myRules.ID)
+		El.attr(initMe, "pnvatts", myRules.ID);
 }
 
 
@@ -170,52 +184,52 @@ PINE.createNeedle("[pvars]").addInitFn( {
 
 
 
-PINE.createNeedle("[pnvatts]").addInitFn( { 
-	opType: PINE.ops.STATIC, 
-	isAsync: true,
-	// isMultirun: true,
-	fn: function(state, args) {
-		var resolve = args.complete;
-		var initMe = this.domNode;
+// PINE.createNeedle("[pnvatts]").addInitFn( { 
+// 	opType: PINE.ops.STATIC, 
+// 	isAsync: true,
+// 	// isMultirun: true,
+// 	fn: function(state, args) {
+// 		var resolve = args.complete;
+// 		var initMe = this.domNode;
 
-		var rulesIndex = El.attr(initMe, "pnvatts");
-		var rules = PINE.pnv.attrRules[rulesIndex];
+// 		var rulesIndex = El.attr(initMe, "pnvatts");
+// 		var rules = PINE.pnv.attrRules[rulesIndex];
 
-		// console.log(rules);
+// 		console.log(rules);
 
-		var allPromises = [];
+// 		var allPromises = [];
 
-		for(var k_att in rules)  {
-			new function(att, outVal) {
-				var matches = outVal.match(/{{.+?}}/g);
+// 		for(var k_att in rules)  {
+// 			new function(att, outVal) {
+// 				var matches = outVal.match(/{{.+?}}/g);
 
-				var att_promises = [];
-				for(var i_m in matches)  {
-					var replaceMe = matches[i_m];
+// 				var att_promises = [];
+// 				for(var i_m in matches)  {
+// 					var replaceMe = matches[i_m];
 
-					var key = matches[i_m].replace(/^{{|}}$/g, '');
-					var addMe = new SyncPromise(function(resolve) {
-						PINE.varCode(initMe, key, function(result) {
-							outVal = outVal.replace(replaceMe, result);
-							resolve();
-						});
-					});
+// 					var key = matches[i_m].replace(/^{{|}}$/g, '');
+// 					var addMe = new SyncPromise(function(resolve) {
+// 						PINE.varCode(initMe, key, function(result) {
+// 							outVal = outVal.replace(replaceMe, result);
+// 							resolve();
+// 						});
+// 					});
 
-					att_promises.push(addMe);
-					allPromises.push(addMe);
-				}
+// 					att_promises.push(addMe);
+// 					allPromises.push(addMe);
+// 				}
 
-				SyncPromise.all(att_promises).syncThen(function() {
-					var oldVal = El.attr(initMe, att);
-					El.attr(initMe, att, outVal);
-				});
+// 				SyncPromise.all(att_promises).syncThen(function() {
+// 					var oldVal = El.attr(initMe, att);
+// 					El.attr(initMe, att, outVal);
+// 				});
 
-			}(k_att, rules[k_att]);
-		}
+// 			}(k_att, rules[k_att]);
+// 		}
 
-		SyncPromise.all(allPromises).syncThen(resolve);
-	}
-});
+// 		SyncPromise.all(allPromises).syncThen(resolve);
+// 	}
+// });
 
 
 
@@ -224,7 +238,7 @@ PINE.nodeScopedVar = function(domNode, varName) {
 	return El.pvar(domNode, varName);
 }
 
-El.pvar = function(domNode, varName) {
+El.getVar = El.pvar = function(domNode, varName) {
 	return pnv.getVarFrom(varName, domNode);
 }
 
@@ -237,6 +251,16 @@ ElementHelper.prototype.pvar = function(varName) {
 pnv.getVarFrom = function(keyArrayOrName, currentNode, superRoot)  {
 	if(typeof keyArrayOrName == "boolean" || typeof keyArrayOrName == "undefined")
 		return keyArrayOrName;
+
+	// if(typeof keyArrayOrName == "string") {
+	// 	var tmp = keyArrayOrName.trim();
+
+	// 	if( tmp.match(/^".*"$/) || tmp.match(/^'.*'$/) )
+	// 		return tmp.substr(1, tmp.length-2);		
+	// }
+
+		
+	
 		//
 	//set pvars locations and default currentNode to window if outside the scope of PINE Vars
 	var pvars;
@@ -393,6 +417,12 @@ PINE.var = function( ) {
 
 
 PINE.varCode = function(domScope, varCode, callback)  {
+	if(varCode.startsWith("{{"))
+		varCode = varCode.replace(/^{{/, "")
+
+	if(varCode.endsWith("}}"))
+		varCode = varCode.replace(/}}$/, "")
+
 	for (var vneedle in pnv.needles) {
 		if(varCode.startsWith(vneedle))
 			return pnv.needles[vneedle](domScope, varCode, callback);
@@ -451,8 +481,10 @@ pnv.runConditional = function(scope, conditional) {
 	// conditional = conditional.trim();
 	var tree = pnv.createConditionTree(conditional);
 
-	if(typeof tree == "string")
-		return PINE.nodeScopedVar(scope, tree);
+	if(typeof tree == "string"){
+		// console.log(scope, tree, El.getVar(scope, tree));
+		return El.getVar(scope, tree);
+	}
 
 	return pnv.solveConditionTree(scope, tree);
 }
@@ -500,13 +532,13 @@ pnv.createConditionTree = function(conditional) {
 pnv.solveConditionTree = function(scope, root) {
 	var left = root.left;
 	if(typeof left == "string")
-		left = PINE.nodeScopedVar(scope, left);
+		left = El.getVar(scope, left);
 	else if (typeof left == "object")
 		left = pnv.solveConditionTree(scope, left);
 
 	var right = root.right;
 	if(typeof right == "string")
-		right = PINE.nodeScopedVar(scope, right);
+		right = El.getVar(scope, right);
 	else if (typeof right == "object")
 		right = pnv.solveConditionTree(scope, right);
 
@@ -526,6 +558,8 @@ pnv.needles["PNV_DEFAULT"] = function(domScope, varName, callback) {
 
 
 pnv.needles["? "] = function(scope, pvarCode, callback) {
+	
+
 	var args = pvarCode.split(':');
 	if(args.length > 3)
 		return PINE.err("syntax error in '"+pvarCode+"'.  Proper format is {{? thing == true : trueOutput : falseOutput}} with falseOutput being optional.");
@@ -533,11 +567,16 @@ pnv.needles["? "] = function(scope, pvarCode, callback) {
 	var conditional = args[0].substring(2) || pvarCode.substring(2);
 	var conditionBool = pnv.runConditional(scope, conditional);
 
-	if (args.length > 1 && conditionBool)
-		callback(PINE.nodeScopedVar(scope, args[1]));
+	console.log("????", conditional, conditionBool, args);
+
+	if (args.length > 1 && conditionBool) {
+		var tmp = El.getVar(scope, args[1])
+		console.log(tmp);
+		callback(tmp);
+	}
 	
 	else if(args.length == 3)
-		callback(PINE.nodeScopedVar(scope, args[2]));
+		callback(El.getVar(scope, args[2]));
 
 	else if(args.length == 2)
 		callback('');

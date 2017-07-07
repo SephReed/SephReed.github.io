@@ -1,83 +1,219 @@
 <script type="text/javascript">
 
 
+
+
 if(BRIDGE === undefined) {
 	PINE.err("filebrowser requires BRIDGE to run");
 }
 
 
 else {
+
+	var BYTE_SIZES = [];
+	BYTE_SIZES.push(["kb", 1000]);
+	BYTE_SIZES.push(["MB", 1000*1000]);
+	BYTE_SIZES.push(["Gb", 1000*1000*1000]);
+	BYTE_SIZES.push(["Tb", 1000*1000*1000*1000]);
+
 	PINE.createNeedle("[filebrowser]", function() {
 		this.addAttArg("style", ["filebrowser"], "string", "singleDir");
 		this.addAttArg("path", ["filebrowserPath", "filepath"], "string", "");
 
 		this.addOp(function(state) {
 			var path = state.getArg("path");
-			// testList()
-			BRIDGE.getDirectory(path).then(function(request) {
-				var items = JSON.parse(request.response);
+			state.currentPath = "";
 
-				if(state.getArg("style") == "singleDir") {
-					var template = El.byID("singleDirBrowserTemplate");
-					var addMe = template.cloneNode(true);
-					addMe.id = "";
+			if(state.getArg("style") == "singleDir") {
+				var template = El.byID("singleDirBrowserTemplate");
+				var addMe = state.spawner = template.cloneNode(true);
+				addMe.id = "";
 
-					PINE.initiate(addMe);
+				PINE.updateAt(addMe);
 
-					console.log(addMe);
-					addMe.PVARS.directoryList = items;
+				// addMe.FNS.onSelectionChange(console.log);
+
+				state.domNode.appendChild(addMe);
+
+				addMe.addEventListener("dblclick", function(event) {
+
+
+
+					var dirItemNode = event.target.parentNode;
+					var setPath;
+
+					console.log(event);
+
 					
-					PINE.updateAt(addMe).then(function() {
+					if(dirItemNode.id == "parentFolder") {
+							//
+						if(state.currentPath.length > 0 && !state.currentPath.endsWith("../"))
+							setPath = state.currentPath.replace(/[^\/]+\/?$/, "");
+						
+						else 
+							setPath = state.currentPath + "../";
+					}
 
-					});
+					else {
+						var dirItem = El.pvar(dirItemNode, "item");
 
-					state.domNode.appendChild(addMe);
+						if(dirItem.isDir) { 
+
+							if(state.currentPath.startsWith("../"))
+								setPath = state.currentPath+dirItem.name;
+
+							else	
+								setPath = dirItem.name;
+						}
+					}
+
+					if(setPath !== undefined)
+						state.domNode.FNS.setFilepath(setPath);
+				});
+			}
 
 
+			
+			state.domNode.FNS.setFilepath(state.getArg("path"));
+		});
+
+
+		this.FNS.setFilepath = function(filePath) {
+			var state = this;
+			var domNode = state.domNode;
+
+			if(filePath.length && filePath.endsWith("/") == false)
+				filePath += "/";
+
+			BRIDGE.getDirectory(filePath).then(function(request) {
+				state.currentPath = filePath;
+				var items = domNode.PVARS.directoryList = JSON.parse(request.response);
+
+				for(var i = 0; i < items.length; i++) {
+					items[i].name = items[i].name.replace(filePath, "");
+					items[i].isDir = items[i].isDir == "True";
+
+					var bytes = parseInt(items[i].size);
+					var roundedSize;
+
+					for(var b = 0; b < BYTE_SIZES.length && !roundedSize; b++) {
+						var size = BYTE_SIZES[b];
+
+						if(bytes > size[1]) {
+							roundedSize = (bytes/(size[1] * 1.0)).toFixed(1) + " "+size[0];
+						}
+					}
+
+					items[i].size = roundedSize || items[i].size+" b";
 				}
 
-				// console.log(items);
-
-				// for(var i = 0; i < items.length; i++) {
-				// 	var addMe = document.createElement("dirItem");
-				// 	addMe.textContent = items[i].name + "  ::  " +items[i].size +"bytes"
-				// 	state.domNode.appendChild(addMe);
-				// }
+				state.spawner.FNS.spawnerUpdate();
 			});
-		});
+		}
+
+
 	});
+
+
+	
+
 }
 	
 </script>
 
 
 
+<style easyStyleVar>
+*[fileBrowser] {
+	--fileBrowserBorderWidth: 1px;
+	--fileBrowserBorderColor: rgba(0,0,0,0.1);
+	--fileBrowserTableLableBg: rgba(0,0,0,0.5);
+	--fileBrowserSelectedItem: rgba(20,20,20, 0.3);
+}
+
+</style>
+
+
+
 <style>
-dirItem {
+/*dirItem {
 	display: block;
 	border-bottom: 1px solid black;
-}
+}*/
+
+
+
+
+
 
 singleDirBrowser {
 	display: table;
 }
 
-	singleDirBrowser > dirItem{
+	singleDirBrowser > dirItem, singleDirBrowser > dirTableHeader{
 		display: table-row;
 	}
-
-		singleDirBrowser > dirItem > name,
-		singleDirBrowser > dirItem > size {
-			display: table-cell;
+		singleDirBrowser > dirTableHeader {
+			background-color: var(--fileBrowserTableLableBg);
+			border-width: var(--fileBrowserBorderWidth);
+			border-color: var(--fileBrowserBorderColor);
+			border-bottom-style: solid;
 		}
+
+		singleDirBrowser > dirItem > *,
+		singleDirBrowser > dirTableHeader > * {
+			display: table-cell;
+			padding-left: 6px;
+			padding-right: 6px;
+			user-select: none;
+			-moz-user-select: none;
+		}
+
+			singleDirBrowser > dirItem > name.isDir {
+				background-image: 
+      			url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'><polygon fill='none' stroke='lightblue' stroke-width='6' points='2,48 2,15 5,15 10,2 30,2 35,15 48,15 48,48'/></svg>");
+      			background-size: contain;
+      			background-repeat: no-repeat;
+			}
+
+				singleDirBrowser > #parentFolder > name {
+					padding-left: 25px;
+				}
+
+					singleDirBrowser > #parentFolder > name {
+						background-position: 4px;
+					}
+
+				
+
+				singleDirBrowser > dirItem > name {
+					padding-left: 15px;
+				}
+
+					singleDirBrowser > dirItem > name.isDir {
+						padding-left: 35px;
+						background-position: 15px;
+					}
+
+			singleDirBrowser > dirItem.list_selected {
+				background-color: var(--fileBrowserSelectedItem);
+			}
+
+			singleDirBrowser > dirItem > *:not(:first-child) {
+				border-left-style: solid;
+				border-color: var(--fileBrowserBorderColor);
+				border-width: var(--fileBrowserBorderWidth);
+			}
 </style>
 
 
 
 <noDisplay style="display: none" nopine>
 
-	<singleDirBrowser id="singleDirBrowserTemplate" spawner="directoryList">
-		<dirItem spawn pvars="item=directoryList[i]"><name>{{item.name}}</name><size>{{item.size}}</size></dirItem>
+	<singleDirBrowser id="singleDirBrowserTemplate" spawner="directoryList" selectableList=">dirItem">
+		<dirTableHeader><name class="isDir">Filename</name><size>Size</size></dirTableHeader>
+		<dirItem id="parentFolder"><name class="isDir">Parent Folder</name><size></size></dirItem>
+		<dirItem spawn pvars="item=directoryList[i]"><name class="{{? item.isDir: 'isDir'}}">{{item.name}}</name><size>{{item.size}}</size></dirItem>
 	</singleDirBrowser>
 	
 </noDisplay>

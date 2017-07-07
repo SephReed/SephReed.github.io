@@ -308,7 +308,7 @@
 
 	Tools.setDrawAreaCursor = function(toolName) {
 		var tool = Tools.getTool(toolName);
-		console.log(toolName, tool);
+		// console.log(toolName, tool);
 		if(tool && tool.icon)
 			FLAT.drawArea.style.cursor = tool.icon.cursorStyling;
 	}

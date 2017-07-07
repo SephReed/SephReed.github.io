@@ -2,7 +2,8 @@
 PINE.createNeedle("modal", function(modal) {
 
 		//	
-	modal.addAttArg("exitOut", "exitOnOutClick", "boolean", true);
+	modal.addAttArg("exitOutClick", "exitOnOutClick", "boolean", true);
+	modal.addAttArg("exitOutEsc", "exitOnEsc", "boolean", true);
 	modal.addAttArg("fade", ["modalFade", "fade"], "id")
 	modal.addAttArg("startShown", ["modalStartShown", "startShown"], "exists")
 
@@ -35,7 +36,7 @@ PINE.createNeedle("modal", function(modal) {
 		var initMe = job.domNode;
 		var fade = job.attArg.fade;
 
-		console.log("fade", fade);
+		// console.log("fade", fade);
 
 		if(job.currentlyShowing == true)
 			return;
@@ -48,7 +49,7 @@ PINE.createNeedle("modal", function(modal) {
 		if(fade !== undefined) 
 			fade.classList.add("shown_overlay");
 
-		if(job.attArg.exitOut) {
+		if(job.attArg.exitOutClick) {
 			var mouseupFunc = function(event) {
 				if(initMe == event.target || initMe.contains(event.target)) return;	
 				initMe.FNS.hideModal();
@@ -56,9 +57,11 @@ PINE.createNeedle("modal", function(modal) {
 				document.removeEventListener('mouseup', mouseupFunc, false);
 			}
 			document.addEventListener('mouseup', mouseupFunc);
+		}
 
+		if(job.attArg.exitOutEsc) {
 			var onKeyup = function(event) {
-				console.log(event.key);
+				// console.log(event.key);
 				if(event.key == "Escape") {
 					initMe.FNS.hideModal();
 					document.removeEventListener('keyup', onKeyup, false);

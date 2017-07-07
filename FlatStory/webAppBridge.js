@@ -7,43 +7,52 @@ var BRIDGE =  {};
 BRIDGE.url = "http://localhost:8528/"
 
 
-BRIDGE.try = function(filePath, sendMe) {
-	return BRIDGE.Ajax.post(BRIDGE.url+filePath, JSON.stringify(sendMe));
+BRIDGE.try = function(sendMe) {
+	return BRIDGE.Ajax.post(BRIDGE.url, JSON.stringify(sendMe));
+}
+
+
+BRIDGE.fixPath = function(filePath) {
+	// if(filePath && filePath.length && !filePath.endsWith("/"))
+	// 	filePath += "/";
+	return filePath;
 }
 
 BRIDGE.getDirectory = function(filePath) {
 	var sendMe = {};
 	sendMe.cmd = "ls";
-	return BRIDGE.try(filePath, sendMe);
+	sendMe.filePath = BRIDGE.fixPath(filePath);
+	return BRIDGE.try(sendMe);
 }
 
 BRIDGE.makeDirectory = function(filePath, dirName) {
 	var sendMe = {};
 	sendMe.cmd = "mkdir";
+	sendMe.filePath = BRIDGE.fixPath(filePath);
 	sendMe.name = dirName;
 
-	return BRIDGE.try(filePath, sendMe);
+	return BRIDGE.try(sendMe);
 }
 
-BRIDGE.saveFile = function(filePath, fileName, data, writeType) {
+BRIDGE.saveFile = function(filePath, data, writeType) {
 	var sendMe = {};
 	sendMe.cmd = "put";
-	sendMe.name = fileName;
+	sendMe.filePath = BRIDGE.fixPath(filePath);
 	sendMe.writeType = writeType || "w";
 	sendMe.data = data;
 
 	console.log(sendMe);
 
-	return BRIDGE.try(filePath, sendMe);
+	return BRIDGE.try(sendMe);
 }
 
 
-BRIDGE.loadFile = function(filePath, fileName) {
+BRIDGE.loadFile = function(filePath) {
 	var sendMe = {};
 	sendMe.cmd = "get";
-	sendMe.name = fileName;
+	sendMe.filePath = filePath;
 
-	return BRIDGE.try(filePath, sendMe);
+	return BRIDGE.try(sendMe);
 }
 
 

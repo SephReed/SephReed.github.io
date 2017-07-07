@@ -147,6 +147,7 @@ PINE.ops.branchFirst = [
 
 //INIT assumes nothing.  It is used to set initial values (usually PVARS) prior to permeation or inline pvars.  
 //PVARS assumes all core values (usually PVARS) are set except those to be set by "[pvars]".  PVARS is a special step for the "[pvars]" tag.
+//DEPRECATED : PNV assumes all core values (usually PVARS) including those set by "[pvars]" are set and ready to be displayed
 //STATIC assumes all core values (usually PVARS) are set.  STATIC functions have no inline attribute dependencies.
 //COMMON assumes all values are properly set, both inline and PVAR.
 //GATHER assumes the growth from it is complete.  
@@ -301,14 +302,18 @@ PINE.class.Needle.prototype.addOp = PINE.class.Needle.prototype.addInitFn = func
 
 			if(addMe.watchSelector !== undefined) {
 				var selector = instance.selectors[addMe.watchSelector];
-				args.addedNodes = selector.fnBacklogs[addMe.ID];
-				selector.fnBacklogs[addMe.ID] = [];
+				args.addedNodes = selector.fnBacklogs[addMe.ID].added;
+				args.removedNodes = selector.fnBacklogs[addMe.ID].removed;
+
+				selector.fnBacklogs[addMe.ID].added = undefined;
+				selector.fnBacklogs[addMe.ID].removed = undefined;
 			}
+			
 
 			if(addMe.isAsync)  {
 				// console.log("async instance called")
 				PINE.NEEDLES.runningInits.push(addMe);
-				args.complete = function() {
+				args.resolve = args.complete = function() {
 					U.removeFromArray(addMe, PINE.NEEDLES.runningInits);
 					resolve();
 				}
@@ -319,6 +324,7 @@ PINE.class.Needle.prototype.addOp = PINE.class.Needle.prototype.addInitFn = func
 				fn.call(instance, instance, args);
 				resolve();
 			}
+			
 		});
 	}
 
@@ -329,6 +335,12 @@ PINE.class.Needle.prototype.addOp = PINE.class.Needle.prototype.addInitFn = func
 	this.inits.byOp[addMe.opType].push(addMe);
 	this.inits.list.push(addMe);
 }
+
+
+
+// PINE.class.Needle.prototype.addLiveOp = function(liveselector, arg1, arg2) {
+
+// }
 
 
 //Change job.attArg.whatevs to job.getArg("lalal")
@@ -411,31 +423,6 @@ PINE.class.Needle.prototype.tryInject = function(domNode) {
 PINE.class.Needle.prototype.inject = function(domNode) {
 	
 	var needle = this;
-
-	if(needle.selectors.list.length) {
-		if(domNode.__pine__.nodeAddObserver == undefined) {
-				//
-			domNode.__pine__.nodeAddListeners = [];
-
-			var config = { childList: true, subtree: true };
-			var observer = new MutationObserver(function(mutations) {
-				var addedNodes = [];
-				for(var i = 0; i < mutations.length; i++) {
-					addedNodes = addedNodes.concat(mutations[i].addedNodes);
-				}
-
-				var listeners = domNode.__pine__.nodeAddListeners
-				for(var i = 0; i < listeners.length; i++) {
-					listeners[i](addedNodes);
-				}
-			  	   
-			});
-	
-			observer.observe(domNode, config);
-			domNode.__pine__.nodeAddObserver = observer;
-		}
-	}
-
 	var instance = new PINE.class.Instance(needle, domNode);
 	domNode.__pine__.instances[needle.matchCase] = instance;
 }
@@ -490,7 +477,7 @@ PINE.class.Needle.prototype.extend = function(extendNeedleOrName) {
 ********************************/
 
 
-
+//Class which represents the scope of a needle injection
 PINE.class.Instance = function(needle, domNode) {
 	var instance = this;
 	instance.domNode = domNode;
@@ -498,6 +485,8 @@ PINE.class.Instance = function(needle, domNode) {
 	instance.PVARS = domNode.PVARS;
 	instance.ranInits = [];
 
+
+	//acceptance of predefined node FNS, and inheritance of needle's
 	instance.FNS = domNode.FNS;
 	instance.superFNS = {};
 	for(var key in needle.FNS) {
@@ -511,6 +500,7 @@ PINE.class.Instance = function(needle, domNode) {
 		})(key)
 	}
 
+	//creation of live attarg requesters
 	instance.attArg = {};
 	for(var name in instance.needle.attArgs) {
 		(function(attArg) {
@@ -523,85 +513,85 @@ PINE.class.Instance = function(needle, domNode) {
 	}
 
 
-
+	//initialize live selectors
 	var selectors = instance.needle.selectors.list;
 	instance.selectors = {};
 
-	// var all_watcher_fns = [];
 	for(var i in selectors) {
 		(function(selector) {
 
-			var addMe = {};
+			//css selector with change log and list of functions to notify
+			var addMe = {}; 
 			addMe.items = [];
 			addMe.name = selector.name;
-			addMe.fnBacklogs = {};
-			addMe.cssQuery = El.attArg(instance.domNode, selector.attNames, "string", selector.defaultVal);
-			
-			var items = El.attArg(instance.domNode, selector.attNames, "selector", undefined, selector.defaultVal);
-			// addMe.items = items.splice(0);
-			for(var i = 0; i < items.length; i++) 
-				addMe.items.push(items[i]);
-			
 
+			addMe.fnBacklogs = [];			
+
+			
+			//initiate as normal attArg, to work for state.getArg()
 			Object.defineProperty(instance.attArg, selector.name, {
 				get: function() {
-					return addMe.items;
+					return addMe.items
 				}
 			});	
 
+
+
+			//create backlog updateFn
+			addMe.lastUpdateID = -1;
+			addMe.updateFnBacklog = function(fnID) {
+
+				//update the match list if it hasn't been done recently
+				if(addMe.lastUpdateID < PINE.currentUpdateID) {
+					addMe.lastUpdateID = PINE.currentUpdateID;
+
+					addMe.items = U.nodeListToArray(
+						El.attArg(instance.domNode, selector.attNames, "selector", undefined, selector.defaultVal)
+					);
+				}
+
+				var backlog = addMe.fnBacklogs[fnID];
+				var matches = addMe.items;
+
+				if(backlog == undefined) {
+					backlog = addMe.fnBacklogs[fnID] = {};
+					backlog.known = [];
+					backlog.added = matches;
+					backlog.removed = [];
+				}
+				else {
+					backlog.added = [];
+					backlog.removed = backlog.known.slice(0);
+
+					// console.log(backlog.known, matches);
+
+					for(var i = 0; i < matches.length; i++) {
+						var match = matches[i];
+						var target = backlog.known.indexOf(match);
+
+						//if match is known, must not have been removed
+						if(target !== -1) 
+							backlog.removed.splice(target, 1);
+						
+						//if match is unknown, must be new
+						else backlog.added.push(match);
+					}
+
+					backlog.known = matches;
+				}
+			}
+
+		
+			//add to selectors for overall instance
 			instance.selectors[addMe.name] = addMe;
 			
 		})(selectors[i])
 	}
-
-	var inits = needle.inits.list;
-	for(var i in inits) {
-		var init = inits[i];
-
-		if(init.watchSelector !== undefined) {
-			// console.log("init watch", init)
-			var selector = instance.selectors[init.watchSelector];
-
-			if(selector)
-				selector.fnBacklogs[init.ID] = selector.items.splice(0);
-			
-			else PINE.err("adding fn for non existant selector ", init, instance);
-		}
-	}
-
-	if(instance.domNode.__pine__.nodeAddListeners) {
-			//
-		instance.domNode.__pine__.nodeAddListeners.push(function(addedNodes) {
-			for(var i in instance.selectors) {
-				var selector = instance.selectors[i];
-				var cssQuery = selector.cssQuery;
-				// console.log("added nodes", addedNodes, cssQuery);
-
-				for(var a = 0; a < addedNodes.length; a++) {
-					for(var n = 0; n < addedNodes[a].length; n++) {
-						var addMe = addedNodes[a][n];
-
-						// console.log(instance.domNode, addMe, cssQuery);
-
-						if(PINE.inBoundsNode(addMe) && El.relativeMatch(addMe, cssQuery, instance.domNode)) {
-							// console.log("is relativeMatch", addMe, instance);
-							
-							selector.items.push(addMe);
-
-							for(var id in selector.fnBacklogs) {
-								selector.fnBacklogs[id].push(addMe);
-							}
-						}
-					}
-				}
-			}
-		});
-	}	
 }
 
 
 
-PINE.class.Instance.prototype.tryInit = function(opType) {
+PINE.class.Instance.prototype.tryOp = function(opType) {
 	var instance = this;
 	var opFns = instance.needle.inits.byOp[opType];
 
@@ -611,7 +601,13 @@ PINE.class.Instance.prototype.tryInit = function(opType) {
 		var preRan = instance.ranInits.includes(opFn);
 		var hasSelectorsBacklog;
 		var selector = opFn.watchSelector ? instance.selectors[opFn.watchSelector] : undefined;
-		hasSelectorsBacklog = selector && selector.fnBacklogs[opFn.ID].length;
+
+		if(selector) {
+			selector.updateFnBacklog(opFn.ID);
+			hasSelectorsBacklog = selector.fnBacklogs[opFn.ID].added.length;
+		}
+
+		
 
 		if(opFn.isMultirun || preRan == false || hasSelectorsBacklog) {
 			promises.push(opFn.fn.call(instance));
@@ -624,18 +620,12 @@ PINE.class.Instance.prototype.tryInit = function(opType) {
 };
 
 
+
 PINE.class.Instance.prototype.getArg = function(name) {
 	return this.attArg[name];
 };
 
 
-// PINE.class.Instance.prototype.getArg = function(argName) {
-// 	var instance = this;
-// 	var arg = instance.att
-
-// 	return El.attArg(instance.domNode, attArg.attNames, attArg.type, attArg.defaultVal, attArg.defaultAttVal);
-// 	return instance
-// }
 
 
 
@@ -715,7 +705,8 @@ PINE.loadResources = function() {
 	LOG("overview", "Loading Resources");	
 	var promises = [];
 
-	var resources = document.getElementsByTagName("needle");
+	var resources = U.nodeListToArray(document.getElementsByTagName("needle"));
+	resources.concat(U.nodeListToArray(document.getElementsByTagName("resource")));
 
 	for( var i_r = 0; i_r < resources.length; i_r++ ) {
 		promises.push(PINE.runResource(resources[i_r]));
@@ -739,13 +730,20 @@ PINE.runResource = function(domNode) {
 			LOG("overview", "Adding Resource "+src);	
 
 			U.Ajax.get(src).syncThen( function(request) {
+				var response = request.response;
 				if(src.includes('.js')) {
-					U.runScript(request.response, domNode, src);
+					U.runScript(response, domNode, src);
 					resolve();
 				}
 
+				else if(src.match(/\.css\s*$/g)) {
+					var styleNode = document.createElement("style");
+					styleNode.innerHTML = response;
+					domNode.appendChild(styleNode);
+					resolve();
+				}
 				else {
-					var response = request.response;
+					
 
 					// var promises = [];
 					var promise;
@@ -839,9 +837,9 @@ PINE.sprout = function() {
 
 
 //TODO: micro improve performance by not running empty updates
+PINE.currentUpdateID = 0;
 PINE.updateAt = function(root, passedOps) {
-
-	// console.log("updateAt", root);
+	PINE.currentUpdateID++;
 
 	var newRoot = (root.__pine__ === undefined);
 	// console.log(root);
@@ -850,16 +848,8 @@ PINE.updateAt = function(root, passedOps) {
 		PINE.initiate(root);
 		PINE.spreadNeedles(root);
 	}
-	else {
-		if(root.__pine__.held) {
-			// console.log("held root");
-			return SyncPromise.resolved();
-		}
-		else { 
-			// console.log("non new root not held");
-			PINE.spreadNeedles(root);
-		}
-	}
+	else if(root.__pine__.held) 
+		return SyncPromise.resolved();
 
 
 	// if(passedOps == undefined) {
@@ -874,50 +864,50 @@ PINE.updateAt = function(root, passedOps) {
 	return PINE.growOps(root, passedOps);
 }
 
-PINE.dispatchChildNodeChanges = function(domNode) {
+// PINE.dispatchChildNodeChanges = function(domNode) {
 
-	PINE.permeate(domNode, function(domNode) {
-		if(domNode.__pine__.knownChildren === undefined) {
-			domNode.__pine__.knownChildren = [];
+// 	PINE.permeate(domNode, function(domNode) {
+// 		if(domNode.__pine__.knownChildren === undefined) {
+// 			domNode.__pine__.knownChildren = [];
 
-			for(var i = 0; i < domNode.childNodes.length; i++) {
-				var child = domNode.childNodes[i];
-				domNode.__pine__.knownChildren.push(child);
-			}
-		}
-		else {
-			console.log(domNode);
+// 			for(var i = 0; i < domNode.childNodes.length; i++) {
+// 				var child = domNode.childNodes[i];
+// 				domNode.__pine__.knownChildren.push(child);
+// 			}
+// 		}
+// 		else {
+// 			console.log(domNode);
 
-			var removedChildren = domNode.__pine__.knownChildren;
-			var knownChildren = domNode.__pine__.knownChildren = [];
-			var addedChildren = [];
+// 			var removedChildren = domNode.__pine__.knownChildren;
+// 			var knownChildren = domNode.__pine__.knownChildren = [];
+// 			var addedChildren = [];
 
-			console.log("knownChildrenBefore", removedChildren);
-			for(var i = 0; i < domNode.childNodes.length; i++) {
-				var child = domNode.childNodes[i];
-				var target = knownChildren.indexOf(child);
+// 			console.log("knownChildrenBefore", removedChildren);
+// 			for(var i = 0; i < domNode.childNodes.length; i++) {
+// 				var child = domNode.childNodes[i];
+// 				var target = knownChildren.indexOf(child);
 
-				if(target !== -1) 
-					removedChildren.splice(target, 1);
+// 				if(target !== -1) 
+// 					removedChildren.splice(target, 1);
 				
-				else addedChildren.push(child);
+// 				else addedChildren.push(child);
 
-				knownChildren.push(child);
-			}
+// 				knownChildren.push(child);
+// 			}
 
-			if(domNode.dispatchEvent && (removedChildren.length || addedChildren.length)) {
-				domNode.dispatchEvent(new CustomEvent("PINE_nodesChanged", {
-					detail : {
-						addedNodes : addedChildren,
-						removedNodes : removedChildren
-					},
-					bubbles : true,
-					cancelable : true
-				}));
-			}
-		}	
-	});	
-}
+// 			if(domNode.dispatchEvent && (removedChildren.length || addedChildren.length)) {
+// 				domNode.dispatchEvent(new CustomEvent("PINE_nodesChanged", {
+// 					detail : {
+// 						addedNodes : addedChildren,
+// 						removedNodes : removedChildren
+// 					},
+// 					bubbles : true,
+// 					cancelable : true
+// 				}));
+// 			}
+// 		}	
+// 	});	
+// }
 
 
 // //initiate traverses the entire dom tree from root adding a variable for pine (__pine__)
@@ -1016,7 +1006,7 @@ PINE.grow = function(root, opType) {
 			var instances = root.__pine__.instances;
 			var initPromises = [];
 			for(var i in instances)
-				initPromises.push(instances[i].tryInit(opType));
+				initPromises.push(instances[i].tryOp(opType));
 
 			return SyncPromise.all(initPromises);
 		}
@@ -1425,6 +1415,14 @@ U.initArray = function(val, size)  {
 	return out;
 }
 
+U.nodeListToArray = function(nodeList) {
+	var out = [];
+	for(var i = 0; i < nodeList.length; i++) {
+		out.push(nodeList[i]);
+	}
+	return out;
+}
+
 
 U.removeFromArray = function(val, array) {
 	if(array == undefined)
@@ -1790,7 +1788,7 @@ El.cssQuery = function(root, selector, limit) {
 
 	while(selector.charAt(0) == "~") {
 		root = root.parentNode;
-		console.log(selector);
+		// console.log(selector);
 		selector = selector.slice(1);
 	}
 
@@ -2089,19 +2087,48 @@ El.overlap = function(el1, el2) {
 
 
 
-
-El.getStyle = function (domNode, styleProp) {
-    var out;
+El.getSetStyle = function (domNode, styleProp, value) {
     if(!domNode)
     	PINE.err("can not get style of undefined domNode", domNode, styleProp);
 
     if(domNode.currentStyle) {
-        out = domNode.currentStyle[styleProp];
-    } else if (window.getComputedStyle) {
+    	if(value !== undefined)
+    		domNode.currentStyle[styleProp] = value
+
+    	else return domNode.currentStyle[styleProp];
+    } 
+    else if (window.getComputedStyle) {
     	var styling = document.defaultView.getComputedStyle(domNode, null);
-        out = styling.getPropertyValue(styleProp);
+
+    	if(value !== undefined)
+        	styling.setProperty(styleProp, value)
+
+        else return styling.getPropertyValue(styleProp);
+
     }
-    return out;
+}
+
+
+El.getStyle = function (domNode, styleProp) {
+    El.getSetStyle(domNode, styleProp);
+}
+
+El.setStyle = function (domNode, styleProp, value) {
+	value = value || "";
+    El.getSetStyle(domNode, styleProp, value);
+}
+
+
+El.getStyleVar = function(domNode, varName) {
+	domNode = domNode || document.body;
+	varName = "--"+varName;
+	El.getStyle(domNode, varName)
+}
+
+El.setStyleVar = function(domNode, varName, value) {
+	domNode = domNode || document.body;
+	varName = "--"+varName;
+	El.setStyle(domNode, varName, value)
 }
 
 

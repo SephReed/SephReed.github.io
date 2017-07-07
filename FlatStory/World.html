@@ -75,7 +75,7 @@ var START_MAP = `60 60 60 60 84 84 60 61 62 64 64 100 101 64 64 64
 		UILayer.domNode.width = map.pxWidth;
 		UILayer.domNode.height = map.pxHeight;
 		
-		console.log(map.layers.all)
+		// console.log(map.layers.all)
 
 		for(var i = 0; i < map.layers.all.length; i++) {
 			FLAT.World.domNode.appendChild(map.layers.all[i].domNode);
@@ -251,8 +251,6 @@ var START_MAP = `60 60 60 60 84 84 60 61 62 64 64 100 101 64 64 64
 			for(var i in loadChips) {
 				loadChips[i] = loadChips[i].match(/\S+/g);
 			}
-
-			console.log(loadChips);
 
 
 			for(var row = 0; row < height; row++) {

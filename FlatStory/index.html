@@ -2,20 +2,33 @@
 <html>
 <head>
 	<title>Flat Story - 2D Game Maker</title>
-	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+	<!-- <link rel="stylesheet" type="text/css" href="../public/css/init.css"> -->
 	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
+	<script type="text/javascript" src="../PINE/needles/easyStyleVar.js"></script>
 	<script type="text/javascript" src="webAppBridge.js"></script>
 	<!-- <script type="text/javascript" src="ResizeSensor.js"></script> -->
 	<!-- <needle src="../PINE/needles/tether.html"></needle> -->
+	<needle src="../public/css/init.css"></needle>
 	<needle src="../PINE/PINE_Var.js"></needle>
 	<needle src="../PINE/PINE_Needles.js"></needle>
 	<needle src="../PINE/needles/resizeHandle.html"></needle>
+	<needle src="../PINE/needles/selectableList.html"></needle>
 	<needle src="../PINE/needles/fileBrowser.html"></needle>
 	<needle src="../PINE/needles/tempFeedback.html"></needle>
 	<needle src="../PINE/needles/modal.html"></needle>
 	<needle src="Pallette.html"></needle>
 	<needle src="World.html"></needle>
 	<needle src="Tools.html"></needle>
+
+	<script type="text/javascript">
+		PINE.StyleVars.setVar("panelBase", "#46514E");
+		PINE.StyleVars.setVar("panelBorderWidth", "3px");
+		PINE.StyleVars.setVar("panelBorderColor", "#333");
+		PINE.StyleVars.setVar("backdropColor", "#2A2A2A");
+		PINE.StyleVars.setVar("panelTextColor", "#EFD1A5");
+		
+		
+	</script>
 
 	<script type="text/javascript">
 		PINE.createNeedle("[scalableCanvas]", function() {
@@ -127,6 +140,41 @@
 
 		var chipSetUrls = ["chipset01.png"];
 
+		FLAT.Options = {};
+		FLAT.Options.panels = {};
+		FLAT.Options.modalNode;
+
+		FLAT.Options.registerPanel = function(panelName, id) {
+			id = id || panelName;
+			var panel = FLAT.Options.panels[panelName] = {}
+			panel.name = panelName;
+			panel.id = id;
+		}
+
+
+		FLAT.Options.showPanel = function(panelName) {
+			var panel = FLAT.Options.panels[panelName];
+
+			if(panel) {
+				var modal = FLAT.Options.modalNode
+				while (modal.hasChildNodes())
+				    modal.lastChild.remove();
+				
+				modal.appendChild(panel.domNode);
+				modal.FNS.showModal();
+			}
+			else
+				PINE.err("options modal ", panelName, " does not exist");
+		}
+
+
+		FLAT.Options.registerPanel("projectProperties");
+
+
+		
+
+
+
 		
 		PINE.ready(function() {
 			FLAT.Pallette.domNode = El.firstOfTag(null, "pallette");
@@ -137,9 +185,28 @@
 			FLAT.tempMessage = El.firstOfTag(null, "tempMessage").FNS.feedbackSetMessage;
 
 
+			FLAT.Options.modalNode = El.byID("optionsModal");
+			for(var key in FLAT.Options.panels) {
+				var panel = FLAT.Options.panels[key];
+				panel.domNode = El.byID(panel.id);
+			}
+
+
 			var chipUrl = chipSetUrls[~~(Math.random()*chipSetUrls.length)];
 
-			FLAT.Pallette.setChipSet(chipUrl, 16, 3).then(createWorld);	
+			FLAT.Pallette.setChipSet(chipUrl, 16, 3)
+			.then(createWorld)
+			.then(function() {
+				return BRIDGE.loadFile("map.txt");
+
+			}).then(function(request){
+				var mapPackage = request.response;
+				// console.log("loaded!", mapPackage);
+				if(mapPackage.length > 0)
+					CURRENT_LAYER.unpackageMap(mapPackage);
+				else
+					CURRENT_LAYER.unpackageMap(START_MAP);
+			});	
 
 			// document.body.addEventListener("mousedown", function() {
 			// 	document.body.mozRequestFullScreen();
@@ -148,7 +215,6 @@
 			Tools.setIconSet("public/images/icons/icons_tools.png");
 
 			document.body.addEventListener("keydown", function(event) {
-				console.log(event);
 				Tools.keydown(event.key);
 			});
 
@@ -157,37 +223,42 @@
 			});
 
 
-			BRIDGE.loadFile("", "map.txt").then(function(request){
-				var mapPackage = request.response;
-				console.log("loaded!", mapPackage);
-				if(mapPackage.length > 0)
-					CURRENT_LAYER.unpackageMap(mapPackage);
-				else
-					CURRENT_LAYER.unpackageMap(START_MAP);
-			});
+			
 
+			var NO_OVERRIDE = "ntqr";
 
 
 			document.addEventListener("keydown", function(e) {
-			  if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
-			    e.preventDefault();
-			    var saveMe = CURRENT_LAYER.packageMap();
-			    // console.log("saveMe", saveMe);
-			    BRIDGE.saveFile("", "map.txt", saveMe).then(function(request) {
-			    	FLAT.tempMessage("File 'map.txt' saved successfully!");
-			    });
-			  }
+				console.log(e);
 
-			  if (e.keyCode == 79 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
-			    e.preventDefault();
-			    FLAT.fileBrowser.FNS.showModal();
-			    // var saveMe = CURRENT_LAYER.packageMap();
-			    // // console.log("saveMe", saveMe);
-			    // BRIDGE.saveFile("", "map.txt", saveMe);
+				var metaKeyDown;
+				if(NO_OVERRIDE.indexOf(e.key) !== -1)
+					metaKeyDown = e.altKey || e.ctrlKey;
 
+				else
+					metaKeyDown = (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey);
 
-			  }
+				if(metaKeyDown) {
+					if (e.key == "s") {
+					    e.preventDefault();
+					    var saveMe = CURRENT_LAYER.packageMap();
+					    // console.log("saveMe", saveMe);
+					    BRIDGE.saveFile("map.txt", saveMe).then(function(request) {
+					    	FLAT.tempMessage("File 'map.txt' saved successfully!");
+					    });
+					}
 
+					else if (e.key == "o") {
+					    e.preventDefault();
+					    // FLAT.fileBrowser.FNS.showModal();
+					    FLAT.Options.showPanel("projectProperties");
+					}
+
+					else if (e.key == "n") {
+					    e.preventDefault();
+					    FLAT.Options.showPanel("projectProperties");
+					}
+				}
 
 			}, false);
 		});
@@ -207,8 +278,9 @@
 </head>
 <body>
 	<fade id="darken"></fade>
-	<modal id="mainFileBrowser" fade="darken" startShown filebrowser>
+	<modal id="mainFileBrowser" fade="darken" exitOnOutClick="false" filebrowser>
 	</modal>
+	<modal id="optionsModal" fade="darken" exitOnOutClick="false"></modal>
 	<topbar>FLAT.World | File | Help</topbar>
 	<mainArea>
 		<controlarea>
@@ -238,7 +310,38 @@
 			</worldArea>
 		</drawArea>
 	</mainArea>
+
+
+	<noShow>
+		<optionsPanel id="projectProperties">
+			Project Name: <input type="text">
+		</optionsPanel>
+	</noShow>
+
 </body>
+
+
+<style easyStyleVar>
+body {
+	--panelBase: #46514E;
+	--panelTextColor: #EFD1A5;
+	--panelBorderWidth: 3px;
+	--panelBorderColor: #333;
+	--backdropColor: #2A2A2A;
+
+	--softDarken: rgba(0,0,0,0.1);
+	--medDarken: rgba(0,0,0,0.3);
+	--heavyDarken: rgba(0,0,0,0.5);
+
+	--vignette: inset 4px 4px 15px rgba(0,0,0,0.5);
+
+
+	--topbarHeight: 20px;
+}
+</style>
+
+
+
 
 <style>
 
@@ -273,16 +376,18 @@
 
 
 
-
 body {
 	/*font-family: "FreePixel";*/
 	font-family: arial;
 	/*font-family: "TypeWriter";*/
-	color: #EFD1A5;
-	background-color: #46514E;
-	border-color: #333;
-	border-width: 3px;
+	color: var(--panelTextColor);
+	background-color: var(--backdropColor);
+	/*background-color: panelBase;*/
+	border-color: var(--panelBorderColor);
+	border-width: var(--panelBorderWidth);
 	font-size: 13px;
+
+	/*medShadow*/
 
 	/*cursor:  "draw";*/
     /*cursor:  url(public/images/icons/icons_tools.png) 1 1, auto;*/
@@ -294,37 +399,32 @@ body {
 	}
 
 	#mainFileBrowser {
-		background-color: #46514E;
-		padding: 10px;
+		background-color: var(--panelBase);
+		/*padding: 10px;*/
 		border-style: solid;
-		border-width: 3px;
-		border-color: inherit;
+		border-color: var(--panelBorderColor);
 		box-shadow: 5px 5px 25px rgba(0,0,0,0.2);
 	}
 
-		dirItem:hover {
+		/*dirItem:hover {
 			background-color: rgba(250,250,250, 0.1);
-		}
+		}*/
 
 
 	topbar {
 		display: block;
-		height: 20px;
+		height: var(--topbarHeight);
 		border-bottom-style: solid;
-		background-color: inherit;
-		border-color: inherit;
+		background-color: var(--panelBase);
+		border-color: var(--panelBorderColor);
 	}
 
 	mainArea {
 		display: flex;
 		position: absolute;
-		top: 20px;
+		top: var(--topbarHeight);
 		bottom: 0px;
 		width: 100%;
-		border-width: 3px;
-		/*background-color: #555;*/
-		background-color: inherit;
-		border-color: inherit;
 	}
 
 		controlarea {
@@ -333,10 +433,9 @@ body {
 			height: 100%;
 			top: 0px;
 			bottom: 0px;
-			/*background-color: #444;*/
-			background-color: inherit;
+			background-color: var(--panelBase);
 			flex-direction: column;
-			border-color: inherit;
+			border-color: var(--panelBorderColor);
 			
 			border-right-style: solid;
 			box-shadow: 5px 5px 25px rgba(0,0,0,0.2);
@@ -349,7 +448,7 @@ body {
 				height: 450px;
 				padding: 3px;
 				border-bottom-style: solid;
-				border-color: inherit;
+				border-color: var(--panelBorderColor);
 			}
 
 				palletteArea>resize {
@@ -369,7 +468,7 @@ body {
 					left: 6px;
 					right: 6px;
 					bottom: 6px;
-					box-shadow: inset 4px 4px 15px rgba(0,0,0,0.5);
+					box-shadow: var(--vignette);
 					z-index: 3;
 					pointer-events: none;
 				}
@@ -382,8 +481,8 @@ body {
 						width: 100%;
 						position: relative;
 						overflow: scroll;
-						border: 3px solid;
-						border-color: inherit;
+						border-style: solid;
+						border-color: var(--panelBorderColor);
 					}
 
 						pallette {
@@ -409,7 +508,6 @@ body {
 				display: block;
 				height: 110px;
 				flex-grow: 1;
-				/*background-color: orange;*/
 			}
 
 
@@ -417,12 +515,8 @@ body {
 		drawArea {
 			display: inline-block;
 			position: relative;
-			/*width: 200px;*/
-			/*padding: 200px;*/
 			flex-grow: 1;
 			height: 100%;
-			/*background-color: #06508E;*/
-			background-color: #2A2A2A;
 		}
 
 			drawTools {
@@ -432,58 +526,24 @@ body {
 				left: 0px;
 				background-color: #444;
 				border-style: none solid solid none;
-				border-color: #333;
-				border-width: 3px;
+				border-color: var(--panelBorderColor);
+				border-width: var(--panelBorderWidth);
 				z-index: 30;
 				box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
 			}
 
 				drawTools > tool {
 					display: inline-block;
-					/*background-image: url("public/images/icons/icons_tools.png");*/
-					/*background-size: 800% 100%;*/
 					height: 32px;
 					width: 32px;
 					image-rendering: -moz-crisp-edges;
 				}
-/*
-					drawTools > tool:nth-child(8n-7) {
-						background-position: 0px 0px;	
-					}
-
-					drawTools > tool:nth-child(8n-6) {
-						background-position: -32px 0px;	
-					}
-
-					drawTools > tool:nth-child(8n-5) {
-						background-position: -64px 0px;	
-					}
-
-					drawTools > tool:nth-child(8n-4) {
-						background-position: -96px 0px;	
-					}
-
-					drawTools > tool:nth-child(8n-3) {
-						background-position: -128px 0px;	
-					}
-
-					drawTools > tool:nth-child(8n-2) {
-						background-position: -160px 0px;	
-					}
-
-					drawTools > tool:nth-child(8n-1) {
-						background-position: -192px 0px;	
-					}
-
-					drawTools > tool:nth-child(8n) {
-						background-position: -224px 0px;	
-					}*/
 
 			drawArea > tempMessage {
 				display: block;
 				position: absolute;
 				bottom: 0px;
-				background-color: rgba(0,0,0,0.3);
+				background-color: var(--medDarken);
 				width: 100%;
 				font-size: 16px;
 				padding: 2px 10px;
@@ -504,18 +564,14 @@ body {
 					display: inline-block;
 					position: relative;
 					margin: 200px;
-					/*padding: 200px;*/
 					height: 768px;
 					width: 768px;
-					/*background: #828;*/
 				}
 
 					world>canvas {
-						/*display: none;*/
 						position: absolute;
 						top:0px;
 						left: 0px;
-						/*margin: 200px;*/
 						height: 768px;
 						width: 768px;
 						
@@ -527,6 +583,12 @@ body {
 							background: #1F1F1F;
 							box-shadow: 5px 5px 25px rgba(0,0,0,0.3);
 						}
+
+
+
+	noShow {
+		display: none;
+	}
 
 
 </style>
