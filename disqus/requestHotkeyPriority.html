@@ -1,11 +1,30 @@
-<!DOCTYPE html><html><body>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>requestHotkeyPriority() Please</title>
+
+</head>
+<body>
+
+
+<h1> It's a real hassle to not be able to use hotkeys.</h1>
+
+<p>
+  It makes sense that the important ones should not be overloadable by default for security reasons, in the same way it makes sense fullscreen, webcam, microphone and location should require permission.  And so it should be solved in the same way as those, by letting the site request them from the user.
+</p>
+
+<h3>window.requestHotkeyPriority()</h3>
+
+This is all.
+
+
 	<div id="disqus_thread"></div>
 	<script>
 
-	// var disqus_config = function () {
-	// 	this.page.url = "sephreed.github.io/disqus/requestHotkeyPriority.html";  // Replace PAGE_URL with your page's canonical URL variable
-	// 	this.page.identifier = "requestHotkeyPriority"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-	// };
+	var disqus_config = function () {
+		this.page.url = "http://sephreed.github.io/disqus/requestHotkeyPriority.html"
+		this.page.identifier = "requestHotkeyPriority";
+	};
 
 	(function() { // DON'T EDIT BELOW THIS LINE
 		var d = document, s = d.createElement('script');
@@ -13,9 +32,26 @@
 		s.setAttribute('data-timestamp', +new Date());
 		(d.head || d.body).appendChild(s);
 	})();
+
+	
 	</script>
 	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</body></html>
+</body>
+<style>
+a, a:visited {
+	color: #0DA;
+}
+
+body {
+	background-color: #222;
+	font-family: arial;
+	color: #FAFAFA;
+}
+</style>
+
+
+
+</html>
 
 
 <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' /** *; script-src 'self' *"> -->

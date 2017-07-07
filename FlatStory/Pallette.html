@@ -132,6 +132,15 @@ FLAT.Pallette.selectChip = function(chipNum) {
 
 }
 
+FLAT.Pallette.getCurrentChipData = function() {
+	var currentChip = Pal.getCurrentChip();
+	var chipSize = Pal.currentChipset.chipSize;
+
+	return Pal.currentChipset.painter.getImageData(
+		currentChip.row * chipSize, currentChip.col * chipSize,
+		chipSize, chipSize);
+}
+
 FLAT.Pallette.getCurrentChip = function() {
 	return Pal.currentChipset.selectedChip; 
 }

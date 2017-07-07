@@ -1,6 +1,39 @@
 <script type="text/javascript">
 
 
+PINE.createNeedle("[tempConsole]", function() {
+	this.addAttArg("timeAlive", ["tempConsole"], "number", "2");
+	this.addAttArg("timeFade", ["tempConsoleFade", "feedbackFade"], "number", "2");
+
+
+	this.addFN("tempConsoleAddMessage", function(msg, useHTML, timeAlive, timeFade) {
+		var state = this;
+
+		if(timeAlive === undefined)
+			timeAlive = state.getArg("timeAlive");
+
+		if(timeFade === undefined)
+			timeFade = state.getArg("timeFade");
+
+		var msgNode = document.createElement("tmpMsg");
+		El.attr(msgNode, "tempFeedback", timeAlive);
+		El.attr(msgNode, "feedbackFade", timeFade);
+		El.attr(msgNode, "feedbackAtStart", "");
+
+		msgNode.addEventListener("animationend", function() {
+			msgNode.remove();
+		});
+
+		console.log(msgNode);
+		PINE.updateAt(msgNode);
+		msgNode.FNS.feedbackSetMessage(msg, useHTML);
+
+		state.domNode.appendChild(msgNode);
+		
+	});
+});
+
+
 
 
 PINE.createNeedle("[tempFeedback]", function() {
@@ -22,11 +55,16 @@ PINE.createNeedle("[tempFeedback]", function() {
 	});
 
 
-	this.addFN("feedbackSetMessage", function(msg) {
+	this.addFN("feedbackSetMessage", function(msg, useHTML, timeAlive, timeFade) {
 		var state = this;
 		
-		if(msg != "KEEP_CURRENT_MSG")
-			state.domNode.textContent = msg;
+		if(msg != "KEEP_CURRENT_MSG"){
+			if(useHTML !== true)
+				state.domNode.textContent = msg;
+
+			else
+				state.domNode.innerHTML = msg;
+		}
 
 		state.domNode.style.animationDelay = state.getArg("timeAlive") + "s";
 		state.domNode.style.animationDuration = state.getArg("timeFade") + "s";
@@ -48,7 +86,7 @@ PINE.createNeedle("[tempFeedback]", function() {
 }
 
 *[tempFeedback] {
-	pointer-events: none;
+	/*pointer-events: none;*/
 	animation-timing-function: ease;
 	animation-iteration-count: 1;
 }
@@ -63,7 +101,9 @@ PINE.createNeedle("[tempFeedback]", function() {
 </style>
 
 
+<div style="display: none">
 
+</div>
 
 
 

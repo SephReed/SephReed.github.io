@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+	<title>Flat Story - 2D Game Maker</title>
+	<!-- <link rel="stylesheet" type="text/css" href="../public/css/init.css"> -->
+	<script type="text/javascript" src="Flat%20Story%20-%202D%20Game%20Maker_files/PINE_Core_4.js"></script>
+	<script type="text/javascript" src="Flat%20Story%20-%202D%20Game%20Maker_files/easyStyleVar.js"></script>
+	<script type="text/javascript" src="Flat%20Story%20-%202D%20Game%20Maker_files/webAppBridge.js"></script>
+	<!-- <script type="text/javascript" src="ResizeSensor.js"></script> -->
+	<!-- <needle src="../PINE/needles/tether.html"></needle> -->
+	</head><body><needle src="../public/css/init.css"><style>html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  	box-sizing: inherit;
+  	margin: 0px;
+	padding: 0px;
+	background-size: contain;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+html, body {
+	position: relative;
+	min-height: 100vh;
+	width: 100%;
+}
+
+
+block {
+	display: block;
+}
+
+nBlock {
+	display: inline-block;
+}
+
+needle {
+	display: none;
+}</style></needle>
+	<needle src="../PINE/PINE_Var.js"><script src="blob:null/cc7dab43-37f2-c94d-a9fd-e3c42dfa2078#../PINE/PINE_Var.js?../PINE/PINE_Var.js" type="text/javascript"></script></needle>
+	<needle src="../PINE/PINE_Needles.js"><script src="blob:null/5d74b70f-8b15-8847-b64d-553ad56a6bda#../PINE/PINE_Needles.js?../PINE/PINE_Needles.js" type="text/javascript"></script></needle>
+	<needle src="../PINE/needles/resizeHandle.html"><script src="blob:null/a8c61816-c5f1-7b40-b3e3-ff57ebf30516#../PINE/needles/resizeHandle.html?../PINE/needles/resizeHandle.html" type="text/javascript"></script>
+
+<style>
+	*[resizeHandle]
+	{ z-index: 100; }
+	
+	*[resizeHandle].resize-n 
+	{ cursor: n-resize; }
+	
+	*[resizeHandle].resize-e
+	{ cursor: e-resize; }
+
+	*[resizeHandle].resize-s
+	{ cursor: s-resize; }
+
+	*[resizeHandle].resize-w
+	{ cursor: w-resize; }
+
+	*[resizeHandle].resize-ne
+	{ cursor: ne-resize; }
+	
+	*[resizeHandle].resize-se
+	{ cursor: se-resize; }
+
+	*[resizeHandle].resize-sw
+	{ cursor: sw-resize; }
+
+	*[resizeHandle].resize-nw
+	{ cursor: nw-resize; }
+
+	*[resizeHandle].resize-ns, *[resizeHandle].resize-sn
+	{ cursor: ns-resize; }
+
+	*[resizeHandle].resize-ew, *[resizeHandle].resize-we
+	{ cursor: ew-resize; }
+
+	*[resizeHandle].resize-ne-sw, *[resizeHandle].resize-sw-ne
+	{ cursor: nesw-resize; }
+
+	*[resizeHandle].resize-nw-se, *[resizeHandle].resize-se-nw
+	{ cursor: nwse-resize; }
+
+	*[resizeHandle].resize-all { 
+		cursor: move; 
+		border: 3px double rgba(0,0,0,0.35);
+		height: 10px;
+		width: 10px;
+	}
+</style></needle>
+	<needle src="../PINE/needles/selectableList.html"><script src="blob:null/c85c3c64-682a-b648-b028-39cb09cfc95c#../PINE/needles/selectableList.html?../PINE/needles/selectableList.html" type="text/javascript"></script>
+
+
+<style>
+
+	*[selectableItem] {
+		cursor: pointer;
+		user-select: none;
+		-moz-user-select: none;
+	}
+
+	.selectable_drag_mode > *[selectableItem] {
+		cursor: vertical-text;
+	}
+
+	/*.list_selected {
+		background: yellow;
+	}*/
+
+</style>
+
+
+
+
+
+
+
+</needle>
+	<needle src="../PINE/needles/fileBrowser.html"><script src="blob:null/2710120d-ba03-d943-b4fe-abd9d1ec3371#../PINE/needles/fileBrowser.html?../PINE/needles/fileBrowser.html" type="text/javascript"></script>
+
+
+
+<style easystylevar="">
+*[fileBrowser] {
+	--fileBrowserBorderWidth: 1px;
+	--fileBrowserBorderColor: rgba(0,0,0,0.1);
+	--fileBrowserTableLableBg: rgba(0,0,0,0.5);
+	--fileBrowserSelectedItem: rgba(20,20,20, 0.3);
+}
+
+</style>
+
+
+
+<style>
+/*dirItem {
+	display: block;
+	border-bottom: 1px solid black;
+}*/
+
+
+
+
+
+
+singleDirBrowser {
+	display: table;
+}
+
+	singleDirBrowser > dirItem, singleDirBrowser > dirTableHeader{
+		display: table-row;
+	}
+		singleDirBrowser > dirTableHeader {
+			background-color: var(--fileBrowserTableLableBg);
+			border-width: var(--fileBrowserBorderWidth);
+			border-color: var(--fileBrowserBorderColor);
+			border-bottom-style: solid;
+		}
+
+		singleDirBrowser > dirItem > *,
+		singleDirBrowser > dirTableHeader > * {
+			display: table-cell;
+			padding-left: 6px;
+			padding-right: 6px;
+			user-select: none;
+			-moz-user-select: none;
+		}
+
+			singleDirBrowser > dirItem > name.isDir {
+				background-image: 
+      			url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'><polygon fill='none' stroke='lightblue' stroke-width='6' points='2,48 2,15 5,15 10,2 30,2 35,15 48,15 48,48'/></svg>");
+      			background-size: contain;
+      			background-repeat: no-repeat;
+			}
+
+				singleDirBrowser > #parentFolder > name {
+					padding-left: 25px;
+				}
+
+					singleDirBrowser > #parentFolder > name {
+						background-position: 4px;
+					}
+
+				
+
+				singleDirBrowser > dirItem > name {
+					padding-left: 15px;
+				}
+
+					singleDirBrowser > dirItem > name.isDir {
+						padding-left: 35px;
+						background-position: 15px;
+					}
+
+			singleDirBrowser > dirItem.list_selected {
+				background-color: var(--fileBrowserSelectedItem);
+			}
+
+			singleDirBrowser > dirItem > *:not(:first-child) {
+				border-left-style: solid;
+				border-color: var(--fileBrowserBorderColor);
+				border-width: var(--fileBrowserBorderWidth);
+			}
+</style>
+
+
+
+<nodisplay style="display: none" nopine="">
+
+	<singledirbrowser id="singleDirBrowserTemplate" spawner="directoryList" selectablelist="&gt;dirItem">
+		<dirtableheader><name class="isDir">Filename</name><size>Size</size></dirtableheader>
+		<diritem id="parentFolder"><name class="isDir">Parent Folder</name><size></size></diritem>
+		<diritem spawn="" pvars="item=directoryList[i]"><name class="{{? item.isDir: 'isDir'}}">{{item.name}}</name><size>{{item.size}}</size></diritem>
+	</singledirbrowser>
+	
+</nodisplay></needle>
+	<needle src="../PINE/needles/tempFeedback.html"><script src="blob:null/936f1c0c-7bab-e241-9e88-46fdf33f56ff#../PINE/needles/tempFeedback.html?../PINE/needles/tempFeedback.html" type="text/javascript"></script>
+
+
+
+<style>
+@keyframes feedbackFadeout {
+	0% {opacity: 1}
+	100% {opacity: 0}
+}
+
+*[tempFeedback] {
+	pointer-events: none;
+	animation-timing-function: ease;
+	animation-iteration-count: 1;
+}
+
+*[tempFeedback].inactive {
+	visibility: hidden;
+}
+
+*[tempFeedback].fading {
+	animation-name: feedbackFadeout;
+}
+</style>
+
+
+<div style="display: none">
+
+</div>
+
+
+
+
+
+
+</needle>
+	<needle src="../PINE/needles/modal.html"><script src="blob:null/1f1970ec-8c9a-f54e-8544-f3605782a2b4#../PINE/needles/modal.html?../PINE/needles/modal.html" type="text/javascript"></script>
+
+
+ 
+
+<!-- OVERLAY INLINE DEF -->
+
+<style>
+modal {
+	display: none;
+	position: fixed;
+	z-index: 100;
+	left: 50%;
+	top: 50%;
+	opacity: 0;
+	transform: translateX(-50%) translateY(-50%);
+	transition: opacity ease 2s;
+}
+
+.shown_overlay {
+	display: block;
+	animation: fade_in_overlay ease 0.5s forwards;
+}
+
+.stop_scrolling {
+	/*position: fixed;*/
+	overflow: hidden;
+}
+
+exitX {
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	pointer-events: none;
+}
+
+@keyframes fade_in_overlay {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+fade {
+	display: none;
+	/*pointer-events: none;*/
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 99;
+	opacity: 0;
+	transition: opacity ease 2s;
+}
+</style>
+</needle>
+	<needle src="Pallette.html"><script src="blob:null/6753d33d-31e2-4540-a72f-4ed113d2422f#Pallette.html?Pallette.html" type="text/javascript"></script>
+
+
+<style>
+
+chipSet {
+	display: block;
+	position: relative;
+	z-index: 1;
+	line-height: 0px;
+	image-rendering: -moz-crisp-edges;
+}
+
+	chip {
+		position: relative;
+		display: inline-block;
+		/*background-size: auto auto;*/
+		background-repeat: repeat;
+		
+	}
+
+
+		chip::before {
+			display: block;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			content: '';
+			border: 3px solid rgba(250,250,250,0.5);
+			visibility: hidden;
+			pointer-events: none;
+		}
+			chip:hover::before {
+				visibility: initial;
+			}
+
+		chip.selectedChip::before {
+			visibility: initial;
+			border-color: #222;
+			
+		}
+
+</style></needle>
+	<needle src="World.html"><script src="blob:null/a1660ac6-2694-9147-aef5-dfe0fdc58bf2#World.html?World.html" type="text/javascript"></script>	</needle>
+	<needle src="Tools.html"><script src="blob:null/d1bc311a-b09e-a049-84f9-bf299b4ea431#Tools.html?Tools.html" type="text/javascript"></script></needle>
+
+	<script type="text/javascript">
+		PINE.StyleVars.setVar("panelBase", "#46514E");
+		PINE.StyleVars.setVar("panelBorderWidth", "3px");
+		PINE.StyleVars.setVar("panelBorderColor", "#333");
+		PINE.StyleVars.setVar("backdropColor", "#2A2A2A");
+		PINE.StyleVars.setVar("panelTextColor", "#EFD1A5");
+		
+		
+	</script>
+
+	<script type="text/javascript">
+		PINE.createNeedle("[scalableCanvas]", function() {
+			this.addOp(function(state) {
+				var domNode = state.domNode;
+				var updateSizing = function() {
+					domNode.width = domNode.offsetWidth;
+					domNode.height = domNode.offsetHeight;
+				}
+				El.onSizeChange(domNode, updateSizing);
+				updateSizing();
+			});
+		});
+	</script>
+	
+
+	<script type="text/javascript">
+
+		function HSV_to_RGB(hue, saturation, value) {
+			hue %= 1;
+
+			var rgb;
+			if(saturation == 0 || value == 0)
+				rgb = [value, value, value];  //used car salesman rick jim here!
+
+			else {
+				rgb = [];
+				var oneThird = 1/3;
+				var twoThirds = 2/3;
+
+				var rgbPos = []
+				rgbPos[0] = ((hue+oneThird)%1)/twoThirds;  //at 0, red pos = 0.5 or peak of sine wave
+				rgbPos[1] = hue/twoThirds;  //at .3333, green pos = 0.5 or peak of sine wave
+				rgbPos[2] = (hue-oneThird)/twoThirds;  //at .6666, blue pos = 0.5 or peak of sine wave
+
+				for(var i in rgbPos) {
+					var pos = rgbPos[i];
+					if(pos > 0 && pos < 1)
+						rgb[i] = Math.sin(pos*Math.PI) * value;
+					else
+						rgb[i] = 0;
+				}
+
+
+				if(saturation < 1) {
+					var max = Math.max(Math.max(rgb[0], rgb[1]), rgb[2]);
+
+					for(var i in rgb)
+						rgb[i] += (max-rgb[i]) * (1-saturation);
+				}
+			}
+
+			for(var i in rgb) 
+				rgb[i] *= 256;
+
+			return rgb;
+		}
+
+		function setColor(painter, r, g, b, a) {
+			if(a !== undefined){
+				painter.strokeStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+				painter.fillStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+			}
+			else {
+				painter.strokeStyle = "rgb("+r+", "+g+", "+b+")";
+				painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
+			}
+
+		}
+
+
+		
+
+		
+
+		
+
+		// FLAT.Pallette.setViewSize;
+
+		// function updateCanvas() {
+			
+		// 	var row, col;
+		// 	if(Pal.selectedChip){
+		// 		row = Pal.selectedChip.chipRow;
+		// 		col = Pal.selectedChip.chipCol;
+		// 	}
+		// 	else 
+		// 	{  row = 4;  col = 0;  }
+
+  //       	for(var h = 0; h < 16; h++) {
+  //       		for(var v = 0; v < 16; v++) {
+	 //        		painter.drawImage(Pal.currentChipset.imgNode, col*16, row*16, 16, 16, h*16, v*16, 16, 16);
+	 //        	}	
+  //       	}
+		// }
+
+
+
+		// var chipSetUrls = ["chip_02.png", 
+		// 	"chipset01.png", 
+		// 	"chip_circus.png", 
+		// 	"chip_mc01.jpeg",
+		// 	"chip_mc02.png",
+		// 	"chip_mc03.jpg"];
+
+		var FLAT = {};
+		FLAT.World = {};
+		var Tools = FLAT.World.Tools = {};
+
+		var chipSetUrls = ["chipset01.png"];
+
+		FLAT.Options = {};
+		FLAT.Options.panels = {};
+		FLAT.Options.modalNode;
+
+		FLAT.Options.registerPanel = function(panelName, id) {
+			id = id || panelName;
+			var panel = FLAT.Options.panels[panelName] = {}
+			panel.name = panelName;
+			panel.id = id;
+		}
+
+
+		FLAT.Options.showPanel = function(panelName) {
+			var panel = FLAT.Options.panels[panelName];
+
+			if(panel) {
+				var modal = FLAT.Options.modalNode
+				while (modal.hasChildNodes())
+				    modal.lastChild.remove();
+				
+				modal.appendChild(panel.domNode);
+				modal.FNS.showModal();
+			}
+			else
+				PINE.err("options modal ", panelName, " does not exist");
+		}
+
+
+		FLAT.Options.registerPanel("projectProperties");
+
+
+		
+
+
+
+		
+		PINE.ready(function() {
+			FLAT.Pallette.domNode = El.firstOfTag(null, "pallette");
+			FLAT.World.domNode = El.firstOfTag(null, "world");
+			Tools.domNode = El.firstOfTag(null, "drawTools");
+			FLAT.drawArea = El.firstOfTag(null, "drawArea");
+			FLAT.fileBrowser = El.byID("mainFileBrowser");
+			FLAT.tempMessage = El.firstOfTag(null, "userTextFeedback").FNS.tempConsoleAddMessage;
+
+
+			FLAT.Options.modalNode = El.byID("optionsModal");
+			for(var key in FLAT.Options.panels) {
+				var panel = FLAT.Options.panels[key];
+				panel.domNode = El.byID(panel.id);
+			}
+
+
+			var chipUrl = chipSetUrls[~~(Math.random()*chipSetUrls.length)];
+
+			FLAT.Pallette.setChipSet(chipUrl, 16, 3)
+			.then(createWorld)
+			.then(function() {
+				return BRIDGE.loadFile("map.txt");
+
+			}).then(function(request){
+				var mapPackage = request.response;
+				// console.log("loaded!", mapPackage);
+				if(mapPackage.length > 0)
+					CURRENT_LAYER.unpackageMap(mapPackage);
+				else
+					CURRENT_LAYER.unpackageMap(START_MAP);
+			});	
+
+			// document.body.addEventListener("mousedown", function() {
+			// 	document.body.mozRequestFullScreen();
+			// });
+			
+			Tools.setIconSet("public/images/icons/icons_tools.png");
+
+			document.body.addEventListener("keydown", function(event) {
+				Tools.keydown(event.key);
+			});
+
+			document.body.addEventListener("keyup", function(event) {
+				Tools.keyup(event.key);
+			});
+
+
+			
+
+			var NO_OVERRIDE = "ntqr";
+
+
+			document.addEventListener("keydown", function(e) {
+				console.log(e);
+
+				var metaKeyDown;
+				if(NO_OVERRIDE.indexOf(e.key) !== -1)
+					metaKeyDown = e.altKey || e.ctrlKey;
+
+				else
+					metaKeyDown = (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey);
+
+				if(metaKeyDown && e.key !== "Meta") {
+
+					if(navigator.platform.match("Mac"))
+						FLAT.tempMessage("Careful there!  Use ctrl instead of cmd, or else you'll trigger a browser hotkey. \n If you'd like to be able to use normal hotkeys, please visit <a href='/disqus/requestHotkeyPriority.html'>this link</a>", true)
+
+
+					if (e.key == "s") {
+					    e.preventDefault();
+					    var saveMe = CURRENT_LAYER.packageMap();
+					    // console.log("saveMe", saveMe);
+					    BRIDGE.saveFile("map.txt", saveMe).then(function(request) {
+					    	FLAT.tempMessage("File 'map.txt' saved successfully!");
+					    });
+					}
+
+					else if (e.key == "o") {
+					    e.preventDefault();
+					    // FLAT.fileBrowser.FNS.showModal();
+					    FLAT.Options.showPanel("projectProperties");
+					}
+
+					else if (e.key == "n") {
+					    e.preventDefault();
+					    FLAT.Options.showPanel("projectProperties");
+					}
+				}
+
+			}, false);
+		});
+
+
+
+
+
+		
+
+
+
+	</script>
+
+	
+
+
+
+	<fade id="darken"></fade>
+	<modal id="mainFileBrowser" fade="darken" exitonoutclick="false" filebrowser="">
+	<singledirbrowser id="" spawner="directoryList" selectablelist="&gt;dirItem">
+		<dirtableheader><name class="isDir">Filename</name><size>Size</size></dirtableheader>
+		<diritem id="parentFolder"><name class="isDir">Parent Folder</name><size></size></diritem>
+		
+	<diritem spawn="" pvars="item=directoryList[i]"><name class=""><pnv var="item.name">installationSteps.txt</pnv></name><size><pnv var="item.size">79 b</pnv></size></diritem><diritem spawn="" pvars="item=directoryList[i]"><name class="isDir" pnvatts="1"><pnv var="item.name">lala</pnv></name><size><pnv var="item.size">102 b</pnv></size></diritem><diritem spawn="" pvars="item=directoryList[i]"><name class="" pnvatts="2"><pnv var="item.name">lala.txt</pnv></name><size><pnv var="item.size">45 b</pnv></size></diritem><diritem spawn="" pvars="item=directoryList[i]"><name class="" pnvatts="3"><pnv var="item.name">map.txt</pnv></name><size><pnv var="item.size">936 b</pnv></size></diritem><diritem spawn="" pvars="item=directoryList[i]"><name class="isDir" pnvatts="4"><pnv var="item.name">test</pnv></name><size><pnv var="item.size">68 b</pnv></size></diritem><diritem spawn="" pvars="item=directoryList[i]"><name class="" pnvatts="5"><pnv var="item.name">test.txt</pnv></name><size><pnv var="item.size">267 b</pnv></size></diritem><diritem spawn="" pvars="item=directoryList[i]"><name class="" pnvatts="6"><pnv var="item.name">test_tornado.py</pnv></name><size><pnv var="item.size">2.2 kb</pnv></size></diritem><diritem spawn="" pvars="item=directoryList[i]"><name class="" pnvatts="7"><pnv var="item.name">WebAppBridge.sublime-project</pnv></name><size><pnv var="item.size">2.2 kb</pnv></size></diritem><diritem spawn="" pvars="item=directoryList[i]"><name class="" pnvatts="8"><pnv var="item.name">WebAppBridge.sublime-workspace</pnv></name><size><pnv var="item.size">2.2 kb</pnv></size></diritem></singledirbrowser></modal>
+	<modal id="optionsModal" fade="darken" exitonoutclick="false"></modal>
+	<topbar>FLAT.World | File | Help</topbar>
+	<mainarea>
+		<controlarea>
+			<pallettearea>
+				<resize class="resize-all" resizehandle="~~, ~" resizedir="0 1 0 0, 0 0 1 0"></resize>
+				<!-- <palletteShadowOverlay></palletteShadowOverlay> -->
+				<pallettescroller>
+					<pallette style="width: 1152px; height: 768px;"><canvas style="z-index: 5;" width="384" height="256"></canvas><canvas width="384" height="256"></canvas></pallette>
+				</pallettescroller>
+				<!-- <button onclick="switchChipDraw()">Chip Draw</button> -->
+			</pallettearea>
+			<layerselect>
+				
+			</layerselect>
+		</controlarea>
+		<drawarea>
+			<drawtools>
+			<tool style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA3UlEQVRYhe2WMQqDMBiFc4JMgrfwBF4hQ/EEnsAti2OnTA7OIl4iDhl6g0B3955BA49OkSoUOpj8BX3w1nzfy/QzdiVQMpYiYynOJ+DBi2ixiBbRRcgE9mCnRjg1Yk4qzEkVXoRMwD+stYbWGtZaWGtXsK/hBQwvjhchE1i/fBJYJgH3UnAvhb7vNw2+PLrAN/D8TDaVUkJKGW95cIFfwabjMB2nW364wLX8vMvtUMMONd3y6AJ78ON+2zT6cjKBPdi3KXM0ZR7+sCATYIzhszHB/ynggTHvenKBc+YNalTEDx7z3vQAAAAASUVORK5CYII=&quot;);"></tool><tool style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAhUlEQVRYhe2W0QnAIAxEbwu3cIWMmk1jv4QiSFOIPdvmwA9FL08uHwFSqUEVxSqK0XxpAP2Cqpqq2umBAJDRoO9n5w7fzQDGB601iVy3e4AG0BUN4C5MB6BHQAdYFcF7AFZF4P75ZwHoEdCb0F2YDkCPgAZwNTgwJ6JnAGYGUdp/Kk79VgdgudFRJ8nY1gAAAABJRU5ErkJggg==&quot;);"></tool><tool style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAzUlEQVRYhe3WwQ2DMAwAwEyAhFSpfwboJn15kP6ySAfwFv6wg/dpH1ZfbktUyxCFJrRY8oMIxwcEQgh77JEZp3CU9/TO+x2ATggAAgBiQVa/8q8D0sYpgIiEiNxHsh1Aemtvh8skdRwRBRHLQ6oBtPB+vn5Mq7EeM7Mwcz6kGsBqrOND6GUI/bORl4shzQB0kY0dyNi9XrMY4yTnQjRdSLOA0pDtAyyIB8pehNUBVqEH0Vz8IWoGMLfQgmTvAdUA6YS5dcX+A6oB9vi7eAAtzYIm0ghwhgAAAABJRU5ErkJggg==&quot;);"></tool><tool style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA3ElEQVRYhe3VsQ2EMAwF0JRUVEi3xQ1AkZqGAkViC8QEKZghPRIDZAI2oGQaQmGucmMBV1xwuNxZckGT/+xIQYh/ea6neMBexw/AIK31bl8OCQagwUqp0/YO+RqAlBKklBEB8KAJnJ3A2XfB8QDwALstxm6LQQB+08DLJmcH0JVXRT1XRT1jMHYz9LYZeuv9KQ4GoMF05QihwR9PHBxwtHIKYJs8GGAtDaylAZe14LIWuiSHLslhTBWM6QU/l+AAGkwD2SdnAxytnAay3zk7gO2ubwegEPbg2wB+rl7oIppfaiXi3wAAAABJRU5ErkJggg==&quot;);"></tool></drawtools>
+			<usertextfeedback tempconsole=""></usertextfeedback>
+			<worldarea>
+
+				<world>
+					<!-- <canvas width="256px" height="256px"></canvas> -->
+				<canvas style="z-index: 20;" width="256" height="256"></canvas><canvas width="256" height="256"></canvas></world>
+			</worldarea>
+		</drawarea>
+	</mainarea>
+
+
+	<noshow>
+		<optionspanel id="projectProperties">
+			Project Name: <input type="text">
+		</optionspanel>
+	</noshow>
+
+
+
+
+<style easystylevar="">
+body {
+	--panelBase: #46514E;
+	--panelTextColor: #EFD1A5;
+	--panelBorderWidth: 3px;
+	--panelBorderColor: #333;
+	--backdropColor: #2A2A2A;
+
+	--softDarken: rgba(0,0,0,0.1);
+	--medDarken: rgba(0,0,0,0.3);
+	--heavyDarken: rgba(0,0,0,0.5);
+
+	--vignette: inset 4px 4px 15px rgba(0,0,0,0.5);
+
+
+	--topbarHeight: 20px;
+}
+</style>
+
+
+
+
+<style>
+
+
+@font-face {
+	font-family: 'SilkScreen';
+  	src:  url('public/fonts/Silk_Screen/slkscr.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'SilkScreen';
+  	src:  url('public/fonts/Silk_Screen/slkscrb.ttf') format('truetype');
+  	font-weight: bold;
+}
+
+@font-face {
+	font-family: '8Bit';
+  	src:  url('public/fonts/8-bit pusab.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'FreePixel';
+  	src:  url('public/fonts/FreePixel.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'TypeWriter';
+  	src:  url('public/fonts/type_writer.ttf') format('truetype');
+}
+
+
+
+
+
+body {
+	/*font-family: "FreePixel";*/
+	font-family: arial;
+	/*font-family: "TypeWriter";*/
+	color: var(--panelTextColor);
+	background-color: var(--backdropColor);
+	/*background-color: panelBase;*/
+	border-color: var(--panelBorderColor);
+	border-width: var(--panelBorderWidth);
+	font-size: 13px;
+
+	/*medShadow*/
+
+	/*cursor:  "draw";*/
+    /*cursor:  url(public/images/icons/icons_tools.png) 1 1, auto;*/
+	/*image-rendering: -moz-crisp-edges;*/
+}
+
+	#darken {
+		background-color: rgba(33,33,33,0.75);
+	}
+
+	#mainFileBrowser {
+		background-color: var(--panelBase);
+		/*padding: 10px;*/
+		border-style: solid;
+		border-color: var(--panelBorderColor);
+		box-shadow: 5px 5px 25px rgba(0,0,0,0.2);
+	}
+
+		/*dirItem:hover {
+			background-color: rgba(250,250,250, 0.1);
+		}*/
+
+
+	topbar {
+		display: block;
+		height: var(--topbarHeight);
+		border-bottom-style: solid;
+		background-color: var(--panelBase);
+		border-color: var(--panelBorderColor);
+	}
+
+	mainArea {
+		display: flex;
+		position: absolute;
+		top: var(--topbarHeight);
+		bottom: 0px;
+		width: 100%;
+	}
+
+		controlarea {
+			display: flex;
+			width: 280px;
+			height: 100%;
+			top: 0px;
+			bottom: 0px;
+			background-color: var(--panelBase);
+			flex-direction: column;
+			border-color: var(--panelBorderColor);
+			
+			border-right-style: solid;
+			box-shadow: 5px 5px 25px rgba(0,0,0,0.2);
+			z-index: 3;
+		}
+
+			palletteArea {
+				position: relative;
+				display: block;
+				height: 450px;
+				padding: 3px;
+				border-bottom-style: solid;
+				border-color: var(--panelBorderColor);
+			}
+
+				palletteArea>resize {
+					position: absolute;
+					right: 0px;
+					bottom: 0px;
+					transform: translate(50%, 50%) rotate(45deg);
+					border-color: black !important;
+					background-color: #888;
+					opacity: 1 !important;
+				}
+
+				palletteArea::after {
+					position: absolute;
+					content: ' ';
+					top: 6px;
+					left: 6px;
+					right: 6px;
+					bottom: 6px;
+					box-shadow: var(--vignette);
+					z-index: 3;
+					pointer-events: none;
+				}
+				
+
+					palletteScroller {
+						display: block;
+						position: relative;
+						height: 100%;
+						width: 100%;
+						position: relative;
+						overflow: scroll;
+						border-style: solid;
+						border-color: var(--panelBorderColor);
+					}
+
+						pallette {
+							display: block;
+							position: relative;
+						}
+
+
+							pallette > canvas {
+								position: absolute;
+								top: 0px;
+								left: 0px;
+								image-rendering: -moz-crisp-edges;
+								height: 100%;
+								width: 100%;
+							}
+
+					
+
+					
+
+			layerSelect {
+				display: block;
+				height: 110px;
+				flex-grow: 1;
+			}
+
+
+
+		drawArea {
+			display: inline-block;
+			position: relative;
+			flex-grow: 1;
+			height: 100%;
+		}
+
+			drawTools {
+				display: block;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				background-color: #444;
+				border-style: none solid solid none;
+				border-color: var(--panelBorderColor);
+				border-width: var(--panelBorderWidth);
+				z-index: 30;
+				box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
+			}
+
+				drawTools > tool {
+					display: inline-block;
+					height: 32px;
+					width: 32px;
+					image-rendering: -moz-crisp-edges;
+				}
+
+			drawArea > userTextFeedback {
+				display: block;
+				position: absolute;
+				bottom: 0px;
+				background-color: var(--medDarken);
+				width: 100%;
+				font-size: 16px;
+				padding: 2px 10px;
+				z-index: 30;
+			}
+
+			worldarea {
+				display: block;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				overflow: scroll;
+			}
+
+				world {
+					display: inline-block;
+					position: relative;
+					margin: 200px;
+					height: 768px;
+					width: 768px;
+				}
+
+					world>canvas {
+						position: absolute;
+						top:0px;
+						left: 0px;
+						height: 768px;
+						width: 768px;
+						
+						image-rendering: -moz-crisp-edges;
+						
+					}
+
+						world>canvas:last-child {
+							background: #1F1F1F;
+							box-shadow: 5px 5px 25px rgba(0,0,0,0.3);
+						}
+
+
+
+	noShow {
+		display: none;
+	}
+
+
+</style>
+</body></html>
