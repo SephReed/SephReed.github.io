@@ -92,11 +92,9 @@
 			saturation = 1;
 		} 
 
-		canvas.addEventListener("mousemove", function(event) {
+		function moveEvent(x, y) {
 			// console.log("test");
 
-			var y = event.layerY;
-			var x = event.layerX;
 
 			var col = ~~(x/(chipSize));
 			var row = ~~(y/(chipSize));
@@ -186,6 +184,19 @@
 
 				fadeFrameRequest = window.requestAnimationFrame(mouseTrailsAnimation);
 			}
+		
+
+		}
+
+
+		canvas.addEventListener("mousemove", function(event) {
+			moveEvent(event.layerX, event.layerY);
+		});
+
+		canvas.addEventListener("touchmove", function(event) {
+			console.log("TOUCH")
+			var touch = event.touches.item(0);
+			moveEvent(touch.pageX, touch.pageY);
 		});
 
 		canvas.addEventListener("mousedown", function(event) {
