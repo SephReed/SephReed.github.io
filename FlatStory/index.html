@@ -19,6 +19,8 @@
 	<needle src="Pallette.html"></needle>
 	<needle src="World.html"></needle>
 	<needle src="Tools.html"></needle>
+	<needle src="Draw.html"></needle>
+	<needle src="Options.html"></needle>
 
 	<script type="text/javascript">
 		PINE.StyleVars.setVar("panelBase", "#46514E");
@@ -47,132 +49,17 @@
 
 	<script type="text/javascript">
 
-		function HSV_to_RGB(hue, saturation, value) {
-			hue %= 1;
+	
 
-			var rgb;
-			if(saturation == 0 || value == 0)
-				rgb = [value, value, value];  //used car salesman rick jim here!
-
-			else {
-				rgb = [];
-				var oneThird = 1/3;
-				var twoThirds = 2/3;
-
-				var rgbPos = []
-				rgbPos[0] = ((hue+oneThird)%1)/twoThirds;  //at 0, red pos = 0.5 or peak of sine wave
-				rgbPos[1] = hue/twoThirds;  //at .3333, green pos = 0.5 or peak of sine wave
-				rgbPos[2] = (hue-oneThird)/twoThirds;  //at .6666, blue pos = 0.5 or peak of sine wave
-
-				for(var i in rgbPos) {
-					var pos = rgbPos[i];
-					if(pos > 0 && pos < 1)
-						rgb[i] = Math.sin(pos*Math.PI) * value;
-					else
-						rgb[i] = 0;
-				}
-
-
-				if(saturation < 1) {
-					var max = Math.max(Math.max(rgb[0], rgb[1]), rgb[2]);
-
-					for(var i in rgb)
-						rgb[i] += (max-rgb[i]) * (1-saturation);
-				}
-			}
-
-			for(var i in rgb) 
-				rgb[i] *= 256;
-
-			return rgb;
-		}
-
-		function setColor(painter, r, g, b, a) {
-			if(a !== undefined){
-				painter.strokeStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
-				painter.fillStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
-			}
-			else {
-				painter.strokeStyle = "rgb("+r+", "+g+", "+b+")";
-				painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
-			}
-
-		}
-
+	
 
 		
-
-		
-
-		
-
-		// FLAT.Pallette.setViewSize;
-
-		// function updateCanvas() {
-			
-		// 	var row, col;
-		// 	if(Pal.selectedChip){
-		// 		row = Pal.selectedChip.chipRow;
-		// 		col = Pal.selectedChip.chipCol;
-		// 	}
-		// 	else 
-		// 	{  row = 4;  col = 0;  }
-
-  //       	for(var h = 0; h < 16; h++) {
-  //       		for(var v = 0; v < 16; v++) {
-	 //        		painter.drawImage(Pal.currentChipset.imgNode, col*16, row*16, 16, 16, h*16, v*16, 16, 16);
-	 //        	}	
-  //       	}
-		// }
-
-
-
-		// var chipSetUrls = ["chip_02.png", 
-		// 	"chipset01.png", 
-		// 	"chip_circus.png", 
-		// 	"chip_mc01.jpeg",
-		// 	"chip_mc02.png",
-		// 	"chip_mc03.jpg"];
 
 		var FLAT = {};
-		FLAT.World = {};
-		var Tools = FLAT.World.Tools = {};
+		FLAT.Draw = {};
+		var Tools = FLAT.Draw.Tools = {};
 
 		var chipSetUrls = ["chipset01.png"];
-
-		FLAT.Options = {};
-		FLAT.Options.panels = {};
-		FLAT.Options.modalNode;
-
-		FLAT.Options.registerPanel = function(panelName, id) {
-			id = id || panelName;
-			var panel = FLAT.Options.panels[panelName] = {}
-			panel.name = panelName;
-			panel.id = id;
-		}
-
-
-		FLAT.Options.showPanel = function(panelName) {
-			var panel = FLAT.Options.panels[panelName];
-
-			if(panel) {
-				var modal = FLAT.Options.modalNode
-				while (modal.hasChildNodes())
-				    modal.lastChild.remove();
-				
-				modal.appendChild(panel.domNode);
-				modal.FNS.showModal();
-			}
-			else
-				PINE.err("options modal ", panelName, " does not exist");
-		}
-
-
-		FLAT.Options.registerPanel("projectProperties");
-
-
-		
-
 
 
 		
@@ -273,38 +160,7 @@
 
 
 
-		FLAT.Draw = {};
-		FLAT.Draw.canvas;
-
-		function switchChipDraw() {
-			if(FLAT.Draw.canvas == undefined) {
-				FLAT.Draw.canvas = {};
-				FLAT.Draw.canvas.zoom = 3;
-				FLAT.Draw.canvas.domNode = document.createElement("canvas");
-				FLAT.Draw.canvas.painter = FLAT.Draw.canvas.domNode.getContext("2d");
-			}
-
-			var canvas = FLAT.Draw.canvas;
-
-			var chipSize = Pal.currentChipset.chipSize;
-			canvas.domNode.width = canvas.domNode.height = chipSize;
-
-			var imageData = Pal.getCurrentChipData()
-
-			canvas.painter.putImageData(imageData, 0, 0);
-
-
-			while(FLAT.World.domNode.hasChildNodes())
-				FLAT.World.domNode.lastChild.remove();
-
-
-			FLAT.World.domNode.style.height = (chipSize * canvas.zoom) + "px";
-			FLAT.World.domNode.style.width = (chipSize * canvas.zoom) + "px";
-
-			FLAT.World.domNode.appendChild(canvas.domNode);
-
-		}
-
+		
 		
 
 

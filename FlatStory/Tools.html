@@ -5,7 +5,8 @@
 		"draw",
 		"select",
 		"fill",
-		"pick"
+		"pick",
+		"zoom"
 	]
 
 
@@ -17,16 +18,6 @@
 		if(pullCanvas == undefined) {
 			pullCanvas = document.createElement("canvas");
 			pullSampler = pullCanvas.getContext("2d");
-
-			// pullCanvas.style.imageRendering = "-moz-crisp-edges";
-			// pullCanvas.style.zIndex = "100";
-			// pullCanvas.style.position = "absolute";
-			// pullCanvas.style.right = "0px";
-			// pullCanvas.style.height = "256px";
-			// pullCanvas.style.width = "256px";
-			// pullCanvas.style.backgroundColor = "#777";
-
-			// Tools.domNode.appendChild(pullCanvas);
 		}
 
 		else pullSampler.clearRect(0, 0, pullCanvas.width, pullCanvas.height);
@@ -61,7 +52,7 @@
 
 				// console.log(dataIndex, r, g, b, a);
 
-				setColor(painter, r, g, b, a/256);
+				FLAT.Draw.setColor(painter, r, g, b, a/256);
 				var rectX = (x*xScale)+tx;
 				var rectY = (y*yScale)+ty;
 
@@ -338,12 +329,6 @@
 
 
 
-	Tools.makePickHotkey = function(baseTool) {
-
-	}
-
-
-
 	/**************************
 	*      TOOL TYPES         *
 	**************************/
@@ -443,6 +428,24 @@
 	Tools.Pick.mouseDown = function(row, col) {
 		var targetID = CURRENT_LAYER.chips[row][col];
 		FLAT.Pallette.selectChip(targetID);
+	}
+
+
+
+	Tools.Zoom = {};
+	Tools.Zoom.inNotOut = true;
+	Tools.Zoom.keydown = function(key) {
+		if(key == "Meta") 
+			Tools.Zoom.inNotOut = false;
+	}
+
+	Tools.Zoom.keyup = function(key) {
+		if(key == "Meta") 
+			Tools.Zoom.inNotOut = true;
+	}
+
+	Tools.Zoom.mouseDown = function() {
+
 	}
 
 

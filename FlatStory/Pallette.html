@@ -118,10 +118,10 @@ FLAT.Pallette.selectChip = function(chipNum) {
 		Pal.UILayer.painter.clearRect(clearX -5, clearY -5, chipSize +10, chipSize +10);
 	}
 
-	var chip = Pal.currentChipset.selectedChip = {};
-	chip.num = chipNum;
-	chip.row = ~~(chip.num / Pal.currentChipset.chipWidth);
-	chip.col = chip.num % Pal.currentChipset.chipWidth;
+	var chip = Pal.currentChipset.selectedChip = Pal.currentChipset.chips[chipNum];
+	// chip.num = chipNum;
+	// chip.row = ~~(chip.num / Pal.currentChipset.chipWidth);
+	// chip.col = chip.num % Pal.currentChipset.chipWidth;
 
 
 	var x = chip.col * chipSize;
@@ -133,12 +133,7 @@ FLAT.Pallette.selectChip = function(chipNum) {
 }
 
 FLAT.Pallette.getCurrentChipData = function() {
-	var currentChip = Pal.getCurrentChip();
-	var chipSize = Pal.currentChipset.chipSize;
-
-	return Pal.currentChipset.painter.getImageData(
-		currentChip.row * chipSize, currentChip.col * chipSize,
-		chipSize, chipSize);
+	return Pal.getChipImageData(Pal.getCurrentChip());
 }
 
 FLAT.Pallette.getCurrentChip = function() {
@@ -147,6 +142,16 @@ FLAT.Pallette.getCurrentChip = function() {
 
 FLAT.Pallette.getChip = function(chipNum) {
 	return Pal.currentChipset.chips[chipNum] 
+}
+
+FLAT.Pallette.getChipImageData = function(chip) {
+	console.log("SLOW TRY TO AVOID", chip)
+
+	var chipSize = Pal.currentChipset.chipSize;
+
+	return Pal.currentChipset.painter.getImageData(
+		chip.imageX, chip.imageY,
+		chipSize, chipSize);
 }
 
 

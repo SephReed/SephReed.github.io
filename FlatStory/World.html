@@ -1,41 +1,6 @@
 <script type="text/javascript">
 
 
-// var START_MAP = {};
-// START_MAP.code = `96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
-// 	96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
-// 	96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
-// 	96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
-// 	96 96 96 96 96 96 96 96 96 96 96 217 217 217 217 217 
-// 	96 96 96 96 217 217 217 217 217 217 217 244 244 13 14 14 
-// 	217 217 217 217 244 244 244 244 244 244 244 244 268 37 196 196 
-// 	244 244 244 244 244 244 244 244 244 244 244 245 196 37 7 7 
-// 	268 268 268 268 268 133 133 133 133 133 133 269 7 37 7 7 
-// 	7 7 7 7 7 157 157 157 133 133 278 7 7 61 62 62 
-// 	7 7 7 7 7 276 279 278 157 157 278 7 7 85 86 86 
-// 	7 7 7 7 7 185 185 185 276 278 55 7 7 85 86 86 
-// 	7 7 7 7 7 276 277 277 279 278 7 7 7 85 86 86 
-// 	7 7 7 7 7 7 7 7 7 7 7 7 7 109 110 110 
-// 	7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
-// 	7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7`;
-
-// START_MAP.code = `151 151 151 151 151 151 151 60 60 60 60 84 84 55 55 55 
-// 60 60 60 151 151 151 60 60 84 84 84 55 55 55 55 55 
-// 84 84 60 60 60 60 84 84 55 55 55 96 96 96 55 55 
-// 55 55 84 84 84 84 55 55 55 55 96 96 96 96 96 55 
-// 55 55 55 55 55 55 55 55 55 55 96 96 96 96 96 55 
-// 313 313 313 313 314 55 55 55 55 55 96 96 96 96 96 55 
-// 361 361 361 361 337 313 314 55 55 55 55 55 96 96 96 55 
-// 137 137 137 9 360 361 112 313 313 313 314 55 55 55 55 55 
-// 108 108 108 137 137 137 360 361 361 361 337 313 313 313 314 55 
-// 137 137 108 108 108 137 137 137 9 137 360 361 361 361 337 313 
-// 137 112 137 137 108 108 108 108 108 137 137 137 137 137 360 361 
-// 313 314 137 137 9 137 137 137 108 108 108 108 108 137 137 9 
-// 361 337 313 314 137 137 137 112 137 137 112 137 108 108 108 108 
-// 55 360 361 337 313 313 313 314 137 137 9 137 137 137 137 137 
-// 55 55 55 360 361 361 361 337 313 313 313 314 137 112 137 137 
-// 55 55 55 55 55 55 55 360 361 361 361 337 313 313 313 313 `;
-
 var START_MAP = `60 60 60 60 84 84 60 61 62 64 64 100 101 64 64 64 
 84 60 60 60 60 60 60 109 110 61 64 100 101 64 64 64 
 84 84 60 60 60 60 60 55 55 109 40 100 173 41 18 18 
@@ -55,6 +20,8 @@ var START_MAP = `60 60 60 60 84 84 60 61 62 64 64 100 101 64 64 64
 
 
 
+
+	FLAT.World = {};
 	
 
 	var CURRENT_MAP, CURRENT_LAYER;
@@ -98,22 +65,9 @@ var START_MAP = `60 60 60 60 84 84 60 61 62 64 64 100 101 64 64 64
 		var mouseHeld;
 
 		var mouseTrails = [];
-		// var numFrames = 3;
-		// var alphaDrop = 0.2;
-		// var alphaFloor = 0.5;
 		var hueShift = 0.005;
-		// var saturation = 0.9;
-		// var hueChange = 0.05;
 		var hueOffset = 0;
-		// var numRainbows = 2;
-		// var mouseTrailsFrameRequest;
-
-		// if(true) {
-		// 	numRainbows = 3;
-		// 	alphaDrop = 0.005;
-		// 	dropOpacity = false;
-		// 	saturation = 1;
-		// } 
+	
 
 		canvas.addEventListener("mousemove", function(event) {
 			var y = event.layerY;
@@ -129,79 +83,25 @@ var START_MAP = `60 60 60 60 84 84 60 61 62 64 64 100 101 64 64 64
 
 				hueOffset = (hueOffset + hueShift)%1;
 
-				// var cursorGhost = {};
-				// cursorGhost.x = currentCol*16;
-				// cursorGhost.y = currentRow*16;
-				// cursorGhost.opacity = 0.8;
-				// cursorGhost.hue = hueOffset;
-				// cursorGhost.frame = 0;
-
-				// mouseTrails.push(cursorGhost);
-
 				painter.clearRect(clearX, clearY, clearSize, clearSize);
 
 				currentCol = col;
 				currentRow = row;
 
-				var rgb = HSV_to_RGB(hueOffset, 0.3, 1);
-				setColor(painter, rgb[0], rgb[1], rgb[2], 0.8);
+				var rgb = FLAT.Draw.HSV_to_RGB(hueOffset, 0.3, 1);
+				FLAT.Draw.setColor(painter, rgb[0], rgb[1], rgb[2], 0.8);
 				painter.strokeRect(col*16, row*16, 16, 16);
 
 				if(mouseHeld)
 					Tools.mouseDrag(currentRow, currentCol);
 
-				// if(mouseHeld && Tools.currentTool.mouseDrag !== undefined) 
-				// 	Tools.currentTool.mouseDrag(currentRow, currentCol);
 			}
-
-			// if(mouseTrails.length && mouseTrailsFrameRequest == undefined) {
-			// 	var mouseTrailsAnimation = function() {
-					
-			// 		for(var i = 0; i < mouseTrails.length; i++) {
-			// 			var ghost = mouseTrails[i];
-
-			// 			ghost.frame++;
-			// 			painter.clearRect(ghost.x - 1, ghost.y - 1, 18, 18);
-
-			// 			if(ghost.opacity > alphaFloor)
-			// 				ghost.opacity -= alphaDrop;
-
-			// 			if(ghost.opacity < alphaFloor)
-			// 				ghost.opacity = alphaFloor
-
-
-			// 			if(ghost.frame >= numFrames) {
-			// 				mouseTrails.splice(i, 1);
-			// 				i--;
-			// 			}
-			// 			else {
-			// 				var progress = ghost.frame/numFrames;
-			// 				var rgb = HSV_to_RGB(ghost.hue + progress*numRainbows, saturation, ghost.opacity);
-			// 				setColor(painter, rgb[0], rgb[1], rgb[2], 1)
-			// 				painter.strokeRect(ghost.x, ghost.y, 16, 16);
-			// 			}
-			// 		}
-
-			// 		setColor(painter, 250, 250, 250, 1);
-			// 		painter.strokeRect(currentCol*16, currentRow*16, 16, 16);
-
-			// 		if(mouseTrails.length)
-			// 			mouseTrailsFrameRequest = window.requestAnimationFrame(mouseTrailsAnimation);
-			// 		else
-			// 			mouseTrailsFrameRequest = undefined;
-			// 	}
-
-			// 	fadeFrameRequest = window.requestAnimationFrame(mouseTrailsAnimation);
-			// }
 		});
 
 
 		canvas.addEventListener("mousedown", function(event) {
 			mouseHeld = true;
 			Tools.mouseDown(currentRow, currentCol);
-
-			// if(Tools.currentTool.mouseDown !== undefined)
-			// 	Tools.currentTool.mouseDown(currentRow, currentCol);
 		});
 
 		document.body.addEventListener("mouseup", function(event) {
@@ -309,10 +209,10 @@ var START_MAP = `60 60 60 60 84 84 60 61 62 64 64 100 101 64 64 64
 		out.renderChip = function(row, col) {
 			var chipNum = out.chips[row][col];
 			var chip = Pal.getChip(chipNum);
-			// var chip = Pal.getCurrentChip();
-			// // console.log(chip, row, col);\
-			// console.log(chip, chipNum);
 			var size = Pal.currentChipset.chipSize;
+
+			// var imageData = Pal.getChipImageData(chipNum);
+			// out.painter.putImageData(imageData, col*size, row*size);
 
 			out.painter.drawImage(Pal.currentChipset.imgNode, 
 				chip.imageX,  chip.imageY, size, size, 
@@ -346,6 +246,53 @@ var START_MAP = `60 60 60 60 84 84 60 61 62 64 64 100 101 64 64 64
 
 		return out;
 	}
+
+
+	
+
+
+
+
+
+
+
+
+
+
+// var START_MAP = {};
+// START_MAP.code = `96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
+// 	96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
+// 	96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
+// 	96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 96 
+// 	96 96 96 96 96 96 96 96 96 96 96 217 217 217 217 217 
+// 	96 96 96 96 217 217 217 217 217 217 217 244 244 13 14 14 
+// 	217 217 217 217 244 244 244 244 244 244 244 244 268 37 196 196 
+// 	244 244 244 244 244 244 244 244 244 244 244 245 196 37 7 7 
+// 	268 268 268 268 268 133 133 133 133 133 133 269 7 37 7 7 
+// 	7 7 7 7 7 157 157 157 133 133 278 7 7 61 62 62 
+// 	7 7 7 7 7 276 279 278 157 157 278 7 7 85 86 86 
+// 	7 7 7 7 7 185 185 185 276 278 55 7 7 85 86 86 
+// 	7 7 7 7 7 276 277 277 279 278 7 7 7 85 86 86 
+// 	7 7 7 7 7 7 7 7 7 7 7 7 7 109 110 110 
+// 	7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+// 	7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7`;
+
+// START_MAP.code = `151 151 151 151 151 151 151 60 60 60 60 84 84 55 55 55 
+// 60 60 60 151 151 151 60 60 84 84 84 55 55 55 55 55 
+// 84 84 60 60 60 60 84 84 55 55 55 96 96 96 55 55 
+// 55 55 84 84 84 84 55 55 55 55 96 96 96 96 96 55 
+// 55 55 55 55 55 55 55 55 55 55 96 96 96 96 96 55 
+// 313 313 313 313 314 55 55 55 55 55 96 96 96 96 96 55 
+// 361 361 361 361 337 313 314 55 55 55 55 55 96 96 96 55 
+// 137 137 137 9 360 361 112 313 313 313 314 55 55 55 55 55 
+// 108 108 108 137 137 137 360 361 361 361 337 313 313 313 314 55 
+// 137 137 108 108 108 137 137 137 9 137 360 361 361 361 337 313 
+// 137 112 137 137 108 108 108 108 108 137 137 137 137 137 360 361 
+// 313 314 137 137 9 137 137 137 108 108 108 108 108 137 137 9 
+// 361 337 313 314 137 137 137 112 137 137 112 137 108 108 108 108 
+// 55 360 361 337 313 313 313 314 137 137 9 137 137 137 137 137 
+// 55 55 55 360 361 361 361 337 313 313 313 314 137 112 137 137 
+// 55 55 55 55 55 55 55 360 361 361 361 337 313 313 313 313 `;
 
 
 	

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		function HSV_to_RGB(hue, saturation, value) {
+			if(hue < 1)
+				hue += 1;
+			hue %= 1;
+
+			var rgb;
+			if(saturation == 0 || value == 0)
+				rgb = [value, value, value];  //used car salesman rick jim here!
+
+			else {
+				rgb = [];
+				var oneThird = 1/3;
+				var twoThirds = 2/3;
+
+				var rgbPos = []
+				rgbPos[0] = ((hue+oneThird)%1)/twoThirds;  //at 0, red pos = 0.5 or peak of sine wave
+				rgbPos[1] = hue/twoThirds;  //at .3333, green pos = 0.5 or peak of sine wave
+				rgbPos[2] = (hue-oneThird)/twoThirds;  //at .6666, blue pos = 0.5 or peak of sine wave
+
+				for(var i in rgbPos) {
+					var pos = rgbPos[i];
+					if(pos > 0 && pos < 1)
+						rgb[i] = Math.sin(pos*Math.PI) * value;
+					else
+						rgb[i] = 0;
+				}
+
+
+				if(saturation < 1) {
+					var max = Math.max(Math.max(rgb[0], rgb[1]), rgb[2]);
+
+					for(var i in rgb)
+						rgb[i] += (max-rgb[i]) * (1-saturation);
+				}
+			}
+
+			for(var i in rgb) 
+				rgb[i] *= 256;
+
+			return rgb;
+		}
+
+		function setColor(painter, r, g, b, a) {
+			if(a !== undefined){
+				painter.strokeStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+				painter.fillStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+			}
+			else {
+				painter.strokeStyle = "rgb("+r+", "+g+", "+b+")";
+				painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
+			}
+
+		}
+
+
+
+
+
+		var canvas = document.createElement("canvas");
+		canvas.style.zIndex = 20;
+		canvas.oncontextmenu = function() {return false;}
+		var painter = canvas.getContext("2d");
+
+		var currentCol, currentRow;
+
+		var chipSize = 32;
+
+		var mouseTrails = [];
+		var numFrames = 3;
+		var alphaDrop = 0.2;
+		var alphaFloor = 0.5;
+		var hueShift = 0.005;
+		var saturation = 0.9;
+		var hueChange = 0.05;
+		var hueOffset = 0;
+		var numRainbows = 2;
+		var addFrame = 20;
+		var tillAddFrame = addFrame;
+		var mouseTrailsFrameRequest;
+
+		if(true) {
+			numRainbows = 3;
+			numFrames = 60;
+			alphaDrop = 0.005;
+			dropOpacity = false;
+			saturation = 1;
+		} 
+
+		canvas.addEventListener("mousemove", function(event) {
+			// console.log("test");
+
+			var y = event.layerY;
+			var x = event.layerX;
+
+			var col = ~~(x/(chipSize));
+			var row = ~~(y/(chipSize));
+			
+			if(currentCol !== col || currentRow !== row) {
+				var clearX = (currentCol*chipSize)-10;
+				var clearY = (currentRow*chipSize)-10;
+				var clearSize = chipSize+20;
+
+				hueOffset = (hueOffset + hueShift)%1;
+
+				if(currentCol !== undefined) {
+					var cursorGhost = {};
+					cursorGhost.x = currentCol*chipSize;
+					cursorGhost.y = currentRow*chipSize;
+					cursorGhost.opacity = 0.8;
+					cursorGhost.hue = hueOffset;
+					cursorGhost.frame = 0;
+
+					mouseTrails.push(cursorGhost);
+				}
+
+				painter.clearRect(clearX, clearY, clearSize, clearSize);
+
+				currentCol = col;
+				currentRow = row;
+
+				var rgb = HSV_to_RGB(hueOffset, 0.3, 1);
+				setColor(painter, rgb[0], rgb[1], rgb[2], 0.8);
+				painter.strokeRect(col*chipSize, row*chipSize, chipSize, chipSize);
+
+			}
+
+			if(mouseTrails.length && mouseTrailsFrameRequest == undefined) {
+				var mouseTrailsAnimation = function() {
+
+					tillAddFrame--;
+					if(tillAddFrame <= 0) {
+						tillAddFrame = addFrame;
+						numFrames++;
+					}
+					
+					for(var i = 0; i < mouseTrails.length; i++) {
+						var ghost = mouseTrails[i];
+
+						ghost.frame++;
+						painter.clearRect(ghost.x - 1, ghost.y - 1, chipSize+2, chipSize+2);
+
+						if(ghost.opacity > alphaFloor)
+							ghost.opacity -= alphaDrop;
+
+						if(ghost.opacity < alphaFloor)
+							ghost.opacity = alphaFloor
+
+
+						if(ghost.frame >= numFrames) {
+							mouseTrails.splice(i, 1);
+							i--;
+						}
+						// else {
+							var progress = ghost.frame/numFrames;
+							var rgb = HSV_to_RGB(ghost.hue + progress*numRainbows, saturation, dropOpacity ? ghost.opacity : 1.0);
+							setColor(painter, rgb[0], rgb[1], rgb[2], 1.0)
+							painter.fillRect(ghost.x, ghost.y, chipSize, chipSize);
+
+							rgb = HSV_to_RGB(ghost.hue - progress*numRainbows, saturation, dropOpacity ? ghost.opacity : 1.0);
+							setColor(painter, rgb[0], rgb[1], rgb[2], 1.0)
+							painter.strokeRect(ghost.x, ghost.y, chipSize, chipSize);
+						// }
+					}
+
+					setColor(painter, 250, 250, 250, 1);
+					painter.strokeRect(currentCol*chipSize, currentRow*chipSize, chipSize, chipSize);
+
+					if(mouseTrails.length)
+						mouseTrailsFrameRequest = window.requestAnimationFrame(mouseTrailsAnimation);
+					else
+						mouseTrailsFrameRequest = undefined;
+				}
+
+				fadeFrameRequest = window.requestAnimationFrame(mouseTrailsAnimation);
+			}
+		});
+
+		document.addEventListener("DOMContentLoaded", function() {
+			document.body.appendChild(canvas);
+			canvas.width = canvas.offsetWidth;
+			canvas.height = canvas.offsetHeight;
+		});
+		// return out;
+	</script>
+</head>
+<body>
+
+
+<style>
+body {
+	background-color: #111;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	width: 100%;
+}
+
+	canvas {
+		height: 100%;
+		width: 100%;
+	}
+</style>
+
+</body>
+</html>
+
+
+
+
+
+
+
