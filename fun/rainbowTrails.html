@@ -82,10 +82,11 @@
 		var addFrame = 20;
 		var tillAddFrame = addFrame;
 		var mouseTrailsFrameRequest;
+		var progressMultiplier = 1;
 
 		if(true) {
 			numRainbows = 3;
-			numFrames = 60;
+			numFrames = 100;
 			alphaDrop = 0.005;
 			dropOpacity = false;
 			saturation = 1;
@@ -114,6 +115,7 @@
 					cursorGhost.opacity = 0.8;
 					cursorGhost.hue = hueOffset;
 					cursorGhost.frame = 0;
+					cursorGhost.progress = 0;
 
 					mouseTrails.push(cursorGhost);
 				}
@@ -135,7 +137,9 @@
 					tillAddFrame--;
 					if(tillAddFrame <= 0) {
 						tillAddFrame = addFrame;
-						numFrames++;
+
+						if(numFrames < 700)
+							numFrames++; 
 					}
 					
 					for(var i = 0; i < mouseTrails.length; i++) {
@@ -143,6 +147,8 @@
 
 						ghost.frame++;
 						painter.clearRect(ghost.x - 1, ghost.y - 1, chipSize+2, chipSize+2);
+
+
 
 						if(ghost.opacity > alphaFloor)
 							ghost.opacity -= alphaDrop;
@@ -156,7 +162,7 @@
 							i--;
 						}
 						// else {
-							var progress = ghost.frame/numFrames;
+							var progress = ghost.progress;
 							var rgb = HSV_to_RGB(ghost.hue + progress*numRainbows, saturation, dropOpacity ? ghost.opacity : 1.0);
 							setColor(painter, rgb[0], rgb[1], rgb[2], 1.0)
 							painter.fillRect(ghost.x, ghost.y, chipSize, chipSize);
@@ -165,6 +171,8 @@
 							setColor(painter, rgb[0], rgb[1], rgb[2], 1.0)
 							painter.strokeRect(ghost.x, ghost.y, chipSize, chipSize);
 						// }
+
+						ghost.progress += progressMultiplier/numFrames;
 					}
 
 					setColor(painter, 250, 250, 250, 1);
@@ -178,6 +186,14 @@
 
 				fadeFrameRequest = window.requestAnimationFrame(mouseTrailsAnimation);
 			}
+		});
+
+		canvas.addEventListener("mousedown", function(event) {
+			progressMultiplier = 2;
+		});
+
+		canvas.addEventListener("mouseup", function(event) {
+			progressMultiplier = 1;
 		});
 
 		document.addEventListener("DOMContentLoaded", function() {
@@ -201,6 +217,7 @@ body {
 }
 
 	canvas {
+		cursor: none;
 		height: 100%;
 		width: 100%;
 	}

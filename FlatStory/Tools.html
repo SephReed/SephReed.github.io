@@ -307,22 +307,22 @@
 
 
 	Tools.mouseDown = function(row, col) {
-		if(Tools.eventBindings.mouseDown)
+		if(Tools.eventBindings.mouseDown.mouseDown)
 			Tools.eventBindings.mouseDown.mouseDown(row, col);
 	}
 
 	Tools.mouseDrag = function(row, col) {
-		if(Tools.eventBindings.mouseDrag)
+		if(Tools.eventBindings.mouseDrag.mouseDrag)
 			Tools.eventBindings.mouseDrag.mouseDrag(row, col);
 	}
 
 	Tools.keydown = function(key) {
-		if(Tools.eventBindings.keydown)
+		if(Tools.eventBindings.keydown.keydown)
 			Tools.eventBindings.keydown.keydown(key);
 	}
 
 	Tools.keyup = function(key) {
-		if(Tools.eventBindings.keyup)
+		if(Tools.eventBindings.keyup.keyup)
 			Tools.eventBindings.keyup.keyup(key);
 	}
 

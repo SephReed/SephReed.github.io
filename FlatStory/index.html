@@ -153,6 +153,15 @@
 					    FLAT.Options.showPanel("projectProperties");
 					}
 				}
+				else {
+					var num = parseInt(e.key);
+
+					if(num > 0 && Tools.iconOrder[1].length) {
+						Tools.setTool(Tools.iconOrder[num-1]);
+					} 
+					
+
+				}
 
 			}, false);
 		});
