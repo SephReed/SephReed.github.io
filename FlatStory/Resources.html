@@ -1,0 +1,25 @@
+<script type="text/javascript">
+
+
+// var Resources, Visuals, ChipMapping;
+
+
+
+PINE.waitForNeeds(["World", "Tools", "FILE_BRIDGE"], function() {
+	Resources = FLAT.World.Resources = {};
+	Resources.pathPrefix = "";
+
+	PINE.signalNeedReady("Resources");
+
+
+
+	PINE.waitForNeeds(["LogicalResources", "VisualResources"], function() {
+		Resources.openProject = Resources.Logic.openProject;
+		Resources.drawProject = Resources.Visual.drawProject;
+	});
+})
+
+
+
+
+</script>

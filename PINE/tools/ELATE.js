@@ -19,13 +19,13 @@ ELATE.Elated.prototype.inheritsFrom = function(target) {
 		if(target.__elate__ !== undefined)
 			target = target.getClassName();
 
-		else return PINE.err("target is not an Elated Object", target);
+		else return console.error("target is not an Elated Object", target);
 	}
 
 	if(typeof target == "string")
 		return this.super[target] !== undefined;
 
-	else return PINE.err("target must be either an Elated Object or a String ", target);
+	else return console.error("target must be either an Elated Object or a String ", target);
 };
 
 ELATE.Elated.prototype.getClassName = function() {

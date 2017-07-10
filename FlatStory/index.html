@@ -2,13 +2,17 @@
 <html>
 <head>
 	<title>Flat Story - 2D Game Maker</title>
-	<!-- <link rel="stylesheet" type="text/css" href="../public/css/init.css"> -->
+	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
+	<link rel="stylesheet" type="text/css" href="index.css">
 	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
+	<!-- <script type="text/javascript" src="../PINE/tools/ELATE.js"></script> -->
+	<script type="text/javascript" src="FLAT.js"></script>
 	<script type="text/javascript" src="../PINE/needles/easyStyleVar.js"></script>
-	<script type="text/javascript" src="webAppBridge.js"></script>
-	<!-- <script type="text/javascript" src="ResizeSensor.js"></script> -->
-	<!-- <needle src="../PINE/needles/tether.html"></needle> -->
-	<needle src="../public/css/init.css"></needle>
+
+	<needle src="webAppBridge.js" needAlias="FILE_BRIDGE"></needle>
+	<needle src="../PINE/tools/ELATE.js" needAlias="ELATE"></needle>
+	
+	<!-- PINE NEEDLES -->
 	<needle src="../PINE/PINE_Var.js"></needle>
 	<needle src="../PINE/PINE_Needles.js"></needle>
 	<needle src="../PINE/needles/resizeHandle.html"></needle>
@@ -16,10 +20,19 @@
 	<needle src="../PINE/needles/fileBrowser.html"></needle>
 	<needle src="../PINE/needles/tempFeedback.html"></needle>
 	<needle src="../PINE/needles/modal.html"></needle>
-	<needle src="Pallette.html"></needle>
+	
+
+
+	<!-- FLAT.Worlds RESOURCES -->
 	<needle src="World.html"></needle>
+		<needle src="Resources.html"></needle>
+			<needle src="LogicalResources.html"></needle>
+			<needle src="VisualResources.html"></needle>
+		<needle src="WorldEditor.html"></needle>
+			<needle src="Pallette.html"></needle>
+			<needle src="Draw.html"></needle>
+				<needle src="DrawTools.html"></needle>
 	<needle src="Tools.html"></needle>
-	<needle src="Draw.html"></needle>
 	<needle src="Options.html"></needle>
 
 	<script type="text/javascript">
@@ -32,7 +45,7 @@
 		
 	</script>
 
-	<script type="text/javascript">
+<!-- 	<script type="text/javascript">
 		PINE.createNeedle("[scalableCanvas]", function() {
 			this.addOp(function(state) {
 				var domNode = state.domNode;
@@ -45,136 +58,8 @@
 			});
 		});
 	</script>
-	
+	 -->
 
-	<script type="text/javascript">
-
-	
-
-	
-
-		
-
-		var FLAT = {};
-		FLAT.Draw = {};
-		var Tools = FLAT.Draw.Tools = {};
-
-		var chipSetUrls = ["chipset01.png"];
-
-
-		
-		PINE.ready(function() {
-			FLAT.Pallette.domNode = El.firstOfTag(null, "pallette");
-			FLAT.World.domNode = El.firstOfTag(null, "canvasStack");
-			Tools.domNode = El.firstOfTag(null, "drawTools");
-			FLAT.drawArea = El.firstOfTag(null, "drawArea");
-			FLAT.fileBrowser = El.byID("mainFileBrowser");
-			FLAT.tempMessage = El.firstOfTag(null, "userTextFeedback").FNS.tempConsoleAddMessage;
-
-
-			FLAT.Options.modalNode = El.byID("optionsModal");
-			for(var key in FLAT.Options.panels) {
-				var panel = FLAT.Options.panels[key];
-				panel.domNode = El.byID(panel.id);
-			}
-
-
-			var chipUrl = chipSetUrls[~~(Math.random()*chipSetUrls.length)];
-
-			FLAT.Pallette.setChipSet(chipUrl, 16, 3)
-			.then(createWorld)
-			.then(function() {
-				return BRIDGE.loadFile("map.txt");
-
-			}).then(function(request){
-				var mapPackage = request.response;
-				// console.log("loaded!", mapPackage);
-				if(mapPackage.length > 0)
-					CURRENT_LAYER.unpackageMap(mapPackage);
-				else
-					CURRENT_LAYER.unpackageMap(START_MAP);
-			});	
-
-			// document.body.addEventListener("mousedown", function() {
-			// 	document.body.mozRequestFullScreen();
-			// });
-			
-			Tools.setIconSet("public/images/icons/icons_tools.png");
-
-			document.body.addEventListener("keydown", function(event) {
-				Tools.keydown(event.key);
-			});
-
-			document.body.addEventListener("keyup", function(event) {
-				Tools.keyup(event.key);
-			});
-
-
-			
-
-			var NO_OVERRIDE = "ntqr";
-
-
-			document.addEventListener("keydown", function(e) {
-				console.log(e);
-
-				var metaKeyDown;
-				if(NO_OVERRIDE.indexOf(e.key) !== -1)
-					metaKeyDown = e.altKey || e.ctrlKey;
-
-				else
-					metaKeyDown = (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey);
-
-				if(metaKeyDown && e.key !== "Meta") {
-
-					if(navigator.platform.match("Mac")) {
-						// e.preventDefault();
-						FLAT.tempMessage("<b>Careful there!</b><br>  Using CMD is likely to trigger a hotkey.  Use CTRL instead.<br><br> If you'd like to be able to use normal hotkeys, please visit <a href='http://sephreed.github.io/disqus/requestHotkeyPriority.html' target='_blank'>this link</a>", true, 4)
-					}
-
-
-					if (e.key == "s") {
-					    e.preventDefault();
-					    var saveMe = CURRENT_LAYER.packageMap();
-					    // console.log("saveMe", saveMe);
-					    BRIDGE.saveFile("map.txt", saveMe).then(function(request) {
-					    	FLAT.tempMessage("File 'map.txt' saved successfully!");
-					    });
-					}
-
-					else if (e.key == "o") {
-					    e.preventDefault();
-					    // FLAT.fileBrowser.FNS.showModal();
-					    FLAT.Options.showPanel("projectProperties");
-					}
-
-					else if (e.key == "n") {
-					    e.preventDefault();
-					    FLAT.Options.showPanel("projectProperties");
-					}
-				}
-				else {
-					var num = parseInt(e.key);
-
-					if(num > 0 && Tools.iconOrder[1].length) {
-						Tools.setTool(Tools.iconOrder[num-1]);
-					} 
-					
-
-				}
-
-			}, false);
-		});
-
-
-
-
-		
-		
-
-
-
-	</script>
 
 	
 
@@ -253,263 +138,5 @@ body {
 
 
 
-<style>
 
-
-@font-face {
-	font-family: 'SilkScreen';
-  	src:  url('public/fonts/Silk_Screen/slkscr.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: 'SilkScreen';
-  	src:  url('public/fonts/Silk_Screen/slkscrb.ttf') format('truetype');
-  	font-weight: bold;
-}
-
-@font-face {
-	font-family: '8Bit';
-  	src:  url('public/fonts/8-bit pusab.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: 'FreePixel';
-  	src:  url('public/fonts/FreePixel.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: 'TypeWriter';
-  	src:  url('public/fonts/type_writer.ttf') format('truetype');
-}
-
-
-
-
-a, a:visited {
-	color: var(--linkColor);
-}
-
-
-body {
-	/*font-family: "FreePixel";*/
-	font-family: arial;
-	/*font-family: "TypeWriter";*/
-	color: var(--panelTextColor);
-	background-color: var(--backdropColor);
-	/*background-color: panelBase;*/
-	border-color: var(--panelBorderColor);
-	border-width: var(--panelBorderWidth);
-	font-size: 13px;
-
-	/*medShadow*/
-
-	/*cursor:  "draw";*/
-    /*cursor:  url(public/images/icons/icons_tools.png) 1 1, auto;*/
-	/*image-rendering: -moz-crisp-edges;*/
-}
-
-	#darken {
-		background-color: rgba(33,33,33,0.75);
-	}
-
-	#mainFileBrowser {
-		background-color: var(--panelBase);
-		/*padding: 10px;*/
-		border-style: solid;
-		border-color: var(--panelBorderColor);
-		box-shadow: 5px 5px 25px rgba(0,0,0,0.2);
-	}
-
-		/*dirItem:hover {
-			background-color: rgba(250,250,250, 0.1);
-		}*/
-
-
-	topbar {
-		display: block;
-		height: var(--topbarHeight);
-		border-bottom-style: solid;
-		background-color: var(--panelBase);
-		border-color: var(--panelBorderColor);
-	}
-
-	mainArea {
-		display: flex;
-		position: absolute;
-		top: var(--topbarHeight);
-		bottom: 0px;
-		width: 100%;
-	}
-
-		controlarea {
-			display: flex;
-			width: 280px;
-			height: 100%;
-			top: 0px;
-			bottom: 0px;
-			background-color: var(--panelBase);
-			flex-direction: column;
-			border-color: var(--panelBorderColor);
-			
-			border-right-style: solid;
-			box-shadow: 5px 5px 25px rgba(0,0,0,0.2);
-			z-index: 3;
-		}
-
-			palletteArea {
-				position: relative;
-				display: block;
-				height: 450px;
-				padding: 3px;
-				border-bottom-style: solid;
-				border-color: var(--panelBorderColor);
-			}
-
-				palletteArea>resize {
-					position: absolute;
-					right: 0px;
-					bottom: 0px;
-					transform: translate(50%, 50%) rotate(45deg);
-					border-color: black !important;
-					background-color: #888;
-					opacity: 1 !important;
-				}
-
-				palletteArea::after {
-					position: absolute;
-					content: ' ';
-					top: 6px;
-					left: 6px;
-					right: 6px;
-					bottom: 6px;
-					box-shadow: var(--vignette);
-					z-index: 3;
-					pointer-events: none;
-				}
-				
-
-					palletteScroller {
-						display: block;
-						position: relative;
-						height: 100%;
-						width: 100%;
-						position: relative;
-						overflow: scroll;
-						border-style: solid;
-						border-color: var(--panelBorderColor);
-					}
-
-						pallette {
-							display: block;
-							position: relative;
-						}
-
-
-							pallette > canvas {
-								position: absolute;
-								top: 0px;
-								left: 0px;
-								image-rendering: -moz-crisp-edges;
-								height: 100%;
-								width: 100%;
-							}
-
-					
-
-					
-
-			layerSelect {
-				display: block;
-				height: 110px;
-				flex-grow: 1;
-			}
-
-
-
-		drawArea {
-			display: inline-block;
-			position: relative;
-			flex-grow: 1;
-			height: 100%;
-		}
-
-			drawTools {
-				display: block;
-				position: absolute;
-				top: 0px;
-				left: 0px;
-				background-color: #444;
-				border-style: none solid solid none;
-				border-color: var(--panelBorderColor);
-				border-width: var(--panelBorderWidth);
-				z-index: 30;
-				box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
-			}
-
-				drawTools > tool {
-					display: inline-block;
-					height: 32px;
-					width: 32px;
-					image-rendering: -moz-crisp-edges;
-				}
-
-			drawArea > userTextFeedback {
-				display: block;
-				position: absolute;
-				bottom: 0px;
-				z-index: 30;
-				width: 100%;
-				font-size: 16px;
-			}
-
-				drawArea > userTextFeedback > tmpMsg {
-					display: block;
-					background-color: var(--heavyDarken);
-					padding: 2px 10px;
-				}
-
-			desktop {
-				display: block;
-				position: absolute;
-				top: 0px;
-				left: 0px;
-				right: 0px;
-				bottom: 0px;
-				overflow: scroll;
-			}
-
-				canvasStack {
-					display: inline-block;
-					position: relative;
-					margin: 200px;
-					height: 768px;
-					width: 768px;
-				}
-
-					canvasStack>canvas {
-						position: absolute;
-						top:0px;
-						left: 0px;
-						/*right: 0px;*/
-						/*bottom: 0px;*/
-						width: 100%;
-						height: 100%;
-						
-						image-rendering: -moz-crisp-edges;
-						
-					}
-
-						canvasStack>canvas:last-child {
-							background: #1F1F1F;
-							box-shadow: 5px 5px 25px rgba(0,0,0,0.3);
-						}
-
-
-
-	noShow {
-		display: none;
-	}
-
-
-</style>
 </html>

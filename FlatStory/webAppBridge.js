@@ -5,9 +5,12 @@ var BRIDGE =  {};
 
 
 BRIDGE.url = "http://localhost:8528/"
+BRIDGE.defaultPrefix = "";
 
 
 BRIDGE.try = function(sendMe) {
+	// sendMe.filePath = BRIDGE.defaultPrefix + sendMe.filePath;
+
 	return BRIDGE.Ajax.post(BRIDGE.url, JSON.stringify(sendMe));
 }
 
@@ -55,6 +58,12 @@ BRIDGE.loadFile = function(filePath) {
 	return BRIDGE.try(sendMe);
 }
 
+
+BRIDGE.loadJSON = function(filePath) {
+	return BRIDGE.loadFile(filePath).then(function(request){
+		return JSON.parse(request.response);
+	});
+}
 
 
 
@@ -122,3 +131,7 @@ BRIDGE.Ajax.get = function(url, responseType) {
 BRIDGE.Ajax.post = function(url, data, contentType) {
 	return U.Ajax.send("POST", url, contentType, data);
 }
+
+
+
+

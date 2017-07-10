@@ -1,0 +1,194 @@
+<script type="text/javascript">
+
+
+// var Resources, Visuals, ChipMapping;
+
+var Logic, ChipMapping;
+
+PINE.waitForNeeds(["Resources"], function() {
+	Logic = FLAT.World.Resources.Logic = {}
+
+
+	Logic.openProject = function(projectName){
+		Resources.pathPrefix = FLAT.BridgePrefix + projectName+"/";
+		var filePath = Resources.pathPrefix + projectName+".flat-project.txt";
+
+
+		return BRIDGE.loadJSON(filePath).then(function(projectData){
+
+			return Logic.openMap(projectData.currentMap).then(function(map){
+				console.log(map);
+				return new Logic.class.Project({
+					currentMap: map
+				});
+			});
+		});
+
+	}
+
+
+	Logic.openMap = function(mapPath) {
+		var mapName = mapPath.match(/[^\/]+$/);
+		var mapPath = Resources.pathPrefix+"maps/"+mapName+"/"
+		filePath = mapPath+mapName+".map-file.txt";
+
+		return BRIDGE.loadJSON(filePath).then(function(mapData){
+			
+			console.log(mapData);
+			var map = {};
+			map.layers = [];
+			map.width = mapData.width;
+			map.height = mapData.height;
+
+			var layerPromises = [];
+
+			for(var i = 0; i < mapData.layers.length; i++) {
+				var layer = mapData.layers[i];
+				var filePath = mapPath+layer+".chip-layer.txt"
+				var promise = Logic.openChipLayer(filePath).then(function(layer){
+					map.layers.push(layer);
+				});
+				layerPromises.push(promise);
+			}
+
+			return SyncPromise.all(layerPromises).then(function(){ return map});
+			// return Resources.openMap(project.currentMap);
+		});
+	}
+
+	Logic.openChipLayer = function(layerPath) {
+		console.log(layerPath);
+		// return BRIDGE.loadJSON(layerPath).then(function(layer))
+		return BRIDGE.loadFile(layerPath).then(function(request){
+			console.log(request.response);
+
+			return new ChipMapping(null, null, request.response);
+		});
+	}
+
+
+
+
+
+
+	Logic.class = {}
+
+
+	Project = Logic.class.Project = function(args) {
+		this.currentMap = args.currentMap;
+
+		console.log("new project", this);
+	}
+
+
+
+	
+	ChipMapping = Logic.class.ChipMapping = function(width, height, rawFile) {
+		if(rawFile) {
+			this.chips = ChipMapping.unpackageMap(rawFile);
+
+			this.width = this.chips[0].length;
+			this.height = this.chips.length;
+
+			this.chipSetNames = ["chipset01.png"];
+		}
+
+		else {
+			this.width = width || 16;
+			this.height = height || 16;
+
+			this.chips = []
+			for(var h = 0; h < this.height; h++) {
+				this.chips[h] = [];
+
+				for(var w = 0; w < this.width; w++) {
+					this.chips[h][w] = 0;			
+				}
+			}
+		}
+
+		this.eventListeners = [];
+	}
+
+
+	ChipMapping.prototype.get = function(row, col) {
+		return this.chips[row][col];
+	};
+
+	ChipMapping.prototype.set = function(row, col, value) {	
+		var oldVal = this.chips[row][col]
+
+		if(oldVal != value) {
+			this.chips[row][col] = value;
+			signalListeners("chipChange", {
+				row: row, 
+				col: col, 
+				old: oldVal, 
+				new: value
+			});
+		}
+	};
+
+	ChipMapping.prototype.addEventListener = function(eventType, callback) {
+		if(eventType == "chipChange") {
+
+			if(this.eventListeners[eventType] == undefined) 
+				this.eventListeners[eventType] = [];
+
+			this.eventListeners[eventType].push(callback);
+
+		}
+		else PINE.err("event type does not exist", eventType)
+	}
+
+	ChipMapping.prototype.signalListeners = function(eventType, value) {
+		var listeners = this.eventListeners[eventType];
+		for(var i = 0; listeners && i < listeners.length; i++) {
+			listeners[i](value);
+		}
+	}
+
+
+	ChipMapping.prototype.ejectModifications = function() {
+		var out = this.modifications;
+		this.modifications = [];
+		return out;
+	}
+
+
+	ChipMapping.unpackageMap = function(mapFile) {
+		var out = mapFile.split(/\n/g);
+
+		for(var i in out) {
+			out[i] = out[i].match(/\S+/g);
+		}
+
+		return out;
+	}
+	
+
+	ChipMapping.packageMap = function(chips) {
+		var printOut = ""
+		for(var row = 0; row < height; row++) {
+			for(var col = 0; col < width; col++) {
+				printOut += chips[row][col] + " ";
+			}
+
+			if(row < height-1)
+				printOut += "\n";
+		}
+		return printOut;
+	}
+
+
+
+
+
+
+	PINE.signalNeedReady("LogicalResources");
+})
+
+
+
+
+</script>

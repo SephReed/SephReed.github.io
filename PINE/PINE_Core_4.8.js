@@ -632,9 +632,63 @@ PINE.class.Instance.prototype.getArg = function(name) {
 
 /******************************
 *
-*		InitFn Class
+*		Needs Helper
 *
 ********************************/
+
+PINE.unmetNeeds = [];
+PINE.needsListeners = {};
+PINE.waitForNeed = PINE.waitForNeeds = function(needs, callback) {
+	if(typeof needs == "string")
+		needs = [needs];
+
+	if(typeof needs == "object" && needs.length) {
+		var addMe = {};
+		addMe.needs = needs;
+		addMe.callback = callback;
+
+		for(var i = 0; i < needs.length; i++) {
+			var needName = needs[i];
+			if(PINE.needsListeners[needName] == "READY") {
+				needs.splice(i, 1);
+				i--;
+			}
+			else {
+				if(PINE.needsListeners[needName] == undefined)
+					PINE.needsListeners[needName] = [];
+
+				PINE.needsListeners[needName].push(addMe);
+			}	
+		}
+
+		if(needs.length == 0)
+			callback();
+
+		else
+			PINE.unmetNeeds.push(addMe);
+	}
+	else
+		PINE.err("Needs must be a string or array", needs);
+} 
+
+
+PINE.signalReadyNeed = PINE.signalNeedReady = function(needName) {
+	var listeners = PINE.needsListeners[needName];
+	for(var i = 0; listeners && i < listeners.length; i++) {
+		var listener = listeners[i];
+
+		var target = listener.needs.indexOf(needName);
+		listener.needs.splice(target, 1);
+
+		if(listener.needs.length == 0) {
+			var spliceAt = PINE.unmetNeeds.indexOf(listener);
+			PINE.unmetNeeds.splice(spliceAt, 1);
+			listener.callback();
+		}
+	}
+
+	PINE.needsListeners[needName] = "READY";
+}
 
 
 
@@ -726,14 +780,22 @@ PINE.runResource = function(domNode) {
 
 		else {
 			PINE.addedResources[src] = domNode;
+			var needAlias = El.attr(domNode, "needAlias");
+
+			if(needAlias) {
+				var oldResolve = resolve;
+				resolve = function() {
+					PINE.signalNeedReady(needAlias);
+					oldResolve();
+				}
+			}
 
 			LOG("overview", "Adding Resource "+src);	
 
 			U.Ajax.get(src).syncThen( function(request) {
 				var response = request.response;
 				if(src.includes('.js')) {
-					U.runScript(response, domNode, src);
-					resolve();
+					U.runScript(response, domNode, src).syncThen(resolve);
 				}
 
 				else if(src.match(/\.css\s*$/g)) {
@@ -1125,6 +1187,7 @@ PINE.debug.alertErr = false;
 PINE.debug.on = true;
 PINE.debug.showUnusedNeedles = true;
 PINE.debug.showRunningAsyncs = true;
+PINE.debug.showUnmetNeeds = true;
 
 PINE.err = function(whatevers_the_problem) { //?
 	if(PINE.debug.logErr)  {
@@ -1192,7 +1255,10 @@ PINE.debug.init = function()  {
 	
 	if(PINE.debug.on) {
 		PINE.ready(PINE.debug.logAnalysis);
-		setTimeout(PINE.debug.logRunningAsyncs, 10000)		
+		setTimeout(function(){
+			PINE.debug.logAsyncIssues("4s")}, 4000)	
+		setTimeout(function(){
+			PINE.debug.logAsyncIssues("10s")}, 10000)		
 	}
 
 	LOG("overview", "Debugging Tools Initialized");	
@@ -1220,7 +1286,7 @@ PINE.debug.logAnalysis = function() {
 		}
 
 		if(unusedNeedles != "") {
-			var output = "Unused Needles found:\n";
+			var output = "Unused Needles found at:\n";
 			output += unusedNeedles + "\n";
 			output += "use PINE.disable(["+unusedNeedles+"]) if you have no intention of using these needles\n";
 			output += "to stop seeing this message, set PINE.showUnusedNeedles = false";
@@ -1232,15 +1298,21 @@ PINE.debug.logAnalysis = function() {
 			U.log("success", "All needles used at least once.  Good job!");	
 		}
 	}
+
+	
 }
 
 
 
-PINE.debug.logRunningAsyncs = function() {
+PINE.debug.logAsyncIssues = function(timeSinceBegin) {
 	if(PINE.debug.showRunningAsyncs) {
 		if(PINE.NEEDLES.runningInits.length) {
-			PINE.err("Unterminated async functions", PINE.NEEDLES.runningInits);
+			PINE.err(timeSinceBegin+ "since start: Unterminated async functions at", PINE.NEEDLES.runningInits);
 		}
+	}
+
+	if(PINE.debug.showUnmetNeeds && PINE.unmetNeeds.length) {
+		PINE.err(timeSinceBegin+" since start: Unmet Needs", PINE.unmetNeeds);
 	}
 }
 
@@ -1672,8 +1744,8 @@ var SyncPromise = function(fn) {
 	return out;
 }
 
-SyncPromise.resolved = function() {
-	return new SyncPromise(function(resolve) { resolve(); });
+SyncPromise.resolved = function(result) {
+	return new SyncPromise(function(resolve) { resolve(result); });
 }
 
 SyncPromise.all = function(promises) {
@@ -1694,6 +1766,7 @@ SyncPromise.all = function(promises) {
 
 
 //TODO make into ".then"  create ".forceAsyncThen"
+// SyncPromise.prototype.then = 
 Promise.prototype.syncThen = function (nextFn) {
 	if(this.syncable && this.syncable.state == "fulfilled") {
 			//
@@ -1716,6 +1789,7 @@ Promise.prototype.syncThen = function (nextFn) {
 	}
 }
 
+SyncPromise.prototype.forceAsyncThen = Promise.prototype.then;
 
 
 
@@ -1776,6 +1850,11 @@ El.queryChildren = function(root, keyword, limit) {
 	return El.cssQuery(root, "> "+keyword, limit);
 	// var out = [];
 	// for(var i in root.children)
+}
+
+El.removedChildren = function(domNode) {
+	while(domNode.hasChildren())
+		domNode.lastChild.remove();
 }
 
 El.cssQuery = function(root, selector, limit) {

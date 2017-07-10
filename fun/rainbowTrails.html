@@ -83,6 +83,7 @@
 		var tillAddFrame = addFrame;
 		var mouseTrailsFrameRequest;
 		var progressMultiplier = 1;
+		var mouseheld = false;
 
 		if(true) {
 			numRainbows = 3;
@@ -139,6 +140,16 @@
 						if(numFrames < 700)
 							numFrames++; 
 					}
+
+					if(mouseheld && progressMultiplier < 4.5) 
+						progressMultiplier += .05;
+						
+					
+					else if (mouseheld == false && progressMultiplier>1) 
+						progressMultiplier -= .1;
+
+
+
 					
 					for(var i = 0; i < mouseTrails.length; i++) {
 						var ghost = mouseTrails[i];
@@ -194,23 +205,32 @@
 		});
 
 		canvas.addEventListener("touchmove", function(event) {
-			console.log("TOUCH")
+			// console.log("TOUCH")
 			var touch = event.touches.item(0);
 			moveEvent(touch.pageX, touch.pageY);
 		});
 
 		canvas.addEventListener("mousedown", function(event) {
-			progressMultiplier = 2;
+			mouseheld = true;
 		});
 
 		canvas.addEventListener("mouseup", function(event) {
-			progressMultiplier = 1;
+			mouseheld = false;
 		});
+
 
 		document.addEventListener("DOMContentLoaded", function() {
 			document.body.appendChild(canvas);
 			canvas.width = canvas.offsetWidth;
 			canvas.height = canvas.offsetHeight;
+
+			document.body.addEventListener("keydown", function(event) {
+				if(event.key == "=")
+					numFrames += 20;
+
+				else if(event.key == "-")
+					numFrames -= 20;
+			});
 		});
 		// return out;
 	</script>

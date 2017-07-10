@@ -2,94 +2,405 @@
 
 
 
-var Draw = FLAT.Draw = {};
-Draw.canvas;
 
-function switchChipDraw() {
-	if(FLAT.Draw.canvas == undefined) {
-		FLAT.Draw.canvas = {};
-		FLAT.Draw.canvas.zoom = 3;
-		FLAT.Draw.canvas.domNode = document.createElement("canvas");
-		FLAT.Draw.canvas.painter = FLAT.Draw.canvas.domNode.getContext("2d");
+PINE.waitForNeed("WorldEditor", function() {
+
+
+
+	var Draw = FLAT.World.Editor.Draw = {};
+	Draw.canvas;
+
+	Draw.currentCanvas;
+
+	Draw.CHIP_MODE = "chip";
+	Draw.PIXEL_MODE = "pixel";
+
+	Draw.modes = {};
+	Draw.modes.currentMode = Draw.modes.chip = {};
+	Draw.modes.chip.tools = {};
+
+	Draw.modes.pixel = {};
+	Draw.modes.pixel.tools = {};
+
+
+	Draw.canvasStack = {};
+	Draw.canvasStack.currentCanvas;
+	Draw.canvasStack.domNode;
+
+	Draw.ready = function() {
+		if(Draw.canvasStack.domNode)
+			return SyncPromise.resolved();
+
+		else return new SyncPromise(function(resolve, reject) {
+			U.domReady(function() {
+				Draw.canvasStack.domNode = El.firstOfTag(null, "canvasStack");
+
+				if(Draw.canvasStack.domNode)
+					resolve();
+
+				else reject("Could not find canvasStack domNode");
+			});
+		});
 	}
 
-	var canvas = FLAT.Draw.canvas;
 
-	var chipSize = Pal.currentChipset.chipSize;
-	canvas.domNode.width = canvas.domNode.height = chipSize;
+	Draw.setDrawCanvas = function(dCanvas) {
+		Draw.canvasStack.currentCanvas = dCanvas;
 
-	var imageData = Pal.getCurrentChipData()
+		//Make sure the draw mode is set correctly
+		Draw.setMode(dCanvas.mode);
 
-	canvas.painter.putImageData(imageData, 0, 0);
+		var canvasStack = Draw.canvasStack.domNode;
+		var oldCanvases = oldCanvases.childNodes;
+		for(var i = 0; i < oldCanvases.length; i++) {
+			var checkMe = oldCanvases[i];
+			if(checkMe !== Draw.modes.currentMode.UI.domNode){
+				checkMe.remove();
+				i--;
+			}
+		}
+
+		dCanvas.baseline();
+
+		canvasStack.appendChild(dCanvas.domNode);
+	}
 
 
-	while(FLAT.World.domNode.hasChildNodes())
-		FLAT.World.domNode.lastChild.remove();
+	Draw.setMode = function(modeName) {
+		var mode = Draw.modes[modeName];
+		
+		if(mode == undefined)
+			PINE.err(modeName, "is not a draw mode!");
+
+		else {
+			mode.assertUI();
+			mode.UI.baseline();
+
+			if(Draw.modes.curentMode != mode) {
+
+				if(Draw.modes.currentMode.UI.domNode)
+					Draw.modes.currentMode.UI.domNode.remove();
+
+				Draw.modes.currentMode = mode;
+
+				Draw.canvasStack.domNode.appendChild(mode.UI.domNode);
+			}
+		}
+
+		
+	}
 
 
-	FLAT.World.domNode.style.height = (chipSize * canvas.zoom) + "px";
-	FLAT.World.domNode.style.width = (chipSize * canvas.zoom) + "px";
+	function switchChipDraw() {
+		if(FLAT.Draw.canvas == undefined) {
+			FLAT.Draw.canvas = {};
+			FLAT.Draw.canvas.zoom = 3;
+			FLAT.Draw.canvas.domNode = document.createElement("canvas");
+			FLAT.Draw.canvas.painter = FLAT.Draw.canvas.domNode.getContext("2d");
+		}
 
-	FLAT.World.domNode.appendChild(canvas.domNode);
+		var canvas = FLAT.Draw.canvas;
 
-}
+		var chipSize = Pal.currentChipset.chipSize;
+		canvas.domNode.width = canvas.domNode.height = chipSize;
+
+		var imageData = Pal.getCurrentChipData()
+
+		canvas.painter.putImageData(imageData, 0, 0);
+
+
+		while(FLAT.World.domNode.hasChildNodes())
+			FLAT.World.domNode.lastChild.remove();
+
+
+		FLAT.World.domNode.style.height = (chipSize * canvas.zoom) + "px";
+		FLAT.World.domNode.style.width = (chipSize * canvas.zoom) + "px";
+
+		FLAT.World.domNode.appendChild(canvas.domNode);
+
+	}
 
 
 
 
-Draw.HSV_to_RGB = function(hue, saturation, value) {
-	hue %= 1;
 
-	var rgb;
-	if(saturation == 0 || value == 0)
-		rgb = [value, value, value];  //used car salesman rick jim here!
+	Draw.modes.chip.UI;
+	Draw.modes.chip.assertUI = function() {
+		if(Draw.modes.chip.UI) return;
 
-	else {
-		rgb = [];
-		var oneThird = 1/3;
-		var twoThirds = 2/3;
+		var ui = Draw.modes.chip.UI = new Draw.class.Canvas();
 
-		var rgbPos = []
-		rgbPos[0] = ((hue+oneThird)%1)/twoThirds;  //at 0, red pos = 0.5 or peak of sine wave
-		rgbPos[1] = hue/twoThirds;  //at .3333, green pos = 0.5 or peak of sine wave
-		rgbPos[2] = (hue-oneThird)/twoThirds;  //at .6666, blue pos = 0.5 or peak of sine wave
+		ui.domNode.oncontextmenu = function() {return false;}
+		ui.domNode.style.zIndex = 20;
+		ui.chipSize = 16;
+		ui.zoom = 3;
+		ui.mouseHeld = false;
 
-		for(var i in rgbPos) {
-			var pos = rgbPos[i];
-			if(pos > 0 && pos < 1)
-				rgb[i] = Math.sin(pos*Math.PI) * value;
-			else
-				rgb[i] = 0;
+
+		ui.currentRow = ui.currentCol = 0;
+
+		// var mouseTrails = [];
+		var hueShift = 0.005;
+		var hueOffset = 0;
+
+
+
+		ui.baseline = function() {
+			ui.mouseHeld = false;
+		}
+
+		ui.domNode.addEventListener("mousemove", function(event) {
+			var y = event.layerY;
+			var x = event.layerX;
+
+			var col = ~~(x/(ui.chipSize * ui.zoom));
+			var row = ~~(y/(ui.chipSize * ui.zoom));
+			
+			if(currentCol !== col || currentRow !== row) {
+				var clearX = (currentCol*ui.chipSize)-10;
+				var clearY = (currentRow*ui.chipSize)-10;
+				var clearSize = ui.chipSize+20;
+
+				hueOffset = (hueOffset + hueShift)%1;
+
+				painter.clearRect(clearX, clearY, clearSize, clearSize);
+
+				currentCol = col;
+				currentRow = row;
+
+				var rgb = Draw.HSV_to_RGB(hueOffset, 0.3, 1);
+				Draw.setColor(painter, rgb[0], rgb[1], rgb[2], 0.8);
+				ui.painter.strokeRect(col*16, row*16, 16, 16);
+
+				if(ui.mouseHeld)
+					Draw.chip.tools.mouseDrag(currentRow, currentCol);
+
+			}
+		});
+
+
+		ui.domNode.addEventListener("mousedown", function(event) {
+			ui.mouseHeld = true;
+			Draw.chip.tools.mouseDown(currentRow, currentCol);
+		});
+
+		document.body.addEventListener("mouseup", function(event) {
+			ui.mouseHeld = false;
+		});
+	}
+
+
+
+
+	Draw.modes.chip.openNewDrawCanvas = function() {
+		return Draw.modes.chip.requestStartArgs()
+		.then(function(args) {
+			var dCanvas = Draw.class.ChipDrawCanvas(args);
+			Draw.setDrawCanvas(dCanvas);	
+
+			console.log(dCanvas);
+		});
+		
+	}
+
+
+	Draw.modes.chip.requestStartArgs = function() {
+		return SyncPromise.resolved({
+
+			chipsWide: 16,
+			chipsTall: 16
+		});
+	}
+
+
+
+
+
+
+
+
+	Draw.class = {};
+
+	// Draw.class.Canvas = function(canvasNode) {
+	// 	if(canvasNode == undefined) {
+	// 		canvasNode = document.createElement("canvas");
+	// 	}
+
+	// 	this.domNode = canvasNode;
+	// 	this.painter = canvasNode.getContext("2d");
+	// }
+
+	Draw.class.ValuedCanvas = function(filePath, canvasNode) {
+		var canvas = new Draw.class.Canvas(canvasNode);
+		canvas.filePath = filePath;
+		return canvas;
+	}
+
+
+	Draw.class.DrawCanvas = function(filePath, canvasNode, drawMode) {
+		var vCanvas = new Draw.class.ValuedCanvas(filePath, canvasNode);
+		vCanvas.mode = drawMode;
+		return vCanvas;
+	}
+
+
+
+	// Draw.class.PixelDrawCanvas = function(filePath, canvasNode) {
+	// 	var dCanvas = new Draw.class.DrawCanvas(filePath, canvasNode, Draw.PIXEL_MODE);
+	// 	return dCanvas;
+	// }
+
+	Draw.class.ChipDrawCanvas = function(args) {
+		var filePath = args.filePath;
+		var chipMap = args.chipMap;
+		var chipsWide = args.chipsWide;
+		var chipsTall = args.chipsTall || chipsWide;
+
+
+		var dCanvas = new Draw.class.DrawCanvas(filePath, args.canvasNode, Draw.CHIP_MODE);
+		dCanvas.chipSet = args.chipSet || Pal.currentChipset;
+		dCanvas.unRendered = true;
+
+		if(filePath && chipMap)
+			PINE.err("Creating chip canvas with both chipMap and path.  Path will not be loaded");
+
+		if(chipMap) 
+			dCanvas.chipMap = chipMap;
+
+		else if(filePath) {
+
+		}
+
+		else {
+			dCanvas.chipMap = new Draw.class.ChipMapping(chipsWide || 16, chipsTall || 16);
 		}
 
 
-		if(saturation < 1) {
-			var max = Math.max(Math.max(rgb[0], rgb[1]), rgb[2]);
+		dCanvas.baseline();
 
-			for(var i in rgb)
-				rgb[i] += (max-rgb[i]) * (1-saturation);
+		return dCanvas;
+	}
+
+	Draw.class.ChipDrawCanvas.prototype.updateRender = function() {
+		var updates = this.chipMap.ejectModifications();
+
+
+		if(updates == "all") {
+			var chipMap = this.chipMap;
+
+			for(var row = 0; row < chipMap.height; row++) {
+				for(var col = 0; col < chipMap.width; col++) {
+					this.renderChip(row, col)
+				}
+			}
 		}
+
+		else {
+			for(var i = 0; i < updates.length; i++) {
+				var update = updates[i];
+				this.renderChip(update.row, update.col);
+			}
+		}
+
 	}
 
-	for(var i in rgb) 
-		rgb[i] *= 256;
+	Draw.class.ChipDrawCanvas.prototype.renderChip = function(row, col) {
+		var chipNum = this.chipMap.get(row, col);
+		var chipSet = this.chipSet;
 
-	return rgb;
-}
+		var chip = chipSet.getChip(chipNum);
+		var size = chipSet.chipSize;
 
+		// var imageData = Pal.getChipImageData(chipNum);
+		// out.painter.putImageData(imageData, col*size, row*size);
 
+		out.painter.drawImage(chipSet.imgNode, 
+			chip.imageX,  chip.imageY, size, size, 
+			col*size, row*size, size, size);
 
-Draw.setColor = function(painter, r, g, b, a) {
-	if(a !== undefined){
-		painter.strokeStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
-		painter.fillStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
 	}
-	else {
-		painter.strokeStyle = "rgb("+r+", "+g+", "+b+")";
-		painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
-	}
-}
+
+
+	Draw.class.ChipDrawCanvas.prototype.baseline = function() {
+		var domNode = this.domNode;
+
+		domNode.width = this.chipSet.chipSize * this.chipMap.width;
+		domNode.height = this.chipSet.chipSize * this.chipMap.height;
+
+		this.updateRender();
+	};
 
 
 
+
+
+
+	
+
+
+
+	// Draw.HSV_to_RGB = function(hue, saturation, value) {
+	// 	hue %= 1;
+
+	// 	var rgb;
+	// 	if(saturation == 0 || value == 0)
+	// 		rgb = [value, value, value];  //used car salesman rick jim here!
+
+	// 	else {
+	// 		rgb = [];
+	// 		var oneThird = 1/3;
+	// 		var twoThirds = 2/3;
+
+	// 		var rgbPos = []
+	// 		rgbPos[0] = ((hue+oneThird)%1)/twoThirds;  //at 0, red pos = 0.5 or peak of sine wave
+	// 		rgbPos[1] = hue/twoThirds;  //at .3333, green pos = 0.5 or peak of sine wave
+	// 		rgbPos[2] = (hue-oneThird)/twoThirds;  //at .6666, blue pos = 0.5 or peak of sine wave
+
+	// 		for(var i in rgbPos) {
+	// 			var pos = rgbPos[i];
+	// 			if(pos > 0 && pos < 1)
+	// 				rgb[i] = Math.sin(pos*Math.PI) * value;
+	// 			else
+	// 				rgb[i] = 0;
+	// 		}
+
+
+	// 		if(saturation < 1) {
+	// 			var max = Math.max(Math.max(rgb[0], rgb[1]), rgb[2]);
+
+	// 			for(var i in rgb)
+	// 				rgb[i] += (max-rgb[i]) * (1-saturation);
+	// 		}
+	// 	}
+
+	// 	for(var i in rgb) 
+	// 		rgb[i] *= 256;
+
+	// 	return rgb;
+	// }
+
+
+
+	// Draw.setColor = function(painter, r, g, b, a) {
+	// 	if(a !== undefined){
+	// 		painter.strokeStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+	// 		painter.fillStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+	// 	}
+	// 	else {
+	// 		painter.strokeStyle = "rgb("+r+", "+g+", "+b+")";
+	// 		painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
+	// 	}
+	// }
+
+
+
+
+	PINE.signalNeedReady("Draw");
+	
+	// Draw.ready().then(function() {
+		
+	// });
+
+
+});
 </script>

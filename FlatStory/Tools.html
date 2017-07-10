@@ -1,13 +1,7 @@
 <script type="text/javascript">
 	
-	Tools.icons = [];
-	Tools.iconOrder = [
-		"draw",
-		"select",
-		"fill",
-		"pick",
-		"zoom"
-	]
+	FLAT.Tools = {};
+	// FLAT.Tools.forCanvas = {};
 
 
 
@@ -46,23 +40,13 @@
 					b = raw[dataIndex + 2],
 					a = raw[dataIndex + 3];
 
-				// var color = "rgba("+r+", "+g+", "+b+", "+a+")"
-				// painter.fillStyle = color;
-				// console.log(color);
 
-				// console.log(dataIndex, r, g, b, a);
-
-				FLAT.Draw.setColor(painter, r, g, b, a/256);
+				FLAT.Tools.setColor(painter, r, g, b, a/256);
 				var rectX = (x*xScale)+tx;
 				var rectY = (y*yScale)+ty;
 
-				// setColor(painter, 250, 0, 250, 250)
 
 				painter.fillRect(rectX, rectY, xScale, yScale);
-
-
-				// painter.fillStyle = 'green';
-				// painter.fillRect(0, 0, 10, 10);
 
 				count++;
 			}
@@ -158,300 +142,66 @@
 	}
 
 
-	Tools.setIconSet = function(url, scale) {
-		scale = scale || 2;
-
-		var img = document.createElement("img");
-		img.src = url;
-
-		img.addEventListener("load", function() {
-
-			Tools.icons=[];
-
-			var args = FLAT.getPixelCodeArgs(img, "TUL");
-			
-			var chipSize = args ? args.chipWidth : img.naturalHeight;
-
-			var canvas = document.createElement("canvas");
-			canvas.width = canvas.height = chipSize * scale;
-			canvas.style.imageRendering = "-moz-crisp-edges";
-			// canvas.style.zIndex = "100";
-			// canvas.style.position = "absolute";
-			// canvas.style.height = "256px";
-			// canvas.style.width = "256px";
-			// canvas.style.backgroundColor = "#777";
-
-			// console.log(canvas);
-
-			// document.body.appendChild(canvas);
-
-			var painter = canvas.getContext("2d");
 
 
-			var hChips = args ? args.numChips : img.naturalWidth/chipSize;
 
-			if(hChips % 1 !== 0) {
-				PINE.err("chipSize incorrect");
-				hChips = ~~hChips;
+	FLAT.Tools.HSV_to_RGB = function(hue, saturation, value) {
+		hue %= 1;
+
+		var rgb;
+		if(saturation == 0 || value == 0)
+			rgb = [value, value, value];  //used car salesman rick jim here!
+
+		else {
+			rgb = [];
+			var oneThird = 1/3;
+			var twoThirds = 2/3;
+
+			var rgbPos = []
+			rgbPos[0] = ((hue+oneThird)%1)/twoThirds;  //at 0, red pos = 0.5 or peak of sine wave
+			rgbPos[1] = hue/twoThirds;  //at .3333, green pos = 0.5 or peak of sine wave
+			rgbPos[2] = (hue-oneThird)/twoThirds;  //at .6666, blue pos = 0.5 or peak of sine wave
+
+			for(var i in rgbPos) {
+				var pos = rgbPos[i];
+				if(pos > 0 && pos < 1)
+					rgb[i] = Math.sin(pos*Math.PI) * value;
+				else
+					rgb[i] = 0;
 			}
 
-			for(var h = 0; h < hChips; h++) {
-				painter.clearRect(0, 0, scale*chipSize, scale*chipSize);
 
-				drawScaledImage(img, painter, 
-					h * chipSize, 0, chipSize, chipSize, 
-					0, 0, scale, scale);
+			if(saturation < 1) {
+				var max = Math.max(Math.max(rgb[0], rgb[1]), rgb[2]);
 
-
-
-
-				var icon = {}
-				icon.actionPoint = args.pointers[h];
-				icon.url = canvas.toDataURL("image/png");
-
-				icon.bgStyling = "url('"+icon.url+"')";				
-				icon.cursorStyling = icon.bgStyling;
-
-				if(icon.actionPoint)
-					icon.cursorStyling += icon.actionPoint.x*scale+" "+icon.actionPoint.y*scale
-				else {
-					var center = ~~(chipSize*scale/2);
-					icon.cursorStyling += center+" "+center;
-				}
-
-				icon.cursorStyling += ", auto";
-
-
-				Tools.icons.push(icon);
-			}	
-
-			
-
-			for(var i = 0; i < Tools.icons.length; i++) {
-
-				var addMe = document.createElement("tool");
-				addMe.style.backgroundImage = "url('"+Tools.icons[i].url+"')";
-
-				var toolName = Tools.iconOrder[i];
-				var tool = Tools.getTool(toolName);
-				if(tool) {
-					tool.icon = Tools.icons[i];
-					tool.domNode = addMe;
-				}	
-
-				(function(i) {
-					addMe.addEventListener("mousedown", function() {
-						Tools.setTool(Tools.iconOrder[i]);
-					});
-				})(i);
-				
-
-				Tools.domNode.appendChild(addMe);
-			}
-		});
-
-
-
-	}
-
-
-	Tools.getTool = function(toolName) {
-		if(toolName == undefined) return;
-		toolName = toolName.charAt(0).toUpperCase() + toolName.slice(1).toLowerCase();
-		return Tools[toolName];
-	}
-
-
-
-
-
-
-
-	Tools.eventBindings = {};
-	Tools.eventBindings.mouseDown;
-	Tools.eventBindings.mouseDrag;
-	Tools.eventBindings.keyup;
-	Tools.eventBindings.keydown;
-	
-	Tools.setTool = function(toolName) {
-		var tool = Tools.getTool(toolName);
-
-		if(tool !== undefined) {
-
-			if(Tools.currentTool && Tools.currentTool.disengange)
-				Tools.currentTool.disengange();
-
-
-			Tools.currentTool
-				= Tools.eventBindings.keyup 
-				= Tools.eventBindings.keydown 
-				= Tools.eventBindings.mouseDrag 
-				= Tools.eventBindings.mouseDown 
-				= tool;
-
-			Tools.setDrawAreaCursor(toolName);
-			
-
-			if(Tools.currentTool.engage)
-				Tools.currentTool.engage();
-		}
-	}
-
-	Tools.setDrawAreaCursor = function(toolName) {
-		var tool = Tools.getTool(toolName);
-		// console.log(toolName, tool);
-		if(tool && tool.icon)
-			FLAT.drawArea.style.cursor = tool.icon.cursorStyling;
-	}
-
-
-
-	Tools.mouseDown = function(row, col) {
-		if(Tools.eventBindings.mouseDown.mouseDown)
-			Tools.eventBindings.mouseDown.mouseDown(row, col);
-	}
-
-	Tools.mouseDrag = function(row, col) {
-		if(Tools.eventBindings.mouseDrag.mouseDrag)
-			Tools.eventBindings.mouseDrag.mouseDrag(row, col);
-	}
-
-	Tools.keydown = function(key) {
-		if(Tools.eventBindings.keydown.keydown)
-			Tools.eventBindings.keydown.keydown(key);
-	}
-
-	Tools.keyup = function(key) {
-		if(Tools.eventBindings.keyup.keyup)
-			Tools.eventBindings.keyup.keyup(key);
-	}
-
-
-
-
-	/**************************
-	*      TOOL TYPES         *
-	**************************/
-
-
-	Tools.Draw = {};
-	Tools.Draw.mouseDown = Tools.Draw.mouseDrag = function(row, col) {
-		CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
-	}
-
-	Tools.Draw.keydown = function(key) {
-		if(key == "Meta") {
-			Tools.setDrawAreaCursor("Pick");
-			Tools.eventBindings.mouseDown = Tools.getTool("Pick");
-		}
-	}
-
-	Tools.Draw.keyup = function(key) {
-		if(key == "Meta") {
-			Tools.setDrawAreaCursor("Draw");
-			Tools.eventBindings.mouseDown = Tools.getTool("Draw");
-		}
-	}
-
-	Tools.setTool("Draw");
-
-
-
-	Tools.Fill = {}
-	Tools.Fill.mouseDown = Tools.Fill.spread = function(row, col, targetID, allowDiagonals) {
-		if(row < 0 
-		|| col < 0 
-		|| CURRENT_LAYER.chips.length <= row 
-		|| CURRENT_LAYER.chips[0].length <= col)
-			return;
-
-		if(targetID === undefined)
-			targetID = CURRENT_LAYER.chips[row][col];
-
-		if(Pal.currentChipset.selectedChip.num == targetID)
-			return;
-
-		if(CURRENT_LAYER.chips[row][col] == targetID) {
-			CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
-
-			Tools.Fill.spread(row-1, col, targetID, allowDiagonals);
-			Tools.Fill.spread(row+1, col, targetID, allowDiagonals);
-			Tools.Fill.spread(row, col-1, targetID, allowDiagonals);
-			Tools.Fill.spread(row, col+1, targetID, allowDiagonals);
-
-			if(allowDiagonals == true) {
-				Tools.Fill.spread(row-1, col-1, targetID, allowDiagonals);
-				Tools.Fill.spread(row+1, col+1, targetID, allowDiagonals);
-				Tools.Fill.spread(row+1, col-1, targetID, allowDiagonals);
-				Tools.Fill.spread(row-1, col+1, targetID, allowDiagonals);
+				for(var i in rgb)
+					rgb[i] += (max-rgb[i]) * (1-saturation);
 			}
 		}
+
+		for(var i in rgb) 
+			rgb[i] *= 256;
+
+		return rgb;
 	}
 
-	Tools.Fill.keydown = Tools.Draw.keydown;
-	Tools.Fill.keyup = function(key) {
-		if(key == "Meta") {
-			Tools.setDrawAreaCursor("Fill");
-			Tools.eventBindings.mouseDown = Tools.getTool("Fill");
+
+
+	FLAT.Tools.setColor = function(painter, r, g, b, a) {
+		if(a !== undefined){
+			painter.strokeStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+			painter.fillStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
 		}
-	}
-
-	// var setBack;
-	// Tools.Fill.engage = Tools.Draw.engage = function() {
-	// 	console.log("extending");
-	// 	document.body.addEventListener("keydown", function(event) {
-	// 		// console.log(event);
-	// 		if(event.key == "Meta") {
-	// 			// setBack = Tool.currentTool;
-	// 			Tools.setTool("Pick");
-	// 		}
-	// 	});
-	// }
-	// Tools.Fill.disengage = Tools.Draw.disengage = function() {
-
-	// }
-
-
-	Tools.Replace = {}
-	Tools.Replace.mouseDown = function(row, col) {
-		var targetID = CURRENT_LAYER.chips[row][col];
-		for(var v = 0; v < 16; v++) {
-			for(var h = 0; h < 16; h++) {
-				if(CURRENT_LAYER.chips[v][h] == targetID)
-					CURRENT_LAYER.setChip(v, h, Pal.currentChipset.selectedChip.num);
-			}
+		else {
+			painter.strokeStyle = "rgb("+r+", "+g+", "+b+")";
+			painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
 		}
 	}
 
 
-	Tools.Pick = {}
-	Tools.Pick.mouseDown = function(row, col) {
-		var targetID = CURRENT_LAYER.chips[row][col];
-		FLAT.Pallette.selectChip(targetID);
-	}
 
 
-
-	Tools.Zoom = {};
-	Tools.Zoom.inNotOut = true;
-	Tools.Zoom.keydown = function(key) {
-		if(key == "Meta") 
-			Tools.Zoom.inNotOut = false;
-	}
-
-	Tools.Zoom.keyup = function(key) {
-		if(key == "Meta") 
-			Tools.Zoom.inNotOut = true;
-	}
-
-	Tools.Zoom.mouseDown = function() {
-
-	}
-
-
-
-
-
+	PINE.signalReadyNeed("Tools");
 
 
 

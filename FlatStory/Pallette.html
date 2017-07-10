@@ -3,6 +3,32 @@ var Pal = FLAT.Pallette = {};
 FLAT.Pallette.defaultChipSize = Pal.chipSize = 16;
 
 
+// Pal.canvasStack = {};
+// Pal.currentPallete;
+// Pal.domNode;
+
+
+// Pal.class.Pallette = function(canvasNode) {
+// 	var canvas 
+// }
+
+// Draw.ready = function() {
+// 	if(Draw.canvasStack.domNode)
+// 		return SyncPromise.resolved();
+
+// 	else return new SyncPromise(function(resolve, reject) {
+// 		U.domReady(function() {
+// 			Draw.canvasStack.domNode = El.firstOfTag(null, "pallette");
+
+// 			if(Draw.canvasStack.domNode)
+// 				resolve();
+
+// 			else reject("Could not find canvasStack domNode");
+// 		});
+// 	});
+// }
+
+
 Pal.currentChipset = {};
 Pal.currentChipset.chipSize = 16;
 Pal.currentChipset.scale = 3;
@@ -58,30 +84,6 @@ FLAT.Pallette.setChipSet = function(imageUrl, chipSize, scale) {
 
 			Pal.domNode.appendChild(canvas);
 
-
-
-			// palletteNode.chipSizer = document.createElement("style");
-			// palletteNode.chipSizer.innerHTML = "chipSet > chip {  "
-			// 	+" background-size: "+((hChips)*100)+"% "+((vChips)*100)+"% }";
-
-			// palletteNode.appendChild(palletteNode.chipSizer);
-
-
-			// if(vChips % 1 !== 0 || hChips % 1 !== 0) {
-			// 	PINE.err("chipSize incorrect");
-			// 	vChips = ~~vChips;
-			// 	hChips = ~~hChips;
-			// }
-
-			
-
-			// var zoom = 3;
-
-			// console.log(hChips, vChips);
-			// El.setSize(chipSetNode, zoom*hChips*chipSize, zoom*vChips*chipSize);
-
-			// var styleUrl = "url('"+imageUrl+"')";
-			// 	//
 
 
 			
@@ -160,43 +162,6 @@ FLAT.Pallette.getChipImageData = function(chip) {
 
 <style>
 
-chipSet {
-	display: block;
-	position: relative;
-	z-index: 1;
-	line-height: 0px;
-	image-rendering: -moz-crisp-edges;
-}
 
-	chip {
-		position: relative;
-		display: inline-block;
-		/*background-size: auto auto;*/
-		background-repeat: repeat;
-		
-	}
-
-
-		chip::before {
-			display: block;
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			right: 0px;
-			bottom: 0px;
-			content: '';
-			border: 3px solid rgba(250,250,250,0.5);
-			visibility: hidden;
-			pointer-events: none;
-		}
-			chip:hover::before {
-				visibility: initial;
-			}
-
-		chip.selectedChip::before {
-			visibility: initial;
-			border-color: #222;
-			
-		}
 
 </style>

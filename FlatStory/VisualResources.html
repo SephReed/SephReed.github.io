@@ -1,0 +1,277 @@
+<script type="text/javascript">
+
+
+// var Resources, Visuals, ChipMapping;
+
+
+
+PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
+	Visual = FLAT.World.Resources.Visual = {};
+
+
+
+
+
+	//should return a promise to load all needed chipsets and use them to do some painting
+	Visual.drawProject = function(project) {
+		console.log("drawing")
+
+		if(project.GUI == undefined)
+			project.GUI = new ProjectGraphics(project);
+
+		return project;
+	}
+
+
+
+
+	Visual.assertChipSet = function(filePath) {
+		return new Promise(function(resolve) {
+
+			if(Visual.chipSets.byName[filePath])
+				resolve(Visual.chipSets.byName[filePath]);
+
+			else {
+
+				var imgNode = Pal.currentChipset.imgNode = document.createElement("img");
+				imgNode.src = filePath;
+
+				imgNode.addEventListener("load", function() {
+					// var canvas = new Visual.class.Canvas();
+					// canvas.domNode.width = img.naturalWidth;
+					// canvas.domNode.height = img.naturalHeight;
+
+					// canvas.painter.drawImage(img, 0, 0)
+					var name = filePath.match(/[^\/]+$/g);
+
+					var chipSet = new ChipSet({
+						name: name,
+						imgNode: imgNode
+					});
+
+					resolve(chipSet);
+				});
+			}
+		});
+	}
+
+
+	Visual.chipSets = {};
+	Visual.chipSets.lastID = 0;
+	Visual.chipSets.byID = [];
+	Visual.chipSets.byName = {};
+
+
+	Visual.class = {};
+
+	ProjectGraphics = Visual.class.ProjectGraphics = function(project) {
+		this.project = project;
+		project.GUI = this;
+		this.mapGraphics = {};
+		this.mapGraphics[project.currentMap] = new MapGraphics(project.currentMap);
+	}
+
+	MapGraphics = Visual.class.MapGraphics = function(map) {
+		this.map = map;
+		map.GUI = this;
+		this.domNode = document.createElement("map");
+		this.layerGraphics = [];
+
+		for(var i = 0; i < map.layers.length; i++) {
+			var chipCanvas = new ChipCanvas({chipMap: map.layers[i]});
+			this.layerGraphics.push(chipCanvas);
+
+			this.domNode.appendChild(chipCanvas.domNode);
+		}
+	}
+
+
+	ChipSet = Visual.class.ChipSet = function(args) {
+		this.name = args.name;
+		this.id = Visual.chipSets.lastID;
+		Visual.chipSets.lastID++;
+		this.imgNode = args.imgNode;
+		this.chipSize = args.chipSize || 16;
+		this.chips = [];
+
+		// if(Visual.chipSets.byID[this.id] !== undefined)
+
+		this.chipHeight = ~~(this.imgNode.naturalHeight/this.chipSize);
+		this.chipWidth = ~~(this.imgNode.naturalWidth/this.chipSize);
+
+		for(var row = 0; row < this.chipHeight; row++) {
+			for(var col = 0; col < this.chipWidth; col++) {
+				var chip = {};
+				chip.num = (row * this.chipWidth) + col;
+				chip.row = row;
+				chip.col = col;
+				chip.imageX = chip.col * this.chipSize;
+				chip.imageY = chip.row * this.chipSize;
+				this.chips[chip.num] = chip;	
+			}
+		}
+
+		console.log("VISUAL CHIP")
+		Visual.chipSets.byID[this.id] = this;
+		Visual.chipSets.byName[this.name] = this;
+	}
+
+
+	Visual.class.ChipSet.prototype.getChip = function(chipID) {
+		return this.chips[chipID];
+	}
+
+
+
+
+	Canvas = Visual.class.Canvas = ELATE.create("Canvas", function() {
+
+		this.constructor = function(canvasNode) {
+			if(canvasNode == undefined) {
+				canvasNode = document.createElement("canvas");
+			}
+
+			this.domNode = canvasNode;
+			this.painter = canvasNode.getContext("2d");
+		}
+	});
+
+
+
+	ChipCanvas = Visual.class.ChipCanvas = ELATE.create("ChipCanvas", function() {
+
+		this.extend("Canvas");
+
+		this.constructor = function(args) {
+			this.super.Canvas.call(this, args.canvasNode);
+
+
+			var stales = this.unrenderedChips = "all";
+			this.chipMap = args.chipMap;
+
+			var promises = [];
+			for(var i = 0; i < this.chipMap.chipSetNames.length; i++) {
+				promises.push(Visual.assertChipSet(this.chipMap.chipSetNames[i]));
+			}
+
+			console.log(this.chipMap);
+			this.chipMap.addEventListener("chipChange", function(event){
+				if(stales != "all") {
+
+					for(var i = 0; i < stales.length; i++) {
+						if(stales[i].row == event.row && stales[i].col == event.col)
+							return;
+					}
+
+					stales.push({row: event.row, col: event.col});
+				}
+			});
+
+			var me = this;
+			// var baseline = this.baseline;
+			SyncPromise.all(promises).then(function(){
+				me.baseline();
+			});
+			// this.baseline();
+		}
+
+
+
+		this.updateRender = function() {
+			var updates = this.unrenderedChips;
+
+
+			if(updates == "all") {
+				var chipMap = this.chipMap;
+
+				for(var row = 0; row < chipMap.height; row++) {
+					for(var col = 0; col < chipMap.width; col++) {
+						this.renderChip(row, col)
+					}
+				}
+			}
+
+			else {
+				for(var i = 0; i < updates.length; i++) {
+					var update = updates[i];
+					this.renderChip(update.row, update.col);
+				}
+			}
+
+			this.unrenderedChips = [];
+		}
+
+
+
+		this.renderChip = function(row, col) {
+			var chipNum = this.chipMap.get(row, col);
+			var chipSet = Visual.chipSets.byID[0];
+
+			var chip = chipSet.getChip(chipNum);
+			var size = chipSet.chipSize;
+
+			// var imageData = Pal.getChipImageData(chipNum);
+			// out.painter.putImageData(imageData, col*size, row*size);
+
+			this.painter.drawImage(chipSet.imgNode, 
+				chip.imageX,  chip.imageY, size, size, 
+				col*size, row*size, size, size);
+		}
+
+
+
+		this.baseline = function() {
+			var domNode = this.domNode;
+
+			console.log(this);
+			var chipSet = Visual.chipSets.byID[0];
+
+			domNode.width = chipSet.chipSize * this.chipMap.width;
+			domNode.height = chipSet.chipSize * this.chipMap.height;
+
+
+			// domNode.width = 16 * this.chipMap.width;
+			// domNode.height = 16 * this.chipMap.height;
+
+			this.updateRender();
+		}
+
+
+
+
+	});
+
+
+
+
+
+
+	PINE.signalNeedReady("VisualResources");
+})
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+<style>
+	map {
+		display: block;
+		height: 100%;
+		width: 100%;
+	}
+</style>
+
+
+
+
+
+
+
