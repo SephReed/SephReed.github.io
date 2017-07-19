@@ -3,12 +3,7 @@
 
 
 
-if(BRIDGE === undefined) {
-	PINE.err("filebrowser requires BRIDGE to run");
-}
-
-
-else {
+PINE.waitForNeed("FILE_BRIDGE", function() {
 
 	var BYTE_SIZES = [];
 	BYTE_SIZES.push(["kb", 1000]);
@@ -17,15 +12,21 @@ else {
 	BYTE_SIZES.push(["Tb", 1000*1000*1000*1000]);
 
 	PINE.createNeedle("[filebrowser]", function() {
-		this.addAttArg("style", ["filebrowser"], "string", "singleDir");
-		this.addAttArg("path", ["filebrowserPath", "filepath"], "string", "");
+		this.addAttArg("styleTemplate", ["filebrowser"], "string", "oneDirNamesSizes");
+		this.addAttArg("path", ["filebrowserPath", "filepath"], "string", "UNSET");
+		this.addAttArg("showExtension", ["filebrowserShowExtension", "showExtension"], "boolean", true);
+		this.addAttArg("fileTree", ["filebrowserVirtualTree", "filebrowserTree", "fileTree"], "pvar");
 
 		this.addOp(function(state) {
 			var path = state.getArg("path");
 			state.currentPath = "";
 
-			if(state.getArg("style") == "singleDir") {
-				var template = El.byID("singleDirBrowserTemplate");
+			state.beforeDisplayListeners = [];
+
+			var template = El.byID(state.getArg("styleTemplate"));
+
+			if(template.tagName == "SINGLEDIRBROWSER") {
+				// var template = El.byID("singleDirBrowserTemplate");
 				var addMe = state.spawner = template.cloneNode(true);
 				addMe.id = "";
 
@@ -45,7 +46,7 @@ else {
 					console.log(event);
 
 					
-					if(dirItemNode.id == "parentFolder") {
+					if(dirItemNode.classList.contains("parentFolder")) {
 							//
 						if(state.currentPath.length > 0 && !state.currentPath.endsWith("../"))
 							setPath = state.currentPath.replace(/[^\/]+\/?$/, "");
@@ -72,43 +73,152 @@ else {
 				});
 			}
 
+			if(state.getArg("fileTree"))
+				this.FNS.setFileTree(state.getArg("fileTree"));
 
-			
 			state.domNode.FNS.setFilepath(state.getArg("path"));
 		});
+
+
+
+		this.FNS.setFileTree = function(fileTree) {
+			console.log(fileTree);
+			this.fileTree = fileTree;
+			this.FNS.updateFileListing();
+		}
+
+		this.FNS.updateFileListing = function() {
+			var state = this;
+			state.fileTree.ls().then(function(items) {
+					//
+				state.domNode.PVARS.directoryList = items;
+
+				// for(var i = 0; i < items.length; i++) {
+				// 	var item = items[i];
+				// 	// var bytes = parseInt(items[i].size);
+				// 	// var roundedSize;
+
+				// 	// for(var b = 0; b < BYTE_SIZES.length && !roundedSize; b++) {
+				// 	// 	var size = BYTE_SIZES[b];
+
+				// 	// 	if(bytes > size[1]) {
+				// 	// 		roundedSize = (bytes/(size[1] * 1.0)).toFixed(1) + " "+size[0];
+				// 	// 	}
+				// 	// }
+
+				// 	// item.size = roundedSize || item.size+" b";
+
+
+				// 	item.extension = item.name.match(/\..*/);
+				// 	if(item.extension) {
+				// 		item.extension = item.extension[0];
+
+				// 		if(item.extension.length) {
+				// 			console.log(state.getArg("showExtension"));
+
+				// 			if(state.getArg("showExtension") == false)
+				// 				item.name = item.name.replace(item.extension, '');
+
+				// 			item.extension = item.extension.slice(1);
+				// 		}
+				// 	}
+				// 	else
+				// 		item.extension = "";
+				// }
+
+				var listeners = state.beforeDisplayListeners;
+				for(var i = 0; i < listeners.length; i++)
+					listeners[i](items);
+
+				state.spawner.FNS.spawnerUpdate();
+			});
+		}
 
 
 		this.FNS.setFilepath = function(filePath) {
 			var state = this;
 			var domNode = state.domNode;
 
-			if(filePath.length && filePath.endsWith("/") == false)
-				filePath += "/";
+			if(filePath != "UNSET") {
+					//
 
-			BRIDGE.getDirectory(filePath).then(function(request) {
-				state.currentPath = filePath;
-				var items = domNode.PVARS.directoryList = JSON.parse(request.response);
+				console.log("SET PATH", filePath)
 
-				for(var i = 0; i < items.length; i++) {
-					items[i].name = items[i].name.replace(filePath, "");
-					items[i].isDir = items[i].isDir == "True";
-
-					var bytes = parseInt(items[i].size);
-					var roundedSize;
-
-					for(var b = 0; b < BYTE_SIZES.length && !roundedSize; b++) {
-						var size = BYTE_SIZES[b];
-
-						if(bytes > size[1]) {
-							roundedSize = (bytes/(size[1] * 1.0)).toFixed(1) + " "+size[0];
-						}
-					}
-
-					items[i].size = roundedSize || items[i].size+" b";
+				if(state.fileTree == undefined) {
+					state.fileTree = new BRIDGE.virtualFileTree(filePath);
+					state.fileTree.ready.then(state.FNS.updateFileListing);
+				}
+				else {
+					state.fileTree.cd("/"+filePath)
+					.then(state.FNS.updateFileListing);;
 				}
 
+				console.log(state.fileTree);
+
+				// if(filePath.length && filePath.endsWith("/") == false)
+				// filePath += "/";
+
+
+
+				// BRIDGE.getDirectory(filePath).then(function(request) {
+				// 	state.currentPath = filePath;
+				// 	var items = domNode.PVARS.directoryList = JSON.parse(request.response);
+
+				// 	for(var i = 0; i < items.length; i++) {
+				// 		var item = items[i];
+				// 		item.name = item.name.replace(filePath, "");
+				// 		item.isDir = item.isDir == "True";
+
+				// 		var bytes = parseInt(items[i].size);
+				// 		var roundedSize;
+
+				// 		for(var b = 0; b < BYTE_SIZES.length && !roundedSize; b++) {
+				// 			var size = BYTE_SIZES[b];
+
+				// 			if(bytes > size[1]) {
+				// 				roundedSize = (bytes/(size[1] * 1.0)).toFixed(1) + " "+size[0];
+				// 			}
+				// 		}
+
+				// 		item.size = roundedSize || item.size+" b";
+
+
+				// 		item.extension = item.name.match(/\..*/);
+				// 		if(item.extension) {
+				// 			item.extension = item.extension[0];
+
+				// 			if(item.extension.length) {
+				// 				console.log(state.getArg("showExtension"));
+
+				// 				if(state.getArg("showExtension") == false)
+				// 					item.name = item.name.replace(item.extension, '');
+
+				// 				item.extension = item.extension.slice(1);
+				// 			}
+				// 		}
+				// 		else
+				// 			item.extension = "";
+
+						
+				// 	}
+
+				// 	var listeners = state.beforeDisplayListeners;
+				// 	for(var i = 0; i < listeners.length; i++)
+				// 		listeners[i](items);
+
+				// 	state.spawner.FNS.spawnerUpdate();
+				// });
+			}
+
+			else {
+				domNode.PVARS.directoryList = [];
 				state.spawner.FNS.spawnerUpdate();
-			});
+			}
+		}
+
+
+		this.FNS.beforeDisplay = function(fn) {
+			this.beforeDisplayListeners.push(fn);
 		}
 
 
@@ -117,7 +227,7 @@ else {
 
 	
 
-}
+});
 	
 </script>
 
@@ -148,6 +258,7 @@ else {
 
 singleDirBrowser {
 	display: table;
+	width: 100%;
 }
 
 	singleDirBrowser > dirItem, singleDirBrowser > dirTableHeader{
@@ -210,10 +321,20 @@ singleDirBrowser {
 
 <noDisplay style="display: none" nopine>
 
-	<singleDirBrowser id="singleDirBrowserTemplate" spawner="directoryList" selectableList=">dirItem">
+	<singleDirBrowser id="oneDirNamesSizes" spawner="directoryList" selectableList=">dirItem">
 		<dirTableHeader><name class="isDir">Filename</name><size>Size</size></dirTableHeader>
-		<dirItem id="parentFolder"><name class="isDir">Parent Folder</name><size></size></dirItem>
+		<dirItem class="parentFolder"><name class="isDir">Parent Folder</name><size></size></dirItem>
 		<dirItem spawn pvars="item=directoryList[i]"><name class="{{? item.isDir: 'isDir'}}">{{item.name}}</name><size>{{item.size}}</size></dirItem>
+	</singleDirBrowser>
+
+
+
+
+
+	<singleDirBrowser id="oneDirNames" spawner="directoryList" selectableList=">dirItem">
+		<!-- <dirTableHeader><name class="isDir">Filename</name><size>Size</size></dirTableHeader> -->
+		<dirItem class="parentFolder"><name class="isDir">Parent Folder</name></dirItem>
+		<dirItem spawn pvars="item=directoryList[i]"><name class="{{? item.isDir: 'isDir'}}">{{item.name}}</name></dirItem>
 	</singleDirBrowser>
 	
 </noDisplay>

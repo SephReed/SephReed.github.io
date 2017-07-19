@@ -1,0 +1,216 @@
+<script type="text/javascript">
+
+
+
+function newLayer() {
+	var map = UI.resources.currentProject.currentMap;
+
+	var layer = map.createNewLayer();
+	map.setCurrentLayer(layer);
+}
+
+
+PINE.waitForNeed(["ELATE", "FLAT"], function() {
+	UI = FLAT.UI = {};
+	
+
+	UI.ready = function() {
+		UI.readyCanvasStack();
+		UI.tempMessage = El.firstOfTag(null, "userTextFeedback").FNS.tempConsoleAddMessage;
+		UI.readyToolbar();
+		UI.readyPallette();
+		UI.readyResourceBrowser();
+		// UI.readyUnsavedChangesWarning();
+	}
+
+
+	UI.readyCanvasStack = function() {
+		UI.canvasStack = new (ELATE.get("InteractiveCanvasStack"))(El.firstOfTag(null, "canvasStack"));	
+		UI.canvasStack.registerMode(new (ELATE.get("ChipCanvasStackMode"))(UI.canvasStack));
+	}
+
+
+
+
+	UI.readyToolbar = function() {
+		var toolBarClass = ELATE.get("ChipDrawingToolbar");
+		var pallette = Visual.chipSets;
+		var toolBarDomNode = El.firstOfTag(null, "drawTools");
+			//
+		UI.toolBar = new toolBarClass(UI.canvasStack, toolBarDomNode, pallette);
+
+		UI.toolBar.addModesToolHandler(new (ELATE.get("SetChipTool"))(UI.toolBar), {"mod": "Pick"});
+		UI.toolBar.addModesToolHandler(new (ELATE.get("FillChipTool"))(UI.toolBar), {"mod": "Pick"});
+		UI.toolBar.addToolHandler(new (ELATE.get("ChipZoomTool"))(UI.toolBar));
+		UI.toolBar.addToolHandler(new (ELATE.get("PickChipTool"))(UI.toolBar));
+
+		var toolCursorArea = El.firstOfTag(null, "DrawArea");
+		UI.toolBar.addEventListener("ToolChange", function(event) {
+			var currentTool = event.new;
+
+			if(currentTool.icon) {
+				toolCursorArea.style.cursor = currentTool.icon.cursorStyling;
+			}
+		});
+	}
+
+
+
+	UI.readyPallette = function() {
+		var domNode = El.firstOfTag(null, "pallette");
+		UI.chipPallette = new (ELATE.get("ChipPallette"))(domNode);	
+	}
+
+
+
+	UI.readyResourceBrowser = function() {
+		UI.fileTree = new BRIDGE.virtualFileTree("FLAT.Worlds")
+		var domNode = El.firstOfTag(null, "resourceBrowser");
+		UI.resourceBrowser = new (ELATE.get("ResourceBrowser"))(domNode);
+	}
+
+
+	UI.readyUnsavedChangesWarning = function() {
+		window.addEventListener("beforeunload", function(e) {
+			var unsaved = [];
+			UI.resources.currentProject.mapTree(function(node) {
+				if(node.saved === false)
+					unsaved.push(node);
+			});
+
+			if(unsaved.length) {
+				var unsavedWarning = El.firstOfTag(null, "unsavedChanges");
+				unsavedWarning.style.display = "block";
+
+				var onStay = function() {
+					unsavedWarning.style.display = "none";
+					document.body.removeEventListener("mousemove", onStay);
+					document.body.removeEventListener("keydown", onStay);
+				}
+
+				document.body.addEventListener("mousemove", onStay);
+				document.body.addEventListener("keydown", onStay);
+
+				UI.tempMessage('Unsaved Changes!  Press [ESC] to SAVE changes, or [ENTER] to DISCARD.')
+				var dialogText =  "FLAT";
+				e.returnValue = dialogText;
+				return dialogText;
+			}
+		});
+	}
+
+
+
+	UI.displayResources = function(resources) {
+		UI.resources = resources;
+		var currentMap = resources.currentProject.currentMap;
+		UI.canvasStack.setDisplayable(currentMap);
+
+
+		UI.chipPallette.setChipSet(resources.Visual.chipSets.current);
+
+		PINE.waitForNeed("FILE_BRIDGE", function() {
+			UI.toolBar.loadIconSet("public/images/icons/icons_tools.png").then(function(){
+				UI.toolBar.setTool("SetChip");
+			});
+		});
+
+
+		UI.resourceBrowser.setResources(resources);
+
+
+		
+	}
+
+
+
+	U.docReady(function() {
+		UI.editorGUI = El.byID("EditorGUI");
+		document.body.appendChild(UI.editorGUI);
+	});
+	
+
+
+	PINE.signalNeedReady("UI");
+})
+
+
+
+</script>
+
+
+
+<app id="EditorGUI">
+	<unsavedChanges>Unsaved Changes!  Press [ESC] to SAVE changes, or [ENTER] to DISCARD.</unsavedChanges>
+
+	<fade id="darken"></fade>
+	<modal id="mainFileBrowser" fade="darken" exitOnOutClick="false" filebrowser>
+	</modal>
+	<modal id="optionsModal" fade="darken" exitOnOutClick="false"></modal>
+	<topbar>FLAT.World | File | Help</topbar>
+	<mainArea>
+		<controlarea>
+			<palletteArea>
+				<resize class="resize-all"
+					resizeHandle="~~, ~" 
+					resizeDir="0 1 0 0, 0 0 1 0"></resize>
+				<!-- <palletteShadowOverlay></palletteShadowOverlay> -->
+				<palletteScroller>
+					<pallette></pallette>
+				</palletteScroller>
+			</palletteArea>
+			<layerSelect>
+
+				<br>
+				<button onclick="newLayer()">New Layer</button>
+				<resourceBrowser filebrowser="FLAToneDirNames" showExtension="false">
+
+				</resourceBrowser>
+				
+			</layerSelect>
+		</controlarea>
+		<drawArea>
+			<drawTools>
+			</drawTools>
+			<userTextFeedback tempConsole></userTextFeedback>
+			<desktop>
+
+				<canvasStack>
+					<!-- <canvas width="256px" height="256px"></canvas> -->
+				</canvasStack>
+			</desktop>
+		</drawArea>
+	</mainArea>
+
+
+	<noShow>
+		<optionsPanel id="projectProperties">
+			Project Name: <input type="text">
+		</optionsPanel>
+	</noShow>
+</app>
+
+
+
+
+<style>
+
+
+body.loading app {
+	opacity: 0;
+}
+
+
+
+body.loaded app {
+	transition: opacity 0.5s ease;
+	opacity: 1;
+}
+
+
+
+
+
+
+</style>
+

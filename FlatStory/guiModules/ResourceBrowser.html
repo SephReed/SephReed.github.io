@@ -1,0 +1,107 @@
+<script type="text/javascript">
+	
+
+PINE.waitForNeed("ELATE", function() {
+	
+	ELATE.create("ResourceBrowser", function() {
+
+
+
+		this.build = function(domNode) {
+			this.domNode = domNode;
+
+			this.domNode.FNS.beforeDisplay(function(items){
+				for(var i = 0; i < items.length; i++) {
+					var item = items[i];
+					var extension = item.extension.toLowerCase();
+
+					if(item.isDir)
+						item.extensionClass = "isDir";
+
+					else if(extension == "map-file.txt") 
+						item.extensionClass = "mapFile";
+
+					else if(extension == "chip-layer.txt") 
+						item.extensionClass = "chipLayer";
+				}
+			});
+
+			this.domNode.oncontextmenu = function(event) {
+				console.log(event);
+				return false;
+			}
+		}
+
+		this.setResources = function(resources) {
+			this.resources = resources;
+
+
+			var currentMap = this.resources.currentProject.currentMap;
+
+			currentMap.addEventListener("UnsavedChanges", function(event) {
+				console.log(event);
+			})
+
+			var path = currentMap.mapPath;
+
+			var thisBrowser = this;
+			UI.fileTree.ready.then(function() {
+				return thisBrowser.domNode.FNS.setFileTree(UI.fileTree);
+			}).then(function() {
+				// thisBrowser.domNode.FNS.setFilepath(path);
+			});
+
+			
+		}
+
+
+		this.setLayer = function() {
+
+		}
+	});
+
+
+});
+
+
+
+</script>
+
+
+<noDisplay style="display: none" nopine>
+
+
+	<singleDirBrowser id="FLAToneDirNames" spawner="directoryList" selectableList=">dirItem" fileTree="UI.fileTree">
+		<!-- <dirTableHeader><name class="isDir">Filename</name><size>Size</size></dirTableHeader> -->
+		<dirItem class="parentFolder"><name class="isDir">Parent Folder</name></dirItem>
+		<dirItem spawn pvars="item=directoryList[i]"><name class="{{? item.isDir: 'isDir'}} {{item.extensionClass}} ">{{item.name}}</name></dirItem>
+	</singleDirBrowser>
+
+</noDisplay>
+
+
+
+<style>
+.mapFile {
+	background: rgba(250, 200, 0, 0.1);
+}
+
+.chipLayer {
+	background: rgba(0, 250, 200, 0.1);
+}
+
+
+
+
+
+
+</style>
+
+
+
+
+
+
+
+
+

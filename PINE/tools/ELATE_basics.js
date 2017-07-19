@@ -1,5 +1,15 @@
 
 
+
+
+
+//An interface should add functions and variables without any 
+//consideration for previous function
+
+
+
+
+
 ELATE.create("Guiable", function() {
 	this.isAbstract();
 

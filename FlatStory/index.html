@@ -4,15 +4,16 @@
 	<title>Flat Story - 2D Game Maker</title>
 	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
 	<link rel="stylesheet" type="text/css" href="index.css">
-	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
-	<!-- <script type="text/javascript" src="../PINE/tools/ELATE.js"></script> -->
-	<script type="text/javascript" src="FLAT.js"></script>
-	<script type="text/javascript" src="../PINE/needles/easyStyleVar.js"></script>
 
-	<needle src="webAppBridge.js" needAlias="FILE_BRIDGE"></needle>
+	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
+	<script type="text/javascript" src="FLAT.js"></script>
+
+	
+	<needle src="WebFileBridge.js" needAlias="FILE_BRIDGE"></needle>
 	<needle src="../PINE/tools/ELATE.js" needAlias="ELATE"></needle>
 	
 	<!-- PINE NEEDLES -->
+	<script type="text/javascript" src="../PINE/needles/easyStyleVar.js"></script>
 	<needle src="../PINE/PINE_Var.js"></needle>
 	<needle src="../PINE/PINE_Needles.js"></needle>
 	<needle src="../PINE/needles/resizeHandle.html"></needle>
@@ -24,16 +25,19 @@
 
 
 	<!-- FLAT.Worlds RESOURCES -->
-	<needle src="World.html"></needle>
-		<needle src="Resources.html"></needle>
-			<needle src="LogicalResources.html"></needle>
-			<needle src="VisualResources.html"></needle>
-		<needle src="WorldEditor.html"></needle>
-			<needle src="Pallette.html"></needle>
-			<needle src="Draw.html"></needle>
-				<needle src="DrawTools.html"></needle>
+	<needle src="basicInterfaces.html"></needle>
+
+
+	<needle src="Resources.html"></needle>
+		<needle src="LogicalResources.html"></needle>
+		<needle src="VisualResources.html"></needle>
+	<needle src="EditorUI.html"></needle>
+		<needle src="guiModules/CanvasStack.html"></needle>
+		<needle src="guiModules/ChipDrawTools.html"></needle>
+		<needle src="guiModules/ChipPallette.html"></needle>
+		<needle src="guiModules/ResourceBrowser.html"></needle>
 	<needle src="Tools.html"></needle>
-	<needle src="Options.html"></needle>
+	<!-- <needle src="Options.html"></needle> -->
 
 	<script type="text/javascript">
 		PINE.StyleVars.setVar("panelBase", "#46514E");
@@ -41,7 +45,42 @@
 		PINE.StyleVars.setVar("panelBorderColor", "#333");
 		PINE.StyleVars.setVar("backdropColor", "#2A2A2A");
 		PINE.StyleVars.setVar("panelTextColor", "#EFD1A5");
+
+		// FLAT.setUI("FlatEditor");
+		FLAT.defaultInit("test");
 		
+
+
+		// var loadEvents = ["Resources", "LogicalResources", "VisualResources", 
+		// 	"WorldEditor", "Draw", "DrawTools", "FILE_BRIDGE", "ELATE"]
+
+		// var onLoad = function() {
+			
+		// }
+
+
+		(function initLoadingInteraction() {
+			var fullScreenFn = function(event) {
+				document.body.mozRequestFullScreen();
+				event.preventDefault();
+				return false;
+			}
+
+			U.docReady(function(){
+				document.body.addEventListener("click", fullScreenFn)
+			});
+
+			window.setTimeout(function(){
+				PINE.signalNeedMet("LOAD_TIME_MIN")
+			}, 1000)
+
+			PINE.waitForNeed(["FLAT_DISPLAYED", "LOAD_TIME_MIN"], function() {
+				document.body.classList.add("loaded");
+				document.body.classList.remove("loading");
+
+				document.body.removeEventListener("click", fullScreenFn);
+			});
+		})()
 		
 	</script>
 
@@ -61,58 +100,66 @@
 	 -->
 
 
+
+	<style>
+		@keyframes loadBarGrow {
+			0% { width: 50px; }
+			100% { width: 100%; }
+		}
+
+		appinitLoadbar {
+			display: block;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			overflow: hidden;
+			white-space: nowrap;
+			animation: loadBarGrow 7s;
+			animation-direction: alternate;
+			animation-iteration-count: 2;
+			animation-fill-mode: forwards;
+		}
+
+			.loaded appinitLoadbar {
+				display: none;
+			}
+
+		fullScreenInfo {
+			position: absolute;
+			display: block;
+			text-align: center;
+			font-size: 30px;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+		}
+
+			fullScreenInfo small {
+				font-size: 15px;
+			}
+
+			.loaded fullScreenInfo {
+				display: none;
+			}
+	</style>
 	
 
 </head>
-<body>
-	<fade id="darken"></fade>
-	<modal id="mainFileBrowser" fade="darken" exitOnOutClick="false" filebrowser>
-	</modal>
-	<modal id="optionsModal" fade="darken" exitOnOutClick="false"></modal>
-	<topbar>FLAT.World | File | Help</topbar>
-	<mainArea>
-		<controlarea>
-			<palletteArea>
-				<resize class="resize-all"
-					resizeHandle="~~, ~" 
-					resizeDir="0 1 0 0, 0 0 1 0"></resize>
-				<!-- <palletteShadowOverlay></palletteShadowOverlay> -->
-				<palletteScroller>
-					<pallette></pallette>
-				</palletteScroller>
-			</palletteArea>
-			<layerSelect>
-
-				<br>
-				<button onclick="switchChipDraw()">Chip Draw</button>
-				
-			</layerSelect>
-		</controlarea>
-		<drawArea>
-			<drawTools>
-			</drawTools>
-			<userTextFeedback tempConsole></userTextFeedback>
-			<desktop>
-
-				<canvasStack>
-					<!-- <canvas width="256px" height="256px"></canvas> -->
-				</canvasStack>
-			</desktop>
-		</drawArea>
-	</mainArea>
-
-
-	<noShow>
-		<optionsPanel id="projectProperties">
-			Project Name: <input type="text">
-		</optionsPanel>
-	</noShow>
-
+<body class="loading">
+	<appinitLoadbar>Loading.................................<!--
+	-->.....................................................<!--
+	-->.....................................................<!--
+	-->.....................................................<!--
+	-->.....................................................</appinitLoadbar>
+	<fullscreenInfo>Click anywhere to fullscreen<br><small>(during load)</small></fullscreenInfo>
+	<app>
+		
+	</app>
 </body>
 
 
 <style easyStyleVar>
-body {
+html {
 	--panelBase: #46514E;
 	/*--semiTranslucentPanelBase: #46514E;*/
 	--panelTextColor: #EFD1A5;
@@ -130,9 +177,11 @@ body {
 
 	--vignette: inset 4px 4px 15px rgba(0,0,0,0.5);
 
+	--toolOutline: rgba(250,250,250,0.3);
 
 	--topbarHeight: 20px;
 }
+
 </style>
 
 

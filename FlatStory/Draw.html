@@ -3,11 +3,11 @@
 
 
 
-PINE.waitForNeed("WorldEditor", function() {
+PINE.waitForNeed(["WorldEditor", "UI"], function() {
 
 
 
-	var Draw = FLAT.World.Editor.Draw = {};
+	Draw = FLAT.UI.Draw = {};
 	Draw.canvas;
 
 	Draw.currentCanvas;
@@ -27,31 +27,37 @@ PINE.waitForNeed("WorldEditor", function() {
 	Draw.canvasStack.currentCanvas;
 	Draw.canvasStack.domNode;
 
-	Draw.ready = function() {
-		if(Draw.canvasStack.domNode)
-			return SyncPromise.resolved();
+	// Draw.ready = function() {
+	// 	console.log("DRAW READY")
 
-		else return new SyncPromise(function(resolve, reject) {
-			U.domReady(function() {
-				Draw.canvasStack.domNode = El.firstOfTag(null, "canvasStack");
+	// 	if(Draw.canvasStack.domNode)
+	// 		return SyncPromise.resolved();
 
-				if(Draw.canvasStack.domNode)
-					resolve();
+	// 	else return new SyncPromise(function(resolve, reject) {
+	// 		PINE.waitForNeed("appDom", function() {
+	// 			Draw.canvasStack.domNode = El.firstOfTag(null, "canvasStack");
 
-				else reject("Could not find canvasStack domNode");
-			});
-		});
-	}
+	// 			if(Draw.canvasStack.domNode)
+	// 				resolve();
+
+	// 			else reject("Could not find canvasStack domNode");
+	// 		});
+	// 	});
+	// }
+
 
 
 	Draw.setDrawCanvas = function(dCanvas) {
 		Draw.canvasStack.currentCanvas = dCanvas;
 
 		//Make sure the draw mode is set correctly
-		Draw.setMode(dCanvas.mode);
+		var mode = Draw.CHIP_MODE;
+
+
+		Draw.setMode(mode);
 
 		var canvasStack = Draw.canvasStack.domNode;
-		var oldCanvases = oldCanvases.childNodes;
+		var oldCanvases = canvasStack.childNodes;
 		for(var i = 0; i < oldCanvases.length; i++) {
 			var checkMe = oldCanvases[i];
 			if(checkMe !== Draw.modes.currentMode.UI.domNode){
@@ -62,6 +68,13 @@ PINE.waitForNeed("WorldEditor", function() {
 
 		dCanvas.baseline();
 
+		console.log(dCanvas);
+
+		Draw.modes.currentMode.UI.domNode.width = dCanvas.chipMap.width * 16;
+		Draw.modes.currentMode.UI.domNode.height = dCanvas.chipMap.height * 16;
+
+		canvasStack.style.width = dCanvas.chipMap.width * 3 * 16 +"px";
+		canvasStack.style.height = dCanvas.chipMap.height * 3 * 16 + "px";
 		canvasStack.appendChild(dCanvas.domNode);
 	}
 
@@ -128,7 +141,7 @@ PINE.waitForNeed("WorldEditor", function() {
 	Draw.modes.chip.assertUI = function() {
 		if(Draw.modes.chip.UI) return;
 
-		var ui = Draw.modes.chip.UI = new Draw.class.Canvas();
+		var ui = Draw.modes.chip.UI = new Visual.class.Canvas();
 
 		ui.domNode.oncontextmenu = function() {return false;}
 		ui.domNode.style.zIndex = 20;
@@ -156,20 +169,20 @@ PINE.waitForNeed("WorldEditor", function() {
 			var col = ~~(x/(ui.chipSize * ui.zoom));
 			var row = ~~(y/(ui.chipSize * ui.zoom));
 			
-			if(currentCol !== col || currentRow !== row) {
-				var clearX = (currentCol*ui.chipSize)-10;
-				var clearY = (currentRow*ui.chipSize)-10;
+			if(ui.currentCol !== col || ui.currentRow !== row) {
+				var clearX = (ui.currentCol*ui.chipSize)-10;
+				var clearY = (ui.currentRow*ui.chipSize)-10;
 				var clearSize = ui.chipSize+20;
 
 				hueOffset = (hueOffset + hueShift)%1;
 
-				painter.clearRect(clearX, clearY, clearSize, clearSize);
+				ui.painter.clearRect(clearX, clearY, clearSize, clearSize);
 
-				currentCol = col;
-				currentRow = row;
+				ui.currentCol = col;
+				ui.currentRow = row;
 
-				var rgb = Draw.HSV_to_RGB(hueOffset, 0.3, 1);
-				Draw.setColor(painter, rgb[0], rgb[1], rgb[2], 0.8);
+				var rgb = FLAT.Tools.HSV_to_RGB(hueOffset, 0.3, 1);
+				FLAT.Tools.setColor(ui.painter, rgb[0], rgb[1], rgb[2], 0.8);
 				ui.painter.strokeRect(col*16, row*16, 16, 16);
 
 				if(ui.mouseHeld)
@@ -396,7 +409,7 @@ PINE.waitForNeed("WorldEditor", function() {
 
 
 	PINE.signalNeedReady("Draw");
-	
+
 	// Draw.ready().then(function() {
 		
 	// });

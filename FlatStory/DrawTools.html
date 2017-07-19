@@ -1,7 +1,16 @@
 <script type="text/javascript">
 	
-	Tools.icons = [];
-	Tools.iconOrder = [
+
+
+
+PINE.waitForNeed("Draw", function() {
+
+
+ // FLAT.World.Editor.Draw.Tools
+	Draw.Tools = {};
+
+	Draw.Tools.icons = [];
+	Draw.Tools.iconOrder = [
 		"draw",
 		"select",
 		"fill",
@@ -12,7 +21,7 @@
 
 
 
-	Tools.setIconSet = function(url, scale) {
+	Draw.Tools.setIconSet = function(url, scale) {
 		scale = scale || 2;
 
 		var img = document.createElement("img");
@@ -20,7 +29,7 @@
 
 		img.addEventListener("load", function() {
 
-			Tools.icons=[];
+			Draw.Tools.icons=[];
 
 			var args = FLAT.getPixelCodeArgs(img, "TUL");
 			
@@ -76,31 +85,31 @@
 				icon.cursorStyling += ", auto";
 
 
-				Tools.icons.push(icon);
+				Draw.Tools.icons.push(icon);
 			}	
 
 			
 
-			for(var i = 0; i < Tools.icons.length; i++) {
+			for(var i = 0; i < Draw.Tools.icons.length; i++) {
 
 				var addMe = document.createElement("tool");
-				addMe.style.backgroundImage = "url('"+Tools.icons[i].url+"')";
+				addMe.style.backgroundImage = "url('"+Draw.Tools.icons[i].url+"')";
 
-				var toolName = Tools.iconOrder[i];
-				var tool = Tools.getTool(toolName);
+				var toolName = Draw.Tools.iconOrder[i];
+				var tool = Draw.Tools.getTool(toolName);
 				if(tool) {
-					tool.icon = Tools.icons[i];
+					tool.icon = Draw.Tools.icons[i];
 					tool.domNode = addMe;
 				}	
 
 				(function(i) {
 					addMe.addEventListener("mousedown", function() {
-						Tools.setTool(Tools.iconOrder[i]);
+						Draw.Tools.setTool(Draw.Tools.iconOrder[i]);
 					});
 				})(i);
 				
 
-				Tools.domNode.appendChild(addMe);
+				Draw.Tools.domNode.appendChild(addMe);
 			}
 		});
 
@@ -109,10 +118,10 @@
 	}
 
 
-	Tools.getTool = function(toolName) {
+	Draw.Tools.getTool = function(toolName) {
 		if(toolName == undefined) return;
 		toolName = toolName.charAt(0).toUpperCase() + toolName.slice(1).toLowerCase();
-		return Tools[toolName];
+		return Draw.Tools[toolName];
 	}
 
 
@@ -121,38 +130,38 @@
 
 
 
-	Tools.eventBindings = {};
-	Tools.eventBindings.mouseDown;
-	Tools.eventBindings.mouseDrag;
-	Tools.eventBindings.keyup;
-	Tools.eventBindings.keydown;
+	Draw.Tools.eventBindings = {};
+	Draw.Tools.eventBindings.mouseDown;
+	Draw.Tools.eventBindings.mouseDrag;
+	Draw.Tools.eventBindings.keyup;
+	Draw.Tools.eventBindings.keydown;
 	
-	Tools.setTool = function(toolName) {
-		var tool = Tools.getTool(toolName);
+	Draw.Tools.setTool = function(toolName) {
+		var tool = Draw.Tools.getTool(toolName);
 
 		if(tool !== undefined) {
 
-			if(Tools.currentTool && Tools.currentTool.disengange)
-				Tools.currentTool.disengange();
+			if(Draw.Tools.currentTool && Draw.Tools.currentTool.disengange)
+				Draw.Tools.currentTool.disengange();
 
 
-			Tools.currentTool
-				= Tools.eventBindings.keyup 
-				= Tools.eventBindings.keydown 
-				= Tools.eventBindings.mouseDrag 
-				= Tools.eventBindings.mouseDown 
+			Draw.Tools.currentTool
+				= Draw.Tools.eventBindings.keyup 
+				= Draw.Tools.eventBindings.keydown 
+				= Draw.Tools.eventBindings.mouseDrag 
+				= Draw.Tools.eventBindings.mouseDown 
 				= tool;
 
-			Tools.setDrawAreaCursor(toolName);
+			Draw.Tools.setDrawAreaCursor(toolName);
 			
 
-			if(Tools.currentTool.engage)
-				Tools.currentTool.engage();
+			if(Draw.Tools.currentTool.engage)
+				Draw.Tools.currentTool.engage();
 		}
 	}
 
-	Tools.setDrawAreaCursor = function(toolName) {
-		var tool = Tools.getTool(toolName);
+	Draw.Tools.setDrawAreaCursor = function(toolName) {
+		var tool = Draw.Tools.getTool(toolName);
 		// console.log(toolName, tool);
 		if(tool && tool.icon)
 			FLAT.drawArea.style.cursor = tool.icon.cursorStyling;
@@ -160,24 +169,24 @@
 
 
 
-	Tools.mouseDown = function(row, col) {
-		if(Tools.eventBindings.mouseDown.mouseDown)
-			Tools.eventBindings.mouseDown.mouseDown(row, col);
+	Draw.Tools.mouseDown = function(row, col) {
+		if(Draw.Tools.eventBindings.mouseDown.mouseDown)
+			Draw.Tools.eventBindings.mouseDown.mouseDown(row, col);
 	}
 
-	Tools.mouseDrag = function(row, col) {
-		if(Tools.eventBindings.mouseDrag.mouseDrag)
-			Tools.eventBindings.mouseDrag.mouseDrag(row, col);
+	Draw.Tools.mouseDrag = function(row, col) {
+		if(Draw.Tools.eventBindings.mouseDrag.mouseDrag)
+			Draw.Tools.eventBindings.mouseDrag.mouseDrag(row, col);
 	}
 
-	Tools.keydown = function(key) {
-		if(Tools.eventBindings.keydown.keydown)
-			Tools.eventBindings.keydown.keydown(key);
+	Draw.Tools.keydown = function(key) {
+		if(Draw.Tools.eventBindings.keydown.keydown)
+			Draw.Tools.eventBindings.keydown.keydown(key);
 	}
 
-	Tools.keyup = function(key) {
-		if(Tools.eventBindings.keyup.keyup)
-			Tools.eventBindings.keyup.keyup(key);
+	Draw.Tools.keyup = function(key) {
+		if(Draw.Tools.eventBindings.keyup.keyup)
+			Draw.Tools.eventBindings.keyup.keyup(key);
 	}
 
 
@@ -188,31 +197,31 @@
 	**************************/
 
 
-	Tools.Draw = {};
-	Tools.Draw.mouseDown = Tools.Draw.mouseDrag = function(row, col) {
+	Draw.Tools.Draw = {};
+	Draw.Tools.Draw.mouseDown = Draw.Tools.Draw.mouseDrag = function(row, col) {
 		CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
 	}
 
-	Tools.Draw.keydown = function(key) {
+	Draw.Tools.Draw.keydown = function(key) {
 		if(key == "Meta") {
-			Tools.setDrawAreaCursor("Pick");
-			Tools.eventBindings.mouseDown = Tools.getTool("Pick");
+			Draw.Tools.setDrawAreaCursor("Pick");
+			Draw.Tools.eventBindings.mouseDown = Draw.Tools.getTool("Pick");
 		}
 	}
 
-	Tools.Draw.keyup = function(key) {
+	Draw.Tools.Draw.keyup = function(key) {
 		if(key == "Meta") {
-			Tools.setDrawAreaCursor("Draw");
-			Tools.eventBindings.mouseDown = Tools.getTool("Draw");
+			Draw.Tools.setDrawAreaCursor("Draw");
+			Draw.Tools.eventBindings.mouseDown = Draw.Tools.getTool("Draw");
 		}
 	}
 
-	Tools.setTool("Draw");
+	Draw.Tools.setTool("Draw");
 
 
 
-	Tools.Fill = {}
-	Tools.Fill.mouseDown = Tools.Fill.spread = function(row, col, targetID, allowDiagonals) {
+	Draw.Tools.Fill = {}
+	Draw.Tools.Fill.mouseDown = Draw.Tools.Fill.spread = function(row, col, targetID, allowDiagonals) {
 		if(row < 0 
 		|| col < 0 
 		|| CURRENT_LAYER.chips.length <= row 
@@ -228,46 +237,46 @@
 		if(CURRENT_LAYER.chips[row][col] == targetID) {
 			CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
 
-			Tools.Fill.spread(row-1, col, targetID, allowDiagonals);
-			Tools.Fill.spread(row+1, col, targetID, allowDiagonals);
-			Tools.Fill.spread(row, col-1, targetID, allowDiagonals);
-			Tools.Fill.spread(row, col+1, targetID, allowDiagonals);
+			Draw.Tools.Fill.spread(row-1, col, targetID, allowDiagonals);
+			Draw.Tools.Fill.spread(row+1, col, targetID, allowDiagonals);
+			Draw.Tools.Fill.spread(row, col-1, targetID, allowDiagonals);
+			Draw.Tools.Fill.spread(row, col+1, targetID, allowDiagonals);
 
 			if(allowDiagonals == true) {
-				Tools.Fill.spread(row-1, col-1, targetID, allowDiagonals);
-				Tools.Fill.spread(row+1, col+1, targetID, allowDiagonals);
-				Tools.Fill.spread(row+1, col-1, targetID, allowDiagonals);
-				Tools.Fill.spread(row-1, col+1, targetID, allowDiagonals);
+				Draw.Tools.Fill.spread(row-1, col-1, targetID, allowDiagonals);
+				Draw.Tools.Fill.spread(row+1, col+1, targetID, allowDiagonals);
+				Draw.Tools.Fill.spread(row+1, col-1, targetID, allowDiagonals);
+				Draw.Tools.Fill.spread(row-1, col+1, targetID, allowDiagonals);
 			}
 		}
 	}
 
-	Tools.Fill.keydown = Tools.Draw.keydown;
-	Tools.Fill.keyup = function(key) {
+	Draw.Tools.Fill.keydown = Draw.Tools.Draw.keydown;
+	Draw.Tools.Fill.keyup = function(key) {
 		if(key == "Meta") {
-			Tools.setDrawAreaCursor("Fill");
-			Tools.eventBindings.mouseDown = Tools.getTool("Fill");
+			Draw.Tools.setDrawAreaCursor("Fill");
+			Draw.Tools.eventBindings.mouseDown = Draw.Tools.getTool("Fill");
 		}
 	}
 
 	// var setBack;
-	// Tools.Fill.engage = Tools.Draw.engage = function() {
+	// Draw.Tools.Fill.engage = Draw.Tools.Draw.engage = function() {
 	// 	console.log("extending");
 	// 	document.body.addEventListener("keydown", function(event) {
 	// 		// console.log(event);
 	// 		if(event.key == "Meta") {
 	// 			// setBack = Tool.currentTool;
-	// 			Tools.setTool("Pick");
+	// 			Draw.Tools.setTool("Pick");
 	// 		}
 	// 	});
 	// }
-	// Tools.Fill.disengage = Tools.Draw.disengage = function() {
+	// Draw.Tools.Fill.disengage = Draw.Tools.Draw.disengage = function() {
 
 	// }
 
 
-	Tools.Replace = {}
-	Tools.Replace.mouseDown = function(row, col) {
+	Draw.Tools.Replace = {}
+	Draw.Tools.Replace.mouseDown = function(row, col) {
 		var targetID = CURRENT_LAYER.chips[row][col];
 		for(var v = 0; v < 16; v++) {
 			for(var h = 0; h < 16; h++) {
@@ -278,37 +287,37 @@
 	}
 
 
-	Tools.Pick = {}
-	Tools.Pick.mouseDown = function(row, col) {
+	Draw.Tools.Pick = {}
+	Draw.Tools.Pick.mouseDown = function(row, col) {
 		var targetID = CURRENT_LAYER.chips[row][col];
 		FLAT.Pallette.selectChip(targetID);
 	}
 
 
 
-	Tools.Zoom = {};
-	Tools.Zoom.inNotOut = true;
-	Tools.Zoom.keydown = function(key) {
+	Draw.Tools.Zoom = {};
+	Draw.Tools.Zoom.inNotOut = true;
+	Draw.Tools.Zoom.keydown = function(key) {
 		if(key == "Meta") 
-			Tools.Zoom.inNotOut = false;
+			Draw.Tools.Zoom.inNotOut = false;
 	}
 
-	Tools.Zoom.keyup = function(key) {
+	Draw.Tools.Zoom.keyup = function(key) {
 		if(key == "Meta") 
-			Tools.Zoom.inNotOut = true;
+			Draw.Tools.Zoom.inNotOut = true;
 	}
 
-	Tools.Zoom.mouseDown = function() {
+	Draw.Tools.Zoom.mouseDown = function() {
 
 	}
 
 
 
 
+	PINE.signalNeedReady("DrawTools");
 
 
-
-
+});
 
 
 </script>

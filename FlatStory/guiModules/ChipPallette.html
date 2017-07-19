@@ -1,0 +1,147 @@
+<script type="text/javascript">
+	
+
+
+PINE.waitForNeed(["ELATE", "VisualResources"], function() {
+
+
+	ELATE.create("ChipPallette", function() {
+
+		this.build = function(domNode) {
+			this.domNode = domNode;
+			this.currentChipSet = undefined;
+
+			this.ui = {};
+			this.ui.domNode = document.createElement("canvas");
+			this.ui.domNode.style.zIndex = 20;
+			this.ui.painter = this.ui.domNode.getContext("2d");
+
+
+			var thisChipPal = this
+			this.ui.domNode.addEventListener("mousedown", function(event) {
+				var chipSet = thisChipPal.currentChipset;
+				if(chipSet) {
+					var scale = chipSet.zoom;
+					var chipSize = chipSet.chipSize;
+
+					var row = ~~(event.layerY / (scale*chipSize));
+					var col = ~~(event.layerX / (scale*chipSize));
+
+					var chipNum = row * chipSet.chipsWide + col;
+					chipSet.setSelectedChip(chipNum);
+
+					thisChipPal.ui.update();
+				}
+			});
+
+			this.domNode.appendChild(this.ui.domNode);
+
+
+			this.ui.update = function() {
+				var currentBox = thisChipPal.ui.currentBox;
+				var painter = thisChipPal.ui.painter;
+
+				if(currentBox) {
+					painter.clearRect(currentBox.x -5, currentBox.y -5, currentBox.size +10, currentBox.size +10);
+				}
+
+
+				var chipSet = thisChipPal.currentChipset;
+				if(chipSet) {
+					var chip = chipSet.selectedChip;
+					var chipSize = chipSet.chipSize;
+
+					var x = chip.col * chipSize;
+					var y = chip.row * chipSize;
+
+					painter.strokeStyle = "white";
+					painter.strokeRect(x, y, chipSize, chipSize);
+
+					thisChipPal.ui.currentBox = {x:x, y:y, size:chipSize};
+				}
+			}
+			
+
+			this.baseline();
+		}
+
+
+		this.setChipSet = function(chipSet) {
+			if(chipSet.inheritsFrom("PalletteChipSet") == false) 
+				ELATE.evolve(chipSet, "PalletteChipSet");
+			
+			if(this.currentChipset)
+				this.currentChipset.domNode.remove();
+
+			this.domNode.appendChild(chipSet.domNode);
+
+			this.currentChipset = chipSet;
+			this.baseline();
+		}
+
+
+		this.baseline = function() {
+			if(this.currentChipset) {
+				this.ui.domNode.width = this.currentChipset.domNode.naturalWidth;
+				this.ui.domNode.height = this.currentChipset.domNode.naturalHeight;
+
+				this.domNode.style.width = this.currentChipset.domNode.width+"px";
+				this.domNode.style.height = this.currentChipset.domNode.height+"px";
+			}
+
+			this.ui.update();
+		}
+
+	});
+
+
+
+
+
+
+	ELATE.create("PalletteChipSet", function() {
+
+		this.evolvesFrom("ChipSet");
+		this.implements("EventDispatcher");
+
+		this.parseArgs = function(args) {
+			return {ChipSet: [args]}
+		}
+
+		this.evolveThis = function() {
+			this.domNode = this.imgNode;
+			this.baseline();
+		}
+
+
+		this.setZoom = function(zoom) {
+			this.zoom = zoom;
+			this.baseline();
+		}
+
+		this.baseline = function() {
+			var width = this.chipSize * this.chipsWide * this.zoom;
+			var height = this.chipSize * this.chipsTall * this.zoom;
+
+			this.domNode.style.width = width+"px";
+			this.domNode.style.height = height+"px";
+		}
+
+		// this.setSelectedChip = function(chipNum) {
+		// 	this.super.ChipSet.setSelectedChip(chipNum);
+
+		// 	this.dispatchEvent({
+		// 		type: ""
+		// 	})
+		// }
+	});
+
+
+});
+
+
+
+
+
+
+</script>

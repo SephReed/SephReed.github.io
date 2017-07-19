@@ -103,7 +103,9 @@ PINE.addEventListener = function(type, callback) {
 }
 
 PINE.ready = function(callback) {
-	PINE.addEventListener(PINE.events.load, callback);
+	// PINE.addEventListener(PINE.events.load, callback);
+
+	PINE.waitForNeed("PINE_READY", callback);
 }
 
 
@@ -669,11 +671,18 @@ PINE.waitForNeed = PINE.waitForNeeds = function(needs, callback) {
 	}
 	else
 		PINE.err("Needs must be a string or array", needs);
+}
+
+
+PINE.isNeedReady = function() {
+	return PINE.needsListeners[needName] == "READY";
 } 
 
 
-PINE.signalReadyNeed = PINE.signalNeedReady = function(needName) {
+PINE.signalNeedMet = PINE.signalReadyNeed = PINE.signalNeedReady = function(needName) {
 	var listeners = PINE.needsListeners[needName];
+	if(listeners == "READY") return;
+
 	for(var i = 0; listeners && i < listeners.length; i++) {
 		var listener = listeners[i];
 
@@ -743,10 +752,13 @@ PINE.run = function() {
   		U.log("success", "PINE Run complete");
   		LOG("overview", "PINE Finished");	
 
-  		var listeners = PINE.eventListeners[PINE.events.load];
 
-  		for(var i in listeners)
-  			listeners[i]();
+
+  		PINE.signalNeedMet("PINE_READY");
+  		// var listeners = PINE.eventListeners[PINE.events.load];
+
+  		// for(var i in listeners)
+  		// 	listeners[i]();
 	});
 	
 }
@@ -1339,9 +1351,13 @@ PINE.debug.logAsyncIssues = function(timeSinceBegin) {
 *  native functions I hope
 **********************************/
 
+document.addEventListener("DOMContentLoaded", function() {
+	PINE.signalNeedMet("DOMReady");
+});
+
 
 U.domReady = U.docReady = function(callback) {
-	document.addEventListener("DOMContentLoaded", callback);
+	PINE.waitForNeed("DOMReady", callback);
 }
 
 

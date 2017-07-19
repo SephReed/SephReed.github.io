@@ -5,9 +5,10 @@
 
 
 
-PINE.waitForNeeds(["World", "Tools", "FILE_BRIDGE"], function() {
-	Resources = FLAT.World.Resources = {};
-	Resources.pathPrefix = "";
+PINE.waitForNeeds(["Tools", "FILE_BRIDGE"], function() {
+	Resources = FLAT.Resources = {};
+	Resources.projects = {};
+	Resources.currentProject;
 
 	PINE.signalNeedReady("Resources");
 
@@ -15,7 +16,7 @@ PINE.waitForNeeds(["World", "Tools", "FILE_BRIDGE"], function() {
 
 	PINE.waitForNeeds(["LogicalResources", "VisualResources"], function() {
 		Resources.openProject = Resources.Logic.openProject;
-		Resources.drawProject = Resources.Visual.drawProject;
+		Resources.makeProjectSeeable = Resources.Visual.makeProjectSeeable;
 	});
 })
 

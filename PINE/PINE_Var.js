@@ -567,7 +567,7 @@ pnv.needles["? "] = function(scope, pvarCode, callback) {
 	var conditional = args[0].substring(2) || pvarCode.substring(2);
 	var conditionBool = pnv.runConditional(scope, conditional);
 
-	console.log("????", conditional, conditionBool, args);
+	// console.log("????", conditional, conditionBool, args);
 
 	if (args.length > 1 && conditionBool) {
 		var tmp = El.getVar(scope, args[1])

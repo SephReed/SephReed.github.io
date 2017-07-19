@@ -1,0 +1,182 @@
+<script type="text/javascript">
+	
+PINE.waitForNeed("ELATE", function () {
+	ELATE.create("EventDispatcher", function() {
+		this.canEvolve("*");
+
+		this.evolveThis = function() {
+			this.eventListeners = {};
+			this.eventListeners.allEvents = [];
+		}
+
+		this.addEventListener = function(eventType, fn) {
+			if(this.eventListeners[eventType] == undefined)
+				this.eventListeners[eventType] = [];
+
+			this.eventListeners[eventType].push(fn);
+		}
+
+		this.dispatchEvent = function(eventData) {
+			var eventType = eventData.type;
+			var listeners = this.eventListeners[eventType];
+
+			for(var i = 0; listeners && i < listeners.length; i++)
+				listeners[i](eventData);
+
+			listeners = this.eventListeners.allEvents;
+			for(var i = 0; listeners && i < listeners.length; i++)
+				listeners[i](eventData);
+		}
+
+		this.repeatDispatches = function(target) {
+			var thisDispatcher = this;
+			target.addEventListener("allEvents", function(event) {
+				thisDispatcher.dispatchEvent(event);
+			});
+		}
+	});
+
+
+
+
+	ELATE.create("Saveable", function() {
+		this.isAbstract();
+
+		this.implements("EventDispatcher");
+		this.canEvolve("*");
+
+		this.evolveThis = function(path, saved) {
+			this.filePath = path;
+			
+			if(saved == false)
+				this.markUnsaved();
+
+			else
+				this.saved = saved;
+		}
+
+		this.markUnsaved = function() {
+			if(this.saved == true) {
+				this.saved = false;
+				this.dispatchEvent({
+					type: "UnsavedChanges",
+					item: this
+				});
+			}
+		}
+
+		this.save = "abstract";
+		this.rename = function(){}
+		this.move = function(){}
+		this.duplicate = function(){}
+		this.load = "abstract";
+
+		this.hasFilePath = function() {
+			return this.filePath != undefined;
+		}
+
+		this.setFilePath = function(filePath) {
+			this.filePath = filePath;
+			this.markUnsaved();
+		}
+
+	});
+
+
+
+
+	ELATE.create("Treeable", function() {
+		this.canEvolve("*");
+
+		this.evolveThis = function(parentNodeAttName, childNodesAttName) {
+			this.parentNodeAttName = parentNodeAttName;
+			this.childNodesAttName = childNodesAttName;
+
+			// console.log(this.childNodesAttName);
+
+			var childAttName = this.childNodesAttName || "childNodes";
+			this[childAttName] = [];
+		}
+
+
+		this.appendChild = function(addMe) {
+			if(this.errIfNotTreeable(addMe)) return;
+
+			if(addMe.getParentNode() == this)
+				return false;
+
+			addMe.remove();
+			addMe.setParentNode(this);
+			this.getChildNodes().push(addMe);
+			return true;
+		}
+
+		this.removeChild = function(removeMe) {
+			var childNodes = this.getChildNodes();
+			var target = childNodes.indexOf(removeMe);
+
+			if(target != -1) {
+				childNodes.splice(target, 1);
+				return true;
+			}
+			else return false;
+			
+		}
+
+		this.remove = function() {
+			var parentNode = this.getParentNode();
+			if(parentNode) {
+				parentNode.removeChild(this);
+				return true;
+			}
+			return false;
+		}
+
+
+		this.mapTree = function(fn) {
+			console.log(this);
+			fn(this);
+
+			var children = this.getChildNodes();
+			for(var i = 0; i < children.length; i++)
+				children[i].mapTree(fn);
+		}
+
+
+		this.errIfNotTreeable = function(checkMe) {
+			if(checkMe.inheritsFrom("Treeable") == false) {
+				PINE.err("Can not add untreeable element to treeable one", this)
+				return true;
+			}
+			return false;
+		}
+
+		this.getParentNode = function() {
+			return this.parentNodeAttName ? this[this.parentNodeAttName] : this.parentNode;
+		}
+
+		this.setParentNode = function(parentNode) {
+			if(this.parentNodeAttName)
+				this[this.parentNodeAttName] = parentNode;
+
+			else
+				this.parentNode = parentNode;
+		}
+
+
+		this.getChildNodes = function() {
+			return this.childNodesAttName ? this[this.childNodesAttName] : this.childNodes;
+		}
+
+	});
+
+
+
+
+
+
+	PINE.signalNeedMet("BASIC_INTERFACES")
+});
+
+
+</script>

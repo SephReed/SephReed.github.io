@@ -68,7 +68,6 @@ PINE.createNeedle("[spawner]", function() {
 
 			for(var i = 0; i < domNode.childNodes.length;) {
 				var child = domNode.childNodes[i];
-				// console.log(child);
 				
 				if(El.attr(child, "spawn") !== undefined)
 			    	domNode.removeChild(child);
@@ -119,6 +118,9 @@ PINE.createNeedle("[spawner]", function() {
 				this.spawn = spawn;
 				initMe.removeChild(spawn);
 			}
+			else 
+				PINE.err("Spawner created with no spawn child", this.domNode);
+			
 
 			if(this.getArg("autorun"))
 				this.FNS.spawnerUpdate().then(args.resolve);
