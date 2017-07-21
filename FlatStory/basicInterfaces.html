@@ -46,7 +46,7 @@ PINE.waitForNeed("ELATE", function () {
 		this.canEvolve("*");
 
 		this.evolveThis = function(path, saved) {
-			this.filePath = path;
+			// this.filePath = path;
 			
 			if(saved == false)
 				this.markUnsaved();
@@ -65,10 +65,7 @@ PINE.waitForNeed("ELATE", function () {
 			}
 		}
 
-		this.save = "abstract";
-		this.rename = function(){}
-		this.move = function(){}
-		this.duplicate = function(){}
+		this.toLoadable = "abstract";
 		this.load = "abstract";
 
 		this.hasFilePath = function() {

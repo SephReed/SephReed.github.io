@@ -53,7 +53,8 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 		}
 
 		this.getSelectedChipNum = function() {
-			return this.pallette.current.selectedChip.num;
+			return UI.clipboards.getCurrentSlot();
+			// return this.pallette.current.selectedChip.num;
 		}
 
 
@@ -66,7 +67,7 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 			if(this.currentTool) {
 
 				//Mode Tool Handling
-				if(event.type == "KeyDown" || event.type == "KeyUp") {
+				if(event.type == "KeyDown") {
 					var modeHandling = this.modeToolRoot || this.currentTool;
 
 					var modeTool = modeHandling.modes[event.key];
@@ -75,16 +76,16 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 						modeTool = modeHandling.modes["mod"];
 
 					if(modeTool) {
-						if(event.type == "KeyDown") {
-							this.modeToolRoot = this.currentTool;
-							this.setTool(modeTool);
-						}
-						else if(this.modeToolRoot) {
-							this.setTool(this.modeToolRoot.name);
-							this.modeToolRoot = undefined;
-						}
+						this.modeToolRoot = this.currentTool;
+						this.setTool(modeTool);
 						return;
 					}
+				}
+
+				if(event.type == "KeyUp" && this.isModifier(event.key) && this.modeToolRoot) {
+					this.setTool(this.modeToolRoot.name);
+					this.modeToolRoot = undefined;
+					return;
 				}
 
 
@@ -345,7 +346,8 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 
 		this.press = function(event) {
 			var chipID = event.layer.chips[event.row][event.col]
-			this.toolbar.pallette.current.setSelectedChip(chipID);
+			UI.clipboards.setCurrentSlot(chipID);
+			// this.toolbar.pallette.current.setSelectedChip(chipID);
 		}
 
 		this.drag = function(event) {

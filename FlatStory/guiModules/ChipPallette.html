@@ -67,6 +67,8 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 
 
 		this.setChipSet = function(chipSet) {
+			if(chipSet == undefined) return;
+
 			if(chipSet.inheritsFrom("PalletteChipSet") == false) 
 				ELATE.evolve(chipSet, "PalletteChipSet");
 			

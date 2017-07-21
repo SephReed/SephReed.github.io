@@ -17,28 +17,27 @@ PINE.waitForNeed("FILE_BRIDGE", function() {
 		this.addAttArg("showExtension", ["filebrowserShowExtension", "showExtension"], "boolean", true);
 		this.addAttArg("fileTree", ["filebrowserVirtualTree", "filebrowserTree", "fileTree"], "pvar");
 
-		this.addOp(function(state) {
-			var path = state.getArg("path");
-			state.currentPath = "";
+		this.addOp(function(THIS) {
+			var path = THIS.getArg("path");
+			THIS.currentPath = "";
 
-			state.beforeDisplayListeners = [];
+			THIS.beforeDisplayListeners = [];
+			THIS.fileOpenHandlers = [];
 
-			var template = El.byID(state.getArg("styleTemplate"));
+			var template = El.byID(THIS.getArg("styleTemplate"));
 
 			if(template.tagName == "SINGLEDIRBROWSER") {
 				// var template = El.byID("singleDirBrowserTemplate");
-				var addMe = state.spawner = template.cloneNode(true);
+				var addMe = THIS.spawner = template.cloneNode(true);
 				addMe.id = "";
 
 				PINE.updateAt(addMe);
 
 				// addMe.FNS.onSelectionChange(console.log);
 
-				state.domNode.appendChild(addMe);
+				THIS.domNode.appendChild(addMe);
 
 				addMe.addEventListener("dblclick", function(event) {
-
-
 
 					var dirItemNode = event.target.parentNode;
 					var setPath;
@@ -48,11 +47,11 @@ PINE.waitForNeed("FILE_BRIDGE", function() {
 					
 					if(dirItemNode.classList.contains("parentFolder")) {
 							//
-						if(state.currentPath.length > 0 && !state.currentPath.endsWith("../"))
-							setPath = state.currentPath.replace(/[^\/]+\/?$/, "");
+						if(THIS.currentPath.length > 0 && !THIS.currentPath.endsWith("../"))
+							setPath = THIS.currentPath.replace(/[^\/]+\/?$/, "");
 						
 						else 
-							setPath = state.currentPath + "../";
+							setPath = THIS.currentPath + "../";
 					}
 
 					else {
@@ -60,25 +59,33 @@ PINE.waitForNeed("FILE_BRIDGE", function() {
 
 						if(dirItem.isDir) { 
 
-							if(state.currentPath.startsWith("../"))
-								setPath = state.currentPath+dirItem.name;
+							if(THIS.currentPath.startsWith("../"))
+								setPath = THIS.currentPath+dirItem.name;
 
 							else	
 								setPath = dirItem.name;
 						}
+						else {
+							for(var i = 0; i < THIS.fileOpenHandlers.length; i++)
+								THIS.fileOpenHandlers[i](dirItem);
+						}
 					}
 
 					if(setPath !== undefined)
-						state.domNode.FNS.setFilepath(setPath);
+						THIS.domNode.FNS.setFilepath(setPath);
 				});
 			}
 
-			if(state.getArg("fileTree"))
-				this.FNS.setFileTree(state.getArg("fileTree"));
+			if(THIS.getArg("fileTree"))
+				THIS.FNS.setFileTree(THIS.getArg("fileTree"));
 
-			state.domNode.FNS.setFilepath(state.getArg("path"));
+			THIS.domNode.FNS.setFilepath(THIS.getArg("path"));
 		});
 
+
+		this.FNS.addFileOpenHandler = function(handler) {
+			this.fileOpenHandlers.push(handler);
+		}
 
 
 		this.FNS.setFileTree = function(fileTree) {
@@ -88,10 +95,14 @@ PINE.waitForNeed("FILE_BRIDGE", function() {
 		}
 
 		this.FNS.updateFileListing = function() {
-			var state = this;
-			state.fileTree.ls().then(function(items) {
+			console.log("updateFileListing")
+
+			var THIS = this;
+			THIS.fileTree.ls().then(function(items) {
 					//
-				state.domNode.PVARS.directoryList = items;
+
+				console.log("ITEMS", items);
+				THIS.domNode.PVARS.directoryList = items;
 
 				// for(var i = 0; i < items.length; i++) {
 				// 	var item = items[i];
@@ -114,9 +125,9 @@ PINE.waitForNeed("FILE_BRIDGE", function() {
 				// 		item.extension = item.extension[0];
 
 				// 		if(item.extension.length) {
-				// 			console.log(state.getArg("showExtension"));
+				// 			console.log(THIS.getArg("showExtension"));
 
-				// 			if(state.getArg("showExtension") == false)
+				// 			if(THIS.getArg("showExtension") == false)
 				// 				item.name = item.name.replace(item.extension, '');
 
 				// 			item.extension = item.extension.slice(1);
@@ -126,93 +137,39 @@ PINE.waitForNeed("FILE_BRIDGE", function() {
 				// 		item.extension = "";
 				// }
 
-				var listeners = state.beforeDisplayListeners;
+				var listeners = THIS.beforeDisplayListeners;
 				for(var i = 0; i < listeners.length; i++)
 					listeners[i](items);
 
-				state.spawner.FNS.spawnerUpdate();
+				THIS.spawner.FNS.spawnerUpdate();
 			});
 		}
 
 
 		this.FNS.setFilepath = function(filePath) {
-			var state = this;
-			var domNode = state.domNode;
+			var THIS = this;
+			var domNode = THIS.domNode;
 
 			if(filePath != "UNSET") {
 					//
 
 				console.log("SET PATH", filePath)
 
-				if(state.fileTree == undefined) {
-					state.fileTree = new BRIDGE.virtualFileTree(filePath);
-					state.fileTree.ready.then(state.FNS.updateFileListing);
+				if(THIS.fileTree == undefined) {
+					THIS.fileTree = new BRIDGE.virtualFileTree(filePath);
+					THIS.fileTree.ready.then(THIS.FNS.updateFileListing);
 				}
 				else {
-					state.fileTree.cd("/"+filePath)
-					.then(state.FNS.updateFileListing);;
+					THIS.fileTree.cd(filePath)
+					.then(THIS.FNS.updateFileListing);;
 				}
 
-				console.log(state.fileTree);
-
-				// if(filePath.length && filePath.endsWith("/") == false)
-				// filePath += "/";
-
-
-
-				// BRIDGE.getDirectory(filePath).then(function(request) {
-				// 	state.currentPath = filePath;
-				// 	var items = domNode.PVARS.directoryList = JSON.parse(request.response);
-
-				// 	for(var i = 0; i < items.length; i++) {
-				// 		var item = items[i];
-				// 		item.name = item.name.replace(filePath, "");
-				// 		item.isDir = item.isDir == "True";
-
-				// 		var bytes = parseInt(items[i].size);
-				// 		var roundedSize;
-
-				// 		for(var b = 0; b < BYTE_SIZES.length && !roundedSize; b++) {
-				// 			var size = BYTE_SIZES[b];
-
-				// 			if(bytes > size[1]) {
-				// 				roundedSize = (bytes/(size[1] * 1.0)).toFixed(1) + " "+size[0];
-				// 			}
-				// 		}
-
-				// 		item.size = roundedSize || item.size+" b";
-
-
-				// 		item.extension = item.name.match(/\..*/);
-				// 		if(item.extension) {
-				// 			item.extension = item.extension[0];
-
-				// 			if(item.extension.length) {
-				// 				console.log(state.getArg("showExtension"));
-
-				// 				if(state.getArg("showExtension") == false)
-				// 					item.name = item.name.replace(item.extension, '');
-
-				// 				item.extension = item.extension.slice(1);
-				// 			}
-				// 		}
-				// 		else
-				// 			item.extension = "";
-
-						
-				// 	}
-
-				// 	var listeners = state.beforeDisplayListeners;
-				// 	for(var i = 0; i < listeners.length; i++)
-				// 		listeners[i](items);
-
-				// 	state.spawner.FNS.spawnerUpdate();
-				// });
+				console.log(THIS.fileTree);
 			}
 
 			else {
 				domNode.PVARS.directoryList = [];
-				state.spawner.FNS.spawnerUpdate();
+				THIS.spawner.FNS.spawnerUpdate();
 			}
 		}
 

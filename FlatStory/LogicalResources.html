@@ -23,11 +23,23 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			Resources.currentProject = projectFile;
 
 			var filePath = projectFile.pathPrefix + projectName+".flat-project.txt";
-			return BRIDGE.loadJSON(filePath).then(function(projectData){
-				ELATE.evolve(projectFile, "Project", [null, projectData]);
+
+			return Resources.fileTree.openJSON(filePath)
+			.then(function(response){
+
+				projectFile.filePath = response.dirItem;
+				response.dirItem.saveable = projectFile;
+
+				ELATE.evolve(projectFile, "Project", [null, response.data]);
 				return projectFile.projectReadyPromise;
 			})
-			.then(function(){ return projectFile; });		
+			.then(function(){ return projectFile; });	
+
+			// return BRIDGE.loadJSON(filePath).then(function(projectData){
+			// 	ELATE.evolve(projectFile, "Project", [null, projectData]);
+			// 	return projectFile.projectReadyPromise;
+			// })
+			// .then(function(){ return projectFile; });		
 		}
 
 	}
@@ -86,25 +98,27 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 		}
 
 		this.evolveThis = function(projectData) {
-
-			this.super.Treeable(null, "maps");
+			var THIS = this;
+			THIS.super.Treeable(null, "maps");
 
 			var mapPath = projectData.currentMap;
 			var mapName = mapPath.match(/[^\/]+$/);
 			var mapPath = Resources.currentProject.pathPrefix+"maps/"+mapName+"/"
 			mapFilePath = mapPath+mapName+".map-file.txt";
 
-			var thisProject = this;
-			this.projectReadyPromise = BRIDGE.loadJSON(mapFilePath)
-			.then(function(mapData){ 
-				thisProject.currentMap = new FlatMap(mapPath, mapData);
-				thisProject.appendChild(thisProject.currentMap);
-				return thisProject.currentMap.flatMapReadyPromise;
+
+			THIS.projectReadyPromise = Resources.fileTree.openJSON(mapFilePath)
+			.then(function(response){
+				var mapData = response.data;
+
+				THIS.currentMap = new FlatMap(mapPath, mapData);
+				THIS.currentMap.dirItem = response.dirItem;
+				response.dirItem.saveable = THIS.currentMap;
+
+				THIS.appendChild(THIS.currentMap);
+				return THIS.currentMap.flatMapReadyPromise;
 			});
 		}
-
-
-		// this.addMap = function
 	});
 
 
@@ -118,29 +132,33 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 
 		this.build = function(mapPath, mapData) {
 			// this.layers = [];
+			var THIS = this;
 
-			this.super.Treeable("project", "layers");
+			THIS.super.Treeable("project", "layers");
 
 
-			this.chipsWide = mapData.chipsWide;
-			this.chipsTall = mapData.chipsTall;
-			this.mapPath = mapPath;
-			this.width = this.chipsWide * 16;  //TODO magic number, and move chipwidth to layers
-			this.height = this.chipsTall * 16;
+			THIS.chipsWide = mapData.chipsWide;
+			THIS.chipsTall = mapData.chipsTall;
+			THIS.mapPath = mapPath;
+			THIS.width = THIS.chipsWide * 16;  //TODO magic number, and move chipwidth to layers
+			THIS.height = THIS.chipsTall * 16;
 
 			var layerPromises = [];
-			var thisMap = this;
 
 			for(var i = 0; i < mapData.layers.length; i++) {
 				var layerName = mapData.layers[i];
-				var layerPath = this.mapPath+layerName+".chip-layer.txt";
+				var layerPath = THIS.mapPath+layerName;
 
-				var promise = BRIDGE.loadFile(layerPath)
-				.then(function(request){
-					var addMe = new ChipLayer(null, null, request.response);
-					thisMap.addLayer(addMe);
-					thisMap.repeatDispatches(addMe);
+				var promise = Resources.fileTree.openJSON(layerPath)
+				.then(function(response){
+					var addMe = new ChipLayer(null, null, response.data);
+					addMe.dirItem = response.dirItem;
+					response.dirItem.saveable = addMe;
+
+					THIS.addLayer(addMe);
+					THIS.repeatDispatches(addMe);
 				});
+
 
 				layerPromises.push(promise);
 			}
@@ -148,8 +166,8 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 
 
 
-			this.flatMapReadyPromise = SyncPromise.all(layerPromises).then(function(){
-				thisMap.currentLayer = thisMap.layers[mapData.currentLayer || 0];
+			THIS.flatMapReadyPromise = SyncPromise.all(layerPromises).then(function(){
+				THIS.currentLayer = THIS.layers[mapData.currentLayer || 0];
 			});
 
 			return {Saveable: [mapPath, true]};
@@ -174,7 +192,7 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 
 
 		this.setCurrentLayer = function(layer) {
-			if(this.layers.indexOf(layer) == -1)
+			if(layer && this.layers.indexOf(layer) == -1)
 				PINE.err("Can not set current layer to layer from another map");
 
 			else if (this.currentLayer != layer){
@@ -189,8 +207,15 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			}
 		}
 
-		this.save = function() {
-
+		this.toLoadable = function() {
+			var out = {};
+			out.layers = [];
+			for(var i = 0; i < this.layers.length; i++) {
+				out.layers.push(this.layers[i].dirItem.name);
+			}
+			out.chipsWide = this.chipsWide;
+			out.chipsTall = this.chipsTall;
+			return JSON.stringify(out);
 		}
 
 		this.load = function() {
@@ -210,12 +235,12 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			this.super.Treeable("map");
 
 			if(rawFile) {
-				this.chips = Logic.unpackageMap(rawFile);
+				this.chips = Logic.unpackageMap(rawFile.chips);
 
 				this.chipsWide = this.chips[0].length;
 				this.chipsTall = this.chips.length;
 
-				this.chipSetNames = ["chipset01.png"];
+				this.chipSetNames = rawFile.chipSetNames;
 			}
 
 			else {
@@ -223,7 +248,7 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 				this.chipsTall = chipsTall || 16;
 
 				this.chips = [];
-				this.chipSetNames = [];
+				this.chipSetNames = ["chipset01.png"];
 
 				for(var h = 0; h < this.chipsTall; h++) {
 					this.chips[h] = [];
@@ -255,13 +280,18 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 		
 
 
-		this.ejectModifications = function() {
-			var out = this.modifications;
-			this.modifications = [];
-			return out;
+		// this.ejectModifications = function() {
+		// 	var out = this.modifications;
+		// 	this.modifications = [];
+		// 	return out;
+		// }
+
+
+		this.makeCurrentLayer = function() {
+			this.map.setCurrentLayer(this);
 		}
 
-		this.save = function() {
+		this.toLoadable = function() {
 			var out = {};
 			out.chips = ""
 			for(var row = 0; row < this.chipsTall; row++) {
@@ -269,15 +299,15 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 					out.chips += this.chips[row][col] + " ";
 				}
 
-				if(row < height-1)
+				if(row < this.chipsTall-1)
 					out.chips += "\n";
 			}
 
 			out.chipSetNames = this.chipSetNames;
-
-			BRIDGE.saveFile(this.filePath, JSON.stringify(out));
+			return JSON.stringify(out);
+			// BRIDGE.saveFile(this.filePath, JSON.stringify(out));
 			
-		}
+		}	
 
 
 		this.load = function() {

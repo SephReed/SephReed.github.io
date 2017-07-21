@@ -8,7 +8,9 @@ PINE.StyleVars.rules = {};
 PINE.StyleVars.lastID = 0;
 PINE.StyleVars.mods = [];
 
-PINE.StyleVars.setVar = function(keyword, value) {
+PINE.StyleVars.set = function(keyword, value) {
+	value += "";
+
 	for(var key in PINE.StyleVars.rules) {
 		if(PINE.StyleVars.rules[key].includes("keyword")
 		|| value.includes("key")) {

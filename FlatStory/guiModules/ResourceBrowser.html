@@ -13,16 +13,29 @@ PINE.waitForNeed("ELATE", function() {
 			this.domNode.FNS.beforeDisplay(function(items){
 				for(var i = 0; i < items.length; i++) {
 					var item = items[i];
-					var extension = item.extension.toLowerCase();
-
+				
 					if(item.isDir)
 						item.extensionClass = "isDir";
 
-					else if(extension == "map-file.txt") 
-						item.extensionClass = "mapFile";
+					else if(item.extension) {
+						var extension = item.extension.toLowerCase();
 
-					else if(extension == "chip-layer.txt") 
-						item.extensionClass = "chipLayer";
+						if(extension == "map-file.txt") 
+							item.extensionClass = "mapFile";
+
+						else if(extension == "chip-layer.txt") 
+							item.extensionClass = "chipLayer";
+					}
+				}
+			});
+
+			this.domNode.FNS.addFileOpenHandler(function(file){
+				console.log(file);
+
+				var loadMe = file.saveable;
+
+				if(loadMe && loadMe.inheritsFrom("SeeableChipLayer")) {
+					loadMe.makeCurrentLayer();
 				}
 			});
 
@@ -45,10 +58,10 @@ PINE.waitForNeed("ELATE", function() {
 			var path = currentMap.mapPath;
 
 			var thisBrowser = this;
-			UI.fileTree.ready.then(function() {
-				return thisBrowser.domNode.FNS.setFileTree(UI.fileTree);
+			resources.fileTree.ready.then(function() {
+				return thisBrowser.domNode.FNS.setFileTree(resources.fileTree);
 			}).then(function() {
-				// thisBrowser.domNode.FNS.setFilepath(path);
+				thisBrowser.domNode.FNS.setFilepath(path);
 			});
 
 			

@@ -213,18 +213,7 @@ body {
 				height: 100%;
 			}
 
-				drawTools {
-					display: block;
-					position: absolute;
-					top: 0px;
-					left: 0px;
-					background-color: #444;
-					border-style: none solid solid none;
-					border-color: var(--panelBorderColor);
-					border-width: var(--panelBorderWidth);
-					z-index: 30;
-					box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
-				}
+				
 
 					
 
@@ -253,26 +242,7 @@ body {
 					overflow: scroll;
 				}
 
-					canvasStack {
-						display: inline-block;
-						position: relative;
-						margin: 200px;
-						height: 768px;
-						width: 768px;
-						background: #1F1F1F;
-						box-shadow: 5px 5px 25px rgba(0,0,0,0.3);
-					}
-
-						canvasStack * {
-							position: absolute;
-							top:0px;
-							left: 0px;
-							width: 100%;
-							height: 100%;
-							
-							image-rendering: -moz-crisp-edges;
-							
-						}
+					
 
 							/*canvasStack canvas:last-child {
 								background: #1F1F1F;

@@ -1,11 +1,11 @@
 <script type="text/javascript">
 PINE.createNeedle("[tether]", function() {
-	this.addAttArg("targetNode", "tether", "element");
+	this.addAttArg("targetNode", "tether", "id");
 	this.addAttArg("point", "tetherPoint", "string", "0% 0%");
 	this.addAttArg("targetPoint", "tetherTargetPoint", "string", "0% 0%");
 
 	this.addOp(function(state) {
-		var target = state.getArg("targetNode")[0];
+		var target = state.getArg("targetNode");
 
 		console.log(target);
 		var sharedRoot = El.getSharedRoot(target, state.domNode);

@@ -134,6 +134,8 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 			this.chips = [];
 			this.zoom = 3;
 
+			this.antiChip = { num: -1 };
+
 			this.chipsTall = ~~(this.imgNode.naturalHeight/this.chipSize);
 			this.chipsWide = ~~(this.imgNode.naturalWidth/this.chipSize);
 
@@ -157,11 +159,14 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 
 
 		this.setSelectedChip = function(id) {
-			this.selectedChip = this.chips[id];
+			this.selectedChip = this.getChip(id);
 		}
 
 
 		this.getChip = function(chipID) {
+			if(chipID < 0)
+				return this.antiChip;
+
 			return this.chips[chipID];
 		}
 
@@ -265,6 +270,7 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 				this.domNode.appendChild(layer.domNode);
 			}
 
+			this.setCurrentLayer(this.currentLayer);
 
 			this.seeableMapReadyPromise = SyncPromise.all(promises);
 		}
@@ -276,6 +282,16 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 			this.domNode.appendChild(layer.domNode);
 
 			return layer;
+		}
+
+		this.setCurrentLayer = function(layer) {
+			if(this.currentLayer && this.currentLayer.domNode)
+				this.currentLayer.domNode.classList.remove("currentlySelectedLayer");
+
+			this.super.FlatMap.setCurrentLayer(layer);
+			
+			if(this.currentLayer && this.currentLayer.domNode)
+				layer.domNode.classList.add("currentlySelectedLayer");
 		}
 	});
 
@@ -518,6 +534,8 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 		height: 100%;
 		width: 100%;
 	}
+
+
 </style>
 
 

@@ -10,6 +10,9 @@ PINE.waitForNeeds(["Tools", "FILE_BRIDGE"], function() {
 	Resources.projects = {};
 	Resources.currentProject;
 
+
+	Resources.fileTree = new BRIDGE.virtualFileTree("FLAT.Worlds");
+
 	PINE.signalNeedReady("Resources");
 
 

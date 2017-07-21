@@ -75,6 +75,14 @@ BRIDGE.loadJSON = function(filePath) {
 
 
 
+BRIDGE.getNameFromFullPath = function(fullPath) {
+	var match = fullPath.match(/[^\/]+$/g)
+
+	if(match) return match[0];
+	else return fullPath;
+}
+
+
 
 
 
@@ -84,18 +92,25 @@ BRIDGE.loadJSON = function(filePath) {
 BRIDGE.virtualFileTree = function(rootPath, wantedInfo) {
 	this.wantedInfo = wantedInfo || [];
 	var thisVirtual = this;
-	this.ready = this.getnitDir(rootPath).then(function(dir){
+	this.ready = this.getnit(rootPath).then(function(dir){
 		thisVirtual.currentDir = thisVirtual.rootDir = dir;
 	});
 	
 }
 
-BRIDGE.virtualFileTree.prototype.cd = function(path) {
-	var thisVirtual = this;
-	return this.getnitDir(path).then(function(dir){
+BRIDGE.virtualFileTree.prototype.changeDirectory = BRIDGE.virtualFileTree.prototype.cd = function(path) {
+	var THIS = this;
+	if(path == "../") {
+		if(THIS.currentDir.parentNode)
+			THIS.currentDir = THIS.currentDir.parentNode;
+		 
+		return SyncPromise.resolved(THIS.currentDir);
+	}
+
+	return THIS.getnit(path).then(function(dir){
 		console.log(dir);
 		if(dir.isDir)
-			thisVirtual.currentDir = dir;	
+			THIS.currentDir = dir;	
 
 		else
 			console.error("Can not change to non-directory");
@@ -103,42 +118,91 @@ BRIDGE.virtualFileTree.prototype.cd = function(path) {
 };
 
 
-BRIDGE.virtualFileTree.prototype.ls = function(forceRequest) {
-	if(this.currentDir.loaded = false || forceRequest) {
-		var thisVirtual = this;
-		return BRIDGE.getDirectory(thisVirtual.currentDir.originalName)
+BRIDGE.virtualFileTree.prototype.list = BRIDGE.virtualFileTree.prototype.ls = function(forceRequest) {
+	var THIS = this;
+	var listMe = THIS.currentDir;
+	if(listMe.loaded == false || forceRequest) {
+		return BRIDGE.getDirectory(listMe.originalName+"/")
 		.then(function(request) {
+			// console.log(thisVirtual.currentDir);
 			var items = JSON.parse(request.response);
 
-			for(var i = 0; i < )
+			// console.log(items);
+			for(var i = 0; i < items.length; i++) {
+				var item = items[i];
+				if(listMe.containsOriginal(item.name) == false) {
+					var addMe = new BRIDGE.virtualFileTreeItem({fullPath: item.name, isDir: item.isDir})
+					listMe.appendChild(addMe);
+				}
+			}
+
+			return listMe.childNodes;
 		}) 	
 	}
-
-	
+	else return SyncPromise.resolved(listMe.childNodes);
 }
 
 
-// BRIDGE.virtualFileTree.prototype.makePathFull = function(path) {
-// 	var fullPath;
-// 	if(path.startsWith("/"))
-// 		fullPath = this.startDir;
-	
-// 	else
-// 		fullPath = this.currentDir;
-
-
-// 	if(fullPath.length && fullPath.endsWith("/") == false)
-// 		fullPath += "/";
-
-// 	fullPath += path;
-// 	return fullPath;
-// }
+BRIDGE.virtualFileTree.prototype.listTree 
+= BRIDGE.virtualFileTree.prototype.lstr 
+= function(forceRequest, callLimit) {
+	var THIS = this;
+	var baton = {};
+	baton.limit = limit;
+	baton.count = 0;
+}
 
 
 
-BRIDGE.virtualFileTree.prototype.getnitDir = function(path) {
 
-	console.log("GETINE", path);
+BRIDGE.virtualFileTree.prototype.make = BRIDGE.virtualFileTree.prototype.mk = function(name) {
+	var fullPath = this.currentDir.originalName+"/"+name;
+	var addMe = new BRIDGE.virtualFileTreeItem({fullPath: fullPath, isDir: false})
+	this.currentDir.appendChild(addMe);
+	return addMe;
+}
+
+
+
+BRIDGE.virtualFileTree.prototype.open = function(filePath, forceRequest, setToCache) {
+	var THIS = this;
+	return THIS.getnit(filePath).then(function(item) {
+		return item.getData(forceRequest, setToCache).then(function(data) {
+			return {data: data, dirItem: item}
+		});
+	});
+}
+
+
+
+BRIDGE.virtualFileTree.prototype.openJSON = function(filePath, forceRequest, setToCache) {
+	var THIS = this;
+	return THIS.open(filePath, forceRequest, setToCache)
+	.then(function(response) {
+		response.data = JSON.parse(response.data);
+		return response;
+	});
+}
+
+BRIDGE.virtualFileTree.prototype.save = function(filePath, data) {
+	var THIS = this;
+	return THIS.getnit(filePath).then(function(item) {
+		return item.setData(data);
+	});
+}
+
+
+BRIDGE.virtualFileTree.prototype.mapTree = function(currentDir, fn) {
+	currentDir = currentDir || this.absoluteRoot;
+	fn(currentDir);
+
+	var children = currentDir.childNodes;
+	for (var i = 0; children && i < children.length; i++)
+		this.mapTree(children[i], fn);
+}
+
+
+BRIDGE.virtualFileTree.prototype.getnit = function(path) {
 
 	if(this.absoluteRoot) {
 		var dirs = path.split("/");
@@ -151,10 +215,8 @@ BRIDGE.virtualFileTree.prototype.getnitDir = function(path) {
 			var dir = dirs[i];
 			if(dir.length) {
 				if(lastDir) {
-					console.log(lastDir);
-					lastDir = lastDir.childNodes[dir];
+					lastDir = lastDir.childNodesByName[dir];
 					if(lastDir == undefined) {
-						console.log("dir not found", dir)
 						lastDir = "notFound";
 					}
 				}
@@ -170,10 +232,9 @@ BRIDGE.virtualFileTree.prototype.getnitDir = function(path) {
 
 	var thisVirtual = this;
 	return BRIDGE.checkExists(path).then(function(request) {
-		console.log(request);
 		var reality = JSON.parse(request.response);
-		if(reality.exists && reality.isDir) {
-			return thisVirtual.assertReprensenation(path);
+		if(reality.exists) {
+			return thisVirtual.assertReprensenation(path, reality.isDir);
 		}
 	});
 }
@@ -181,19 +242,26 @@ BRIDGE.virtualFileTree.prototype.getnitDir = function(path) {
 
 
 
-BRIDGE.virtualFileTree.prototype.assertReprensenation = function(path) {
-	console.log("ASSERT!", path);
+BRIDGE.virtualFileTree.prototype.assertReprensenation = function(path, isDir) {
 
 	var dirs = path.split("/");
-	var lastDir
+	var lastDir;
+	var lastPath = ""
 	for(var i = 0; i < dirs.length; i++) {
 		var dir = dirs[i];
 
+		if(i != 0)
+			lastPath += "/"
+
+		lastPath += dir;
+
 		if(dir.length) {
+
+			
 
 			if(lastDir == undefined) {
 				if(this.absoluteRoot == undefined)
-					this.absoluteRoot = new BRIDGE.virtualFileTreeItem({name: dir, isDir: true})
+					this.absoluteRoot = new BRIDGE.virtualFileTreeItem({fullPath: lastPath, isDir: true})
 
 				if (this.absoluteRoot.originalName == dir)
 					lastDir = this.absoluteRoot;
@@ -203,14 +271,18 @@ BRIDGE.virtualFileTree.prototype.assertReprensenation = function(path) {
 			}
 
 			else {
-				if(lastDir.childNodes[dir] == undefined)
-					lastDir.childNodes[dir] = new BRIDGE.virtualFileTreeItem({name: dir, isDir: true});
+				if(lastDir.childNodesByName[dir] == undefined) {
+					var setDir = (i == dirs.length-1) ? isDir : true;
+					lastDir.appendChild(new BRIDGE.virtualFileTreeItem({fullPath: lastPath, isDir: setDir}));
+				}
 
-				lastDir = lastDir.childNodes[dir]
+				lastDir = lastDir.childNodesByName[dir]
 			}
 
 		}
 	}
+
+
 	return lastDir;
 }
 
@@ -226,27 +298,77 @@ BRIDGE.virtualFileTree.prototype.assertReprensenation = function(path) {
 
 
 BRIDGE.virtualFileTreeItem = function(args) {
-	this.name = args.name;
-	this.originalName = this.name;
-	this.isDir = args.isDir;
-	this.data = args.data || {};
+	this.originalName = args.fullPath;
+	this.ID = BRIDGE.getNameFromFullPath(this.originalName);
+	this.name = this.ID;
 
-	if(this.isDir)
-		this.childNodes = {};
+	// console.log(args.isDir, args.fullPath);
+	this.isDir = args.isDir == "True" || args.isDir === true;
+	this.data = args.data || {};
+	this.dataCache = undefined;
+
+	if(this.isDir) {
+		this.childNodesByName = {};
+		this.childNodes = [];
+		this.loaded = false;
+	}
 }
 
 
 BRIDGE.virtualFileTreeItem.prototype.appendChild = function(addMe) {
 	if(this.isDir) {
-		var ID = addMe.originalName;
-		if(this.childNodes[ID] == undefined) {
-			this.childNodes[ID] = addMe;
+		var ID = addMe.ID;
+		if(this.childNodesByName[ID] == undefined) {
+			this.childNodesByName[ID] = addMe;
+			this.childNodes.push(addMe);
 			addMe.parentNode = this;
 		}
 		else console.error("Can not add already added child", this, addMe)
 	}
 	else console.error("Can not append child to non directory", this, addMe)
 };
+
+
+
+BRIDGE.virtualFileTreeItem.prototype.containsOriginal = function(originalName) {
+	for(var name in this.childNodesByName) {
+		if(this.childNodesByName[name].originalName == originalName)
+			return true;
+	}
+	return false;
+}
+
+
+
+BRIDGE.virtualFileTreeItem.prototype.getData = function(forceRequest, setToCache) {
+	var THIS = this;
+	if(THIS.dataCache == undefined || forceRequest) {
+		return BRIDGE.loadFile(THIS.originalName).then(function(request) {
+			if(setToCache)
+				THIS.dataCache = request.response;
+
+			return request.response;
+		});
+	}
+
+	return SyncPromise.resolved(THIS.dataCache);
+};
+
+
+
+BRIDGE.virtualFileTreeItem.prototype.setData = function(data) {
+	var THIS = this;
+	return BRIDGE.saveFile(THIS.originalName, data);
+}
+
+
+
+BRIDGE.virtualFileTreeItem.prototype.getJSONData = function(forceRequest, setToCache) {
+	var THIS = this;
+	return THIS.getData(forceRequest, setToCache).then(function(result) {
+		return JSON.parse(result);
+	});
+}
 
 
 
