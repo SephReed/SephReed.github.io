@@ -9,7 +9,7 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 
 		this.build = function(domNode) {
 			this.domNode = domNode;
-			this.currentChipSet = undefined;
+			this.currentChipset = undefined;
 
 			this.ui = {};
 			this.ui.domNode = document.createElement("canvas");
@@ -94,6 +94,9 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 			this.ui.update();
 		}
 
+
+		
+
 	});
 
 
@@ -136,6 +139,33 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 		// 		type: ""
 		// 	})
 		// }
+
+
+		this.toLoadable = function(width, height) {
+			var canvas = document.createElement("canvas");
+		    canvas.width = width || this.imgNode.naturalWidth;
+		    canvas.height = height || this.imgNode.naturalHeight;
+		    var ctx = canvas.getContext("2d");
+		    ctx.drawImage(this.imgNode, 0, 0);
+		    var dataURL = canvas.toDataURL("image/png");
+		    var string = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+		    var compressed = LZString.compressToUTF16(string); 
+
+		    // console.log(compressed);
+		    // var utf8 = UTF.U16to8(compressed);
+		    // console.log(utf8);
+
+
+		    // var utf16 = UTF.U8to16(utf8)
+		    // console.log(utf16);
+
+		    // console.log(utf16 == compressed);
+
+
+
+		    BRIDGE.saveFile("test.png", UTF.U16to8(compressed), "png");
+		    console.log(compressed.length);
+		}
 	});
 
 
@@ -143,6 +173,39 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 
 
 
+// function UTF16To8(convertMe) {
+// 	var out = "";
+// 	for(var i = 0; i < convertMe.length; i++) {
+// 		var charCode = convertMe.charCodeAt(i);
+// 		out += String.fromCharCode(~~(charCode/256));
+// 		out += String.fromCharCode(charCode%256);
+// 	}
+// 	return out;
+// }
+
+
+// function UTF8To16(convertMe) {
+// 	var out = ""
+// 	for(var i = 0; i < convertMe.length; i += 2) {
+// 		var charCode = convertMe.charCodeAt(i)*256;
+// 		charCode += convertMe.charCodeAt(i+1);
+// 		out += String.fromCharCode(charCode)
+// 	}
+// 	return out;
+// }
+
+
+var known = {}
+function testUTF() {
+	for(var i = 0; i < 10000000; i++) {
+		var char = String.fromCharCode(i);
+		if(known[char]) {
+			alert(i);
+			return
+		}
+		known[char] = true;
+	}
+}
 
 
 

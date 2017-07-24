@@ -1,0 +1,1 @@
+{"chips":"381 rd1 d4 381 rd2 d9 381 ","chipSetNames":["chipset01.png"],"bounds":[8,5,10,6]}

@@ -18,10 +18,10 @@ PINE.createNeedle("[resizeHandle]", function() {
 		isArrayable: true
 	});
 
-	this.addOp(function(state) {
-		var domNode = state.domNode;
+	this.addOp(function(THIS) {
+		var domNode = THIS.domNode;
 
-		var cssQueries = state.getArg("resizables").split(",");
+		var cssQueries = THIS.getArg("resizables").split(",");
 		var resizableNodes = [];
 		for(var i = 0 ; i < cssQueries.length; i++) {
 			var node = El.cssQuery(domNode, cssQueries[i])[0];
@@ -31,7 +31,7 @@ PINE.createNeedle("[resizeHandle]", function() {
 				resizableNodes[i] = node;
 		}
 
-		var directionStrings = state.getArg("direction").split(",");
+		var directionStrings = THIS.getArg("direction").split(",");
 		var directions = [];
 		for(var i = 0 ; i < directionStrings.length; i++) {
 			var chars = directionStrings[i].match(/\S/g);
@@ -119,18 +119,39 @@ PINE.createNeedle("[resizeHandle]", function() {
 						requestedFrame = undefined;
 					});
 				}
+
+				for (var i = 0; i < resizableNodes.length; i++) {
+					resizableNodes[i].dispatchEvent(new CustomEvent("resizeMove", {
+						cancelable : true
+					}));
+				}
 			}
 			document.body.addEventListener("mousemove", mousemove);
 
 			var mouseup = function() {
 				document.body.removeEventListener("mousemove", mousemove);
 				document.body.removeEventListener("mouseup", mouseup);
+
+				for (var i = 0; i < resizableNodes.length; i++) {
+					resizableNodes[i].dispatchEvent(new CustomEvent("resizeChoose", {
+						cancelable : true
+					}));
+				}
 			}
 			document.body.addEventListener("mouseup", mouseup);
 
 		});
 		
 	});
+
+
+	// this.addResizeMoveListener = function(listener) {
+	// 	this.domNode.addEventListener("resizeMove", listener);
+	// }
+
+	// this.addResizeChooseListener = function(listener) {
+	// 	this.domNode.addEventListener("resizeChoose", listener);
+	// }
 });	
 
 
@@ -144,7 +165,16 @@ PINE.createNeedle("[resizeHandle]", function() {
 
 <style>
 	*[resizeHandle]
-	{ z-index: 100; }
+	{ 
+		z-index: 100; 
+		border-width: 3px;
+		border-color: rgba(0,0,0,0.8);
+		background-color: rgba(125, 125, 125, 0.4);
+		height: 10px;
+		width: 10px;
+		border-style: double;
+		transform: rotate(45deg)
+	}
 	
 	*[resizeHandle].resize-n 
 	{ cursor: n-resize; }
@@ -160,15 +190,43 @@ PINE.createNeedle("[resizeHandle]", function() {
 
 	*[resizeHandle].resize-ne
 	{ cursor: ne-resize; }
+
+		*[resizeHandle].autoPos-ne {
+			position: absolute;
+			right: 0px;
+			top: 0px;
+			transform: translate(50%, -50%) rotate(45deg);
+		}
 	
 	*[resizeHandle].resize-se
 	{ cursor: se-resize; }
 
+		*[resizeHandle].autoPos-se {
+			position: absolute;
+			right: 0px;
+			bottom: 0px;
+			transform: translate(50%, 50%) rotate(45deg);
+		}
+
 	*[resizeHandle].resize-sw
 	{ cursor: sw-resize; }
 
+		*[resizeHandle].autoPos-sw {
+			position: absolute;
+			left: 0px;
+			bottom: 0px;
+			transform: translate(-50%, 50%) rotate(45deg);
+		}
+
 	*[resizeHandle].resize-nw
 	{ cursor: nw-resize; }
+
+		*[resizeHandle].autoPos-nw {
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			transform: translate(-50%, -50%) rotate(45deg);
+		}
 
 	*[resizeHandle].resize-ns, *[resizeHandle].resize-sn
 	{ cursor: ns-resize; }
@@ -176,16 +234,12 @@ PINE.createNeedle("[resizeHandle]", function() {
 	*[resizeHandle].resize-ew, *[resizeHandle].resize-we
 	{ cursor: ew-resize; }
 
-	*[resizeHandle].resize-ne-sw, *[resizeHandle].resize-sw-ne
-	{ cursor: nesw-resize; }
+	*[resizeHandle].resize-nesw, *[resizeHandle].resize-swne
+	{  cursor: nesw-resize; }
 
-	*[resizeHandle].resize-nw-se, *[resizeHandle].resize-se-nw
-	{ cursor: nwse-resize; }
+	*[resizeHandle].resize-nwse, *[resizeHandle].resize-senw 
+	{  cursor: nwse-resize; }
 
-	*[resizeHandle].resize-all { 
-		cursor: move; 
-		border: 3px double rgba(0,0,0,0.35);
-		height: 10px;
-		width: 10px;
-	}
+	*[resizeHandle].resize-all 
+	{  cursor: move;  }
 </style>

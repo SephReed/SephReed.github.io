@@ -10,6 +10,7 @@ BRIDGE.defaultPrefix = "";
 
 BRIDGE.try = function(sendMe) {
 	// sendMe.filePath = BRIDGE.defaultPrefix + sendMe.filePath;
+	console.log(sendMe);
 
 	return BRIDGE.Ajax.post(BRIDGE.url, JSON.stringify(sendMe));
 }
@@ -45,14 +46,15 @@ BRIDGE.makeDirectory = function(filePath, dirName) {
 	return BRIDGE.try(sendMe);
 }
 
-BRIDGE.saveFile = function(filePath, data, writeType) {
+BRIDGE.saveFile = function(filePath, data, dataType, writeType) {
 	var sendMe = {};
 	sendMe.cmd = "put";
 	sendMe.filePath = BRIDGE.fixPath(filePath);
 	sendMe.writeType = writeType || "w";
 	sendMe.data = data;
 
-	console.log(sendMe);
+	if(dataType)
+		sendMe.dataType = dataType;
 
 	return BRIDGE.try(sendMe);
 }
@@ -131,6 +133,8 @@ BRIDGE.virtualFileTree.prototype.list = BRIDGE.virtualFileTree.prototype.ls = fu
 			for(var i = 0; i < items.length; i++) {
 				var item = items[i];
 				if(listMe.containsOriginal(item.name) == false) {
+					console.log("adding", item.name, listMe);
+
 					var addMe = new BRIDGE.virtualFileTreeItem({fullPath: item.name, isDir: item.isDir})
 					listMe.appendChild(addMe);
 				}
@@ -331,11 +335,12 @@ BRIDGE.virtualFileTreeItem.prototype.appendChild = function(addMe) {
 
 
 BRIDGE.virtualFileTreeItem.prototype.containsOriginal = function(originalName) {
-	for(var name in this.childNodesByName) {
-		if(this.childNodesByName[name].originalName == originalName)
-			return true;
-	}
-	return false;
+	return originalName in this.childNodesByName;
+	// for(var name in this.childNodesByName) {
+	// 	if(this.childNodesByName[name].originalName == originalName)
+	// 		return true;
+	// }
+	// return false;
 }
 
 

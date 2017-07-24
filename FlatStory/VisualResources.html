@@ -228,12 +228,21 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 		}
 
 		this.setCanvasSizeTo = function(width, height) {
-			if(this.domNode.width !== width)
-				this.domNode.width = width;
+			var changed = false;
 
-			if(this.domNode.height !== height)
+			console.log(width, height, this.domNode);
+
+			if(this.domNode.width !== width) {
+				this.domNode.width = width;
+				changed = true;
+			}
+
+			if(this.domNode.height !== height) {
 				this.domNode.height = height;
-			
+				changed = true;
+			}
+
+			return changed;
 		}
 	});
 
@@ -261,6 +270,7 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 
 		this.evolveThis = function() {
 			this.domNode = document.createElement("FlatMap");
+			this.scale = 1;
 			
 			var promises = []
 			for(var i = 0; i < this.layers.length; i++) {
@@ -282,6 +292,26 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 			this.domNode.appendChild(layer.domNode);
 
 			return layer;
+		}
+
+		this.setAssetScale = function(scale) {
+			if(scale == this.scale) return;
+
+			this.scale = scale;
+			this.updateSizing();
+		}
+
+		this.updateSizing = function() {
+			this.super.FlatMap.updateSizing();
+
+			var width = this.domNode.style.width = this.width * this.scale + "px";
+			var height = this.domNode.style.height = this.height * this.scale + "px";
+
+			for (var i = 0; i < this.layers.length; i++) {
+				var layer = this.layers[i];
+				layer.domNode.style.width = width;
+				layer.domNode.style.height = height;
+			}
 		}
 
 		this.setCurrentLayer = function(layer) {
@@ -333,11 +363,32 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 			this.updateRender();
 		}
 
-		this.setSizeEqualTo = function(canvas) {
-			this.super.Canvas.setSizeEqualTo(this, canvas)
-			this.unrenderedChips = "all";
+		this.setSizeEqualTo = function(canvasOrWidth, height) {
+			alert("visual resources ~350")
+			// if(typeof canvasOrWidth == "number") {
+			// 	if(this.domNode.width == canvasOrWidth && this.domNode.height == height)
+			// 		return;
 
+			// 	this.domNode.width = canvasOrWidth;
+			// 	this.domNode.height = height;
+			// }
+			// else this.super.Canvas.setSizeEqualTo(this, canvas)
+
+			
+		}
+
+		this.setChipSizeTo = function(chipsWide, chipsTall) {
+			this.super.ChipLayer.setChipSizeTo(chipsWide, chipsTall);
 			this.baseline();
+		}
+
+		this.setCanvasSizeTo = function(width, height) {
+			var didChange = this.super.hasCanvas.setCanvasSizeTo(width, height);
+
+			if(didChange) {
+				this.unrenderedChips = "all";
+				this.updateRender();
+			}
 		}
 
 		this.updateRender = function() {
@@ -395,13 +446,14 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 			var expectedWidth = chipSet.chipSize * this.chipsWide;
 			var expectedHeight = chipSet.chipSize * this.chipsTall;
 				//
-			if(domNode.width != expectedWidth || domNode.height != expectedHeight) {
-				domNode.width = expectedHeight;
-				domNode.height = expectedHeight
-				this.unrenderedChips = "all";
-			}
+			this.setCanvasSizeTo(expectedWidth, expectedHeight);
+			// if(domNode.width != expectedWidth || domNode.height != expectedHeight) {
+			// 	domNode.width = expectedHeight;
+			// 	domNode.height = expectedHeight
+			// 	this.unrenderedChips = "all";
+			// }
 
-			this.updateRender();
+			
 		}
 
 

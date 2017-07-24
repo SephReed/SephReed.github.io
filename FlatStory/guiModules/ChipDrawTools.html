@@ -345,7 +345,7 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 
 
 		this.press = function(event) {
-			var chipID = event.layer.chips[event.row][event.col]
+			var chipID = event.layer.getChip(event.row, event.col);
 			UI.clipboards.setCurrentSlot(chipID);
 			// this.toolbar.pallette.current.setSelectedChip(chipID);
 		}
@@ -413,7 +413,7 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 
 
 		this.press = function(event) {
-			var targetChipID = event.layer.chips[event.row][event.col];
+			var targetChipID = event.layer.getChip(event.row, event.col);
 			this.spread(event.row, event.col, event.layer, this.toolbar.getSelectedChipNum());
 		}
 
@@ -429,12 +429,12 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 				return;
 
 			if(targetChipID === undefined)
-				targetChipID = layer.chips[row][col]
+				targetChipID = layer.getChip(row, col)
 
 			if(fillChipID == targetChipID)
 				return;
 
-			if(layer.chips[row][col] == targetChipID) {
+			if(layer.getChip(row, col) == targetChipID) {
 				layer.setChip(row, col, fillChipID);
 
 				this.spread(row-1, col, layer, fillChipID, allowDiagonals, targetChipID);

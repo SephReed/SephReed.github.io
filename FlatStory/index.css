@@ -134,13 +134,13 @@ body {
 				}
 
 					palletteArea>resize {
-						position: absolute;
-						right: 0px;
-						bottom: 0px;
-						transform: translate(50%, 50%) rotate(45deg);
+						/*position: absolute;*/
+						/*right: 0px;*/
+						/*bottom: 0px;*/
+						/*transform: translate(50%, 50%) rotate(45deg);
 						border-color: black !important;
 						background-color: #888;
-						opacity: 1 !important;
+						opacity: 1 !important;*/
 					}
 
 					palletteArea::after {

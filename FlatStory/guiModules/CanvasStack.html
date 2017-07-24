@@ -8,8 +8,25 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 	CanvasStack = ELATE.create("CanvasStack", function() {
 
 		this.build = function(domNode) {
-			this.domNode = domNode;
-			this.setZoom(2);
+			var THIS = this;
+			THIS.domNode = domNode;
+
+			THIS.domNode.addEventListener("resizeChoose", function(event) {
+				var width = THIS.domNode.offsetWidth;
+				var height = THIS.domNode.offsetHeight;
+
+				var currentChipSize = THIS.zoom * 16;
+
+				var newChipsWide = Math.round(width/currentChipSize);
+				var newChipsTall = Math.round(height/currentChipSize);
+
+				if(THIS.currentDisplayable) 
+					THIS.currentDisplayable.setChipsDimensions(newChipsWide, newChipsTall);
+
+				THIS.updateSizings();
+			});
+
+			THIS.setZoom(2);
 		}
 
 
@@ -53,13 +70,19 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 		this.updateSizings = function() {
 
 			if(this.currentDisplayable) {
-				var expectedWidth = this.currentDisplayable.width * this.zoom;
-				if(this.domNode.offsetWidth !== expectedWidth)
-					this.domNode.style.width = expectedWidth + "px";
+				this.currentDisplayable.setAssetScale(this.zoom);
 
-				var expectedHeight = this.currentDisplayable.height * this.zoom;
-				if(this.domNode.offsetHeight !== expectedHeight)
-					this.domNode.style.height = expectedHeight + "px";	
+				var expectedWidth = this.currentDisplayable.domNode.style.width;
+				if(this.domNode.offsetWidth !== expectedWidth) {
+					this.domNode.style.width = expectedWidth;
+					// this.currentDisplayable.domNode.style.width = expectedWidth + "px";
+				}
+
+				var expectedHeight = this.currentDisplayable.domNode.style.height;
+				if(this.domNode.offsetHeight !== expectedHeight) {
+					this.domNode.style.height = expectedHeight;	
+					// this.currentDisplayable.domNode.style.height = expectedHeight + "px";	
+				}
 			}		
 			
 		}
@@ -276,6 +299,8 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 			var displayed = this.canvasStack.currentDisplayable;
 			this.ui.domNode.width = displayed.width;
 			this.ui.domNode.height = displayed.height;
+			this.ui.domNode.style.width = displayed.domNode.style.width;
+			this.ui.domNode.style.height = displayed.domNode.style.height;
 		}
 
 
@@ -306,18 +331,18 @@ canvasStack {
 	display: inline-block;
 	position: relative;
 	margin: 200px;
-	height: 768px;
-	width: 768px;
+	/*height: 768px;*/
+	/*width: 768px;*/
 	background: #1F1F1F;
 	box-shadow: 5px 5px 25px rgba(0,0,0,0.3);
 }
 
-	canvasStack * {
+	canvasStack :not(resize) {
 		position: absolute;
 		top:0px;
 		left: 0px;
-		width: 100%;
-		height: 100%;
+		/*width: 100%;*/
+		/*height: 100%;*/
 		
 		image-rendering: -moz-crisp-edges;
 	}
@@ -329,6 +354,18 @@ canvasStack {
 		canvasStack.soloSelected canvas.currentlySelectedLayer {
 			opacity: 1;
 		}
+
+	canvasStack resize {
+		opacity: 0.8;
+	}
+
+	
+
+resize {
+	border-color: black !important;
+	background-color: #888 !important;
+	/*opacity: 1 !important;*/
+}
 
 </style>
 

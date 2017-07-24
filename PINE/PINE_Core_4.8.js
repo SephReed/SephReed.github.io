@@ -1556,7 +1556,7 @@ U.Ajax.send = function(getOrPost, url, dataType, data) {
 			console.log(response);
 			console.log(request);
 			var err = "include src '"+url+"' does not exist";
-		  	PINE.err(err)
+		  	PINE.err(err, data)
 		  	reject(err)
 		};
 
@@ -1565,7 +1565,7 @@ U.Ajax.send = function(getOrPost, url, dataType, data) {
 		}
 		catch(e) {
 			var err = "NS_ERROR_DOM_BAD_URI: Access to restricted URI '"+url+"' denied";
-			PINE.err(err)
+			PINE.err(err, data)
 		  	reject(err)
 		}
 

@@ -58,18 +58,34 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 		return out;
 	}
 
-	Logic.packageMap = function(chips) {
-		var printOut = ""
-		for(var row = 0; row < height; row++) {
-			for(var col = 0; col < width; col++) {
-				printOut += chips[row][col] + " ";
-			}
+	// Logic.packageMap = function(chips) {
+	// 	var printOut = ""
+	// 	for(var row = 0; row < height; row++) {
+	// 		var skipCol = 0;
+	// 		for(var col = 0; col < width; col++) {
+	// 			var chipNum = chips[row][col];
+	// 			if(chipNum < 0)
+	// 				skipCol++;
 
-			if(row < height-1)
-				printOut += "\n";
-		}
-		return printOut;
-	}
+	// 			else {
+	// 				if(skipCol > 0) {
+	// 					printOut += "sc"+skipCol+" ";
+	// 					skipCol = 0;
+	// 				}
+
+	// 				printOut += chipNum + " ";
+	// 			}
+	// 		}
+
+	// 		if(skipCol > 0) {
+	// 			printOut += "sc"+skipCol+" ";
+	// 		}
+
+	// 		if(row < height-1)
+	// 			printOut += "\n";
+	// 	}
+	// 	return printOut;
+	// }
 
 
 
@@ -140,8 +156,10 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			THIS.chipsWide = mapData.chipsWide;
 			THIS.chipsTall = mapData.chipsTall;
 			THIS.mapPath = mapPath;
-			THIS.width = THIS.chipsWide * 16;  //TODO magic number, and move chipwidth to layers
-			THIS.height = THIS.chipsTall * 16;
+			// THIS.width = THIS.chipsWide * 16;  //TODO magic number, and move chipwidth to layers
+			// THIS.height = THIS.chipsTall * 16;
+
+			this.updateSizing();
 
 			var layerPromises = [];
 
@@ -149,18 +167,20 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 				var layerName = mapData.layers[i];
 				var layerPath = THIS.mapPath+layerName;
 
-				var promise = Resources.fileTree.openJSON(layerPath)
-				.then(function(response){
-					var addMe = new ChipLayer(null, null, response.data);
-					addMe.dirItem = response.dirItem;
-					response.dirItem.saveable = addMe;
+				(function(i){
+					var promise = Resources.fileTree.openJSON(layerPath)
+					.then(function(response){
+						var addMe = new ChipLayer(null, null, response.data);
+						addMe.dirItem = response.dirItem;
+						response.dirItem.saveable = addMe;
 
-					THIS.addLayer(addMe);
-					THIS.repeatDispatches(addMe);
-				});
+						THIS.addLayer(addMe, i);
+						// THIS.layers[i] = addMe;
+						// THIS.repeatDispatches(addMe);
+					});
 
-
-				layerPromises.push(promise);
+					layerPromises.push(promise);
+				})(i)
 			}
 
 
@@ -173,8 +193,10 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			return {Saveable: [mapPath, true]};
 		}
 
-		this.addLayer = function(layer) {
+		this.addLayer = function(layer, i) {
 			// if(layer.map != this)
+
+			console.log("make add layer insert at index".toUpperCase());
 
 			if(this.appendChild(layer))
 				this.repeatDispatches(layer);
@@ -192,6 +214,8 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 
 
 		this.setCurrentLayer = function(layer) {
+			console.log(layer, "CURRENT LAYER")
+
 			if(layer && this.layers.indexOf(layer) == -1)
 				PINE.err("Can not set current layer to layer from another map");
 
@@ -207,14 +231,41 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			}
 		}
 
+
+		this.moveWestBorder = function(chips) {
+			this.chipsWide += chips;
+			this.updateSizing();
+		}
+
+
+		this.setChipsDimensions = function(chipsWide, chipsTall) {
+			this.chipsWide = chipsWide;
+			this.chipsTall = chipsTall;
+			this.updateSizing();
+		}
+
+		this.updateSizing = function() {
+			this.width = this.chipsWide * 16;
+			this.height = this.chipsTall * 16;
+
+			for (var i = 0; i < this.layers.length; i++) {
+				var layer = this.layers[i];
+				layer.setChipSizeTo(this.chipsWide, this.chipsTall);
+			}
+		}
+
 		this.toLoadable = function() {
 			var out = {};
 			out.layers = [];
 			for(var i = 0; i < this.layers.length; i++) {
+				if(this.layers[i] == this.currentLayer)
+					out.currentLayer = i;
+
 				out.layers.push(this.layers[i].dirItem.name);
 			}
 			out.chipsWide = this.chipsWide;
 			out.chipsTall = this.chipsTall;
+
 			return JSON.stringify(out);
 		}
 
@@ -231,19 +282,24 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 		this.implements("Saveable");
 		this.implements("Treeable");
 
-		this.build = function(chipsWide, chipsTall, rawFile) {
+		this.build = function(chipsWide, chipsTall, loadable) {
 			this.super.Treeable("map");
 
-			if(rawFile) {
-				this.chips = Logic.unpackageMap(rawFile.chips);
+			
 
-				this.chipsWide = this.chips[0].length;
-				this.chipsTall = this.chips.length;
+			if(loadable) {
+				this.load(loadable);
 
-				this.chipSetNames = rawFile.chipSetNames;
+				// this.chips = Logic.unpackageMap(rawFile.chips);
+
+				// this.chipsWide = this.chips[0].length;
+				// this.chipsTall = this.chips.length;
+
+				
 			}
 
 			else {
+				this.defaultChip = -1;
 				this.chipsWide = chipsWide || 16;
 				this.chipsTall = chipsTall || 16;
 
@@ -265,17 +321,28 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 
 
 		this.getChip = function(row, col) {
-			return this.chips[row][col];
+			var chipRow = this.chips[row]
+			var chip = chipRow ? chipRow[col] : undefined;
+			return chip !== undefined ? chip : this.defaultChip;
 		};
 
 		this.setChip = function(row, col, value) {	
-			var oldVal = this.chips[row][col]
+			var oldVal = this.getChip(row, col);
 
 			if(oldVal != value) {
+				if(!this.chips[row])
+					this.chips[row] = []
+
 				this.chips[row][col] = value;
 				this.markUnsaved();
 			}
 		};
+
+
+		this.setChipSizeTo = function(chipsWide, chipsTall) {
+			this.chipsWide = chipsWide;
+			this.chipsTall = chipsTall;
+		}
 
 		
 
@@ -291,29 +358,338 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			this.map.setCurrentLayer(this);
 		}
 
-		this.toLoadable = function() {
-			var out = {};
-			out.chips = ""
-			for(var row = 0; row < this.chipsTall; row++) {
-				for(var col = 0; col < this.chipsWide; col++) {
-					out.chips += this.chips[row][col] + " ";
-				}
 
-				if(row < this.chipsTall-1)
-					out.chips += "\n";
+		this.getChipCounts = function(bounds) {
+			var out = {};
+			var chipCounts = out.counts = [];
+			var currentMax;
+			this.mapChips(bounds, function(chip) {
+				if(chipCounts[chip.num] == undefined)
+					chipCounts[chip.num] = 1;
+
+				else chipCounts[chip.num]++;
+
+				if(currentMax == undefined 
+				|| (currentMax != chip.num && chipCounts[chip.num] > chipCounts[currentMax]))
+					currentMax = chip.num;
+			})
+
+			out.mostCommon = currentMax;
+			return out;
+		}
+
+
+		this.getCropping = function(cropOutNum, bounds) {
+			if(cropOutNum === undefined)
+				cropOutNum = -1;
+
+			var top, left, right, bottom;
+
+			this.mapChips(bounds, function(chip) {
+				if(chip.num != cropOutNum) {
+					if(top === undefined)
+						top = chip.row;
+
+					if(left == undefined || left > chip.col)
+						left = chip.col
+
+					if(right == undefined || right < chip.col)
+						right = chip.col
+
+					if(bottom == undefined || bottom < chip.row)
+						bottom = chip.row;
+				}
+			})
+				
+
+			if(top === undefined)
+				return undefined;
+
+			return {
+				top: top,
+				left: left,
+				width: right-left + 1,
+				height: bottom-top + 1				
+			}
+		}
+
+
+		this.mapChips = function(boundsOrFn, fn) {
+			var bounds;
+			if(typeof boundsOrFn == "function")
+				fn = boundsOrFn;
+		
+			else bounds = boundsOrFn;
+
+			var startRow, endRow, startCol, endCol;
+
+			if(bounds) {
+				startRow = bounds.top;
+				endRow = bounds.top + bounds.height;
+				startCol = bounds.left;
+				endCol = bounds.left + bounds.width;
+			}
+			else {
+				startRow = startCol = 0;
+				endRow = this.chipsTall;
+				endCol = this.chipsWide;
+			}	
+
+
+			for(var row = startRow; row < endRow; row++) {
+				for(var col = startCol; col < endCol; col++) {
+					var chip = {}
+					chip.num = this.getChip(row, col);
+					chip.row = row;
+					chip.col = col;
+					fn(chip);
+				}
+			}
+		}
+
+		this.toLoadable = function() {
+
+
+			var newDefault = this.defaultChip;
+
+
+			var totalCropping = this.getCropping();
+			var chipBounds = totalCropping;
+			console.log(totalCropping);
+
+			//if total cropping width == 1 and height == 1
+
+			if(totalCropping.width == 1 && totalCropping.height == 1) {
+				newDefault = this.getChip(totalCropping.top, totalCropping.left);
+				chipBounds = undefined;
+			}
+			else {
+				var counts = this.getChipCounts(totalCropping);
+				console.log(counts);
+
+				if(counts.mostCommon != -1) {
+					newDefault = counts.mostCommon;
+
+					var insetCropping = this.getCropping(newDefault, totalCropping);
+					if(insetCropping.width < chipBounds.width || insetCropping.height < chipBounds.height)
+						chipBounds = insetCropping;
+				}
 			}
 
-			out.chipSetNames = this.chipSetNames;
-			return JSON.stringify(out);
-			// BRIDGE.saveFile(this.filePath, JSON.stringify(out));
+			var out = {};
+		
+			if(chipBounds) {
+				out.chips = ""
+
+				var startRow = chipBounds.top;
+				var rowEnd = chipBounds.top + chipBounds.height;
+				var startCol = chipBounds.left;
+				var colEnd = chipBounds.left + chipBounds.width;
+
+				var fullRow = 0;
+				var currentChip = "none";
+				for(var row = startRow; row < rowEnd; row++) {
+					
+					var newRow = row != startRow;
+
+					var chipCount = 0;
+					for(var col = startCol; col < colEnd; col++) {
+						var chipNum = this.getChip(row, col);
+						if(currentChip == chipNum) 
+							chipCount++;
+
+
+						//if chip change
+						else {
+							//append any full rows of last chip
+							if(fullRow > 0) {
+								if(currentChip == newDefault)
+									out.chips += "rd"+fullRow+" ";
+
+								else
+									out.chips += "r"+fullRow+"x"+currentChip+" ";
+
+								fullRow = 0;
+								newRow = false;
+							}
+							//if this is a new row, 
+							else if(newRow) {
+								out.chips += "n "
+								newRow = false;
+							}
+
+							//append the current count of last chip
+							if(chipCount > 1) {
+								if(currentChip == newDefault)
+									out.chips += "d"+chipCount+" ";
+
+								else
+									out.chips += chipCount+"x"+currentChip+" ";
+							}
+							//singleton
+							else if(currentChip != "none"){
+								if(currentChip == newDefault)
+									out.chips += "d ";
+
+								else
+									out.chips += currentChip + " ";
+							}
+							
+
+							//reset chip and count
+							currentChip = chipNum;
+							chipCount = 1;
+						}
+					}
+
+					//if at end of line, all chips the same, it's a full row
+					if(chipCount >= colEnd-startCol)
+						fullRow++;
+
+					//otherwise, add the rest of the row
+					else if(currentChip != newDefault) {
+						if(chipCount > 1)
+							out.chips += chipCount+"x"+currentChip+" ";
+
+						else if(currentChip != "none")
+							out.chips += currentChip + " ";
+					}
+
+					if(fullRow == 0)
+						currentChip = "none";
+
+				}
+
+				out.chipSetNames = this.chipSetNames;
+			}	
+
+			out.bounds = boundsToArray(totalCropping);
+
+			if(chipBounds && chipBounds != totalCropping) 
+				out.chipBounds = boundsToArray(chipBounds);
 			
-		}	
+			if(newDefault > -1)
+				out.defaultChip = newDefault;
 
 
-		this.load = function() {
+			return JSON.stringify(out);
+		}
+
+
+		this.load = function(args) {
+			// var args = JSON.parse(loadable);
+			var THIS = this;
+
+			console.log(args);
+
+			THIS.chipSetNames = args.chipSetNames;
+			var row = args.bounds ? args.bounds[0] : 0;
+			var colOffset = args.bounds ? args.bounds[1] : 0;
+			var col = colOffset;
+			THIS.chipsWide = 16 || args.bounds[2];
+			THIS.chipsTall = 16 || args.bounds[3];
+			THIS.defaultChip = args.defaultChip !== undefined ? args.defaultChip : -1;
+
+			var chipSteps = args.chips.match(/\S+|\n/g)
+
+			console.log(chipSteps);
+
+			THIS.chips = [];
+
+			var assertRow = function(rowNum) {
+				if(THIS.chips[rowNum] == undefined)
+					THIS.chips[rowNum] = [];
+			}
+
+			for(var i = 0; i < chipSteps.length; i++) {
+				var chipStep = chipSteps[i];
+
+				var count, pieces, num;
+				
+				if (chipStep == "\n" || chipStep == "n"){
+					row++;
+					col = colOffset;
+				}
+				else if(chipStep.startsWith("d")) {
+					if(chipStep.length == 1)
+						col++
+
+					else {
+						count = parseInt(chipStep.slice(1));
+						col += count;
+					}
+				}
+				else if(chipStep.startsWith("r")) {
+					row++;
+					col = colOffset;
+
+					if(chipStep.startsWith("rd")){
+						count = parseInt(chipStep.slice(2));
+						row += count;
+					}
+					else {
+						pieces = chipStep.slice(1).split("x");
+						count = parseInt(pieces[0]);
+						num = parseInt(pieces[1]);
+
+						var endRow = row+count;
+
+						for(; row < endRow; row++) {
+							assertRow(row);
+							for(col = colOffset; col < THIS.chipsWide; col++){
+								THIS.chips[row][col] = num;
+							}
+						}
+					}
+				}
+				else if (chipStep.indexOf("x") != -1) {
+					assertRow(row);
+					pieces = chipStep.split('x');
+					count = parseInt(pieces[0]);
+					num = parseInt(pieces[1]);
+
+					for(var c = 0; c < count; c++) {
+						THIS.chips[row][col] = num;
+						col++;
+					}
+				}
+				else {
+					num = parseInt(chipStep);
+
+					if(!isNaN(num)) {
+						assertRow(row);
+						THIS.chips[row][col] = num;
+						col++;
+					}
+				}
+
+			}
 
 		}
 	})
+
+
+
+
+	function boundsToArray(bounds) {
+		return [bounds.top, bounds.left, bounds.width, bounds.height];
+	}
+
+
+
+
+	// var Bounds = ELATE.create("bounds", function() {
+	// 	this.build(top, left, width, height) {
+	// 		this.top = top;
+	// 		this.left = left;
+	// 		this.width = width;
+	// 		this.height = height;
+	// 	}
+
+	// 	this.toArray = function() {
+	// 		return [this.top, this.left, this.width, this.right];
+	// 	}
+	// });
 
 
 
