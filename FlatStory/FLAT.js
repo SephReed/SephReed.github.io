@@ -3,7 +3,8 @@
 
 var FLAT = {};
 
-FLAT.BridgePrefix = "FLAT.Worlds/"
+// FLAT.BridgePrefix = "FLAT.Worlds/"
+FLAT.BridgePrefix = ""
 
 
 

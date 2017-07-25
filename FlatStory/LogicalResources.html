@@ -22,7 +22,7 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			projectFile = new Logic.class.UnloadedProject(projectName);
 			Resources.currentProject = projectFile;
 
-			var filePath = projectFile.pathPrefix + projectName+".flat-project.txt";
+			var filePath = projectFile.pathPrefix + projectName+".flat-project.json";
 
 			return Resources.fileTree.openJSON(filePath)
 			.then(function(response){
@@ -120,7 +120,7 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			var mapPath = projectData.currentMap;
 			var mapName = mapPath.match(/[^\/]+$/);
 			var mapPath = Resources.currentProject.pathPrefix+"maps/"+mapName+"/"
-			mapFilePath = mapPath+mapName+".map-file.txt";
+			mapFilePath = mapPath+mapName+".map-file.json";
 
 
 			THIS.projectReadyPromise = Resources.fileTree.openJSON(mapFilePath)
@@ -620,7 +620,8 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 					}
 				}
 				else if(chipStep.startsWith("r")) {
-					row++;
+					if(col > colOffset)
+						row++;
 					col = colOffset;
 
 					if(chipStep.startsWith("rd")){

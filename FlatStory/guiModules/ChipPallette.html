@@ -147,9 +147,17 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 		    canvas.height = height || this.imgNode.naturalHeight;
 		    var ctx = canvas.getContext("2d");
 		    ctx.drawImage(this.imgNode, 0, 0);
-		    var dataURL = canvas.toDataURL("image/png");
-		    var string = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-		    var compressed = LZString.compressToUTF16(string); 
+
+		    return canvas.toBlob(function(blob) {
+		    	console.log(blob);
+		    	return BRIDGE.saveFile("test.png", blob, "png");
+		    });
+
+		    
+
+		    // var dataURL = canvas.toDataURL("image/png");
+		    // var string = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+		    // var compressed = LZString.compressToUTF16(string); 
 
 		    // console.log(compressed);
 		    // var utf8 = UTF.U16to8(compressed);
@@ -163,8 +171,8 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 
 
 
-		    BRIDGE.saveFile("test.png", UTF.U16to8(compressed), "png");
-		    console.log(compressed.length);
+		    // BRIDGE.saveFile("test.png", UTF.U16to8(compressed), "png");
+		    // console.log(compressed.length);
 		}
 	});
 
@@ -195,17 +203,17 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 // }
 
 
-var known = {}
-function testUTF() {
-	for(var i = 0; i < 10000000; i++) {
-		var char = String.fromCharCode(i);
-		if(known[char]) {
-			alert(i);
-			return
-		}
-		known[char] = true;
-	}
-}
+// var known = {}
+// function testUTF() {
+// 	for(var i = 0; i < 10000000; i++) {
+// 		var char = String.fromCharCode(i);
+// 		if(known[char]) {
+// 			alert(i);
+// 			return
+// 		}
+// 		known[char] = true;
+// 	}
+// }
 
 
 
