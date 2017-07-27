@@ -5,12 +5,12 @@
 	<link rel="stylesheet" type="text/css" href="../public/css/init.css">
 	<link rel="stylesheet" type="text/css" href="index.css">
 
-	<script type="text/javascript" src="../public/js/lz-string.js"></script>
-	<script type="text/javascript" src="../public/js/UTF-Helper.js"></script>
+	<!-- CORE DEPENDENCIES -->
 	<script type="text/javascript" src="../PINE/PINE_Core_4.8.js"></script>
 	<script type="text/javascript" src="FLAT.js"></script>
 
-	
+
+	<!-- OTHER TOOLS -->
 	<needle src="WebFileBridge.js" needAlias="FILE_BRIDGE"></needle>
 	<needle src="../PINE/tools/ELATE.js" needAlias="ELATE"></needle>
 	
@@ -28,8 +28,6 @@
 
 	<!-- FLAT.Worlds RESOURCES -->
 	<needle src="basicInterfaces.html"></needle>
-
-
 	<needle src="Resources.html"></needle>
 		<needle src="LogicalResources.html"></needle>
 		<needle src="VisualResources.html"></needle>
@@ -41,6 +39,11 @@
 	<needle src="Tools.html"></needle>
 	<!-- <needle src="Options.html"></needle> -->
 
+
+
+
+
+	<!-- Loadbar script, to be run ASAP -->
 	<script type="text/javascript">
 		// PINE.StyleVars.set("panelBase", "#46514E");
 		// PINE.StyleVars.set("panelBorderWidth", "3px");
@@ -48,19 +51,10 @@
 		// PINE.StyleVars.set("backdropColor", "#2A2A2A");
 		// PINE.StyleVars.set("panelTextColor", "#EFD1A5");
 
-		// FLAT.setUI("FlatEditor");
 		FLAT.defaultInit("test");
 		
 
-
-		// var loadEvents = ["Resources", "LogicalResources", "VisualResources", 
-		// 	"WorldEditor", "Draw", "DrawTools", "FILE_BRIDGE", "ELATE"]
-
-		// var onLoad = function() {
-			
-		// }
-
-
+		// An 
 		(function initLoadingInteraction() {
 			var fullScreenFn = function(event) {
 				document.body.mozRequestFullScreen();
@@ -85,21 +79,6 @@
 		})()
 		
 	</script>
-
-<!-- 	<script type="text/javascript">
-		PINE.createNeedle("[scalableCanvas]", function() {
-			this.addOp(function(state) {
-				var domNode = state.domNode;
-				var updateSizing = function() {
-					domNode.width = domNode.offsetWidth;
-					domNode.height = domNode.offsetHeight;
-				}
-				El.onSizeChange(domNode, updateSizing);
-				updateSizing();
-			});
-		});
-	</script>
-	 -->
 
 
 

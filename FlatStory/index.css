@@ -38,24 +38,15 @@ html {
 }
 
 body {
-	/*font-family: "FreePixel";*/
 	font-family: arial;
-	/*font-family: "TypeWriter";*/
 	color: var(--panelTextColor);
 	background-color: var(--backdropColor);
-	/*background-color: panelBase;*/
 	border-color: var(--panelBorderColor);
 	border-width: var(--panelBorderWidth);
 	font-size: 13px;
-	/*transition: opacity 0.5s ease;*/
 	background-image: url("public/images/textures/texture_gritty.png");
 	background-size: auto auto;
 	background-repeat: repeat;
-	/*medShadow*/
-
-	/*cursor:  "draw";*/
-    /*cursor:  url(public/images/icons/icons_tools.png) 1 1, auto;*/
-	/*image-rendering: -moz-crisp-edges;*/
 }
 	app {
 		display: block;
@@ -242,12 +233,7 @@ body {
 					overflow: scroll;
 				}
 
-					
-
-							/*canvasStack canvas:last-child {
-								background: #1F1F1F;
-								box-shadow: 5px 5px 25px rgba(0,0,0,0.3);
-							}*/
+				
 
 
 

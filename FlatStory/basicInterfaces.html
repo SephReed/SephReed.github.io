@@ -1,6 +1,14 @@
 <script type="text/javascript">
 	
 PINE.waitForNeed("ELATE", function () {
+
+
+
+	/*********************************
+	*	EVENT DISPATCHER
+	*********************************/
+	// event listener stuff
+
 	ELATE.create("EventDispatcher", function() {
 		this.canEvolve("*");
 
@@ -14,6 +22,19 @@ PINE.waitForNeed("ELATE", function () {
 				this.eventListeners[eventType] = [];
 
 			this.eventListeners[eventType].push(fn);
+
+			return fn;
+		}
+
+		this.removeEventListener = function(eventType, fn) {
+			var out;
+			var listeners = this.eventListeners[eventType];
+			if(listeners) {
+				var target = listeners.indexOf(fn);
+				if(target != -1)
+					out = listeners.splice(target, 1);
+			}
+			return out;
 		}
 
 		this.dispatchEvent = function(eventData) {
@@ -38,6 +59,17 @@ PINE.waitForNeed("ELATE", function () {
 
 
 
+
+
+
+
+
+
+
+	/*********************************
+	*	SAVABLE
+	*********************************/
+	// abstract structure with basic methods for tracking need to save
 
 	ELATE.create("Saveable", function() {
 		this.isAbstract();
@@ -82,6 +114,16 @@ PINE.waitForNeed("ELATE", function () {
 
 
 
+
+
+
+
+
+	/*********************************
+	*	TREEABLE
+	*********************************/
+	// can be represented as part of a tree
+
 	ELATE.create("Treeable", function() {
 		this.canEvolve("*");
 
@@ -96,7 +138,7 @@ PINE.waitForNeed("ELATE", function () {
 		}
 
 
-		this.appendChild = function(addMe) {
+		this.readyChildForAddition = function(addMe) {
 			if(this.errIfNotTreeable(addMe)) return;
 
 			if(addMe.getParentNode() == this)
@@ -104,8 +146,27 @@ PINE.waitForNeed("ELATE", function () {
 
 			addMe.remove();
 			addMe.setParentNode(this);
-			this.getChildNodes().push(addMe);
+			
 			return true;
+		}
+
+
+		this.appendChild = function(addMe) {
+			if(this.readyChildForAddition(addMe)) {
+				this.getChildNodes().push(addMe);
+				return true;
+			}
+
+			return false;
+		}
+
+		this.addChildAtIndex = function(addMe, index) {
+			if(this.readyChildForAddition(addMe)) {
+				this.getChildNodes().splice(index, 0, addMe);
+				return true;
+			}
+
+			return false;
 		}
 
 		this.removeChild = function(removeMe) {

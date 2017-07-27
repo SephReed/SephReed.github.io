@@ -33,59 +33,12 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 				ELATE.evolve(projectFile, "Project", [null, response.data]);
 				return projectFile.projectReadyPromise;
 			})
-			.then(function(){ return projectFile; });	
-
-			// return BRIDGE.loadJSON(filePath).then(function(projectData){
-			// 	ELATE.evolve(projectFile, "Project", [null, projectData]);
-			// 	return projectFile.projectReadyPromise;
-			// })
-			// .then(function(){ return projectFile; });		
+			.then(function(){ return projectFile; });		
 		}
 
 	}
 
 
-
-
-
-	Logic.unpackageMap = function(mapFile) {
-		var out = mapFile.split(/\n/g);
-
-		for(var i in out) {
-			out[i] = out[i].match(/\S+/g);
-		}
-
-		return out;
-	}
-
-	// Logic.packageMap = function(chips) {
-	// 	var printOut = ""
-	// 	for(var row = 0; row < height; row++) {
-	// 		var skipCol = 0;
-	// 		for(var col = 0; col < width; col++) {
-	// 			var chipNum = chips[row][col];
-	// 			if(chipNum < 0)
-	// 				skipCol++;
-
-	// 			else {
-	// 				if(skipCol > 0) {
-	// 					printOut += "sc"+skipCol+" ";
-	// 					skipCol = 0;
-	// 				}
-
-	// 				printOut += chipNum + " ";
-	// 			}
-	// 		}
-
-	// 		if(skipCol > 0) {
-	// 			printOut += "sc"+skipCol+" ";
-	// 		}
-
-	// 		if(row < height-1)
-	// 			printOut += "\n";
-	// 	}
-	// 	return printOut;
-	// }
 
 
 
@@ -93,6 +46,11 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 
 	Logic.class = {}
 
+
+
+	/*********************************
+	*	PROJECT
+	*********************************/
 
 	Logic.class.UnloadedProject = ELATE.create("UnloadedProject", function() {
 		this.build = function(projectName) {
@@ -139,6 +97,20 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 
 
 
+
+
+
+
+
+
+
+
+
+	/*********************************
+	*	MAP
+	*********************************/
+
+
 	FlatMap = Logic.class.FlatMap = ELATE.create("FlatMap", function() {
 
 
@@ -156,8 +128,6 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			THIS.chipsWide = mapData.chipsWide;
 			THIS.chipsTall = mapData.chipsTall;
 			THIS.mapPath = mapPath;
-			// THIS.width = THIS.chipsWide * 16;  //TODO magic number, and move chipwidth to layers
-			// THIS.height = THIS.chipsTall * 16;
 
 			this.updateSizing();
 
@@ -175,8 +145,6 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 						response.dirItem.saveable = addMe;
 
 						THIS.addLayer(addMe, i);
-						// THIS.layers[i] = addMe;
-						// THIS.repeatDispatches(addMe);
 					});
 
 					layerPromises.push(promise);
@@ -193,12 +161,13 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			return {Saveable: [mapPath, true]};
 		}
 
-		this.addLayer = function(layer, i) {
-			// if(layer.map != this)
+		this.addLayer = function(layer, target) {
 
-			console.log("make add layer insert at index".toUpperCase());
+			var layerAdded = (target === undefined) 
+				? this.appendChild(layer) 
+				: this.addChildAtIndex(layer, target);
 
-			if(this.appendChild(layer))
+			if(layerAdded)
 				this.repeatDispatches(layer);
 			
 		}
@@ -214,8 +183,6 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 
 
 		this.setCurrentLayer = function(layer) {
-			console.log(layer, "CURRENT LAYER")
-
 			if(layer && this.layers.indexOf(layer) == -1)
 				PINE.err("Can not set current layer to layer from another map");
 
@@ -277,6 +244,21 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+	/*********************************
+	*	LAYER
+	*********************************/
+
+
 	ChipLayer = Logic.class.ChipLayer = ELATE.create("ChipLayer", function() {
 		this.implements("EventDispatcher");
 		this.implements("Saveable");
@@ -285,18 +267,8 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 		this.build = function(chipsWide, chipsTall, loadable) {
 			this.super.Treeable("map");
 
-			
-
-			if(loadable) {
+			if(loadable) 
 				this.load(loadable);
-
-				// this.chips = Logic.unpackageMap(rawFile.chips);
-
-				// this.chipsWide = this.chips[0].length;
-				// this.chipsTall = this.chips.length;
-
-				
-			}
 
 			else {
 				this.defaultChip = -1;
@@ -379,6 +351,10 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 		}
 
 
+
+		//returns bounds which will crop as much of cropOutNum as possible.
+		//can be given bounds to check within
+		//use to crop out blank space, or default chip values
 		this.getCropping = function(cropOutNum, bounds) {
 			if(cropOutNum === undefined)
 				cropOutNum = -1;
@@ -414,6 +390,9 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 		}
 
 
+
+
+		//Apply fn at each chip, withing bounds.  Can be called with just fn.
 		this.mapChips = function(boundsOrFn, fn) {
 			var bounds;
 			if(typeof boundsOrFn == "function")
@@ -447,25 +426,33 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			}
 		}
 
+
+
+
+
+		//ENCODING
+		//# 	= eg. 42 		= chip num
+		//#x# 	= eg. 2x42 		= amount of chipnum in a row
+		//n 			 		= endrow
+		//d 			 		= single default chip
+		//d# 	= eg. d4		= multiple default chip
+		//rd					= full row of default chip
+		//rd#	= eg. rd4		= amount full rows of default chip
+		//r#	= eg. r42		= full row of chipnum
+		//r#x#	= eg. r2x42		= amount full rows of chipnum
 		this.toLoadable = function() {
-
-
 			var newDefault = this.defaultChip;
-
 
 			var totalCropping = this.getCropping();
 			var chipBounds = totalCropping;
-			console.log(totalCropping);
 
-			//if total cropping width == 1 and height == 1
-
+			//if total cropping width == 1 and height == 1, then chip mapping can be done with default and bounds
 			if(totalCropping.width == 1 && totalCropping.height == 1) {
 				newDefault = this.getChip(totalCropping.top, totalCropping.left);
 				chipBounds = undefined;
 			}
 			else {
 				var counts = this.getChipCounts(totalCropping);
-				console.log(counts);
 
 				if(counts.mostCommon != -1) {
 					newDefault = counts.mostCommon;
@@ -580,8 +567,6 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			// var args = JSON.parse(loadable);
 			var THIS = this;
 
-			console.log(args);
-
 			THIS.chipSetNames = args.chipSetNames;
 			var row = args.bounds ? args.bounds[0] : 0;
 			var colOffset = args.bounds ? args.bounds[1] : 0;
@@ -591,8 +576,6 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 			THIS.defaultChip = args.defaultChip !== undefined ? args.defaultChip : -1;
 
 			var chipSteps = args.chips.match(/\S+|\n/g)
-
-			console.log(chipSteps);
 
 			THIS.chips = [];
 
@@ -676,21 +659,6 @@ PINE.waitForNeeds(["Resources", "ELATE"], function() {
 		return [bounds.top, bounds.left, bounds.width, bounds.height];
 	}
 
-
-
-
-	// var Bounds = ELATE.create("bounds", function() {
-	// 	this.build(top, left, width, height) {
-	// 		this.top = top;
-	// 		this.left = left;
-	// 		this.width = width;
-	// 		this.height = height;
-	// 	}
-
-	// 	this.toArray = function() {
-	// 		return [this.top, this.left, this.width, this.right];
-	// 	}
-	// });
 
 
 

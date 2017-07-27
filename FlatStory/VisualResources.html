@@ -10,8 +10,6 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 
 
 
-
-
 	//should return a promise to load all needed chipsets and use them to do some painting
 	Visual.makeProjectSeeable = function(project) {
 
@@ -22,26 +20,7 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 		else {
 			ELATE.evolve(project, "SeeableProject");
 			return project.seeableProjectReadyPromise.then(function(){return project});
-		}
-		
-
-		// if(project.GUI == undefined) {
-		// 	var promises = []
-		// 	var map = project.currentMap;
-		// 	for(var i = 0; i < map.layers.length; i++) {
-		// 		var layer = map.layers[i];
-		// 		for(var c = 0; c < layer.chipSetNames.length; c++)
-		// 			promises.push(Visual.assertChipSet(layer.chipSetNames[i]));
-		// 	}
-
-		// 	return SyncPromise.all(promises).then(function(){
-		// 		console.log("CHIP SETS LOADED")
-		// 		new ProjectGraphics(project);	
-		// 	});
-			
-		// }
-		// else 
-			
+		}	
 	}
 
 
@@ -52,7 +31,6 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 			return SyncPromise.resolved();
 
 		else return new Promise(function(resolve) {
-			// var imgNode = Pal.currentChipset.imgNode = document.createElement("img");
 			var imgNode = document.createElement("img");
 			imgNode.src = filePath;
 
@@ -88,38 +66,7 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 	***************************/
 
 
-
-
 	Visual.class = {};
-
-
-
-
-
-	/**************************
-	*		Graphics
-	***************************/
-
-	// ProjectGraphics = Visual.class.ProjectGraphics = function(project) {
-	// 	this.project = project;
-	// 	project.GUI = this;
-	// 	this.mapGraphics = {};
-	// 	this.mapGraphics[project.currentMap] = new MapGraphics(project.currentMap);
-	// }
-
-	// MapGraphics = Visual.class.MapGraphics = function(map) {
-	// 	this.map = map;
-	// 	map.GUI = this;
-	// 	this.domNode = document.createElement("map");
-	// 	this.layerGraphics = [];
-
-	// 	for(var i = 0; i < map.layers.length; i++) {
-	// 		var chipCanvas = new ChipCanvas({chipMap: map.layers[i]});
-	// 		this.layerGraphics.push(chipCanvas);
-
-	// 		this.domNode.appendChild(chipCanvas.domNode);
-	// 	}
-	// }
 
 
 	ChipSet = Visual.class.ChipSet = ELATE.create("ChipSet", function() {
@@ -129,15 +76,19 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 			this.name = args.name;
 			this.id = Visual.chipSets.lastID;
 			Visual.chipSets.lastID++;
-			this.imgNode = args.imgNode;
 			this.chipSize = args.chipSize || 16;
 			this.chips = [];
 			this.zoom = 3;
 
+			this.imgNode = document.createElement("canvas");
+			this.imgNode.width = args.imgNode.naturalWidth;
+			this.imgNode.height = args.imgNode.naturalHeight;
+			this.imgNode.getContext('2d').drawImage(args.imgNode, 0, 0);
+
 			this.antiChip = { num: -1 };
 
-			this.chipsTall = ~~(this.imgNode.naturalHeight/this.chipSize);
-			this.chipsWide = ~~(this.imgNode.naturalWidth/this.chipSize);
+			this.chipsTall = ~~(this.imgNode.height/this.chipSize);
+			this.chipsWide = ~~(this.imgNode.width/this.chipSize);
 
 			for(var row = 0; row < this.chipsTall; row++) {
 				for(var col = 0; col < this.chipsWide; col++) {
@@ -177,35 +128,6 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 
 
 
-	/**************************
-	*		Canvases
-	***************************/
-
-
-	// Canvas = Visual.class.Canvas = ELATE.create("Canvas", function() {
-	// 		//
-	// 	this.build = function(canvasNode) {
-	// 		if(canvasNode == undefined) {
-	// 			canvasNode = document.createElement("canvas");
-	// 		}
-
-	// 		this.domNode = canvasNode;
-	// 		this.painter = canvasNode.getContext("2d");
-	// 	}
-
-	// 	this.sizeEquals = function(canvas) {
-	// 		return this.domNode.width == canvas.width && this.domNode.height == canvas.height;
-	// 	}
-
-	// 	this.setSizeEqualTo = function(canvas) {
-	// 		this.domNode.width = canvas.width;
-	// 		this.domNode.height = canvas.height;
-	// 	}
-	// });
-
-
-
-
 
 
 
@@ -230,8 +152,6 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 		this.setCanvasSizeTo = function(width, height) {
 			var changed = false;
 
-			console.log(width, height, this.domNode);
-
 			if(this.domNode.width !== width) {
 				this.domNode.width = width;
 				changed = true;
@@ -249,8 +169,18 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 
 
 
+
+
+	/*********************************
+	*	PROJECT
+	*********************************/
+
 	ELATE.create("SeeableProject", function() {
 		this.evolvesFrom("Project");
+
+		this.parseArgs = function(name, projectData) {
+			return {Project: [name, projectData]};
+		}
 
 		this.evolveThis = function() {
 			ELATE.evolve(this.currentMap, "SeeableMap");
@@ -261,6 +191,15 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 
 
 
+
+
+
+
+	/*********************************
+	*	MAP
+	*********************************/
+
+
 	ELATE.create("SeeableMap", function() {
 		this.evolvesFrom("FlatMap");
 
@@ -269,20 +208,25 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 		}
 
 		this.evolveThis = function() {
-			this.domNode = document.createElement("FlatMap");
-			this.scale = 1;
+			var THIS = this;
+			THIS.domNode = document.createElement("FlatMap");
+			THIS.scale = 1;
 			
 			var promises = []
-			for(var i = 0; i < this.layers.length; i++) {
-				var layer = this.layers[i];
+			for(var i = 0; i < THIS.layers.length; i++) {
+				var layer = THIS.layers[i];
 				ELATE.evolve(layer, "SeeableChipLayer");
 				promises.push(layer.seeableChipLayerReadyPromise);
-				this.domNode.appendChild(layer.domNode);
 			}
 
-			this.setCurrentLayer(this.currentLayer);
+			THIS.setCurrentLayer(THIS.currentLayer);
 
-			this.seeableMapReadyPromise = SyncPromise.all(promises);
+			THIS.seeableMapReadyPromise = SyncPromise.all(promises).then(function() {
+				for(var i = 0; i < THIS.layers.length; i++) {
+					var layer = THIS.layers[i];
+					THIS.domNode.appendChild(layer.domNode);
+				}
+			});
 		}
 
 		this.createNewLayer = function(name, chipsWide, chipsTall) {
@@ -330,10 +274,21 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 
 
 
+
+
+	/*********************************
+	*	LAYER
+	*********************************/
+
+
 	ChipCanvas = Visual.class.ChipCanvas = ELATE.create("SeeableChipLayer", function() {
 
 		this.evolvesFrom("ChipLayer");
 		this.implements("hasCanvas")
+
+		this.parseArgs = function(chipsWide, chipsTall, loadable) {
+			return {ChipLayer: [chipsWide, chipsTall, loadable]};
+		}
 
 		this.evolveThis = function() {
 			var stales = this.unrenderedChips = "all";
@@ -361,20 +316,6 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 			}
 
 			this.updateRender();
-		}
-
-		this.setSizeEqualTo = function(canvasOrWidth, height) {
-			alert("visual resources ~350")
-			// if(typeof canvasOrWidth == "number") {
-			// 	if(this.domNode.width == canvasOrWidth && this.domNode.height == height)
-			// 		return;
-
-			// 	this.domNode.width = canvasOrWidth;
-			// 	this.domNode.height = height;
-			// }
-			// else this.super.Canvas.setSizeEqualTo(this, canvas)
-
-			
 		}
 
 		this.setChipSizeTo = function(chipsWide, chipsTall) {
@@ -446,119 +387,12 @@ PINE.waitForNeeds(["Resources", "LogicalResources", "ELATE"], function() {
 			var expectedWidth = chipSet.chipSize * this.chipsWide;
 			var expectedHeight = chipSet.chipSize * this.chipsTall;
 				//
-			this.setCanvasSizeTo(expectedWidth, expectedHeight);
-			// if(domNode.width != expectedWidth || domNode.height != expectedHeight) {
-			// 	domNode.width = expectedHeight;
-			// 	domNode.height = expectedHeight
-			// 	this.unrenderedChips = "all";
-			// }
-
-			
+			this.setCanvasSizeTo(expectedWidth, expectedHeight);			
 		}
-
-
-
-
 	});
 
 
 
-
-
-	// ChipCanvas = Visual.class.ChipCanvas = ELATE.create("ChipCanvas", function() {
-
-	// 	this.evolvesFrom("Canvas", "ChipMapping");
-
-	// 	this.build = function(args) {
-	// 		this.super.Canvas(this, args.canvasNode);
-
-	// 		var stales = this.unrenderedChips = "all";
-	// 		this.chipMap = args.chipMap;
-
-	// 		// var promises = [];
-	// 		// for(var i = 0; i < this.chipMap.chipSetNames.length; i++) {
-	// 		// 	promises.push(Visual.assertChipSet(this.chipMap.chipSetNames[i]));
-	// 		// }
-
-	// 		console.log(this.chipMap);
-	// 		this.chipMap.addEventListener("chipChange", function(event){
-	// 			if(stales != "all") {
-
-	// 				for(var i = 0; i < stales.length; i++) {
-	// 					if(stales[i].row == event.row && stales[i].col == event.col)
-	// 						return;
-	// 				}
-
-	// 				stales.push({row: event.row, col: event.col});
-	// 			}
-	// 		});
-	// 		this.baseline();
-	// 	}
-
-	// 	this.setSizeEqualTo = function(canvas) {
-	// 		this.super.Canvas.prototype.setSizeEqualTo.call(this, canvas)
-	// 		this.unrenderedChips = "all";
-
-	// 		this.baseline();
-	// 	}
-
-	// 	this.updateRender = function() {
-	// 		var updates = this.unrenderedChips;
-
-	// 		if(updates == "all") {
-	// 			var chipMap = this.chipMap;
-
-	// 			for(var row = 0; row < chipMap.height; row++) {
-	// 				for(var col = 0; col < chipMap.width; col++) {
-	// 					this.renderChip(row, col)
-	// 				}
-	// 			}
-	// 		}
-
-	// 		else {
-	// 			for(var i = 0; i < updates.length; i++) {
-	// 				var update = updates[i];
-	// 				this.renderChip(update.row, update.col);
-	// 			}
-	// 		}
-
-	// 		console.log("RENDER UPDATE", this.unrenderedChips);
-	// 		this.unrenderedChips = [];
-	// 	}
-
-	// 	this.renderChip = function(row, col) {
-	// 		var chipNum = this.chipMap.getChip(row, col);
-	// 		var chipSet = Visual.chipSets.byID[0];
-
-	// 		var chip = chipSet.getChip(chipNum);
-	// 		var size = chipSet.chipSize;
-
-	// 		// var imageData = Pal.getChipImageData(chipNum);
-	// 		// out.painter.putImageData(imageData, col*size, row*size);
-
-	// 		this.painter.drawImage(chipSet.imgNode, 
-	// 			chip.imageX,  chip.imageY, size, size, 
-	// 			col*size, row*size, size, size);
-	// 	}
-
-	// 	this.baseline = function() {
-	// 		var domNode = this.domNode;
-
-	// 		console.log(this);
-	// 		var chipSet = Visual.chipSets.byID[0];
-
-	// 		var expectedWidth = chipSet.chipSize * this.chipMap.width;
-	// 		var expectedHeight = chipSet.chipSize * this.chipMap.height;
-	// 			//
-	// 		if(domNode.width != expectedWidth || domNode.height != expectedHeight) {
-	// 			domNode.width = expectedHeight;
-	// 			domNode.height = expectedHeight
-	// 			this.unrenderedChips = "all";
-	// 		}
-
-	// 		this.updateRender();
-	// 	}
-	// });
 
 
 

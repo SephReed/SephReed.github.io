@@ -16,6 +16,16 @@ function newLayer() {
 }
 
 
+
+function setStackToChipSet() {
+	UI.canvasStack.setDisplayable(Visual.chipSets.current);
+}
+
+
+
+
+
+
 PINE.waitForNeed(["ELATE", "FLAT"], function() {
 	UI = FLAT.UI = {};
 	
@@ -38,7 +48,6 @@ PINE.waitForNeed(["ELATE", "FLAT"], function() {
 		var currentMap = resources.currentProject.currentMap;
 		UI.canvasStack.setDisplayable(currentMap);
 
-
 		UI.chipPallette.setChipSet(resources.Visual.chipSets.current);
 
 		PINE.waitForNeed("FILE_BRIDGE", function() {
@@ -46,7 +55,6 @@ PINE.waitForNeed(["ELATE", "FLAT"], function() {
 				UI.toolBar.setTool("SetChip");
 			});
 		});
-
 
 		UI.resourceBrowser.setResources(resources);
 	}
@@ -129,6 +137,8 @@ PINE.waitForNeed(["ELATE", "FLAT"], function() {
 			}
 		});
 	}
+
+
 
 	UI.readyLayerSoloTool = function() {
 		var domNode = El.firstOfTag(null, "layerSoloTool");
@@ -343,6 +353,7 @@ PINE.waitForNeed(["ELATE", "FLAT"], function() {
 			<layerSelect>
 
 				<br>
+				<button onclick="setStackToChipSet()">Draw Chip Set</button>
 				<button onclick="newLayer()">New Layer</button>
 				<resourceBrowser filebrowser="FLAToneDirNames" showExtension="false">
 

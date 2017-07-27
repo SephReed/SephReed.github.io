@@ -114,12 +114,17 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 		}
 
 		this.evolveThis = function() {
-			this.domNode = this.imgNode;
+			this.domNode = document.createElement('canvas');
+			this.domNode.width = this.imgNode.width;
+			this.domNode.height = this.imgNode.height;
+			this.painter = this.domNode.getContext('2d');
+			this.painter.drawImage(this.imgNode, 0, 0);
+
 			this.baseline();
 		}
 
 
-		this.setZoom = function(zoom) {
+		this.setAssetScale = this.setZoom = function(zoom) {
 			this.zoom = zoom;
 			this.baseline();
 		}

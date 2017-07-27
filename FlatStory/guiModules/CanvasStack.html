@@ -5,7 +5,16 @@
 PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 	
 
+	console.error("TODO: make the ui apply itstelf based off of a listener for canvas stack layer changes")
+
+
+
+	/*********************************
+	*	Canvas Stack 
+	*********************************/
 	CanvasStack = ELATE.create("CanvasStack", function() {
+
+		this.implements("EventDispatcher");
 
 		this.build = function(domNode) {
 			var THIS = this;
@@ -93,10 +102,13 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 
 
 
+	/*********************************
+	*	PROJECT
+	*********************************/
 	ELATE.create("InteractiveCanvasStack", function() {
 
 		this.evolvesFrom("CanvasStack");
-		this.implements("EventDispatcher");
+		// this.implements("EventDispatcher");
 
 		this.parseArgs = function(domNode) {
 			return {CanvasStack: [domNode]};
@@ -105,6 +117,7 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 		this.evolveThis = function() {
 			this.modes = [];
 			this.currentMode = undefined;
+			this.layerChangeListener = undefined;
 			// this.eventListeners = {};
 
 			if(this.currentDisplayable !== undefined)
@@ -112,12 +125,15 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 		}
 
 		this.setDisplayable = function(setToMe) {
-			this.super.CanvasStack.setDisplayable(setToMe);
-			this.updateModeFor(setToMe);
+			var THIS = this;
+			if(THIS.currentDisplayable) 
+				THIS.currentDisplayable.removeEventListener("LayerChange", THIS.layerChangeListener);
 
-			thisStack = this;
-			setToMe.addEventListener("LayerChange", function(event) {
-				thisStack.updateModeFor(event.new);
+			THIS.super.CanvasStack.setDisplayable(setToMe);
+			THIS.updateModeFor(setToMe);
+
+			THIS.currentDisplayable.addEventListener("LayerChange", function(event) {
+				THIS .updateModeFor(event.new);
 			});
 			
 		}
@@ -127,16 +143,21 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 			if(updateFor.currentLayer !== undefined)
 				updateFor = updateFor.currentLayer
 
-			for(var i = 0; i < this.modes.length; i++) {
-				if(this.modes[i].isCorrectModeFor(updateFor)) {
-					if(this.currentMode)
-						this.currentMode.unplug();
+			var newMode = undefined;
 
-					this.currentMode = this.modes[i];
+			for(var i = 0; newMode == undefined && i < this.modes.length; i++) {
+				if(this.modes[i].isCorrectModeFor(updateFor)) 
+					newMode = this.modes[i];
+			}
+
+			if(newMode != this.currentMode) {
+				if(this.currentMode)
+					this.currentMode.unplug();
+
+				this.currentMode = newMode;
+
+				if(this.currentMode) 
 					this.currentMode.plugIn();
-					return;
-				}
-
 			}
 
 		}
@@ -156,26 +177,13 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 				this.currentMode.baseline();
 		}
 
-		// this.addEventListener = function(eventType, fn) {
-		// 	if(this.eventListeners[eventType] == undefined)
-		// 		this.eventListeners[eventType] = [];
-
-		// 	this.eventListeners[eventType].push(fn);
-		// }
-
-		// this.dispatchEvent = function(eventData) {
-		// 	var eventType = eventData.type;
-		// 	var listeners = this.eventListeners[eventType];
-
-		// 	for(var i = 0; listeners && i < listeners.length; i++)
-		// 		listeners[i](eventData);
-		// }
-
-
 	});
 
 
 
+	/*********************************
+	*	Canvas Stack UI
+	*********************************/
 	ELATE.create("CanvasStackMode", function() {
 		this.isAbstract();
 
@@ -192,6 +200,12 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 
 
 
+
+
+
+	/*********************************
+	*	Chip Drawing Canvas Stack UI
+	*********************************/
 	ELATE.create("ChipCanvasStackMode", function() {
 		this.extend("CanvasStackMode");
 
