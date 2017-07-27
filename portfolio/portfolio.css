@@ -774,9 +774,16 @@ columns {
 	background-size: 100% 100%;
 }
 
+
 #popin_wrapper {
-	/*padding-top: 20px;*/
+	transition: bottom 1s ease;
 }
+
+	#popin_wrapper.offscreen {
+		bottom: -100px;
+	}
+
+
 
 
 .tooltip_group > a span, .tooltip_group > span span {

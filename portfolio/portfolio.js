@@ -28,5 +28,21 @@ PINE.ready(function () {
 	view.addEventListener("viewChange", function() {
 		smoothScroll(view);
 	});
+
+	var popin = El.byID("popin_wrapper");
+	var requestedFrame;
+	document.addEventListener("scroll", function(event) {
+		// console.log(event);
+		if(requestedFrame == undefined) {
+			requestedFrame = window.requestAnimationFrame(function() {
+				if(window.scrollY > 900)
+					popin.classList.remove("offscreen");
+				else
+					popin.classList.add("offscreen");
+
+				requestedFrame = undefined;
+			})
+		}
+	})
 })
 
