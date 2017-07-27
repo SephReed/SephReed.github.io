@@ -148,7 +148,7 @@ h1 + span, .undertitle {
 		height: 300px;
 	    margin: 0 auto; 
 	    z-index: 5;
-	    cursor: move;
+	    cursor: grab;
 	}
 
 	#space_box {
