@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var mouseX, mouseY;
 	var windowHalfX, windowHalfY;
 
+	var currentTween;
+
 
 	window.onload = init;
 
@@ -94,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			requestAnimationFrame( render );
 			TWEEN.update();
 
-			if(pause == true && state != STATE.ROTATE) {
+			if(currentTween == undefined && state != STATE.ROTATE) {
 				counter++;
 				if(counter > waitTime) {  
 					pause = false;  
@@ -109,12 +111,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 					waitTime = newSide == 0 ? 150 : 50;
 
-					new TWEEN.Tween( dae.rotation ).to( {
+					currentTween = new TWEEN.Tween( dae.rotation ).to( {
 					x: side.x,
 					y: side.y} , 4000 )
 					.easing( TWEEN.Easing.Sinusoidal.InOut).onComplete(
 						function() {
-							pause = true;
+							currentTween = undefined;
 							// console.log("Rotated symbol to rotation #"+lastSide);
 						}
 					).start(); 
@@ -153,6 +155,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 		if ( event.button === scope.mouseButtons.ORBIT ) {
 			state = STATE.ROTATE;
+			if(currentTween != undefined) {
+				currentTween.stop();
+				currentTween = undefined;
+			}
+
 			rotateStart.set( event.clientX, event.clientY );
 		}
 

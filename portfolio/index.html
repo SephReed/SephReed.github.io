@@ -3,10 +3,7 @@
 
 <head>
 	<meta charset="utf-8"/>
-
-	<!-- FONTS -->
-	<!-- <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'> -->
-	<!-- <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'> -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.02" />
 
 	<!-- CSS -->
 	<link rel="stylesheet" type="text/css" href="portfolio.css" />
@@ -15,63 +12,83 @@
 
 	<!-- PINE -->
 	<script src="../PINE/PINE_Core_4.8.js"></script>
-	<script>PINE.disable(["PINE", "[SPAWNER]"]);</script>
+	<script src="../PINE/PINE_Loadbar.js"></script>
+	<script>
+		PINE.disable(["PINE", "[SPAWNER]"]);
+		PINE.loadbar("#222", 1.25);
+	</script>
+
+	<style>
+
+		loadTimeOverlay {
+			display: block;
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			background-color: #222;
+			z-index: 500;
+		}
+
+			loadTimeLogo {
+				display: block;
+				position: fixed;
+				top: 30%;
+				width: 100%;
+				text-align: center;
+				color: #BA1539;
+			}
+
+				loadTimeLogo h1 {
+					font-size: 60px;
+				}
+
+				loadTimeLogo small {
+					/*position: relative;*/
+					/*top: -15px;*/
+					font-size: 20px;
+				}
+
+		.thumbz_logo {
+			background-image: url('public/images/ThumbzSymbol_white.png');
+			background-size: auto 66%;
+			background-repeat: no-repeat;
+			background-position: center center;
+		}
+	</style>
+
+
+
 	<script src="../PINE/PINE_Needles.js"></script>
 	<script src="../PINE/PINE_Includes.js"></script>
+
 
 	<!-- THREE JS -->
 	<script src="three.min.js"></script>
 	<script src="ColladaLoader.js"></script>
 	<script src="three.detector.js"></script>
-	<!-- <script src="tween.min.js"></script> -->
 	<script src="Tween.min2.js"></script>
-
 	<script src="space.js"></script>
 	<script src="thumbz_symbol.js"></script>
 	
 
-	
-
-	<meta name="viewport" content="width=device-width, initial-scale=1.02" />
-
-
 	<!-- POTFOLIO -->
 	<script src="portfolio.js"></script>
+
+
+
+	<!-- NEEDLES -->
 	<script src="portfolio_needles.js"></script>
 	<needle src="../PINE/needles/bgimg.html"></needle>
 	<needle src="../PINE/needles/modal.html"></needle>
 	<needle src="../PINE/needles/flowColumns.html"></needle>
 	<needle src="../PINE/needles/gallery.html"></needle>
-
-
 	
 
 
-	<script type="text/javascript">
-		
-	</script>
-
-
-
-
-
-
-	<!-- BG IMG INLINE DEF -->
-
-	<style>
-		background {
-			display: block;
-			height: 100%;
-			width: 100%;
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			pointer-events: none;
-		}
-	</style>
-
 	
-	</script>
+	
 
 
 
@@ -82,6 +99,7 @@
 
 	<style>
 	#myCardOverlay {
+		color: #222;
 		width: 100%;
 		max-width: 8.89cm;
 		height: 5.08cm;
@@ -133,6 +151,13 @@
 
 <body>
 
+	<loadTimeOverlay class="hideOnLoad">
+		<loadTimeLogo>
+			<h1 class="thumbz_logo">Seph &nbsp;&nbsp; Reed</h1>
+			<small>/portfolio/</small>
+		</loadTimeLogo>
+	</loadTimeOverlay>
+
 
 
 	<fade id="blueAuraFade" color="black" opacity="0.5"></fade>
@@ -148,39 +173,24 @@
 
 
 
+	<content>
 
+
+		<style>
+			body > content > section {
+				padding-top: 20px;
+				padding-bottom: 40px;
+				border-bottom: solid 1px #222;
+				box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
+			}
+
+		</style>
 
 
 	
 
-
-
-
-
-
-	<style>
-		body > content > section {
-			padding-top: 20px;
-			padding-bottom: 40px;
-			border-bottom: solid 1px #222;
-			box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
-		}
-
-
-		.thumbz_logo {
-			background-image: url('public/images/ThumbzSymbol_white.png');
-			background-size: auto 34%;
-			background-repeat: no-repeat;
-			background-position: center 60%;
-		}
-
-	</style>
-
-
-	<content>
-
 		<section id="header"> 
-			<h1 fontSize="70px" class="thumbz_logo">Seph&nbsp;&nbsp; Reed</h1>
+			<h1 class="thumbz_logo">Seph&nbsp;&nbsp; Reed</h1>
 			<span>UI/UX Designer, Full Stack Developer, 2D/3D/Audio Asset Creator, Team Leader, Jazz Pianist, and All Around Handyman</span>
 			<!-- <span>Freelance, Full Stack, Physical/Digital/Artistic Creator</span> <br> -->
 
@@ -189,8 +199,10 @@
 			
 			
 			<background opacity="0.2">
-				<bgimg bgimgPos="bottom" bgimgRepeat="x" opacity="0.8" bgimgSrc="../public/images/treeline.png"></bgimg>
-				<bgimg bgimgPos="bottom left" bgimgSize="250px auto" bgimgSrc="../public/images/Pine_hill_2.png"></bgimg>
+				<div class="treeline"></div>
+				<div class="pine_hill"></div>
+				<!-- <bgimg bgimgPos="bottom" bgimgRepeat="x" opacity="0.8" bgimgSrc="../public/images/treeline.png"></bgimg> -->
+				<!-- <bgimg bgimgPos="bottom left" bgimgSize="250px auto" bgimgSrc="../public/images/Pine_hill_2.png"></bgimg> -->
 			</background>
 
 			<view src="portfolio_contact.html"></view>
@@ -258,10 +270,10 @@
 					<span>Email</span>
 				</span>
 				
-				<a 	href="https://www.instagram.com/seph_reed/"
-					bgImgSrc="public/images/instagram_icon.png"
+				<a 	href="SephReed-Resume.pdf"
+					bgImgSrc="public/images/resume_icon.png"
 					target="_newtab">
-					<span>My Photos</span>
+					<span>Resume</span>
 				</a>
 			</div>
 		</div>

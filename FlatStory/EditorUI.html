@@ -273,7 +273,6 @@ PINE.waitForNeed(["ELATE", "FLAT"], function() {
 
 				if (e.key == "s") {
 				    e.preventDefault();
-				    alert("save");
 
 				    Resources.fileTree.mapTree(null, function(dirItem) {
 				    	if(dirItem.saveable && dirItem.saveable.saved == false) {
