@@ -3,6 +3,8 @@
 
 
 PINE.loadbar = function(bgColor, fadeTime, showLoadbar) {
+	var loadBar;
+
 
 	var addStyle = document.createElement('style');
 	addStyle.textContent = `
@@ -34,6 +36,10 @@ PINE.loadbar = function(bgColor, fadeTime, showLoadbar) {
 				pointer-events: none;
 			}
 
+				body.fadingIn appinitLoadbar {
+					animation-play-state: paused;
+				}
+
 			body.loaded .hideOnLoad {
 				display: none;
 			}
@@ -43,16 +49,19 @@ PINE.loadbar = function(bgColor, fadeTime, showLoadbar) {
 
 
 	U.docReady(function() {
-		document.body.classList.add("loading");
 		document.body.appendChild(addStyle);
-		var loadBar = document.createElement("appinitLoadbar");
-		loadBar.classList.add("hideOnLoad");
-		loadBar.textContent = "Loading..................................."
-			+	"........................................................"
-			+	"........................................................"
-			+	"........................................................"
-			+	"........................................................"
-		document.body.appendChild(loadBar);
+		document.body.classList.add("loading");
+		if(showLoadbar !== false) {
+			loadBar = document.createElement("appinitLoadbar");
+			loadBar.classList.add("hideOnLoad");
+			loadBar.textContent = "Loading..................................."
+				+	"........................................................"
+				+	"........................................................"
+				+	"........................................................"
+				+	"........................................................";
+			document.body.appendChild(loadBar);
+		}
+		
 	})
 
 
@@ -64,6 +73,10 @@ PINE.loadbar = function(bgColor, fadeTime, showLoadbar) {
 	PINE.waitForNeed(["PINE_READY", "LOAD_TIME_MIN"], function() {
 		document.body.classList.add("fadingIn");
 		document.body.classList.remove("loading");
+
+		if(loadBar) 
+			loadBar.textContent = "Welcome!";
+		
 
 		window.setTimeout(function(){
 			document.body.classList.add("loaded");
