@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		
+	var NUM_COPIES = 10000;
+	// var NUM_COPIES = 1;
+	function runTest(argument) {	
+		var copyMe = document.getElementById("copyMe")
+		
+		
+
+
+		// //horribly slow first attempt, don't test on large numbers, about 500x slower than grouping html changes before adding them.
+		// startDate = Date.now();
+		// var html = copyMe.innerHTML;
+		// for(var i = 0; i < NUM_COPIES; i++) {
+		// 	copyTarget.innerHTML += html;
+		// }
+		// console.log(Date.now()-startDate);
+
+
+		
+		var createContainer = function(testName) {
+			var container = document.createElement("div");
+			container.innerHTML = `<h1>`+testName+`</h1>`
+			var out = document.createElement("li");
+			container.appendChild(out);
+			document.body.appendChild(container);
+			return out;
+		}
+		
+
+
+
+		var doModHtmlTest = function() {
+			var groupedCopyTarget = createContainer("HTML mod Test");
+
+			console.log("Mod Html Test Start");
+			var startDate = Date.now();
+			var html = copyMe.innerHTML;
+			var groupedHtml = "";
+			for(var i = 0; i < NUM_COPIES; i++) {
+				groupedHtml += html;
+			}
+			groupedCopyTarget.innerHTML = groupedHtml;
+			console.log("html mod time", Date.now()-startDate);
+		}
+
+
+
+		
+
+		var doClonesTest = function() {
+			var cloneTarget = createContainer("Clone Test");
+
+			console.log("Clone Node Test Start");
+			var startDate = Date.now();
+			// var clones = [];
+			var cloneMe = document.createElement("li");
+			cloneMe.innerHTML = copyMe.firstChild.innerHTML;
+			console.log(copyMe);
+			for(var i = 0; i < NUM_COPIES; i++) {
+				cloneTarget.appendChild(cloneMe.cloneNode(true));
+			}
+			console.log("clone time", Date.now()-startDate);
+		}
+
+
+
+
+		//nothing up my sleeves
+		if(Math.random() > 0.5) {
+			doModHtmlTest();
+			doClonesTest();
+		}
+		
+	};
+	
+
+
+
+	function showContainers() {
+		document.body.classList.remove("hideContainers");
+	}
+
+
+	</script>
+
+
+
+	<style>
+	body.hideContainers > div {
+		display: none;
+	}
+
+	</style>
+
+</head>
+<body class="hideContainers">
+
+
+<div id="copyMe" style="display:none"><li>
+		<b>LOREM IPSUM</b> - <i>lalalalalal</i>
+		<hr>
+		<div>
+			<div>
+				<div>
+					TEST
+				</div>
+				<div>
+					TEST
+				</div>
+			</div>
+		</div>
+	</li>
+</div>
+
+
+
+<button onclick="runTest()">Run Test (open console for results)</button>
+
+<button onclick="showContainers()">Show Elements (may freeze browser)</button>
+
+
+
+
+
+
+
+</body>
+</html>

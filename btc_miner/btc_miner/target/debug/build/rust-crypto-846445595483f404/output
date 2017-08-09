@@ -1,0 +1,38 @@
+TARGET = Some("x86_64-apple-darwin")
+OPT_LEVEL = Some("0")
+TARGET = Some("x86_64-apple-darwin")
+TARGET = Some("x86_64-apple-darwin")
+HOST = Some("x86_64-apple-darwin")
+CFLAGS_x86_64-apple-darwin = None
+CFLAGS_x86_64_apple_darwin = None
+HOST_CFLAGS = None
+CFLAGS = None
+PROFILE = Some("debug")
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-m64" "-o" "/Users/seph/Code/Web/SephReed.github.io/btc_miner/btc_miner/target/debug/build/rust-crypto-846445595483f404/out/src/util_helpers.o" "-c" "src/util_helpers.c"
+exit code: 0
+TARGET = Some("x86_64-apple-darwin")
+OPT_LEVEL = Some("0")
+TARGET = Some("x86_64-apple-darwin")
+TARGET = Some("x86_64-apple-darwin")
+HOST = Some("x86_64-apple-darwin")
+CFLAGS_x86_64-apple-darwin = None
+CFLAGS_x86_64_apple_darwin = None
+HOST_CFLAGS = None
+CFLAGS = None
+PROFILE = Some("debug")
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-m64" "-o" "/Users/seph/Code/Web/SephReed.github.io/btc_miner/btc_miner/target/debug/build/rust-crypto-846445595483f404/out/src/aesni_helpers.o" "-c" "src/aesni_helpers.c"
+exit code: 0
+TARGET = Some("x86_64-apple-darwin")
+TARGET = Some("x86_64-apple-darwin")
+HOST = Some("x86_64-apple-darwin")
+AR_x86_64-apple-darwin = None
+AR_x86_64_apple_darwin = None
+HOST_AR = None
+AR = None
+TARGET = Some("x86_64-apple-darwin")
+TARGET = Some("x86_64-apple-darwin")
+running: "ar" "crs" "/Users/seph/Code/Web/SephReed.github.io/btc_miner/btc_miner/target/debug/build/rust-crypto-846445595483f404/out/lib_rust_crypto_helpers.a" "/Users/seph/Code/Web/SephReed.github.io/btc_miner/btc_miner/target/debug/build/rust-crypto-846445595483f404/out/src/util_helpers.o" "/Users/seph/Code/Web/SephReed.github.io/btc_miner/btc_miner/target/debug/build/rust-crypto-846445595483f404/out/src/aesni_helpers.o"
+exit code: 0
+TARGET = Some("x86_64-apple-darwin")
+cargo:rustc-link-lib=static=_rust_crypto_helpers
+cargo:rustc-link-search=native=/Users/seph/Code/Web/SephReed.github.io/btc_miner/btc_miner/target/debug/build/rust-crypto-846445595483f404/out

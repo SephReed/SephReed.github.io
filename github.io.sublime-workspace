@@ -523,42 +523,7 @@
 			"file": "portfolio/index.html",
 			"settings":
 			{
-				"buffer_size": 6321,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "portfolio/portfolio_digital_art.html",
-			"settings":
-			{
-				"buffer_size": 5168,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "portfolio/portfolio.js",
-			"settings":
-			{
-				"buffer_size": 1209,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "PINE/PINE_Loadbar.js",
-			"settings":
-			{
-				"buffer_size": 1884,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "FlatStory/EditorUI.html",
-			"settings":
-			{
-				"buffer_size": 11025,
+				"buffer_size": 6320,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -568,24 +533,6 @@
 			"settings":
 			{
 				"buffer_size": 13785,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "portfolio/portfolio_coding.html",
-			"settings":
-			{
-				"buffer_size": 18713,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "portfolio/portfolio_fabrication.html",
-			"settings":
-			{
-				"buffer_size": 15215,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -632,6 +579,7 @@
 	"expanded_folders":
 	[
 		"/Users/seph/Code/Web/SephReed.github.io",
+		"/Users/seph/Code/Web/SephReed.github.io/btc_miner",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/appPkg",
@@ -643,23 +591,26 @@
 	],
 	"file_history":
 	[
+		"/Users/seph/Code/Web/SephReed.github.io/btc_miner/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Loadbar.js",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/EditorUI.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_fabrication.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/WebFileBridge.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.8.js",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_needles.js",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/thumbz_symbol.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/bgimg.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_contact.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Loadbar.js",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/EditorUI.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/index.css",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.8.js",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/basicInterfaces.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/LogicalResources.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/VisualResources.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/ChipPallette.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/CanvasStack.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/ResourceBrowser.html",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/WebFileBridge.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/fileBrowser.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/FLAT.js",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/Resources.html",
@@ -712,7 +663,6 @@
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/PINE_Needles_3.0.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Includes.js",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_fabrication.html",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/CryptoTools.js",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/old_stuff/portfolio.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/ResizeSensor.js",
@@ -768,9 +718,7 @@
 		"/Users/seph/Code/Web/SephReed.github.io/Writing/Kylas_Song.txt",
 		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/hexapod.css",
 		"/Users/seph/Code/Web/SephReed.github.io/Digiden/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/css/digiden.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/css/index.css",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/troll_tricks.txt"
+		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/css/digiden.css"
 	],
 	"find":
 	{
@@ -796,6 +744,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"header",
 			"popin_over",
 			"_newtab",
 			"project_and",
@@ -922,8 +871,7 @@
 			"backdropColor",
 			"panelTextColor",
 			"panelBase",
-			"consol",
-			"pine"
+			"consol"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1069,7 +1017,7 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -1078,147 +1026,31 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6321,
+						"buffer_size": 6320,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4789,
-								4789
+								747,
+								747
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 2712.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "portfolio/portfolio_digital_art.html",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 5168,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 953.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "portfolio/portfolio.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1209,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1190,
-								1190
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "PINE/PINE_Loadbar.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1884,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1702,
-								1702
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 607.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "FlatStory/EditorUI.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11025,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6779,
-								6779
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 3918.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
+					"buffer": 1,
 					"file": "portfolio/portfolio.css",
 					"semi_transient": false,
 					"settings":
@@ -1230,8 +1062,8 @@
 						"selection":
 						[
 							[
-								4203,
-								4203
+								2025,
+								2025
 							]
 						],
 						"settings":
@@ -1240,69 +1072,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3328.0,
+						"translation.y": 1533.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "portfolio/portfolio_coding.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 18713,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								18529,
-								18529
-							]
-						],
-						"settings":
-						{
-							"spell_check": true,
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 7207.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "portfolio/portfolio_fabrication.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 15215,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								51,
-								51
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -1356,6 +1129,14 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"web",
+				"FlatStory/WebFileBridge.js"
+			],
+			[
+				"4.8",
+				"PINE/PINE_Core_4.8.js"
+			],
 			[
 				"load",
 				"PINE/PINE_Loadbar.js"
@@ -1419,10 +1200,6 @@
 			[
 				"log",
 				"FlatStory/LogicalResources.html"
-			],
-			[
-				"web",
-				"FlatStory/WebFileBridge.js"
 			],
 			[
 				"r",
@@ -1503,10 +1280,6 @@
 			[
 				"vi",
 				"FlatStory/VisualResources.html"
-			],
-			[
-				"4.8",
-				"PINE/PINE_Core_4.8.js"
 			],
 			[
 				"in",

@@ -118,7 +118,9 @@ h1 + span, .undertitle {
 	padding-top: 50px;
 	padding-bottom: 20px;
 	background-color: rgba(0,0,0,0);
-	background: linear-gradient(#250329, #192A38);
+	/*background: linear-gradient(#250329, #192A38);*/
+	/*background: linear-gradient(#280025, #00434E);*/
+	background: linear-gradient(#1D1234, #1C1626);
 	/*height: calc(100% - 330px);*/
 	
 	background-repeat: no-repeat;
@@ -136,7 +138,8 @@ h1 + span, .undertitle {
 
 	#header > span {
 		font-size: 17px;
-		background: #21112E;
+		/*background: #21112E;*/
+		background-color: #1A1733;
 		position: relative;
 		z-index: 1;
 	}
@@ -182,7 +185,8 @@ h1 + span, .undertitle {
 				background-image: url('../public/images/treeline.png');
 				background-repeat: repeat-x; 
 				background-position: bottom;
-				opacity: 0.8;
+				/*opacity: 0.8;*/
+				filter: invert(7%);
 			}
 
 			#header > background > .pine_hill {
@@ -221,7 +225,8 @@ h1 + span, .undertitle {
 	background-color: #422;
 	color: #EEE;
 
-	background: linear-gradient(#572125, #481A24 6px);
+	/*background: linear-gradient(#572125, #481A24 6px);*/
+	background: linear-gradient(#75393c, #5F292C 6px);
 	border: #111 3px solid;
 	border-width: 3px 0px;
 	/*background: linear-gradient(#441C1F, #481C26 6px);*/
