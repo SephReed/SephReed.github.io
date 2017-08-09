@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var windowHalfX, windowHalfY;
 
 	var currentTween;
+	var EASE_TIME = 5500;
 
 
 	window.onload = init;
@@ -109,12 +110,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					lastSide = newSide;
 					var side = good_sides[newSide];
 
-					waitTime = newSide == 0 ? 150 : 50;
+					waitTime = newSide == 0 ? 100 : 0;//(Math.random()*150 + 50);
 
 					currentTween = new TWEEN.Tween( dae.rotation ).to( {
 					x: side.x,
-					y: side.y} , 4000 )
-					.easing( TWEEN.Easing.Sinusoidal.InOut).onComplete(
+					y: side.y} , EASE_TIME )
+					.easing( TWEEN.Easing.Sinusoidal.Out).onComplete(
 						function() {
 							currentTween = undefined;
 							// console.log("Rotated symbol to rotation #"+lastSide);

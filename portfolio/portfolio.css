@@ -187,8 +187,9 @@ h1 + span, .undertitle {
 				background-image: url('../public/images/treeline.png');
 				background-repeat: repeat-x; 
 				background-position: bottom;
+				filter: invert(5%);
 				/*opacity: 0.8;*/
-				filter: invert(7%);
+				
 			}
 
 			#header > background > .pine_hill {
