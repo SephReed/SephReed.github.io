@@ -120,7 +120,7 @@ h1 + span, .undertitle {
 	background-color: rgba(0,0,0,0);
 	/*background: linear-gradient(#250329, #192A38);*/
 	/*background: linear-gradient(#280025, #00434E);*/
-	background: url("public/images/milky_way.png"), linear-gradient(#1D1234, #1C1626);
+	background: url("public/images/milky_way.png"), linear-gradient(#1E1E20, #1C1626);
 	/*height: calc(100% - 330px);*/
 	background-size: cover;
 	
@@ -141,7 +141,8 @@ h1 + span, .undertitle {
 		font-size: 17px;
 		/*background: #21112E;*/
 		/*background-color: #1A1733;*/
-		background-color: #1D132F;
+		/*background-color: #1D132F;*/
+		background-color: rgba(32, 29, 34, 0.51);
 		position: relative;
 		z-index: 1;
 	}
