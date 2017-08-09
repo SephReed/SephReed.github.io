@@ -1,5 +1,9 @@
 if (!Detector.webgl) Detector.addGetWebGLMessage();
 
+
+var ROTATION_SCALE = 0.3;
+var CAMERA_MOVE_SPEED = 0.003;
+
 document.addEventListener("DOMContentLoaded", function(event) {
 
     var container, stats;
@@ -168,8 +172,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         var time = Date.now() * 0.00005;
 
-        camera.position.x += (-mouseX - camera.position.x) * 0.05;
-        camera.position.y += (mouseY - camera.position.y) * 0.05;
+        camera.position.x += (-mouseX - camera.position.x) * CAMERA_MOVE_SPEED;
+        camera.position.y += (mouseY - camera.position.y) * CAMERA_MOVE_SPEED;
 
         camera.lookAt(scene.position);
 
@@ -179,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             if (object instanceof THREE.Points) {
 
-                object.rotation.y = time * (i < 4 ? i + 1 : -(i + 1));
+                object.rotation.y = time * (i < 4 ? i + 1 : -(i + 1)) * ROTATION_SCALE;
 
             }
 
