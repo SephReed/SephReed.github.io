@@ -24,9 +24,10 @@ FL.class.DataHandler.prototype.computeRelation = function(targetName) {
 
 	var data = this.data;	
 
+
+	//begin by creating the baseline averages for each outcome
 	this.relations[targetName] = {};
 	var baselines = this.relations[targetName].baseline = {};
-
 
 	for(var i = 0; i < data.length; i++) {
 		var outcome = data[i][targetName];
@@ -36,7 +37,6 @@ FL.class.DataHandler.prototype.computeRelation = function(targetName) {
 		}
 		baselines[outcome].count++;
 	}
-
 	for(var outcome in baselines)
 		baselines[outcome].percentage = baselines[outcome].count /data.length;
 
@@ -365,7 +365,7 @@ FL.class.RuleSet.prototype.toString = function() {
 				out += "\n\n";
 
 			var percentage = (rewards[label].reward * 100).toFixed(2)
-			out += "Based off closest mean:"
+			out += "Choose '"+label+"' based off closest mean:"
 			out += "\n-yes::["+rewards[label].yes+"]";
 			out += "\n-no::["+rewards[label].no+"]";
 			out += "\n-reward ::["+percentage+"%]";
@@ -374,7 +374,7 @@ FL.class.RuleSet.prototype.toString = function() {
 			if(out.length)
 				out += "\n\n";
 
-			out += "Switch case for "+label+":"
+			out += "Switch case for '"+label+"':"
 
 			for(var valueName in rewards[label]) {
 
