@@ -127,6 +127,7 @@ FL.class.DataHandler.prototype.simplifyRelation = function(relation) {
 						avgSpacing /= steps;
 
 						//only somewhat effective for linear data, overall a quick but sloppy means
+						//data is broken up into groups over this spacing
 						var dissectionThreshold = Math.abs(avgSpacing * 10);
 						
 						var currentChunk = 0;
@@ -148,7 +149,6 @@ FL.class.DataHandler.prototype.simplifyRelation = function(relation) {
 						var out = [];
 						for(var m in chunks) {
 							var curve = FL.getNormalCurve(chunks[m]);
-							// curve.emphasis = chunks[m].length / totalCases;
 							curve.emphasis = curve.count = chunks[m].length;
 							out.push(curve);
 						}
@@ -190,7 +190,7 @@ FL.class.DataHandler.prototype.observeDiffs = function(relation) {
 
 	
 	var simplified = this.relations[relation].simplified;
-	//Cheating
+	//Cheating by assuming yes and no
 	var factors = simplified.yes;
 
 	var maxClue = 0;
@@ -225,7 +225,7 @@ FL.class.DataHandler.prototype.observeDiffs = function(relation) {
 			// 	totalEmphasis += mostEmphasised[outcome].emphasis;
 			
 
-			//cheating
+			//Cheating by assuming yes and no
 			var addMe = {};
 			addMe.isCurves = true;
 			addMe.yes = mostEmphasised.yes.mean;
@@ -242,7 +242,7 @@ FL.class.DataHandler.prototype.observeDiffs = function(relation) {
 		}
 		else {
 			for(var valueCase in cases) {
-				//cheating
+				//Cheating by assuming yes and no
 				var yesCount = simplified.yes[factor][valueCase];
 				var noCount = simplified.no[factor][valueCase];
 
@@ -273,7 +273,8 @@ FL.class.DataHandler.prototype.observeDiffs = function(relation) {
 
 
 
-
+//Boils down all of the differences which lead to an outcome into a set
+//of rules for how to award percantages of likelihood.
 FL.class.DataHandler.prototype.createRuleset = function(relation) {
 	var diffs = this.relations[relation].diffs;
 
