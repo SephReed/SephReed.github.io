@@ -54,7 +54,7 @@ Ideally, this would be a project best solved with some <b>deep learning</b>.  Th
 
 <h2>Deliverables</h2>
 
-<a href="index.html">Source Code (Demo)</a><br>
+<a href="index.html">Source Code (Demo) and Example Rule Set</a><br>
 <a href="https://github.com/SephReed/SephReed.github.io/tree/master/SparkCognitionDataScienceAssignment">Source Code (GitHub)</a><br>
 <a href="predictions.csv">Predictions CSV</a><br>
 
@@ -64,7 +64,7 @@ Ideally, this would be a project best solved with some <b>deep learning</b>.  Th
 
 <p>
 	<b>Describe your model and why did you choose this model over other types of models?</b><br>
-	The model I chose in this case was whatever the quickest simplest thing I could do from scratch was: a series of 1 to 1 correlations between the result and every other field, weighted where the divergence is strongest.  This model is not ideal as it only correlates things in a 1:1 way, unlike deep learning with a stronger node depth.  What is interesting about the model I used is that is produces something I may have made up called a "rule set" which awards percentages of likelihood to one option or the other based off the value in the field.  I think this is a pretty cool thing because it can easily be saved to and loaded from string, and can even be calculated by hand.  The percentages don't add up to 100% for each datum, but instead 100% is divided up amongst every reward.  
+	The model I chose in this case was whatever the quickest simplest thing I could do from scratch was: a series of 1 to 1 correlations between the result and every other field, weighted where the divergence is strongest.  This model is not ideal as it only correlates things in a 1:1 way, unlike deep learning with a stronger node depth.  What is interesting about the model I used is that is produces something I may have made up called a "rule set" object which awards percentages of likelihood to one option or the other based off the value in the field.  I think this is a pretty cool thing because it can easily be saved to and loaded from string, and can even be calculated by hand.  The percentages don't add up to 100% for each datum, but instead 100% is divided up amongst every reward.  
 </p>
 
 
