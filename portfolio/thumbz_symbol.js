@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 		var width = domBox.offsetWidth;
 		var height = domBox.offsetHeight;
+		// var width = 300;
+		// var height = 300;
 
 		windowHalfX = width / 2;
 		windowHalfY = height / 2;
@@ -39,9 +41,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		renderer.setSize( width, height );
 		domBox.appendChild( renderer.domElement );
 
-		camera.position.z = 5;
-
-
+		camera.position.z = 6;
 
 
 
@@ -65,7 +65,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			var edges = new THREE.EdgesHelper( dae.children[0].children[0], 0xffffff );
 			scene.add( edges );
 
-			dae.scale.x = dae.scale.y = dae.scale.z = 50;
+			// dae.scale.x = dae.scale.y = dae.scale.z = 50;
+			dae.scale.x = dae.scale.y = dae.scale.z = 40;
 			dae.updateMatrix();
 
 			scene.add(dae);

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Spark Cognition Data Science Deliverables</title>
+	<style>
+		body {
+			font-family: arial;
+			color: #333;
+			background-color: #FAFAFA;
+			padding: 20px 5%;
+		}
+
+		h1 {
+			color: #3c1a1c;
+		}
+
+		h2 {
+			color: #1e5b65;
+		}
+
+
+		hr {
+			margin: 20px 0px;
+		}
+
+		p {
+			padding: 10px;
+			background-color: #f2eadf;
+			border-radius: 5px;
+		}
+	</style>
+</head>
+<body>
+<h1>Spark Cognition Data Science Deliverables</h1>
+<h2>If I had time to do it right...</h2>
+I want to make it clear that this is one of the most rushed jobs I've ever done.  The circumstances are that I am leaving for a 3 week camping trip in a few days and still in the process of packing.  Given this, I did not have time to research or test much of anything, and what I am submitting is what I could do in the given time to show at least something of an understanding.<br>
+<br>
+<i>Ideally</i>, this would be a project best solved with some deep learning.  The means of doing this is most likely fairly simple once one becomes familiar with a deep learning library.  Had I the time, I would have researched a good open source implementation, taken the time to set it up correctly, gotten familiar with it's API in the process, and then tested the results until I was getting something good.<br>
+<br>
+<b>If the included source code doesn't make the grade, I would really appreciate a second try after my vacation.</b>
+
+
+<hr>
+
+<h2>Deliverables</h2>
+
+<a href="index.html">Source Code Demo</a>
+<a href="index.html">Source Code</a>
+
+<h2>Q &amp; A</h2>
+
+<p>
+	<b>Describe your model and why did you choose this model over other types of models?</b><br>
+	The model I chose in this case was the quickest simplest one I could do from scratch: a series of 1 to 1 correlations between the result and every other field, weighted where the divergence is strongest.  This model is not ideal as it only correlates things in a 1:1 way, unlike deep learning with a stronger node depth.
+</p>
+
+
+<p>
+	<b>Describe any other models you have tried and why do you think this model preforms better?</b><br>
+	I have tried no others.  Big data analysis is not something that was taught in my school, and I've never had it as a job.
+</p>
+
+<p>
+	<b>How did you handle missing data?</b><br>
+	If data was missing, the size of the dataset was decremented.
+</p>
+
+<p>
+	<b>How did you handle categorical (string) data? How did you handle unbalanced data?</b><br>
+	Categorical data was grouped up.  Unbalanced data (numerical?) was divided into localized chunks and the normal distribution curve was computed.
+</p>
+
+<p>
+	<b>How did you test your model?</b><br>
+	I passed the training data back through.  The results were atrocious.. even worse than if I tallied up the "yes" and "no" count and used Math.random() to choose between them.  But, given the time constraints and lack of warning, this is what I can show.
+</p>
+
+
+
+</body>
+</html>

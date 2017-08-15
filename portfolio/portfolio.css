@@ -152,6 +152,8 @@ h1 + span, .undertitle {
 		position: relative;
 		width: 300px;
 		height: 300px;
+		/*width: 225px;*/
+		/*height: 225px;*/
 	    margin: 0 auto; 
 	    z-index: 5;
 	    cursor: grab;
