@@ -348,6 +348,9 @@ FL.class.DataHandler.prototype.createRuleset = function(relation) {
 
 
 
+
+
+
 FL.class.RuleSet = function(rewards) {
 	this.rewards = rewards;
 }
