@@ -13,8 +13,10 @@ PINE.waitForNeed("ELATE", function () {
 		this.canEvolve("*");
 
 		this.evolveThis = function() {
-			this.eventListeners = {};
-			this.eventListeners.allEvents = [];
+			var THIS = this;
+			THIS.eventListeners = {};
+			THIS.eventListeners.allEvents = [];
+			THIS.repeater = function(event){THIS.dispatchEvent(event)};
 		}
 
 		this.addEventListener = function(eventType, fn) {
@@ -49,11 +51,16 @@ PINE.waitForNeed("ELATE", function () {
 				listeners[i](eventData);
 		}
 
-		this.repeatDispatches = function(target) {
-			var thisDispatcher = this;
-			target.addEventListener("allEvents", function(event) {
-				thisDispatcher.dispatchEvent(event);
-			});
+		this.repeatDispatches = function(target, eventType) {
+			eventType = eventType || "allEvents";
+			var THIS = this;
+			target.addEventListener(eventType, this.repeater);
+		}
+
+		this.endRepeatDispatches = function(target, eventType) {
+			eventType = eventType || "allEvents";
+			var THIS = this;
+			target.removeEventListener(eventType, this.repeater);
 		}
 	});
 

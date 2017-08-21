@@ -4,12 +4,176 @@
 		"selected_items":
 		[
 			[
-				"tra",
-				"transition"
+				"pre",
+				"Predictions"
+			],
+			[
+				"co",
+				"color"
 			],
 			[
 				"re",
-				"requestedFrame"
+				"relation"
+			],
+			[
+				"out",
+				"outcome"
+			],
+			[
+				"no",
+				"normness"
+			],
+			[
+				"in",
+				"inputCase"
+			],
+			[
+				"get",
+				"getNormness"
+			],
+			[
+				"di",
+				"distNo"
+			],
+			[
+				"dis",
+				"distYes"
+			],
+			[
+				"rew",
+				"reward"
+			],
+			[
+				"to",
+				"toFixed"
+			],
+			[
+				"r",
+				"rewards"
+			],
+			[
+				"clu",
+				"clueFor"
+			],
+			[
+				"rel",
+				"relativeClueSum"
+			],
+			[
+				"va",
+				"valueName"
+			],
+			[
+				"d",
+				"diff"
+			],
+			[
+				"clue",
+				"clueVal"
+			],
+			[
+				"mi",
+				"minClue"
+			],
+			[
+				"rec",
+				"recordClueVal"
+			],
+			[
+				"la",
+				"label"
+			],
+			[
+				"relation",
+				"relations"
+			],
+			[
+				"ta",
+				"targetName"
+			],
+			[
+				"da",
+				"data"
+			],
+			[
+				"tar",
+				"targetName"
+			],
+			[
+				"yes",
+				"yesCount"
+			],
+			[
+				"cu",
+				"curve"
+			],
+			[
+				"e",
+				"emphasis"
+			],
+			[
+				"si",
+				"simplified"
+			],
+			[
+				"max",
+				"maxSpacing"
+			],
+			[
+				"ca",
+				"cases"
+			],
+			[
+				"item",
+				"itemName"
+			],
+			[
+				"it",
+				"items"
+			],
+			[
+				"l",
+				"label"
+			],
+			[
+				"tr",
+				"tryNum"
+			],
+			[
+				"valu",
+				"valueListeners"
+			],
+			[
+				"bac",
+				"background-color"
+			],
+			[
+				"con",
+				"container"
+			],
+			[
+				"crea",
+				"createContainer"
+			],
+			[
+				"group",
+				"groupedCopyTarget"
+			],
+			[
+				"c",
+				"console"
+			],
+			[
+				"cl",
+				"cloneMe"
+			],
+			[
+				"clo",
+				"cloneTarget"
+			],
+			[
+				"tra",
+				"transition"
 			],
 			[
 				"fad",
@@ -30,10 +194,6 @@
 			[
 				"hid",
 				"hideWhileLoading"
-			],
-			[
-				"bac",
-				"background-repeat"
 			],
 			[
 				"wid",
@@ -60,10 +220,6 @@
 				"layerChangeListener"
 			],
 			[
-				"cu",
-				"currentDisplayable"
-			],
-			[
 				"inde",
 				"indexOf"
 			],
@@ -84,16 +240,8 @@
 				"setDisplayable"
 			],
 			[
-				"ca",
-				"canvasStack"
-			],
-			[
 				"img",
 				"imgNode"
-			],
-			[
-				"c",
-				"create"
 			],
 			[
 				"nat",
@@ -160,16 +308,8 @@
 				"arrayOrString"
 			],
 			[
-				"con",
-				"console"
-			],
-			[
 				"st",
 				"stringify"
-			],
-			[
-				"da",
-				"data"
 			],
 			[
 				"dat",
@@ -186,10 +326,6 @@
 			[
 				"U",
 				"UTF16To8"
-			],
-			[
-				"co",
-				"compressed"
 			],
 			[
 				"ut",
@@ -222,10 +358,6 @@
 			[
 				"setChip",
 				"setChipSizeTo"
-			],
-			[
-				"la",
-				"layer"
 			],
 			[
 				"expe",
@@ -296,10 +428,6 @@
 				"startRow"
 			],
 			[
-				"in",
-				"insetCropping"
-			],
-			[
 				"b",
 				"bounds"
 			],
@@ -328,20 +456,8 @@
 				"totalCropping"
 			],
 			[
-				"to",
-				"totalCropping"
-			],
-			[
 				"en",
 				"endRow"
-			],
-			[
-				"l",
-				"left"
-			],
-			[
-				"get",
-				"getCropping"
 			],
 			[
 				"curr",
@@ -350,10 +466,6 @@
 			[
 				"currentMax",
 				"currentMaxCount"
-			],
-			[
-				"d",
-				"defaultChip"
 			],
 			[
 				"ski",
@@ -374,10 +486,6 @@
 			[
 				"res",
 				"response"
-			],
-			[
-				"di",
-				"dirItem"
 			],
 			[
 				"mapFi",
@@ -406,134 +514,16 @@
 			[
 				"appe",
 				"appendChild"
-			],
-			[
-				"for",
-				"forceRequest"
-			],
-			[
-				"upda",
-				"updateFileListing"
-			],
-			[
-				"not",
-				"notFound"
-			],
-			[
-				"ab",
-				"absoluteRoot"
-			],
-			[
-				"li",
-				"listeners"
-			],
-			[
-				"vi",
-				"virtualFileTreeItem"
-			],
-			[
-				"a",
-				"absoluteRoot"
-			],
-			[
-				"this",
-				"thisVirtual"
-			],
-			[
-				"pro",
-				"prototype"
-			],
-			[
-				"reque",
-				"requestedData"
-			],
-			[
-				"mak",
-				"makePathFull"
-			],
-			[
-				"und",
-				"unsavedChanges"
-			],
-			[
-				"p",
-				"padding"
-			],
-			[
-				"text-a",
-				"text-align"
-			],
-			[
-				"fo",
-				"font-size"
-			],
-			[
-				"temp",
-				"tempMessage"
-			],
-			[
-				"cure",
-				"currentProject"
-			],
-			[
-				"pa",
-				"parentNode"
-			],
-			[
-				"er",
-				"errIfNotTreeable"
-			],
-			[
-				"rem",
-				"removeMe"
-			],
-			[
-				"un",
-				"unsaved"
-			],
-			[
-				"Reo",
-				"resourceBrowser"
-			],
-			[
-				"resource",
-				"resourceBrowser"
-			],
-			[
-				"modeT",
-				"modeToolRoot"
-			],
-			[
-				"do",
-				"domNode"
-			],
-			[
-				"P",
-				"PalletteChipSet"
-			],
-			[
-				"zo",
-				"zoom"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "portfolio/index.html",
+			"file": "FlatStory/guiModules/CanvasStack.html",
 			"settings":
 			{
-				"buffer_size": 6320,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "portfolio/portfolio.css",
-			"settings":
-			{
-				"buffer_size": 13785,
-				"encoding": "UTF-8",
+				"buffer_size": 8253,
 				"line_ending": "Unix"
 			}
 		}
@@ -579,28 +569,35 @@
 	"expanded_folders":
 	[
 		"/Users/seph/Code/Web/SephReed.github.io",
-		"/Users/seph/Code/Web/SephReed.github.io/btc_miner",
-		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/appPkg",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/public",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/public/images"
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules"
 	],
 	"file_history":
 	[
+		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/marketing_training.csv",
+		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/csvParser.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.8.js",
+		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/deliverables.html",
+		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/findLinks.js",
+		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/marketing_test.csv",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/space.js",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_digital_art.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/public/css/well_conditioned_lover.css",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_fabrication.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.css",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/thumbz_symbol.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/cloneVsInnerHTML.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/inheritanceTest.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/foo.html",
 		"/Users/seph/Code/Web/SephReed.github.io/btc_miner/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Loadbar.js",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/EditorUI.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_fabrication.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/WebFileBridge.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.8.js",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_needles.js",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/thumbz_symbol.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/bgimg.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_contact.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/index.html",
@@ -662,7 +659,6 @@
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/test_spawner.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/legacy/PINE_Needles_3.0.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Includes.js",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/CryptoChallenges/CryptoTools.js",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/old_stuff/portfolio.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/ResizeSensor.js",
@@ -686,7 +682,6 @@
 		"/Users/seph/Code/Web/SephReed.github.io/Writing/genders.txt",
 		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/RainbowsVSUnicorns.html",
 		"/Users/seph/Downloads/.localized",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.css",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/resume.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/js/AES.js",
 		"/Users/seph/Code/Web/SephReed.github.io/public/css/init.css",
@@ -706,19 +701,7 @@
 		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/BMC_quote_items.html",
 		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/noob.html",
 		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/rules.html",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/boardcheck.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/quick_poetry.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/a_moment_of_introspection.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/cableOverlay.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/effigy.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/budget.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/budget.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/effigy_old.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/Kylas_Song.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/hexapod.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Digiden/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/css/digiden.css"
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/boardcheck.html"
 	],
 	"find":
 	{
@@ -744,6 +727,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"*y*",
+			"no",
+			"yes",
+			"relatives",
+			"name",
+			"currentMean",
+			"means",
 			"header",
 			"popin_over",
 			"_newtab",
@@ -864,14 +854,7 @@
 			"fnBack",
 			"nodesPine",
 			"PINE_nodes",
-			"nodesPineInitiated",
-			"getStyle",
-			"panelBorderWidth",
-			"panelBorderColor",
-			"backdropColor",
-			"panelTextColor",
-			"panelBase",
-			"consol"
+			"nodesPineInitiated"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -879,6 +862,13 @@
 		"regex": false,
 		"replace_history":
 		[
+			"no",
+			"yes",
+			"*y*",
+			"relations",
+			"factor",
+			"currentChunk",
+			"chunks",
 			"_blank",
 			"resolve",
 			"BRIDGE.notFound",
@@ -999,14 +989,7 @@
 			"modMe",
 			"device",
 			"midiTrack",
-			"rack",
-			"device_rack",
-			"deviceRack",
-			"GATHER",
-			"defaultVal",
-			"rs",
-			"RS",
-			"range"
+			"rack"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -1022,19 +1005,19 @@
 			[
 				{
 					"buffer": 0,
-					"file": "portfolio/index.html",
+					"file": "FlatStory/guiModules/CanvasStack.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6320,
+						"buffer_size": 8253,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								747,
-								747
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1043,39 +1026,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1379.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "portfolio/portfolio.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 13785,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2025,
-								2025
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1533.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -1130,12 +1084,12 @@
 		"selected_items":
 		[
 			[
-				"web",
-				"FlatStory/WebFileBridge.js"
-			],
-			[
 				"4.8",
 				"PINE/PINE_Core_4.8.js"
+			],
+			[
+				"web",
+				"FlatStory/WebFileBridge.js"
 			],
 			[
 				"load",

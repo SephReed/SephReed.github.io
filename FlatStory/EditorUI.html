@@ -65,8 +65,10 @@ PINE.waitForNeed(["ELATE", "FLAT"], function() {
 
 
 	UI.readyCanvasStack = function() {
-		UI.canvasStack = new (ELATE.get("InteractiveCanvasStack"))(El.firstOfTag(null, "canvasStack"));	
-		UI.canvasStack.registerMode(new (ELATE.get("ChipCanvasStackMode"))(UI.canvasStack));
+		var stackNode = El.firstOfTag(null, "canvasStack");
+		UI.canvasStack = new (ELATE.get("CanvasStack"))(stackNode);
+		UI.canvasStackChipUI = new (ELATE.get("ChipCanvasStackUI"))(UI.canvasStack);
+		// UI.canvasStack.registerMode();
 	}
 
 
