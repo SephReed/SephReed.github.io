@@ -5,15 +5,38 @@
 	<script type="text/javascript" src="mazeDecoder.js"></script>
 
 	<script type="text/javascript">
+
 		
 
-		//load the "mazes.txt" file, create a Maze class for each maze
+
+
+
+		
+
+		
 		document.addEventListener("DOMContentLoaded", function() {
-			var request = new XMLHttpRequest(); 
-			request.responseType = "text";
-			request.open("GET", "mazes.txt", true); 
-			request.onreadystatechange = function () { 
-				if (request.readyState != 4 || request.status != 200) return;
+			console.log("test");
+
+
+			//load the "mazes.txt" file
+			new Promise( function(resolve, reject) {
+				var request = new XMLHttpRequest();
+				request.open("GET", "mazes.txt");
+				request.responseType = "text";	
+
+				request.onload = function() {
+					if (request.status >= 200 && request.status < 400) 
+						resolve(request);			    
+
+					else request.onerror();
+				};
+
+				request.onerror = reject;
+
+				try { request.send(); }
+				catch(err) { reject(err); }
+			}).then(function(request){
+				//create a Maze class for each maze
 				var mazeLoadables = request.response.split('\n');
 
 				//for each maze request path analysis and add a drawing to the page along with
@@ -41,9 +64,8 @@
 						});
 						
 					}
-				});				
-			}; 
-			request.send();
+				});	
+			});
 		});
 	</script>
 </head>
