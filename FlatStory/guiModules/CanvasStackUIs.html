@@ -1,0 +1,259 @@
+<script type="text/javascript">
+
+PINE.waitForNeed(["ELATE", "BASIC_INTERFACES", "CanvasStack"], function () {
+
+
+	/*********************************
+	*	Canvas Stack UI
+	*********************************/
+	ELATE.create("CanvasStackUI", function() {
+		this.isAbstract();
+		this.implements("isCanvasStackFocusDependent");
+
+		this.build = function(name, canvasStack) {
+			var THIS = this;
+			THIS.super.isCanvasStackFocusDependent(canvasStack);
+			THIS.canvasStack.addEventListener("sizeChange", function(){THIS.updateSizings()});
+		}
+
+		this.updateSizings = "abstract";
+	});
+
+
+
+
+	/*********************************
+	*	Basic Drawing Canvas Stack UI
+	*********************************/
+	ELATE.create("BasicCanvasStackUI", function() {
+		this.isAbstract();
+		this.extend("CanvasStackUI");
+
+		this.build = function(canvasStack, name) {
+			var THIS = this;
+
+			
+
+			var ui = THIS.ui = {};
+			ui.domNode = document.createElement("canvas");
+			ui.domNode.id = name+"CanvasStackUI";
+			ui.painter = ui.domNode.getContext("2d");
+			ui.domNode.oncontextmenu = function() {return false;}
+			ui.domNode.style.zIndex = 20;
+
+			THIS.super.CanvasStackUI(name, canvasStack);
+
+			// ui.zoom = 3;
+			THIS.mouse = {};
+			THIS.mouse.held = false;
+			THIS.mouse.x = 0;
+			THIS.mouse.y = 0;
+
+
+			ui.domNode.addEventListener("mousemove", function(event) {
+				THIS.mouse.x = event.layerX;
+				THIS.mouse.y = event.layerY;
+				THIS.dispatchEvent({type:"MouseMove", mouse:THIS.mouse});
+
+				if(THIS.mouse.held) 
+					THIS.dispatchEvent({type:"MouseDrag", mouse:THIS.mouse});
+			});
+
+
+			ui.domNode.addEventListener("mousedown", function(event) {
+				THIS.mouse.held = true;
+				THIS.dispatchEvent({type:"MouseDown", mouse:THIS.mouse})
+			});
+
+			document.body.addEventListener("mouseup", function(event) {
+				THIS.mouse.held = false;
+				THIS.dispatchEvent({type:"MouseUp", mouse:THIS.mouse})
+			});
+
+		}
+
+
+		this.plugIn = function() {
+			this.canvasStack.domNode.appendChild(this.ui.domNode);
+			this.baseline();
+		}
+
+		this.unplug = function() {
+			this.ui.domNode.remove();
+		}
+
+
+
+		this.baseline = function() {
+			this.mouse.held = false;
+			this.updateSizings();
+		}
+
+		this.updateSizings = function() {
+			var displayed = this.canvasStack.currentDisplayable;
+			this.ui.domNode.width = displayed.width;
+			this.ui.domNode.height = displayed.height;
+			this.ui.domNode.style.width = displayed.domNode.style.width;
+			this.ui.domNode.style.height = displayed.domNode.style.height;
+		}
+
+	});
+
+
+
+
+
+	/*********************************
+	*	Chip Drawing Canvas Stack UI
+	*********************************/
+	ELATE.create("ChipCanvasStackUI", function() {
+		this.extend("CanvasStackUI");
+
+		this.build = function(canvasStack) {
+			var THIS = this;
+
+			
+
+			
+
+			var ui = THIS.ui = {};
+			ui.domNode = document.createElement("canvas");
+			ui.domNode.id = "ChipCanvasStackUI";
+			ui.painter = ui.domNode.getContext("2d");
+			ui.domNode.oncontextmenu = function() {return false;}
+			ui.domNode.style.zIndex = 20;
+
+			THIS.super.CanvasStackUI("Chip", canvasStack);
+
+			// ui.zoom = 3;
+			THIS.mouseHeld = false;
+
+
+			THIS.currentRow = 0;
+			THIS.currentCol = 0;
+
+			// var mouseTrails = [];
+			var hueShift = 0.005;
+			var hueOffset = 0;
+
+			var dispatchChipEvent = function(eventType) {
+				var event = {};
+				event.type = eventType;
+				event.row = THIS.currentRow;
+				event.col = THIS.currentCol;
+				event.layer = THIS.canvasStack.currentDisplayable.currentLayer;
+				THIS.canvasStack.dispatchEvent(event);
+			}
+
+			ui.domNode.addEventListener("mousemove", function(event) {
+				var y = event.layerY;
+				var x = event.layerX;
+
+				
+				var chipSize = 16;//getsize
+				var currentRow = THIS.currentRow;
+				var currentCol = THIS.currentCol;
+				var zoom = THIS.canvasStack.zoom;//getsize
+
+				var col = ~~(x/(chipSize * zoom));
+				var row = ~~(y/(chipSize * zoom));
+
+				
+				if(currentCol !== col || currentRow !== row) {
+					// console.log("MOVING", x, y);
+					var clearX = (currentCol*chipSize)-10;
+					var clearY = (currentRow*chipSize)-10;
+					var clearSize = chipSize+20;
+
+					hueOffset = (hueOffset + hueShift)%1;
+
+					ui.painter.clearRect(clearX, clearY, clearSize, clearSize);
+
+					THIS.currentCol = currentCol = col;
+					THIS.currentRow = currentRow = row;
+
+					var rgb = FLAT.Tools.HSV_to_RGB(hueOffset, 0.3, 1);
+					FLAT.Tools.setColor(ui.painter, rgb[0], rgb[1], rgb[2], 0.8);
+					ui.painter.strokeRect(col*chipSize, row*chipSize, chipSize, chipSize);
+
+					if(THIS.mouseHeld) {
+						dispatchChipEvent("ChipDrag");
+					}
+
+				}
+			});
+
+
+			ui.domNode.addEventListener("mousedown", function(event) {
+				THIS.mouseHeld = true;
+				dispatchChipEvent("ChipPress");
+			});
+
+			document.body.addEventListener("mouseup", function(event) {
+				THIS.mouseHeld = false;
+				dispatchChipEvent("ChipRelease");
+			});
+
+		}
+
+
+		this.plugIn = function() {
+			this.canvasStack.domNode.appendChild(this.ui.domNode);
+
+			this.baseline();
+		}
+
+		this.unplug = function() {
+			this.ui.domNode.remove();
+		}
+
+
+
+		this.baseline = function() {
+			this.mouseHeld = false;
+			this.updateSizings();
+		}
+
+		this.updateSizings = function() {
+			var displayed = this.canvasStack.currentDisplayable;
+			this.ui.domNode.width = displayed.width;
+			this.ui.domNode.height = displayed.height;
+			this.ui.domNode.style.width = displayed.domNode.style.width;
+			this.ui.domNode.style.height = displayed.domNode.style.height;
+		}
+
+
+		this.isCorrectUIFor = function(layer) {
+			console.log(layer);
+			return layer && layer.inheritsFrom && layer.inheritsFrom("SeeableChipLayer")
+		}
+
+
+	});
+
+
+
+
+
+
+	/*********************************
+	*	Chip Drawing Canvas Stack UI
+	*********************************/
+	ELATE.create("PixelCanvasStackUI", function() {
+		this.extend("BasicCanvasStackUI");
+
+
+
+		this.isCorrectUIFor = function(layer) {
+			return layer && layer.inheritsFrom && layer.inheritsFrom("SeeableChipLayer");
+		}
+
+	});
+
+
+
+
+
+});
+
+</script>

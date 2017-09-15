@@ -5,6 +5,7 @@
 PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 
 
+	//A canvas from which chips are pulled
 	ELATE.create("ChipPallette", function() {
 
 		this.build = function(domNode) {
@@ -108,6 +109,7 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 
 		this.evolvesFrom("ChipSet");
 		this.implements("EventDispatcher");
+		// this.implements("CanvasStackDisplayable");
 
 		this.parseArgs = function(args) {
 			return {ChipSet: [args]}
@@ -137,13 +139,6 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 			this.domNode.style.height = height+"px";
 		}
 
-		// this.setSelectedChip = function(chipNum) {
-		// 	this.super.ChipSet.setSelectedChip(chipNum);
-
-		// 	this.dispatchEvent({
-		// 		type: ""
-		// 	})
-		// }
 
 
 		this.toLoadable = function(width, height) {
@@ -157,27 +152,6 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 		    	console.log(blob);
 		    	return BRIDGE.saveFile("test.png", blob, "png");
 		    });
-
-		    
-
-		    // var dataURL = canvas.toDataURL("image/png");
-		    // var string = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-		    // var compressed = LZString.compressToUTF16(string); 
-
-		    // console.log(compressed);
-		    // var utf8 = UTF.U16to8(compressed);
-		    // console.log(utf8);
-
-
-		    // var utf16 = UTF.U8to16(utf8)
-		    // console.log(utf16);
-
-		    // console.log(utf16 == compressed);
-
-
-
-		    // BRIDGE.saveFile("test.png", UTF.U16to8(compressed), "png");
-		    // console.log(compressed.length);
 		}
 	});
 
@@ -186,39 +160,6 @@ PINE.waitForNeed(["ELATE", "VisualResources"], function() {
 
 
 
-// function UTF16To8(convertMe) {
-// 	var out = "";
-// 	for(var i = 0; i < convertMe.length; i++) {
-// 		var charCode = convertMe.charCodeAt(i);
-// 		out += String.fromCharCode(~~(charCode/256));
-// 		out += String.fromCharCode(charCode%256);
-// 	}
-// 	return out;
-// }
-
-
-// function UTF8To16(convertMe) {
-// 	var out = ""
-// 	for(var i = 0; i < convertMe.length; i += 2) {
-// 		var charCode = convertMe.charCodeAt(i)*256;
-// 		charCode += convertMe.charCodeAt(i+1);
-// 		out += String.fromCharCode(charCode)
-// 	}
-// 	return out;
-// }
-
-
-// var known = {}
-// function testUTF() {
-// 	for(var i = 0; i < 10000000; i++) {
-// 		var char = String.fromCharCode(i);
-// 		if(known[char]) {
-// 			alert(i);
-// 			return
-// 		}
-// 		known[char] = true;
-// 	}
-// }
 
 
 

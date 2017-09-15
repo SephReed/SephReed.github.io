@@ -1,0 +1,229 @@
+<!-- <script type="text/javascript">
+	
+PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
+
+	ELATE.create("CanvasStackToolbar", function() {
+			//
+		this.implements("EventDispatcher");
+
+
+		this.build = function(canvasStack, toolOrder) {
+			var THIS = this;
+			THIS.domNode = document.createElement("CanvasStackToolbar");
+			THIS.toolOrder = toolOrder;
+			THIS.tools = {};
+
+			THIS.canvasStack = canvasStack;
+			THIS.modeToolRoot = undefined;
+
+			
+			var wrappedHandler = function(event) {
+				THIS.handleCanvasStackEvent.call(THIS, event);
+			}
+
+			THIS.canvasStack.addEventListener("ChipPress", wrappedHandler);
+			THIS.canvasStack.addEventListener("ChipDrag", wrappedHandler);
+
+			document.addEventListener("keydown", function(event) {
+				var out = {};
+				out.type = "KeyDown";
+				out.key = event.key;
+				wrappedHandler(out);
+			})
+
+			document.addEventListener("keyup", function(event) {
+				var out = {};
+				out.type = "KeyUp";
+				out.key = event.key;
+				wrappedHandler(out);
+			})
+		}
+
+		this.isModifier = function(key) {
+			return key == "Meta" || key == "Shift";
+		}
+
+
+		this.handleCanvasStackEvent = function(event) {
+			if(this.currentTool) {
+
+				//Mode Tool Handling
+				if(event.type == "KeyDown") {
+					var modeHandling = this.modeToolRoot || this.currentTool;
+
+					var modeTool = modeHandling.modes[event.key];
+
+					if(modeTool == undefined && this.isModifier(event.key))
+						modeTool = modeHandling.modes["mod"];
+
+					if(modeTool) {
+						this.modeToolRoot = this.currentTool;
+						this.setTool(modeTool);
+						return;
+					}
+				}
+
+				if(event.type == "KeyUp" && this.isModifier(event.key) && this.modeToolRoot) {
+					this.setTool(this.modeToolRoot.name);
+					this.modeToolRoot = undefined;
+					return;
+				}
+
+
+
+				//Tool Changing Hotkeys
+				if(event.type == "KeyDown") {
+					var myHotKeys = "qgmlwyfu";
+					var toolNum = myHotKeys.indexOf(event.key.toLowerCase());
+					if(toolNum != -1 && toolNum < this.toolOrder.length) {
+						this.setTool(this.toolOrder[toolNum]);
+						return;
+					}
+				}
+
+				this.currentTool.handleEvent(event);
+			}
+		}
+
+		// this.setTool = function(toolName) {
+
+		// }
+
+		this.assertTool = function(toolName) {
+			if(this.tools[toolName] == undefined) {
+				this.tools[toolName] = {};
+				this.tools[toolName].name = toolName;
+
+				if(this.tools[toolName].modes == undefined)
+					this.tools[toolName].modes = {};
+			}
+		}
+
+		this.addToolHandler = function(addMe) {
+			this.addModesToolHandler(addMe);
+		}
+
+		this.addModesToolHandler = function(addMe, modeArgs) {
+			var toolName = addMe.name;
+
+			this.assertTool(toolName);
+
+			if(this.tools[toolName].handler !== undefined)
+				PINE.err("Tool already exists", toolName);
+
+			else {
+				this.tools[toolName].handler = addMe;
+				if(modeArgs)
+					this.tools[toolName].modes = modeArgs;
+			}
+		}
+
+
+		this.setTool = function(toolName) {
+			if(this.currentTool == undefined || toolName !== this.currentTool.name) {
+				if(this.currentTool)
+					this.currentTool.domNode.classList.remove("selectedTool");
+
+				var event = {};
+				event.type = "ToolChange";
+				event.old = this.currentTool;
+				event.new = this.currentTool = this.tools[toolName];
+
+				this.currentTool.domNode.classList.add("selectedTool");
+
+				this.dispatchEvent(event);
+			}
+
+		}
+
+
+		this.loadIconSet = function(path, scale, IMAGE_ORDER) {
+			var THIS = this;
+			return new Promise(function(resolve) {
+				scale = scale || 2;
+
+				var img = document.createElement("img");
+				img.src = path;
+
+				img.addEventListener("load", function() {
+
+					var args = FLAT.getPixelCodeArgs(img, "TUL");
+					
+					var chipSize = args ? args.chipWidth : img.naturalHeight;
+
+					var canvas = document.createElement("canvas");
+					canvas.width = canvas.height = chipSize * scale;
+					canvas.style.imageRendering = "-moz-crisp-edges";
+
+					var painter = canvas.getContext("2d");
+
+
+					var hChips = args ? args.numChips : img.naturalWidth/chipSize;
+
+					if(hChips % 1 !== 0) {
+						PINE.err("chipSize incorrect");
+						hChips = ~~hChips;
+					}
+
+					for(var h = 0; h < hChips; h++) {
+						painter.clearRect(0, 0, scale*chipSize, scale*chipSize);
+
+						drawScaledImage(img, painter, 
+							h * chipSize, 0, chipSize, chipSize, 
+							0, 0, scale, scale);
+
+
+						var icon = {}
+						icon.actionPoint = args.pointers[h];
+						icon.url = canvas.toDataURL("image/png");
+
+						icon.bgStyling = "url('"+icon.url+"')";				
+						icon.cursorStyling = icon.bgStyling;
+
+						if(icon.actionPoint)
+							icon.cursorStyling += icon.actionPoint.x*scale+" "+icon.actionPoint.y*scale
+						else {
+							var center = ~~(chipSize*scale/2);
+							icon.cursorStyling += center+" "+center;
+						}
+
+						icon.cursorStyling += ", auto";
+
+						var toolName = IMAGE_ORDER[h];
+
+						THIS.assertTool(toolName);
+
+						icon.toolName = toolName;
+						THIS.tools[toolName].icon = icon;
+					}	
+
+					
+					var toolOrder = THIS.toolOrder;
+					for(var i = 0; i < toolOrder.length; i++) {
+						var toolName = toolOrder[i];
+						var tool = THIS.tools[toolName];
+
+						var addMe = document.createElement("tool");
+						addMe.style.backgroundImage = "url('"+tool.icon.url+"')";
+
+						tool.domNode = addMe;
+
+						(function(toolName) {
+							addMe.addEventListener("mousedown", function() {
+								THIS.setTool(toolName);
+							});
+						})(toolName);
+						
+
+						THIS.domNode.appendChild(addMe);
+					}
+
+					resolve();
+				});
+			});
+		}
+	});
+});
+
+
+</script> -->

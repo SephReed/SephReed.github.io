@@ -11,14 +11,37 @@ IMAGE_ORDER = [
 
 PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 
+	// ELATE.create("ChipDrawingToolbar", function() {
+	// 	this.implements("CanvasStackToolbar");
+
+	// 	this.evolveThis = function(canvasStack, toolOrder) {
+	// 		this.super.CanvasStackToolbar(canvasStack, toolOrder || CHIP_TOOLS_IMAGE_ORDER);
+	// 		this.
+	// 	}
+	// });
+
+
+	// UI.toolbars = {};
+	// UI.toolbars.canvasStack = {};
+	// var chipDrawToolbar = UI.toolbars.canvasStack.chipDraw = (new ELATE.get("CanvasStackToolbar"))(UI.canvasStack, CHIP_TOOLS_IMAGE_ORDER)
+	// UI.toolbars.canvasStack.current = chipDrawToolbar;
+
+
+
+
+
 
 	ELATE.create("ChipDrawingToolbar", function() {
 
 		this.implements("EventDispatcher");
+		this.implements("isCanvasStackFocusDependent");
 
 
-		this.build = function(canvasStack, domNode, pallette, toolOrder) {
-			this.domNode = domNode;
+		this.build = function(canvasStack, toolbarNode, pallette, toolOrder) {
+			this.toolbarNode = toolbarNode;
+			this.domNode = document.createElement("ChipDrawingTools");
+			
+
 			this.pallette = pallette;
 			this.toolOrder = toolOrder || IMAGE_ORDER;
 			this.tools = {};
@@ -50,6 +73,21 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 			})
 			// this.canvasStack.addEventListener("KeyDown", this.handleCanvasStackEvent);
 			// this.canvasStack.addEventListener("KeyUp", this.handleCanvasStackEvent);
+
+			return {isCanvasStackFocusDependent: [canvasStack]};
+		}
+
+		this.isCorrectUIFor = function(layer) {
+			console.log(layer);
+			return layer && layer.inheritsFrom && layer.inheritsFrom("SeeableChipLayer")
+		}
+
+		this.plugIn = function() {
+			this.toolbarNode.appendChild(this.domNode);
+		}
+
+		this.unplug = function() {
+			this.domNode.remove();
 		}
 
 		this.getSelectedChipNum = function() {
@@ -465,8 +503,8 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 
 
  // // FLAT.World.Editor.Draw.Tools
- 	Draw = {};
-	Draw.Tools = {};
+ 	// Draw = {};
+	// Draw.Tools = {};
 
 	// Draw.Tools.icons = [];
 	// Draw.Tools.iconOrder = [
@@ -656,124 +694,124 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 	**************************/
 
 
-	Draw.Tools.Draw = {};
-	Draw.Tools.Draw.mouseDown = Draw.Tools.Draw.mouseDrag = function(row, col) {
-		CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
-	}
+	// Draw.Tools.Draw = {};
+	// Draw.Tools.Draw.mouseDown = Draw.Tools.Draw.mouseDrag = function(row, col) {
+	// 	CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
+	// }
 
-	Draw.Tools.Draw.keydown = function(key) {
-		if(key == "Meta") {
-			Draw.Tools.setDrawAreaCursor("Pick");
-			Draw.Tools.eventBindings.mouseDown = Draw.Tools.getTool("Pick");
-		}
-	}
+	// Draw.Tools.Draw.keydown = function(key) {
+	// 	if(key == "Meta") {
+	// 		Draw.Tools.setDrawAreaCursor("Pick");
+	// 		Draw.Tools.eventBindings.mouseDown = Draw.Tools.getTool("Pick");
+	// 	}
+	// }
 
-	Draw.Tools.Draw.keyup = function(key) {
-		if(key == "Meta") {
-			Draw.Tools.setDrawAreaCursor("Draw");
-			Draw.Tools.eventBindings.mouseDown = Draw.Tools.getTool("Draw");
-		}
-	}
+	// Draw.Tools.Draw.keyup = function(key) {
+	// 	if(key == "Meta") {
+	// 		Draw.Tools.setDrawAreaCursor("Draw");
+	// 		Draw.Tools.eventBindings.mouseDown = Draw.Tools.getTool("Draw");
+	// 	}
+	// }
 
-	// Draw.Tools.setTool("Draw");
+	// // Draw.Tools.setTool("Draw");
 
 
 
-	Draw.Tools.Fill = {}
-	Draw.Tools.Fill.mouseDown = Draw.Tools.Fill.spread = function(row, col, targetID, allowDiagonals) {
-		if(row < 0 
-		|| col < 0 
-		|| CURRENT_LAYER.chips.length <= row 
-		|| CURRENT_LAYER.chips[0].length <= col)
-			return;
+	// Draw.Tools.Fill = {}
+	// Draw.Tools.Fill.mouseDown = Draw.Tools.Fill.spread = function(row, col, targetID, allowDiagonals) {
+	// 	if(row < 0 
+	// 	|| col < 0 
+	// 	|| CURRENT_LAYER.chips.length <= row 
+	// 	|| CURRENT_LAYER.chips[0].length <= col)
+	// 		return;
 
-		if(targetID === undefined)
-			targetID = CURRENT_LAYER.chips[row][col];
+	// 	if(targetID === undefined)
+	// 		targetID = CURRENT_LAYER.chips[row][col];
 
-		if(Pal.currentChipset.selectedChip.num == targetID)
-			return;
+	// 	if(Pal.currentChipset.selectedChip.num == targetID)
+	// 		return;
 
-		if(CURRENT_LAYER.chips[row][col] == targetID) {
-			CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
+	// 	if(CURRENT_LAYER.chips[row][col] == targetID) {
+	// 		CURRENT_LAYER.setChip(row, col, Pal.currentChipset.selectedChip.num);
 
-			Draw.Tools.Fill.spread(row-1, col, targetID, allowDiagonals);
-			Draw.Tools.Fill.spread(row+1, col, targetID, allowDiagonals);
-			Draw.Tools.Fill.spread(row, col-1, targetID, allowDiagonals);
-			Draw.Tools.Fill.spread(row, col+1, targetID, allowDiagonals);
+	// 		Draw.Tools.Fill.spread(row-1, col, targetID, allowDiagonals);
+	// 		Draw.Tools.Fill.spread(row+1, col, targetID, allowDiagonals);
+	// 		Draw.Tools.Fill.spread(row, col-1, targetID, allowDiagonals);
+	// 		Draw.Tools.Fill.spread(row, col+1, targetID, allowDiagonals);
 
-			if(allowDiagonals == true) {
-				Draw.Tools.Fill.spread(row-1, col-1, targetID, allowDiagonals);
-				Draw.Tools.Fill.spread(row+1, col+1, targetID, allowDiagonals);
-				Draw.Tools.Fill.spread(row+1, col-1, targetID, allowDiagonals);
-				Draw.Tools.Fill.spread(row-1, col+1, targetID, allowDiagonals);
-			}
-		}
-	}
-
-	Draw.Tools.Fill.keydown = Draw.Tools.Draw.keydown;
-	Draw.Tools.Fill.keyup = function(key) {
-		if(key == "Meta") {
-			Draw.Tools.setDrawAreaCursor("Fill");
-			Draw.Tools.eventBindings.mouseDown = Draw.Tools.getTool("Fill");
-		}
-	}
-
-	// var setBack;
-	// Draw.Tools.Fill.engage = Draw.Tools.Draw.engage = function() {
-	// 	console.log("extending");
-	// 	document.body.addEventListener("keydown", function(event) {
-	// 		// console.log(event);
-	// 		if(event.key == "Meta") {
-	// 			// setBack = Tool.currentTool;
-	// 			Draw.Tools.setTool("Pick");
+	// 		if(allowDiagonals == true) {
+	// 			Draw.Tools.Fill.spread(row-1, col-1, targetID, allowDiagonals);
+	// 			Draw.Tools.Fill.spread(row+1, col+1, targetID, allowDiagonals);
+	// 			Draw.Tools.Fill.spread(row+1, col-1, targetID, allowDiagonals);
+	// 			Draw.Tools.Fill.spread(row-1, col+1, targetID, allowDiagonals);
 	// 		}
-	// 	});
-	// }
-	// Draw.Tools.Fill.disengage = Draw.Tools.Draw.disengage = function() {
-
+	// 	}
 	// }
 
+	// Draw.Tools.Fill.keydown = Draw.Tools.Draw.keydown;
+	// Draw.Tools.Fill.keyup = function(key) {
+	// 	if(key == "Meta") {
+	// 		Draw.Tools.setDrawAreaCursor("Fill");
+	// 		Draw.Tools.eventBindings.mouseDown = Draw.Tools.getTool("Fill");
+	// 	}
+	// }
 
-	Draw.Tools.Replace = {}
-	Draw.Tools.Replace.mouseDown = function(row, col) {
-		var targetID = CURRENT_LAYER.chips[row][col];
-		for(var v = 0; v < 16; v++) {
-			for(var h = 0; h < 16; h++) {
-				if(CURRENT_LAYER.chips[v][h] == targetID)
-					CURRENT_LAYER.setChip(v, h, Pal.currentChipset.selectedChip.num);
-			}
-		}
-	}
+	// // var setBack;
+	// // Draw.Tools.Fill.engage = Draw.Tools.Draw.engage = function() {
+	// // 	console.log("extending");
+	// // 	document.body.addEventListener("keydown", function(event) {
+	// // 		// console.log(event);
+	// // 		if(event.key == "Meta") {
+	// // 			// setBack = Tool.currentTool;
+	// // 			Draw.Tools.setTool("Pick");
+	// // 		}
+	// // 	});
+	// // }
+	// // Draw.Tools.Fill.disengage = Draw.Tools.Draw.disengage = function() {
 
-
-	Draw.Tools.Pick = {}
-	Draw.Tools.Pick.mouseDown = function(row, col) {
-		var targetID = CURRENT_LAYER.chips[row][col];
-		FLAT.Pallette.selectChip(targetID);
-	}
-
-
-
-	Draw.Tools.Zoom = {};
-	Draw.Tools.Zoom.inNotOut = true;
-	Draw.Tools.Zoom.keydown = function(key) {
-		if(key == "Meta") 
-			Draw.Tools.Zoom.inNotOut = false;
-	}
-
-	Draw.Tools.Zoom.keyup = function(key) {
-		if(key == "Meta") 
-			Draw.Tools.Zoom.inNotOut = true;
-	}
-
-	Draw.Tools.Zoom.mouseDown = function() {
-
-	}
+	// // }
 
 
+	// Draw.Tools.Replace = {}
+	// Draw.Tools.Replace.mouseDown = function(row, col) {
+	// 	var targetID = CURRENT_LAYER.chips[row][col];
+	// 	for(var v = 0; v < 16; v++) {
+	// 		for(var h = 0; h < 16; h++) {
+	// 			if(CURRENT_LAYER.chips[v][h] == targetID)
+	// 				CURRENT_LAYER.setChip(v, h, Pal.currentChipset.selectedChip.num);
+	// 		}
+	// 	}
+	// }
 
 
-	PINE.signalNeedReady("DrawTools");
+	// Draw.Tools.Pick = {}
+	// Draw.Tools.Pick.mouseDown = function(row, col) {
+	// 	var targetID = CURRENT_LAYER.chips[row][col];
+	// 	FLAT.Pallette.selectChip(targetID);
+	// }
+
+
+
+	// Draw.Tools.Zoom = {};
+	// Draw.Tools.Zoom.inNotOut = true;
+	// Draw.Tools.Zoom.keydown = function(key) {
+	// 	if(key == "Meta") 
+	// 		Draw.Tools.Zoom.inNotOut = false;
+	// }
+
+	// Draw.Tools.Zoom.keyup = function(key) {
+	// 	if(key == "Meta") 
+	// 		Draw.Tools.Zoom.inNotOut = true;
+	// }
+
+	// Draw.Tools.Zoom.mouseDown = function() {
+
+	// }
+
+
+
+
+	// PINE.signalNeedReady("DrawTools");
 
 
 });
@@ -785,6 +823,10 @@ PINE.waitForNeed(["Tools", "ELATE", "BASIC_INTERFACES"], function() {
 
 
 <style>
+ChipDrawingTools {
+	display: inline-block;
+}
+
 tool {
 	display: inline-block;
 	height: 34px;

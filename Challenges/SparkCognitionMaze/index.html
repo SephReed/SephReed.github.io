@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="mazeDecoder.js"></script>
+
+	<script type="text/javascript">
+		
+
+		//load the "mazes.txt" file, create a Maze class for each maze
+		document.addEventListener("DOMContentLoaded", function() {
+			var request = new XMLHttpRequest(); 
+			request.responseType = "text";
+			request.open("POST", "mazes.txt", true); 
+			request.onreadystatechange = function () { 
+				if (request.readyState != 4 || request.status != 200) return;
+				var mazeLoadables = request.response.split('\n');
+
+				//for each maze request path analysis and add a drawing to the page along with
+				//directions for getting through
+				mazeLoadables.forEach(function(loadable) {
+					if(loadable.length){
+						var maze = new MazeDecoder.class.Maze(loadable);
+						maze.getCanvas();
+						
+						maze.analyzePaths().then(function(stepByStep){
+							document.body.appendChild(maze.getCanvas());
+
+							var header = document.createElement("h3");
+							header.textContent = "Steps:"
+							document.body.appendChild(header);							
+
+							var stepsNode = document.createElement("div");
+							stepsNode.textContent = stepByStep.reduce(function(a, b){
+								return a +"', '"+b;
+							});
+							stepsNode.textContent = "['"+stepsNode.textContent+"']";
+							document.body.appendChild(stepsNode);
+
+							document.body.appendChild(document.createElement("hr"));
+						});
+						
+					}
+				});				
+			}; 
+			request.send();
+		});
+	</script>
+</head>
+<body>
+<h1>Spark Cognition Maze Challenge</h1>
+
+	<div id="key">
+		<bold>Key:</bold>
+		<table cellspacing="0" cellpadding="0">
+			<tr><td style="color:#a10633">*</td><td>mines</td></tr>
+			<tr><td style="color:#DFDBDB;">"white"</td><td>non-useful paths</td></tr>
+			<tr><td style="color:#D03959">"red"</td><td>potential paths</td></tr>
+			<tr><td style="color:#66C63D">"green"</td><td>best path</td></tr>
+		</table>
+	</div>
+	<hr>
+	<br>
+</body>
+
+<style type="text/css">
+	body {
+		background-color: #333;
+		color: #FAFAFA;
+		font-family: arial;
+		text-align: center;
+	}
+
+		
+
+		#key {
+			margin: 20px;
+			display: inline-block;
+			border: 1px solid #111;
+			text-align: left;
+			background-color: rgba(0,0,0,0.3);
+		}
+
+			#key bold {
+				display: block;
+				text-align: center;
+				padding: 5px;
+			}
+
+			#key td {
+				border: 1px solid #555;
+				padding: 3px;
+			}
+
+	div {
+		overflow-wrap: break-word;
+	}
+
+	canvas {
+		background-color: #222;
+	}
+</style>
+</html>

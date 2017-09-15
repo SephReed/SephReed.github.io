@@ -4,12 +4,14 @@
 PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 	
 
-	console.error("TODO: make the ui apply itstelf based off of a listener for canvas stack layer changes")
+	console.error("TODO: make chipset have layers for UI listeners")
 
 
 
 	/*********************************
 	*	Canvas Stack 
+	*
+	*  The canvas stack is where everything in world is displayed.
 	*********************************/
 	CanvasStack = ELATE.create("CanvasStack", function() {
 
@@ -59,7 +61,7 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 			THIS.domNode.appendChild(setToMe.domNode)
 			THIS.repeatDispatches(THIS.currentDisplayable, "LayerChange");
 
-			THIS.dispatchEvent({type:"LayerChange", new:THIS.currentDisplayable.currentLayer});
+			THIS.dispatchEvent({type:"LayerChange", new: (THIS.currentDisplayable.currentLayer || THIS.currentDisplayable)});
 			THIS.updateSizings();
 			
 		}
@@ -83,8 +85,11 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 			if(this.zoom > 1)
 				this.setZoom(this.zoom - increment);
 			else 
-				this.setZoom(this.zoom/2.0);
-			
+				this.setZoom(this.zoom/2.0);	
+		}
+
+		this.getFocus = function() {
+			return this.currentDisplayable ? this.currentDisplayable.getFocus() : undefined;
 		}
 
 		this.updateSizings = function() {
@@ -122,94 +127,20 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 
 
 
-	/*********************************
-	*	PROJECT
-	*********************************/
-	// ELATE.create("InteractiveCanvasStack", function() {
-
-	// 	this.evolvesFrom("CanvasStack");
-	// 	// this.implements("EventDispatcher");
-
-	// 	this.parseArgs = function(domNode) {
-	// 		return {CanvasStack: [domNode]};
-	// 	}
-
-	// 	this.evolveThis = function() {
-	// 		this.modes = [];
-	// 		this.currentMode = undefined;
-	// 		this.layerChangeListener = undefined;
-	// 		// this.eventListeners = {};
-
-	// 		if(this.currentDisplayable !== undefined)
-	// 			this.setDisplayable(this.currentDisplayable);
-	// 	}
-
-	// 	this.setDisplayable = function(setToMe) {
-	// 		var THIS = this;
-	// 		if(THIS.currentDisplayable) 
-	// 			THIS.currentDisplayable.removeEventListener("LayerChange", THIS.layerChangeListener);
-
-	// 		THIS.super.CanvasStack.setDisplayable(setToMe);
-	// 		THIS.updateModeFor(setToMe);
-
-	// 		THIS.currentDisplayable.addEventListener("LayerChange", function(event) {
-	// 			THIS.updateModeFor(event.new);
-	// 		});
-			
-	// 	}
-
-	// 	this.updateModeFor = function(updateFor) {
-
-	// 		if(updateFor.currentLayer !== undefined)
-	// 			updateFor = updateFor.currentLayer
-
-	// 		var newMode = undefined;
-
-	// 		for(var i = 0; newMode == undefined && i < this.modes.length; i++) {
-	// 			if(this.modes[i].isCorrectUIFor(updateFor)) 
-	// 				newMode = this.modes[i];
-	// 		}
-
-	// 		if(newMode != this.currentMode) {
-	// 			if(this.currentMode)
-	// 				this.currentMode.unplug();
-
-	// 			this.currentMode = newMode;
-
-	// 			if(this.currentMode) 
-	// 				this.currentMode.plugIn();
-	// 		}
-
-	// 	}
-
-	// 	this.registerMode = function(CanvasStackUI) {
-	// 		this.modes.push(CanvasStackUI);
-
-	// 		if(this.currentDisplayable)
-	// 			this.updateModeFor(this.currentDisplayable);
-	// 	}
-
-
-	// 	this.updateSizings = function() {
-	// 		this.super.CanvasStack.updateSizings();
-
-	// 		if(this.currentMode)
-	// 			this.currentMode.baseline();
-	// 	}
-
-	// });
-
 
 
 	/*********************************
-	*	Canvas Stack UI
+	*	Canvas Stack Focus Dependent
 	*********************************/
-	ELATE.create("CanvasStackUI", function() {
+	ELATE.create("isCanvasStackFocusDependent", function() {
 		this.isAbstract();
+		this.canEvolve('*');
 
-		this.build = function(name, canvasStack) {
+		this.evolveThis = function(canvasStack) {
+			if(canvasStack == undefined)
+				PINE.err("no canvas stack given")
+
 			var THIS = this;
-			THIS.name = name;
 			THIS.canvasStack = canvasStack;
 			THIS.isPluggedIn = false;
 
@@ -218,7 +149,8 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 				THIS.observeLayerChange(layer);
 			});
 
-			THIS.canvasStack.addEventListener("sizeChange", function(){THIS.updateSizings()});
+			//get current layer
+			THIS.observeLayerChange(THIS.canvasStack.getFocus())
 		}
 
 		this.observeLayerChange = function(layer) {
@@ -232,7 +164,6 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 
 		this.plugIn = "abstract";
 		this.unplug = "abstract";
-		this.updateSizings = "abstract";
 
 		this.isCorrectUIFor = "abstract"
 	});
@@ -240,136 +171,11 @@ PINE.waitForNeed(["ELATE", "BASIC_INTERFACES"], function () {
 
 
 
-
-
-	/*********************************
-	*	Chip Drawing Canvas Stack UI
-	*********************************/
-	ELATE.create("ChipCanvasStackUI", function() {
-		this.extend("CanvasStackUI");
-
-		this.build = function(canvasStack) {
-
-
-			this.super.CanvasStackUI("Chip", canvasStack);
-
-			var thisMode = this;
-
-			var ui = this.ui = {};
-			ui.domNode = document.createElement("canvas");
-			ui.domNode.id = "ChipCanvasStackUI";
-			ui.painter = ui.domNode.getContext("2d");
-			ui.domNode.oncontextmenu = function() {return false;}
-			ui.domNode.style.zIndex = 20;
-
-			// ui.zoom = 3;
-			this.mouseHeld = false;
-
-
-			this.currentRow = 0;
-			this.currentCol = 0;
-
-			// var mouseTrails = [];
-			var hueShift = 0.005;
-			var hueOffset = 0;
-
-			var dispatchChipEvent = function(eventType) {
-				var event = {};
-				event.type = eventType;
-				event.row = thisMode.currentRow;
-				event.col = thisMode.currentCol;
-				event.layer = thisMode.canvasStack.currentDisplayable.currentLayer;
-				thisMode.canvasStack.dispatchEvent(event);
-			}
-
-			ui.domNode.addEventListener("mousemove", function(event) {
-				var y = event.layerY;
-				var x = event.layerX;
-
-				
-
-				var chipSize = 16;//getsize
-				var currentRow = thisMode.currentRow;
-				var currentCol = thisMode.currentCol;
-				var zoom = thisMode.canvasStack.zoom;//getsize
-
-				var col = ~~(x/(chipSize * zoom));
-				var row = ~~(y/(chipSize * zoom));
-
-
-				
-				if(currentCol !== col || currentRow !== row) {
-					// console.log("MOVING", x, y);
-					var clearX = (currentCol*chipSize)-10;
-					var clearY = (currentRow*chipSize)-10;
-					var clearSize = chipSize+20;
-
-					hueOffset = (hueOffset + hueShift)%1;
-
-					ui.painter.clearRect(clearX, clearY, clearSize, clearSize);
-
-					thisMode.currentCol = currentCol = col;
-					thisMode.currentRow = currentRow = row;
-
-					var rgb = FLAT.Tools.HSV_to_RGB(hueOffset, 0.3, 1);
-					FLAT.Tools.setColor(ui.painter, rgb[0], rgb[1], rgb[2], 0.8);
-					ui.painter.strokeRect(col*chipSize, row*chipSize, chipSize, chipSize);
-
-					if(thisMode.mouseHeld) {
-						dispatchChipEvent("ChipDrag");
-					}
-
-				}
-			});
-
-
-			ui.domNode.addEventListener("mousedown", function(event) {
-				thisMode.mouseHeld = true;
-				dispatchChipEvent("ChipPress");
-			});
-
-			document.body.addEventListener("mouseup", function(event) {
-				thisMode.mouseHeld = false;
-				dispatchChipEvent("ChipRelease");
-			});
-
-		}
-
-
-		this.plugIn = function() {
-			this.canvasStack.domNode.appendChild(this.ui.domNode);
-
-			this.baseline();
-		}
-
-		this.unplug = function() {
-			this.ui.domNode.remove();
-		}
+	
 
 
 
-		this.baseline = function() {
-			this.mouseHeld = false;
-			this.updateSizings();
-		}
-
-		this.updateSizings = function() {
-			var displayed = this.canvasStack.currentDisplayable;
-			this.ui.domNode.width = displayed.width;
-			this.ui.domNode.height = displayed.height;
-			this.ui.domNode.style.width = displayed.domNode.style.width;
-			this.ui.domNode.style.height = displayed.domNode.style.height;
-		}
-
-
-		this.isCorrectUIFor = function(layer) {
-			return layer.inheritsFrom && layer.inheritsFrom("SeeableChipLayer")
-		}
-
-
-	});
-
-
+	PINE.signalNeedMet("CanvasStack");
 
 });
 
