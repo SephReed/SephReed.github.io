@@ -11,7 +11,7 @@
 		document.addEventListener("DOMContentLoaded", function() {
 			var request = new XMLHttpRequest(); 
 			request.responseType = "text";
-			request.open("POST", "mazes.txt", true); 
+			request.open("GET", "mazes.txt", true); 
 			request.onreadystatechange = function () { 
 				if (request.readyState != 4 || request.status != 200) return;
 				var mazeLoadables = request.response.split('\n');
