@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		var files;
+		files = {
+			extension: "../public/images/",
+			names: `PINEScreen.png			ThumbzSymbol_white.png
+					PINEScreen_Full.png		WalkscapeScreen.png
+					PINE_tree_2.png			diagonal_lines.png
+					Pine_hill.png			icon_play.png
+					Pine_hill_2.png			icon_twitter.png
+					Pine_tree.png			icons
+					PortfolioScreen.png		stars.png
+					ThumbzSymbol_thin_white.png	treeline.png`
+		}
+
+
+
+		var names = files.names.match(/\S+/g);
+		var fullpaths = names.map(function(name) {
+			return files.extension + name;
+		});
+
+		document.addEventListener("DOMContentLoaded", function() {
+			console.log("set")
+			fullpaths.forEach(function(path) {
+				var addMe = document.createElement("pageImage");
+				addMe.style.backgroundImage = "url('"+path+"')";
+				document.body.appendChild(addMe);
+			});
+		});
+
+
+
+
+
+	</script>
+</head>
+<body>
+
+</body>
+
+<style>
+html, body {
+	padding: 0px;
+	margin: 0px;
+}
+
+	pageImage {
+		display: block;
+		width: 8.5in;
+		height: 11in;
+		background-size: 80% auto;
+		background-repeat: no-repeat;
+		background-position: center center;
+	}
+</style>
+</html>
