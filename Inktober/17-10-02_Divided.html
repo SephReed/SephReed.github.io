@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		function HSV_to_RGB(hue, saturation, value) {
+			if(hue < 1)
+				hue += 1;
+			hue %= 1;
+
+			var rgb;
+			if(saturation == 0 || value == 0)
+				rgb = [value, value, value];  //used car salesman rick jim here!
+
+			else {
+				rgb = [];
+				var oneThird = 1/3;
+				var twoThirds = 2/3;
+
+				var rgbPos = []
+				rgbPos[0] = ((hue+oneThird)%1)/twoThirds;  //at 0, red pos = 0.5 or peak of sine wave
+				rgbPos[1] = hue/twoThirds;  //at .3333, green pos = 0.5 or peak of sine wave
+				rgbPos[2] = (hue-oneThird)/twoThirds;  //at .6666, blue pos = 0.5 or peak of sine wave
+
+				for(var i in rgbPos) {
+					var pos = rgbPos[i];
+					if(pos > 0 && pos < 1)
+						rgb[i] = Math.sin(pos*Math.PI) * value;
+					else
+						rgb[i] = 0;
+				}
+
+
+				if(saturation < 1) {
+					var max = Math.max(Math.max(rgb[0], rgb[1]), rgb[2]);
+
+					for(var i in rgb)
+						rgb[i] += (max-rgb[i]) * (1-saturation);
+				}
+			}
+
+			for(var i in rgb) 
+				rgb[i] *= 256;
+
+			return rgb;
+		}
+
+		function setColor(painter, r, g, b, a) {
+			if(a !== undefined){
+				painter.strokeStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+				painter.fillStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+			}
+			else {
+				painter.strokeStyle = "rgb("+r+", "+g+", "+b+")";
+				painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
+			}
+
+		}
+
+
+
+
+		getID = document.getElementByID;
+
+		var painter, canvas;
+
+
+		var hue = 0;
+
+		document.addEventListener("DOMContentLoaded", function (){
+			canvas = document.createElement("canvas");
+			canvas.style.zIndex = 20;
+
+			painter = canvas.getContext("2d");
+
+			
+
+			document.body.appendChild(canvas);
+			canvas.height = canvas.offsetHeight;
+			canvas.width = canvas.offsetWidth;
+
+
+			var lastPoint = {};
+			lastPoint.x = canvas.width/2
+			lastPoint.y = canvas.height/2;
+
+			var mouseheld = false;
+			var timedOut = false;
+
+			var x, y;
+
+			
+
+			canvas.addEventListener("mousedown", function(event) {
+				mouseheld = !mouseheld;
+
+				painter.fillStyle = "#222";
+				painter.fillRect(0, 0, canvas.width, canvas.height);
+			});
+
+			canvas.addEventListener("mousemove", function(event) {
+				x = event.layerX;
+				y = event.layerY;
+			});
+
+			drawLine = function() {
+				var slope = (lastPoint.y - y)/(x- lastPoint.x);
+				timedOut = true;
+
+				painter.beginPath();
+				var goodLine = false;
+
+				if(Number.isFinite(slope)) {
+					var xStart = lastPoint.x - ((canvas.height - lastPoint.y)/slope);
+					var xEnd = lastPoint.x + (lastPoint.y/slope);
+
+					painter.moveTo(xStart, canvas.height);
+					painter.lineTo(xEnd, 0);
+
+					goodLine = true;
+				}
+				else if(x != lastPoint.x) {
+					painter.moveTo(0, y);
+					painter.lineTo(canvas.width, y);
+					goodLine = true;
+				}
+
+				
+
+				if(goodLine) {
+					var rgb = HSV_to_RGB(hue, 0.75, 1);
+					// console.log(rgb);
+					setColor(painter, rgb[0], rgb[1], rgb[2]);
+					painter.lineWidth = 5;
+
+					painter.stroke();
+
+					lastPoint.x = x;
+					lastPoint.y = y;
+
+					hue += .01;
+				}
+
+				
+				window.setTimeout(drawLine, 15);
+			}
+
+
+			var fadeOut = function(){
+				painter.fillStyle = "#00000002";
+				painter.fillRect(0, 0, canvas.width, canvas.height);
+
+				window.requestAnimationFrame(fadeOut);
+			}
+
+			// fadeOut();
+			drawLine();
+			
+			
+		});
+
+
+	</script>
+</head>
+<body>
+<center>
+	<h1>Divided</h1>
+	<small>(click and/or drag)</small>
+</center>
+
+</body>
+
+<style type="text/css">
+html, body {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+	width: 100%;
+
+	color: #444;
+	background-color: #222;
+	font-family: arial;
+}
+
+	html, body, canvas {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		/*right: 0px;*/
+		/*bottom: 0px;*/
+		height: 100%;
+		width: 100%;
+		/*cursor: none;*/
+	}
+
+	center {
+		position: relative;
+		pointer-events: none;
+		z-index: 100;
+	}
+</style>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		CIRCLE_SIZE = 15;
+
+		function HSV_to_RGB(hue, saturation, value) {
+			if(hue < 1)
+				hue += 1;
+			hue %= 1;
+
+			var rgb;
+			if(saturation == 0 || value == 0)
+				rgb = [value, value, value];  //used car salesman rick jim here!
+
+			else {
+				rgb = [];
+				var oneThird = 1/3;
+				var twoThirds = 2/3;
+
+				var rgbPos = []
+				rgbPos[0] = ((hue+oneThird)%1)/twoThirds;  //at 0, red pos = 0.5 or peak of sine wave
+				rgbPos[1] = hue/twoThirds;  //at .3333, green pos = 0.5 or peak of sine wave
+				rgbPos[2] = (hue-oneThird)/twoThirds;  //at .6666, blue pos = 0.5 or peak of sine wave
+
+				for(var i in rgbPos) {
+					var pos = rgbPos[i];
+					if(pos > 0 && pos < 1)
+						rgb[i] = Math.sin(pos*Math.PI) * value;
+					else
+						rgb[i] = 0;
+				}
+
+
+				if(saturation < 1) {
+					var max = Math.max(Math.max(rgb[0], rgb[1]), rgb[2]);
+
+					for(var i in rgb)
+						rgb[i] += (max-rgb[i]) * (1-saturation);
+				}
+			}
+
+			for(var i in rgb) 
+				rgb[i] *= 256;
+
+			return rgb;
+		}
+
+		function setColor(painter, r, g, b, a) {
+			if(a !== undefined){
+				painter.strokeStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+				painter.fillStyle = "rgba("+r+", "+g+", "+b+", "+a+")";
+			}
+			else {
+				painter.strokeStyle = "rgb("+r+", "+g+", "+b+")";
+				painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
+			}
+		}
+
+
+
+
+		getID = document.getElementByID;
+
+	
+		var painter, canvas;
+		var dx, dy, x, y;
+
+		var BLOCK_SIZE = 4
+
+
+		var hue = .1;
+
+		document.addEventListener("DOMContentLoaded", function (){
+			canvas = document.createElement("canvas");
+			canvas.style.zIndex = 20;
+
+			painter = canvas.getContext("2d");
+
+			document.body.appendChild(canvas);
+			canvas.height = canvas.offsetHeight;
+			canvas.width = canvas.offsetWidth;
+
+			x = 0;
+			y = 0;
+			var hue = 0;
+
+			dx = BLOCK_SIZE;
+			dy = 0;
+
+			var top = 0;
+			var right = canvas.width;
+			var bottom = canvas.height;
+			var left = 0;
+
+			var continueLine = function() {
+				hue += .001;
+
+				var rgb = HSV_to_RGB(hue, .75, 1);
+				setColor(painter, rgb[0], rgb[1], rgb[2]);
+
+				painter.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+
+				x += dx;
+				y += dy;
+
+				
+				if(dx > 0 && x+BLOCK_SIZE > right) {
+					x -= dx;
+					dx = 0;
+					dy = BLOCK_SIZE;
+					top += 2*BLOCK_SIZE;
+					
+				}
+				else if(dx < 0 && x < left) {
+					x -= dx;
+					dx = 0;
+					dy = -BLOCK_SIZE;
+					right -= 2*BLOCK_SIZE;
+				}
+				
+				else if(dy > 0 && y+BLOCK_SIZE > bottom) {
+					y -= dy;
+					dy = 0;
+					dx = -BLOCK_SIZE;
+					bottom -= 2*BLOCK_SIZE;
+				}
+				
+				else if(dy < 0 && y < top) {
+					y -= dy;
+					dy = 0;
+					dx = BLOCK_SIZE;
+					left += 2*BLOCK_SIZE;
+				}
+				
+				
+				
+
+				window.requestAnimationFrame(continueLine);
+			}
+
+			continueLine();
+		});
+
+
+	</script>
+</head>
+<body>
+<center>
+	<h1>Looooooonnnngggg</h1>
+	<!-- <small>(click to split)</small> -->
+</center>
+
+</body>
+
+<style type="text/css">
+html, body {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+	width: 100%;
+
+	color: #444;
+	background-color: #222;
+	font-family: arial;
+}
+
+	html, body, canvas {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		/*right: 0px;*/
+		/*bottom: 0px;*/
+		height: 100%;
+		width: 100%;
+		/*cursor: none;*/
+	}
+
+	center {
+		position: relative;
+		pointer-events: none;
+		z-index: 100;
+	}
+</style>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="INKY.js"></script>
+	<link rel="stylesheet" type="text/css" href="INKY_ControlPanel.css">
+	<script type="text/javascript">
+
+		var painter, canvas;
+		var lastX, lastY, x, y;
+
+		var points = [];
+
+		document.addEventListener("DOMContentLoaded", function (){
+			var controlPanel = INKY.getControlPanel();
+			document.body.appendChild(controlPanel.domNode);
+
+			canvas = document.createElement("canvas");
+			canvas.style.zIndex = 20;
+
+			painter = canvas.getContext("2d");
+			INKY.setPainter(painter);
+			
+
+			document.body.appendChild(canvas);
+			canvas.height = canvas.offsetHeight;
+			canvas.width = canvas.offsetWidth;
+
+
+			canvas.addEventListener("mousedown", function(event) {
+				painter.clearRect(0, 0, canvas.width, canvas.height);
+			});
+
+
+			canvas.addEventListener("mousemove", function(event) {
+				var point = {};
+				point.x = event.layerX;
+				point.y = event.layerY;
+				points.push(point);
+			});
+
+			var doCut = function() {
+				for(var i = 0; i < points.length; i++) {
+					var point = points[i];
+					var x = point.x;
+					var y = point.y;
+				
+					// hue += .01;
+
+					if(x != lastX || y != lastY) {
+
+						if(lastX === undefined) {
+							lastX = x;
+							lastY = y;
+						}
+
+						var dx = x - lastX;
+						var dy = y - lastY;
+						
+						var dist = Math.sqrt((dx*dx) + (dy*dy));
+						var size = Math.min(Math.max(1, dist/30), 8);
+
+						
+						painter.beginPath();
+						painter.moveTo(lastX, lastY);
+
+						painter.lineTo(x, y);
+
+						painter.lineWidth = size
+
+						var rgb = INKY.getNextColor();
+						INKY.setColor(rgb);
+						painter.stroke();
+
+						lastX = x;
+						lastY = y;
+
+						var splat = {};
+						splat.rgb = rgb;
+						splat.x = x;
+						splat.y = y;
+						splat.r = size/2;
+						splat.dx = dx/2;
+						splat.dy = dy/2;
+						splatters.push(splat)
+					}
+				}
+
+				points = [];
+				window.requestAnimationFrame(doCut);
+			}
+
+			doCut();
+
+
+
+
+
+			var splatters = [];
+			var drawSplatters = function() {
+				for(var i = 0; i < splatters.length; i++) {
+					var splat = splatters[i];
+
+					painter.beginPath();
+					painter.arc(splat.x, splat.y, splat.r, 0, Math.PI * 2);
+
+					var rgb = splat.rgb;
+					INKY.setColor(rgb);
+					painter.fill();
+
+					splat.x += splat.dx;
+					splat.y += splat.dy;
+
+					splat.dy += 3;
+
+					if(splat.x > canvas.width + splat.r 
+					|| splat.x < 0 - splat.r
+					|| splat.y > canvas.height + splat.r) {
+						splatters.splice(i, 1);
+						i--;
+					}
+				}
+				window.requestAnimationFrame(drawSplatters);
+			}
+			drawSplatters();
+
+
+			
+
+
+			var fadeOut = function(){
+				painter.fillStyle = "#0001";
+				painter.fillRect(0, 0, canvas.width, canvas.height);
+
+				window.setTimeout(fadeOut, 50);
+			}
+
+			// fadeOut();
+		});
+
+
+	</script>
+</head>
+<body>
+<center>
+	<h1>Sword</h1>
+	<!-- <small>(click!)</small> -->
+</center>
+
+</body>
+
+<style type="text/css">
+html, body {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+	width: 100%;
+
+	color: #444;
+	background-color: #222;
+	font-family: arial;
+}
+
+	html, body, canvas {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		/*right: 0px;*/
+		/*bottom: 0px;*/
+		height: 100%;
+		width: 100%;
+		/*cursor: none;*/
+	}
+
+	center {
+		position: relative;
+		pointer-events: none;
+		z-index: 100;
+	}
+</style>
+</html>
