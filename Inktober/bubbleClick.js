@@ -53,6 +53,11 @@ function setColor(painter, r, g, b, a) {
 		painter.fillStyle = "rgb("+r+", "+g+", "+b+")";
 	}
 
+	if(painter.setStrokeColor) {
+		painter.setStrokeColor(r, g, b, a||0);
+		painter.setFillColor(r, g, b, a||0);
+	}
+
 }
 
 
