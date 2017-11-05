@@ -192,8 +192,60 @@
 				box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
 			}
 
+
+
+
+			#thumbz_box span {
+				display: block;
+				position: absolute;
+				text-align: right;
+				padding-top: 80px;
+				padding-right: 40px;
+				width: 100%;
+				text-shadow: 1px 1px 2px black, 1px -1px 2px black, -1px 1px 2px black, -1px -1px 2px black;
+				pointer-events: none;
+				visibility: hidden;
+			}
+
+				@keyframes say_and_fade {
+					0% { opacity: 0; }
+					5% { opacity: 1; }
+					70% { opacity: 1; }
+					100% { opacity: 0; }
+				}
+
+				#thumbz_box.beg_for_attention span {
+					visibility: visible;
+					animation: say_and_fade 2s ease;
+					animation-fill-mode: forwards;
+				}
+
 		</style>
 
+
+		<script type="text/javascript">
+			U.docReady(function() {
+				var thumbz_box = El.byID("thumbz_box");
+				if(thumbz_box) {
+					var resetTimer;
+					thumbz_box.addEventListener("mouseover", function(){
+						if(resetTimer) {
+							window.clearTimeout(resetTimer);
+							resetTimer = undefined;
+						}
+
+						thumbz_box.classList.add("beg_for_attention");
+					});
+
+					thumbz_box.addEventListener("mouseleave", function(){
+						if(resetTimer === undefined)
+							resetTimer = window.setTimeout(function(){
+								thumbz_box.classList.remove("beg_for_attention");
+							}, 5000)
+					});
+				}
+			});
+		</script>
 
 	
 
@@ -202,7 +254,7 @@
 			<span>UI/UX Designer, Full Stack Developer, 2D/3D/Audio Asset Creator, Leader, Jazz Pianist, and All Around Handyman</span>
 			<!-- <span>Freelance, Full Stack, Physical/Digital/Artistic Creator</span> <br> -->
 
-			<div id="thumbz_box"></div>
+			<div id="thumbz_box"><span>-Drag Me!</span></div>
 			<div id="space_box"></div>
 			
 			
