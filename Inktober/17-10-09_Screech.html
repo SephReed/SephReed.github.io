@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="INKY.js"></script>
+	<link rel="stylesheet" type="text/css" href="INKY_ControlPanel.css">
+	<script type="text/javascript">
+
+		var painter, canvas;
+		var lastX, lastY, x, y;
+		var dx = 0, dy = 0;
+		var skids = [];
+
+		document.addEventListener("DOMContentLoaded", function (){
+			var controlPanel = INKY.getControlPanel();
+			document.body.appendChild(controlPanel.domNode);
+
+			canvas = document.createElement("canvas");
+			canvas.style.zIndex = 20;
+
+			painter = canvas.getContext("2d");
+			INKY.setPainter(painter);
+			INKY.colorModes.rainbow.hueChange = 0.77;
+			
+			document.body.appendChild(canvas);
+			canvas.height = canvas.offsetHeight;
+			canvas.width = canvas.offsetWidth;
+
+			canvas.addEventListener("mousemove", function(event) {
+				x = event.layerX;
+				y = event.layerY;
+
+				if(lastX !== undefined) {
+					var tmpDx = x - lastX;
+					var tmpDy = y - lastY;
+
+					var doSkid = false;
+
+					console.log(dx, dy, tmpDx, tmpDy);
+
+					if(Math.abs(tmpDx) > Math.abs(dx))
+						dx = tmpDx;
+					else
+						doSkid = true;
+
+					if(Math.abs(tmpDy) > Math.abs(dy))
+						dy = tmpDy;
+					else
+						doSkid = true;
+					
+					if(doSkid) {
+						var skid = {};
+						skid.lastX = skid.x = x;
+						skid.lastY = skid.y = y;
+						skid.dir = dx > 0;
+						skid.slope = dy/dx;
+						skid.length = (Math.abs(dx) + Math.abs(dy))/(2);
+						
+						skid.pos = 0;
+						skids.push(skid);
+						console.log(skid);
+					}
+				}
+
+				lastX = x;
+				lastY = y;
+			});
+
+
+
+			var drawSkid = function() {
+				for(var i = 0; i < skids.length; i++) {
+					var skid = skids[i];
+					var rgb = INKY.getNextColor();
+
+					var endX = skid.x + (skid.pos * skid.length * (skid.dir ? 1 : -1));
+					var endY = skid.y + (skid.pos * skid.length * skid.slope);
+
+					INKY.setColor(rgb);
+
+					painter.beginPath();
+					painter.moveTo(skid.lastX, skid.lastY);
+					painter.lineTo(endX, endY);
+
+					painter.lineWidth = 5;
+					painter.stroke();
+
+					skid.lastX = endX;
+					skid.lastY = endY;
+
+					skid.pos += .01;
+
+					if(skid.pos > skid.length) {
+						skids.splice(i, 1);
+						i--;
+					}
+				}
+				window.requestAnimationFrame(drawSkid);
+			}
+			drawSkid();
+			
+			
+			var fadeOut = function(){
+				painter.fillStyle = "#0001";
+				painter.fillRect(0, 0, canvas.width, canvas.height);
+
+				window.setTimeout(fadeOut, 50);
+			}
+		});
+
+
+	</script>
+</head>
+<body>
+<center>
+	<h1>Screech</h1>
+	<!-- <small>(click!)</small> -->
+</center>
+
+</body>
+
+<style type="text/css">
+html, body {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+	width: 100%;
+
+	color: #444;
+	background-color: #222;
+	font-family: arial;
+}
+
+	html, body, canvas {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		/*right: 0px;*/
+		/*bottom: 0px;*/
+		height: 100%;
+		width: 100%;
+		/*cursor: none;*/
+	}
+
+	center {
+		position: relative;
+		pointer-events: none;
+	}
+</style>
+</html>

@@ -1830,6 +1830,11 @@ El.byTag = function(domNode, tag) {
 }
 
 El.firstOfTag = function(domNode, tag) {
+	if(tag == undefined) {
+		tag = domNode;
+		domNode = undefined;
+	}
+
 	if(domNode == undefined)
 		domNode = document.body;
 		// PINE.err("can not get by tag from undefined domNode", domNode, className);

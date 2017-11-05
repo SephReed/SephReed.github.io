@@ -31,7 +31,7 @@
 
 				for(var i in addedNodes) {
 					var addMe = addedNodes[i];
-					if(addMe.tagName != "flowColumn") {
+					if(job.originalOrder.indexOf(addMe) == -1 && addMe.tagName != "flowColumn") {
 						job.originalOrder.push(addMe);
 						flowCol.addItem.call(job, addMe);
 					}
@@ -67,6 +67,7 @@
 					domNode.appendChild(newCol);
 				}
 
+				console.log(job.originalOrder);
 				for(var i in job.originalOrder) {
 					flowCol.addItem.call(job, job.originalOrder[i]);
 				}
@@ -76,6 +77,8 @@
 
 		flowCol.addItem = function(addMe) {
 			var columns = this.columns;
+
+			console.log(addMe)
 
 			var smallest = columns[0];
 			for(var i = 1; i < columns.length; i++) {

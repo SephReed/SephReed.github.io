@@ -4,529 +4,521 @@
 		"selected_items":
 		[
 			[
-				"pre",
-				"Predictions"
-			],
-			[
-				"co",
-				"color"
-			],
-			[
-				"re",
-				"relation"
-			],
-			[
-				"out",
-				"outcome"
-			],
-			[
-				"no",
-				"normness"
-			],
-			[
-				"in",
-				"inputCase"
-			],
-			[
-				"get",
-				"getNormness"
-			],
-			[
-				"di",
-				"distNo"
-			],
-			[
-				"dis",
-				"distYes"
-			],
-			[
-				"rew",
-				"reward"
-			],
-			[
-				"to",
-				"toFixed"
-			],
-			[
-				"r",
-				"rewards"
-			],
-			[
-				"clu",
-				"clueFor"
-			],
-			[
-				"rel",
-				"relativeClueSum"
-			],
-			[
-				"va",
-				"valueName"
-			],
-			[
-				"d",
-				"diff"
-			],
-			[
-				"clue",
-				"clueVal"
-			],
-			[
-				"mi",
-				"minClue"
-			],
-			[
-				"rec",
-				"recordClueVal"
-			],
-			[
-				"la",
-				"label"
-			],
-			[
-				"relation",
-				"relations"
-			],
-			[
-				"ta",
-				"targetName"
-			],
-			[
-				"da",
-				"data"
-			],
-			[
-				"tar",
-				"targetName"
-			],
-			[
-				"yes",
-				"yesCount"
-			],
-			[
-				"cu",
-				"curve"
-			],
-			[
-				"e",
-				"emphasis"
-			],
-			[
-				"si",
-				"simplified"
+				"box",
+				"box-shadow"
 			],
 			[
 				"max",
-				"maxSpacing"
+				"max-width"
 			],
 			[
-				"ca",
-				"cases"
+				"border-bo",
+				"border-bottom-style"
 			],
 			[
-				"item",
-				"itemName"
+				"border-co",
+				"border-color"
 			],
 			[
-				"it",
-				"items"
+				"y",
+				"yNow"
 			],
 			[
-				"l",
-				"label"
+				"M",
+				"MGMT"
 			],
 			[
-				"tr",
-				"tryNum"
-			],
-			[
-				"valu",
-				"valueListeners"
-			],
-			[
-				"bac",
-				"background-color"
-			],
-			[
-				"con",
-				"container"
-			],
-			[
-				"crea",
-				"createContainer"
+				"gr",
+				"group"
 			],
 			[
 				"group",
-				"groupedCopyTarget"
+				"groups"
 			],
 			[
-				"c",
-				"console"
+				"be",
+				"beginPath"
 			],
 			[
-				"cl",
-				"cloneMe"
-			],
-			[
-				"clo",
-				"cloneTarget"
-			],
-			[
-				"tra",
-				"transition"
-			],
-			[
-				"fad",
-				"fadeTime"
-			],
-			[
-				"back",
-				"background-color"
-			],
-			[
-				"po",
-				"position"
-			],
-			[
-				"hide",
-				"hideWhileLoading"
-			],
-			[
-				"hid",
-				"hideWhileLoading"
-			],
-			[
-				"wid",
-				"width"
-			],
-			[
-				"hi",
-				"hideOnLoad"
-			],
-			[
-				"app",
-				"appinitLoadbar"
-			],
-			[
-				"add",
-				"addStyle"
-			],
-			[
-				"par",
-				"parentPositioning"
-			],
-			[
-				"lay",
-				"layerChangeListener"
-			],
-			[
-				"inde",
-				"indexOf"
-			],
-			[
-				"ev",
-				"eventListeners"
-			],
-			[
-				"liste",
-				"listeners"
-			],
-			[
-				"new",
-				"newMode"
-			],
-			[
-				"set",
-				"setDisplayable"
-			],
-			[
-				"img",
-				"imgNode"
-			],
-			[
-				"nat",
-				"naturalWidth"
+				"unk",
+				"unknown_person"
 			],
 			[
 				"create",
 				"createElement"
 			],
 			[
-				"u",
-				"undefined"
-			],
-			[
-				"chips",
-				"chipsTall"
-			],
-			[
-				"last",
-				"lastDir"
-			],
-			[
-				"chi",
-				"childNodes"
-			],
-			[
-				"abs",
-				"absoluteRoot"
-			],
-			[
-				"rot",
-				"rootPath"
-			],
-			[
-				"roo",
-				"rootPath"
-			],
-			[
-				"las",
-				"lastDir"
-			],
-			[
-				"post",
-				"postOrGet"
-			],
-			[
-				"is",
-				"isProven"
-			],
-			[
-				"try",
-				"tryPath"
-			],
-			[
-				"pot",
-				"postPathIndex"
-			],
-			[
-				"pos",
-				"postPathIndex"
-			],
-			[
-				"ar",
-				"arrayOrString"
-			],
-			[
-				"st",
-				"stringify"
-			],
-			[
-				"dat",
-				"dataType"
+				"app",
+				"appStat"
 			],
 			[
 				"fi",
-				"filePath"
+				"fillStyle"
 			],
 			[
-				"firs",
-				"firstArg"
+				"o",
+				"opps"
 			],
 			[
-				"U",
-				"UTF16To8"
+				"tra",
+				"transition-timing-function"
 			],
 			[
-				"ut",
-				"utf16"
+				"tr",
+				"transition-duration"
 			],
 			[
-				"char",
-				"charCode"
+				"card",
+				"cardHeaderFont"
 			],
 			[
-				"cha",
-				"charCode"
+				"creat",
+				"createElement"
 			],
 			[
-				"na",
-				"naturalWidth"
+				"wid",
+				"width"
 			],
 			[
-				"sen",
-				"sendMe"
+				"App",
+				"ApplicantGUI"
 			],
 			[
-				"se",
-				"sendMe"
+				"A",
+				"ApplicantGUI"
 			],
 			[
-				"ex",
-				"expectedHeight"
+				"v",
+				"vertical-align"
 			],
 			[
-				"setChip",
-				"setChipSizeTo"
+				"car",
+				"cardsOfType"
 			],
 			[
-				"expe",
-				"expectedWidth"
+				"do",
+				"domNode"
 			],
 			[
-				"upd",
-				"updateSizing"
+				"rot",
+				"rotation"
+			],
+			[
+				"back",
+				"background-color"
+			],
+			[
+				"in",
+				"inherit"
+			],
+			[
+				"last",
+				"lastX"
+			],
+			[
+				"sk",
+				"skewQuad"
+			],
+			[
+				"ra",
+				"random"
+			],
+			[
+				"dx",
+				"dxPerFrame"
+			],
+			[
+				"size",
+				"sizeDots"
+			],
+			[
+				"dy",
+				"dying"
+			],
+			[
+				"r",
+				"random"
+			],
+			[
+				"cla",
+				"classList"
+			],
+			[
+				"wi",
+				"width"
+			],
+			[
+				"d",
+				"display"
+			],
+			[
+				"po",
+				"position"
+			],
+			[
+				"color",
+				"colorModeChooser"
+			],
+			[
+				"va",
+				"var"
+			],
+			[
+				"sa",
+				"saturation"
+			],
+			[
+				"get",
+				"getNextColor"
+			],
+			[
+				"sat",
+				"saturationChange"
+			],
+			[
+				"hu",
+				"hueChange"
+			],
+			[
+				"dr",
+				"drawSplatters"
+			],
+			[
+				"spl",
+				"splatters"
+			],
+			[
+				"sp",
+				"splat"
+			],
+			[
+				"pa",
+				"painter"
+			],
+			[
+				"splatt",
+				"splatters"
+			],
+			[
+				"las",
+				"lastY"
+			],
+			[
+				"co",
+				"continueLine"
+			],
+			[
+				"re",
+				"requestAnimationFrame"
+			],
+			[
+				"fil",
+				"fillRect"
+			],
+			[
+				"bu",
+				"bubble"
+			],
+			[
+				"dra",
+				"drawBubbles"
+			],
+			[
+				"pi",
+				"painter"
+			],
+			[
+				"bub",
+				"bubble"
+			],
+			[
+				"x",
+				"xNow"
+			],
+			[
+				"draw",
+				"drawLine"
 			],
 			[
 				"cur",
-				"currentDisplayable"
+				"currentSize"
 			],
 			[
-				"i",
-				"important"
+				"nex",
+				"nextY"
 			],
 			[
-				"border-s",
-				"border-style"
+				"next",
+				"nextX"
 			],
 			[
-				"current",
-				"currentLayer"
+				"fa",
+				"fadeOut"
 			],
 			[
-				"ad",
+				"time",
+				"timedOut"
+			],
+			[
+				"la",
+				"lastPoint"
+			],
+			[
+				"he",
+				"height"
+			],
+			[
+				"a",
 				"addMe"
-			],
-			[
-				"ful",
-				"fullRow"
-			],
-			[
-				"sta",
-				"startsWith"
-			],
-			[
-				"chipS",
-				"chipSteps"
-			],
-			[
-				"le",
-				"length"
-			],
-			[
-				"n",
-				"newRow"
-			],
-			[
-				"row",
-				"rowsTall"
-			],
-			[
-				"chip",
-				"chipBounds"
-			],
-			[
-				"bo",
-				"bounds"
-			],
-			[
-				"end",
-				"endRow"
-			],
-			[
-				"star",
-				"startRow"
-			],
-			[
-				"b",
-				"bounds"
-			],
-			[
-				"bou",
-				"bounds"
-			],
-			[
-				"boun",
-				"boundsOrFn"
 			],
 			[
 				"fu",
 				"function"
 			],
 			[
-				"ne",
-				"newDefault"
+				"padd",
+				"padding"
 			],
 			[
-				"mo",
-				"mostCommon"
+				"border-st",
+				"border-right-style"
 			],
 			[
-				"tot",
-				"totalCropping"
+				"text-a",
+				"text-align"
 			],
 			[
-				"en",
-				"endRow"
+				"font-",
+				"font-size"
 			],
 			[
-				"curr",
-				"currentMax"
+				"ma",
+				"margin"
 			],
 			[
-				"currentMax",
-				"currentMaxCount"
+				"di",
+				"display"
 			],
 			[
-				"ski",
-				"skipRow"
+				"rout",
+				"routeGraph"
 			],
 			[
-				"mode",
-				"modeToolRoot"
+				"ste",
+				"stepsNode"
 			],
 			[
-				"an",
-				"antiChip"
+				"step",
+				"stepByStep"
 			],
 			[
-				"so",
-				"soloModeOn"
+				"enu",
+				"enumDecoder"
+			],
+			[
+				"ca",
+				"canvas"
+			],
+			[
+				"op",
+				"options"
+			],
+			[
+				"un",
+				"undefined"
+			],
+			[
+				"n",
+				"nextNode"
+			],
+			[
+				"pat",
+				"paths"
+			],
+			[
+				"star",
+				"startNode"
+			],
+			[
+				"not",
+				"notBackwards"
+			],
+			[
+				"sta",
+				"startNode"
+			],
+			[
+				"ch",
+				"choices"
+			],
+			[
+				"find",
+				"findFastestRoute"
+			],
+			[
+				"of",
+				"offset"
+			],
+			[
+				"Ro",
+				"RouteGraph"
+			],
+			[
+				"ndoe",
+				"nodeIsUseful"
+			],
+			[
+				"check",
+				"checkMe"
+			],
+			[
+				"nod",
+				"nextNodePromises"
+			],
+			[
+				"pro",
+				"promiseNode"
+			],
+			[
+				"tmp",
+				"tmpUseful"
 			],
 			[
 				"res",
-				"response"
+				"resolve"
 			],
 			[
-				"mapFi",
-				"mapFilePath"
+				"route",
+				"routeGraph"
 			],
 			[
-				"fil",
-				"fileTree"
+				"node",
+				"nodeIsUseful"
 			],
 			[
-				"ge",
-				"getnit"
+				"lis",
+				"listener"
 			],
 			[
-				"file",
-				"filePath"
+				"rou",
+				"routes"
 			],
 			[
-				"UP",
-				"updateFileListing"
+				"che",
+				"checkMe"
 			],
 			[
-				"virt",
-				"virtualFileTreeItem"
+				"for",
+				"forEach"
 			],
 			[
-				"appe",
-				"appendChild"
+				"B",
+				"Block"
+			],
+			[
+				"is",
+				"isUseful"
+			],
+			[
+				"ex",
+				"exits"
+			],
+			[
+				"ta",
+				"targetCol"
+			],
+			[
+				"targ",
+				"targetRow"
+			],
+			[
+				"target",
+				"targetCol"
+			],
+			[
+				"dir",
+				"dirEnum"
+			],
+			[
+				"blo",
+				"block"
+			],
+			[
+				"num",
+				"numExits"
+			],
+			[
+				"tex",
+				"textOffsetY"
+			],
+			[
+				"bl",
+				"blockValue"
+			],
+			[
+				"Maz",
+				"MazeDecoder"
+			],
+			[
+				"il",
+				"inline-block"
+			],
+			[
+				"Can",
+				"CanvasStack"
+			],
+			[
+				"Ca",
+				"canvas"
+			],
+			[
+				"current",
+				"currentDisplayable"
+			],
+			[
+				"isC",
+				"isCanvasStackFocusDependent"
+			],
+			[
+				"chipD",
+				"chipDrawToolbar"
+			],
+			[
+				"canvas",
+				"canvasStack"
+			],
+			[
+				"lay",
+				"layerX"
+			],
+			[
+				"ev",
+				"event"
+			],
+			[
+				"eve",
+				"eventType"
+			],
+			[
+				"new",
+				"newLayer"
+			],
+			[
+				"set",
+				"setToMe"
+			],
+			[
+				"pre",
+				"Predictions"
+			],
+			[
+				"out",
+				"outcome"
 			]
 		]
 	},
 	"buffers":
 	[
-		{
-			"file": "FlatStory/guiModules/CanvasStack.html",
-			"settings":
-			{
-				"buffer_size": 8253,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -568,15 +560,62 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/seph/Code/Web/SephReed.github.io",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules"
+		"/Users/seph/Code/Web/SephReed.github.io"
 	],
 	"file_history":
 	[
+		"/Users/seph/Code/Web/SephReed.github.io/Netrunner/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Netrunner/public/css/index.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/17-10-12_Shattered.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/INKY.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/17-10-03_Poison.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/17-10-09_Screech.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Start_Up/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Start_Up/SYNE_opportunities.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Start_Up/SYNE.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.8.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE_test.html",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Var.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Needles.js",
+		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE_basics.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/17-10-04_UnderWater.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/INKY_ControlPanel.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/17-10-06_Sword.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/17-10-07_Shy.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/17-10-05_Long.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/fun/rainbowTrails.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/17-10-02_Divided.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Inktober/17-10-08_Crooked.html",
+		"/Users/seph/Code/Web/SephReed.github.io/fun/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.css",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/to_change.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/shalena.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/hitler_vs_followers.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/Video_Essays/First_Test/LearnSomethingNew(2).txt",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/cover_letter.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Challenges/SparkCognitionMaze/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/not_equal.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/Writing/core.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/Challenges/SparkCognitionMaze/mazeDecoder.js",
+		"/Users/seph/Code/Web/SephReed.github.io/Challenges/SparkCognitionMaze/mazes.txt",
+		"/Users/seph/Code/Web/SephReed.github.io/Challenges/SparkCognitionDataScienceAssignment/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/WebFileBridge.js",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/ChipPallette.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/CanvasStackUIs.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/CanvasStack.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/EditorUI.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/index.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/ChipDrawTools.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/CanvasStackToolbar.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/LogicalResources.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/VisualResources.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/basicInterfaces.html",
+		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/ResourceBrowser.html",
 		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/marketing_training.csv",
 		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/csvParser.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.8.js",
 		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/deliverables.html",
 		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/SparkCognitionDataScienceAssignment/findLinks.js",
@@ -584,10 +623,8 @@
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_coding.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/space.js",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_digital_art.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/public/css/well_conditioned_lover.css",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_fabrication.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.css",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/thumbz_symbol.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/cloneVsInnerHTML.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/inheritanceTest.html",
@@ -595,23 +632,13 @@
 		"/Users/seph/Code/Web/SephReed.github.io/btc_miner/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Loadbar.js",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/EditorUI.html",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/WebFileBridge.js",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_needles.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/bgimg.html",
 		"/Users/seph/Code/Web/SephReed.github.io/portfolio/portfolio_contact.html",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/index.css",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/basicInterfaces.html",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/LogicalResources.html",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/VisualResources.html",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/ChipPallette.html",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/CanvasStack.html",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/ResourceBrowser.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/fileBrowser.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/FLAT.js",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/Resources.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Var.js",
 		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/joist_jig~.skp",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/appPkg/test/test.flat-project.json",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/DrawTools.html",
@@ -620,15 +647,12 @@
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/appPkg/test/maps/startMap/startMap.map-file.json",
 		"/Users/seph/Code/Web/SephReed.github.io/public/js/UTF-Helper.js",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/ServerFileBridge.js",
-		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/ChipDrawTools.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/resizeHandle.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/selectableList.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/tether.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/easyStyleVar.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_StyleVars.js",
 		"/Users/seph/Code/Web/SephReed.github.io/RobotSoul/RobotSoul.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE.js",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Needles.js",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/guiModules/canvasStack.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/World.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/Pallette.html",
@@ -639,14 +663,10 @@
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/FlatGUI.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/WorldEditor.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/FlatTUI.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE_test.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE_basics.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/tools/ELATE_old.js",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/sequencer.html",
 		"/Users/seph/Code/Web/SephReed.github.io/FlatStory/webAppBridge.js",
 		"/Users/seph/Code/Web/SephReed.github.io/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/fun/rainbowTrails.html",
-		"/Users/seph/Code/Web/SephReed.github.io/fun/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/disqus/index.html",
 		"/Users/seph/Code/Web/SephReed.github.io/PINE/needles/tempFeedback.html",
 		"/Users/seph/Code/Web/SephReed.github.io/disqus/requestHotkeyPriority.html",
@@ -671,37 +691,7 @@
 		"/Users/seph/Code/Web/SephReed.github.io/Writing/porch_mat.txt",
 		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/buildBook.html",
 		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/public/docs/Rainbows_Vs_Unicorns.html",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Hexapod/gallery.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/Paradox_Mentality.html",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/RvSBooklet.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/The absolution of incongruety/story.html",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/cover_letter.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/test.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/effigy.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/genders.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/RainbowsVSUnicorns.html",
-		"/Users/seph/Downloads/.localized",
-		"/Users/seph/Code/Web/SephReed.github.io/portfolio/resume.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Digiden/public/js/AES.js",
-		"/Users/seph/Code/Web/SephReed.github.io/public/css/init.css",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/PINE_Core_4.2.js",
-		"/Users/seph/Code/Web/SephReed.github.io/Writing/dad_light_unix.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/Humanitarian/index.html",
-		"/Users/seph/Code/Pi/dad_light/PINE_Core_4.8.js",
-		"/Volumes/boot/ssh",
-		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/seton.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/kaiser.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/robin_hood.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/salvation_army.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/explanation.txt",
-		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/public/css/sponsors/planned_parenthood.css",
-		"/Users/seph/Code/Web/SephReed.github.io/Aunt_Bertha/index.html",
-		"/Users/seph/Code/Web/SephReed.github.io/PINE/tests/sequencerTest.html",
-		"/Users/seph/Code/Web/SephReed.github.io/Playwood_Palace/BMC_quote_items.html",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/noob.html",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/rules.html",
-		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/Docs/boardcheck.html"
+		"/Users/seph/Code/Web/SephReed.github.io/DaFT_2017/index.html"
 	],
 	"find":
 	{
@@ -724,9 +714,30 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"header",
+			"APP",
+			"_S",
+			"dot",
+			"</image",
+			"<image",
+			"-bimg",
+			"image",
+			"ajax",
+			"Ajax",
+			"oneUseVal",
+			"mine",
+			"Tool",
+			"thisMode",
+			"evolve",
+			"this",
+			"thisToolset",
+			"Displayable",
+			"displayable",
+			"isCorrectModeFor",
+			"CanvasStackMode",
 			"*y*",
 			"no",
 			"yes",
@@ -833,28 +844,7 @@
 			"world",
 			"worldArea",
 			"Darken",
-			"nodeSco",
-			"Promi",
-			"parent",
-			"known",
-			"toOnOr",
-			"live",
-			"checkForMatch",
-			"cssQuery",
-			"Backlog",
-			"UpdateID",
-			"currentSproutID",
-			"fnBack",
-			"nodeAdd",
-			"ID",
-			"fnBack",
-			"dispatchChildNo",
-			"tryInit",
-			"args.com",
-			"fnBack",
-			"nodesPine",
-			"PINE_nodes",
-			"nodesPineInitiated"
+			"nodeSco"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -862,6 +852,19 @@
 		"regex": false,
 		"replace_history":
 		[
+			"topbar",
+			"S",
+			"quad",
+			"frame",
+			"</bimg",
+			"<.bimg",
+			"<bimg",
+			"-image",
+			"bimg",
+			"THIS",
+			"Editable",
+			"isCorrectUIFor",
+			"CanvasStackUI",
 			"no",
 			"yes",
 			"*y*",
@@ -976,20 +979,7 @@
 			"input",
 			".ID",
 			"MidiInterval",
-			"MidiToInterval",
-			"midiInterval",
-			"output",
-			"interval",
-			"step",
-			"endPoint",
-			"plug",
-			"head",
-			"modMe",
-			"IOH",
-			"modMe",
-			"device",
-			"midiTrack",
-			"rack"
+			"MidiToInterval"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -1000,38 +990,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "FlatStory/guiModules/CanvasStack.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8253,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1379.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -1083,6 +1043,34 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"rain",
+				"fun/rainbowTrails.html"
+			],
+			[
+				"not",
+				"Writing/not_equal.txt"
+			],
+			[
+				"maz",
+				"Challenges/SparkCognitionMaze/mazes.txt"
+			],
+			[
+				"bridge",
+				"FlatStory/WebFileBridge.js"
+			],
+			[
+				"pin",
+				"PINE/PINE_Core_4.8.js"
+			],
+			[
+				"in",
+				"FlatStory/index.html"
+			],
+			[
+				"el",
+				"PINE/tools/ELATE_test.html"
+			],
 			[
 				"4.8",
 				"PINE/PINE_Core_4.8.js"
@@ -1236,10 +1224,6 @@
 				"FlatStory/VisualResources.html"
 			],
 			[
-				"in",
-				"FlatStory/index.html"
-			],
-			[
 				"drawto",
 				"FlatStory/DrawTools.html"
 			],
@@ -1330,10 +1314,6 @@
 			[
 				"fi",
 				"PINE/needles/fileBrowser.html"
-			],
-			[
-				"el",
-				"PINE/tools/ELATE.js"
 			],
 			[
 				"flat/in",
@@ -1574,26 +1554,6 @@
 			[
 				"soulind",
 				"RobotSoul/index.html"
-			],
-			[
-				"brow",
-				"RobotSoul/modules/deviceBrowser.html"
-			],
-			[
-				"se",
-				"PINE/needles/selectablelist.html"
-			],
-			[
-				"cabl",
-				"RobotSoul/cableOverlay.html"
-			],
-			[
-				"ho",
-				"PINE/needles/hotkeys.html"
-			],
-			[
-				"osc",
-				"RobotSoul/devices/basic/Oscillator.html"
 			]
 		],
 		"width": 0.0
@@ -1624,7 +1584,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 262.0,
+	"side_bar_width": 259.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
