@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function (){
 			bubble.r = (Math.random()*15) + 5;
 			bubble.x = x;
 			bubble.y = y;
-			bubble.dyt = 1;
+			bubble.dyt = 4;
 			bubble.dxt = 0;
 			bubble.rgb = HSV_to_RGB(hue, .25, 1);
 
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function (){
 			var rgb = bubble.rgb;
 			setColor(painter, rgb[0], rgb[1], rgb[2]);
 			painter.beginPath();
-			painter.arc(bubble.x + bubble.dxt, ~~bubble.y, bubble.r, 0, Math.PI * 2);
+			painter.arc(bubble.x, ~~bubble.y, bubble.r, 0, Math.PI * 2);
 
 			painter.globalAlpha = 1;
 			// painter.lineWidth = 2;
@@ -160,9 +160,10 @@ document.addEventListener("DOMContentLoaded", function (){
 			}
 
 			else {
-				bubble.dyt += .05;
-				bubble.dxt += (Math.random() * 2) -1;
-				bubble.dxt = Math.max(-6, Math.min(bubble.dxt, 6));
+				// bubble.dyt += .05;
+				bubble.dxt += (Math.random() * 0.25)-.07;
+				bubble.x += bubble.dxt
+				// bubble.dxt = Math.max(-6, Math.min(bubble.dxt, 50));
 			}
 		}
 
