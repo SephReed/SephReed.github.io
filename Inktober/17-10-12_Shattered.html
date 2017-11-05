@@ -13,8 +13,8 @@
 		var hue = 0.1;
 
 		document.addEventListener("DOMContentLoaded", function (){
-			var controlPanel = INKY.getControlPanel();
-			document.body.appendChild(controlPanel.domNode);
+			// var controlPanel = INKY.getControlPanel();
+			// document.body.appendChild(controlPanel.domNode);
 
 			canvas = document.createElement("canvas");
 			canvas.style.zIndex = 20;
@@ -30,9 +30,10 @@
 
 
 
-			canvas.addEventListener("mousedown", function(event) {
-				x = event.layerX;
-				y = event.layerY;
+			document.body.addEventListener("mousedown", function(event) {
+				console.log(event);
+				x = event.clientX;
+				y = event.clientY;
 
 				
 				startCrack(x, y, hue, 1);
@@ -40,12 +41,12 @@
 			});
 
 			var startCrack = function(x, y, hue, depth) {
-				if(depth > 5)
+				if(depth > 4)
 					return;
 
-				var count = 6-depth;
+				var count = 5-depth;
 				for(var i = 0; i < count; i++) {
-					var dist = (Math.random() * 400/depth) + 10;
+					var dist = (Math.random() * 300/depth) + 10;
 					var dir = Math.random() * 2/count * Math.PI + ((i/count)*2*Math.PI);
 
 					var crack = {};
@@ -104,11 +105,19 @@
 
 			
 			var fadeOut = function(){
-				painter.fillStyle = "#2229";
-				painter.fillRect(0, 0, canvas.width, canvas.height);
-				// painter.clearRect(0, 0, canvas.width, canvas.height);
+				var imgData = painter.getImageData(0, 0, canvas.width, canvas.height);
+				painter.clearRect(0, 0, canvas.width, canvas.height);
+			
+				for(var i = 0; i < imgData.data.length; i++) {
+					var val = imgData.data[i];
 
-				window.setTimeout(fadeOut, 50);
+					if(val > 0)
+						imgData.data[i] = Math.max(val - 10, 0);
+				}
+
+				painter.putImageData(imgData, 0, 0)
+
+				window.requestAnimationFrame(fadeOut);
 			}
 			fadeOut();
 		});
