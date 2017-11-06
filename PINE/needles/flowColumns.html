@@ -13,11 +13,14 @@
 			job.originalOrder = [];
 			job.columns = [];
 
-			flowCol.calculateColumns.call(job);
-
-			window.addEventListener("resize", function() {
-				console.log("lalal");
+			El.waitForDisplay(job.domNode).then(function() {
 				flowCol.calculateColumns.call(job);
+			});
+			
+			window.addEventListener("resize", function() {
+				El.waitForDisplay(job.domNode).then(function() {
+					flowCol.calculateColumns.call(job);
+				});
 			});
 		});
 
@@ -27,6 +30,7 @@
 		flowCol.addInitFn({ watchSelector: "organizeUs" },
 			function(state, args) {
 				var job = this;
+
 				var addedNodes = args.addedNodes;
 
 				for(var i in addedNodes) {
@@ -77,6 +81,9 @@
 
 		flowCol.addItem = function(addMe) {
 			var columns = this.columns;
+
+			if(columns.length == 0)
+				return;
 
 			console.log(addMe)
 

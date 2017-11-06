@@ -2206,11 +2206,12 @@ El.getSetStyle = function (domNode, styleProp, value) {
         else return styling.getPropertyValue(styleProp);
 
     }
+    else PINE.err("can not get style of domNode", domNode, styleProp);
 }
 
 
 El.getStyle = function (domNode, styleProp) {
-    El.getSetStyle(domNode, styleProp);
+    return El.getSetStyle(domNode, styleProp);
 }
 
 El.setStyle = function (domNode, styleProp, value) {
@@ -2222,7 +2223,7 @@ El.setStyle = function (domNode, styleProp, value) {
 El.getStyleVar = function(domNode, varName) {
 	domNode = domNode || document.body;
 	varName = "--"+varName;
-	El.getStyle(domNode, varName)
+	return El.getStyle(domNode, varName)
 }
 
 El.setStyleVar = function(domNode, varName, value) {
