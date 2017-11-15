@@ -1,0 +1,55 @@
+var SEPH = {;
+	quality hasWarmBlood; 
+	modifies: Mammal, Bird {
+		modify(float ^sizeOfHeart)
+
+		safe:
+			float sizeOfHeart
+
+		unsafe: 
+			shoosh sizeOfHeart.set(float newSize) {
+				sizeOfHeart = Math.minMax(0, newSize, 100);
+			}
+			
+	}
+
+
+
+	abstract class Animal {
+		genesis(String ^name, float ^mass);
+	}  
+
+
+	class Animal.Mammal; 
+	qualities: hasWarmBlood, hasWomb {
+		enum hairType {
+			curly,
+			straight
+		}
+
+		evolve(hairType ^hair)
+
+		build(String name, float mass, Object args) {
+
+		}
+	}  
+
+
+
+	var Dog = class Dog;
+	origin: Animal.Mammal;
+	qualities: isQuadraped {
+		
+	}  
+};
+
+
+
+
+
+
+
+
+var myDog = new Dog();
+
+var someMammal = new SEPH.Animal.Mammal("Jeff", 155, {});

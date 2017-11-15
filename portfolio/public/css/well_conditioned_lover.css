@@ -10,7 +10,7 @@
 	/*background: #333;*/
 	/*background: linear-gradient(#2C2A2A, #333 10%, #333 90%, #302E2E);*/
 	/*background: linear-gradient(#21AEAE, #29C8C8 10%, #29C8C8 90%, #21BABA);*/
-	/*background-color: #222;*/
+	background-color: #111;
 	color: #FFF;
 }
 
@@ -44,6 +44,7 @@
 
 .well_cond section > header {
 	display: inline-block;
+	overflow: hidden;
 	background-color: #602A2D;
 	border-radius: 5px 5px 0px 0px;
 	width: 70%;
@@ -165,6 +166,8 @@ section.drop_down > input[type=checkbox]:checked ~ skills{
 .well_cond skills {
 	display: none;
 	background-color: #602A2D;
+	position: relative;
+	top: -7px;
 }
 
 	.well_cond skill {

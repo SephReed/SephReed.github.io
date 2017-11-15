@@ -1,0 +1,40 @@
+<link href='public/code_style.css' rel='stylesheet' type='text/css'><script type="text/javascript" src="public/file_view.js"></script><file><comment>// Example Project</comment><br>
+<comment>// Author: Jake Lane</comment><br>
+<comment>// Student ID: a1686679</comment><br>
+<comment>// Description: Polygon class</comment><br>
+<br>
+<a href="Polygon.hpp.html"><include><keyComp>#include</keyComp> <string>"Polygon.hpp"</string></include></a><br>
+<br>
+<comment>// breif: constructs the Polygon.</comment><br>
+<comment>// @width is the width of the polygon.</comment><br>
+<comment>// @height (optional) is the width of the polygon</comment><br>
+<fnDef><fnCallDef><fnName><fnNamePath>Polygon</fnNamePath>::<fnNameBase>Polygon</fnNameBase></fnName><argDefs>(<argDefSpans><argDef><typeDef>int</typeDef> <varName>height</varName></argDef></argDefSpans>,<argDefSpans><argDef> <typeDef>int</typeDef> <varName>width</varName></argDef></argDefSpans>)</argDefs>: m_height(height), m_width(width)</fnCallDef> {}</fnDef><br>
+<br>
+<comment>// breif: destroys the object</comment><br>
+<fnDef><fnCallDef><fnName><fnNamePath>Polygon</fnNamePath>::<fnNameBase>~Polygon</fnNameBase></fnName><argDefs>()</argDefs></fnCallDef> {}</fnDef><br>
+<br>
+<comment>// breif: returns the polygon height</comment><br>
+<fnDef><typeDef>int</typeDef> <fnCallDef><fnName><fnNamePath>Polygon</fnNamePath>::<fnNameBase>getHeight</fnNameBase></fnName><argDefs>()</argDefs></fnCallDef> {<br>
+&emsp;<command><statement><return><keyComp>return</keyComp> <statement>m_height</statement></return></statement>;</command><br>
+}</fnDef><br>
+<br>
+<comment>// breif: returns the polygon width</comment><br>
+<fnDef><typeDef>int</typeDef> <fnCallDef><fnName><fnNamePath>Polygon</fnNamePath>::<fnNameBase>getWidth</fnNameBase></fnName><argDefs>()</argDefs></fnCallDef> {<br>
+&emsp;<command><statement><return><keyComp>return</keyComp> <statement>m_width</statement></return></statement>;</command><br>
+}</fnDef><br>
+<br>
+<comment>// breif: sets the polygon height</comment><br>
+<fnDef><typeDef>void</typeDef> <fnCallDef><fnName><fnNamePath>Polygon</fnNamePath>::<fnNameBase>setHeight</fnNameBase></fnName><argDefs>(<argDefSpans><argDef><typeDef>int</typeDef> <varName>height</varName></argDef></argDefSpans>)</argDefs></fnCallDef> {<br>
+&emsp;<command><statement><equal><reciever><varName>m_height</varName> </reciever><operator>=</operator><statement> height</statement></equal></statement>;</command><br>
+}</fnDef><br>
+<br>
+<comment>// breif: sets the polygon width</comment><br>
+<fnDef><typeDef>void</typeDef> <fnCallDef><fnName><fnNamePath>Polygon</fnNamePath>::<fnNameBase>setWidth</fnNameBase></fnName><argDefs>(<argDefSpans><argDef><typeDef>int</typeDef> <varName>width</varName></argDef></argDefSpans>)</argDefs></fnCallDef> {<br>
+&emsp;<command><statement><equal><reciever><varName>m_width</varName> </reciever><operator>=</operator><statement> width</statement></equal></statement>;</command><br>
+}</fnDef><br>
+<br>
+<comment>// breif: runs if there is no child class (polymorphism) so we return an invalid area</comment><br>
+<fnDef><typeDef>float</typeDef> <fnCallDef><fnName><fnNamePath>Polygon</fnNamePath>::<fnNameBase>area</fnNameBase></fnName><argDefs>()</argDefs></fnCallDef> {<br>
+&emsp;<command><statement><return><keyComp>return</keyComp> <statement>-<num>1</num></statement></return></statement>;</command><br>
+}</fnDef><br>
+</file>
