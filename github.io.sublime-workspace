@@ -540,10 +540,11 @@
 			}
 		},
 		{
-			"file": "Inktober/INKY.js",
+			"file": "portfolio/portfolio_coding.html",
 			"settings":
 			{
-				"buffer_size": 3277,
+				"buffer_size": 21960,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		}
@@ -591,6 +592,7 @@
 		"/Users/seph/Code/Web/SephReed.github.io",
 		"/Users/seph/Code/Web/SephReed.github.io/Inktober",
 		"/Users/seph/Code/Web/SephReed.github.io/Playa_Met",
+		"/Users/seph/Code/Web/SephReed.github.io/portfolio",
 		"/Users/seph/Code/Web/SephReed.github.io/public",
 		"/Users/seph/Code/Web/SephReed.github.io/public/images",
 		"/Users/seph/Code/Web/SephReed.github.io/Writing"
@@ -728,7 +730,7 @@
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 23.0
 	},
 	"find_in_files":
 	{
@@ -1086,28 +1088,29 @@
 				},
 				{
 					"buffer": 2,
-					"file": "Inktober/INKY.js",
-					"semi_transient": true,
+					"file": "portfolio/portfolio_coding.html",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3277,
+						"buffer_size": 21960,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1582,
-								682
+								5899,
+								5899
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"spell_check": true,
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 425.0,
+						"translation.y": 2963.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -1118,7 +1121,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 34.0
+		"height": 23.0
 	},
 	"input":
 	{
@@ -1151,11 +1154,15 @@
 	{
 		"height": 0.0
 	},
+	"output.stino_panel":
+	{
+		"height": 0.0
+	},
 	"pinned_build_system": "",
 	"project": "github.io.sublime-project",
 	"replace":
 	{
-		"height": 64.0
+		"height": 42.0
 	},
 	"save_all_on_build": true,
 	"select_file":
