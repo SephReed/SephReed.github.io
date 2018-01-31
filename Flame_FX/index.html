@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Flame FX</title>
+	<script type="text/javascript" src="Class_FlameFX.js"></script>
+	<script type="text/javascript">
+		const byID = (id) => document.getElementById(id);
+
+		document.addEventListener("DOMContentLoaded", () => {
+			$preview = byID("preveiw_canvas");
+			// $preview.height = $preview.offsetHeight;
+			// $preview.width = $preview.offsetWidth;
+			$preview.tabIndex = 0;
+			const booshStateFromKey = (key, state) => {
+				const number = parseInt(key);
+				if (isNaN(number) === false) {
+					fx.setBooshState(number - 1, state);
+				}
+			}
+			$preview.addEventListener("keydown", (event) => booshStateFromKey(event.key, true));
+			$preview.addEventListener("keyup", (event) => booshStateFromKey(event.key, false));
+
+			painter = $preview.getContext('2d');
+
+			fx = new FlameFX([
+				{x:74, y:170},
+				{x:242, y:126},
+				{x:396, y:100},
+				{x:562, y:100},
+				{x:718, y:126},
+				{x:886, y:170},
+			]);
+
+			animationRequest = undefined;
+			const animate = () => {
+				fx.clear(painter);
+				fx.paint(painter);
+				animationRequest = window.requestAnimationFrame(animate);
+			}
+			animate();
+		});
+	</script>
+	<style>
+		:root {
+			--foreground: #FFF;
+			--lightest: #666;
+			--lighter: #555;
+			--light: #444;
+			--background: #333;
+			--dark: #222;
+			--darker: #111;
+			--darkest: #000;
+
+			--outset-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+			--outset-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+		}
+
+
+		body, html {
+			height: 100vh;
+			width: 100vw;
+			padding: 0px;
+			margin: 0px;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+
+		*, *::before, *::after {
+			box-sizing: inherit;
+		}
+
+		body {
+			background-color: var(--background);
+			font-family: arial;
+			color: var(--foreground);
+		}
+
+			content {
+				display: flex;
+				height: 100%;
+				width: 100%;
+				flex-direction: column;
+			}
+
+				topbar {
+					position: relative;
+					z-index: 2;
+					display: block;
+					height: 30px;
+					background-color: var(--dark);
+					border-bottom: 3px solid var(--darker);
+					box-shadow: var(--outset-2);
+				}
+
+				workspace {
+					position: relative;
+					display: flex;
+					flex-direction: row;
+					flex: 1;
+				}
+
+					preview {
+						position: relative;
+						display: block;
+						flex: 1;	
+					}
+						preview::after {
+							display: block;
+							content: "";
+							position: absolute;
+							z-index: -1;
+							top: 0px;
+							height: 100%;
+							width: 100%;
+							background-color: var(--dark);
+							background-size: 50px 20px;
+							background-image: url("public/grid.png");
+							opacity: 0.02;
+						}
+
+						canvas {
+							/*height: 100%;*/
+							width: 100%;
+							background-image: url("public/effigy_white_transparent.png");
+
+							background-size: contain;
+						}
+
+					commands {
+						position: relative;
+						z-index: 1;
+						display: flex;
+						flex-direction: column;
+						background-color: var(--light);
+						flex: 1;
+						box-shadow: var(--outset-1);
+						
+					}
+
+						options {
+							display: block;
+							background-color: var(--lighter);
+							border-bottom: solid 3px var(--lightest);
+						}
+
+						command-list {
+							display: block;
+							flex: 1;
+							overflow: scroll;
+						}
+
+	</style>
+</head>
+<body>
+	<content>
+		<topbar>
+		</topbar>
+		<workspace>
+			<preview>
+				<canvas id="preveiw_canvas" width="991" height="505"></canvas>
+			</preview>
+			<commands>
+				<options>
+					<button onClick="openAddCommandPanel()">+</button>
+				</options>
+				<command-list></command-list>
+			</commands>
+		</workspace>
+	</content>
+</body>
+
+<head>
+
+</head>
+</html>
