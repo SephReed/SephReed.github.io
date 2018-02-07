@@ -2,14 +2,18 @@
 <html>
 <head>
 	<title>Flame FX</title>
+	<script type="text/javascript" src="Class_PatternSelector.js"></script>
+	<script type="text/javascript">
+		PATTERN_SELECTOR = new PatternSelector();
+	</script>
+
+
 	<script type="text/javascript" src="Class_FlameFX.js"></script>
 	<script type="text/javascript">
 		const byID = (id) => document.getElementById(id);
 
 		document.addEventListener("DOMContentLoaded", () => {
 			$preview = byID("preveiw_canvas");
-			// $preview.height = $preview.offsetHeight;
-			// $preview.width = $preview.offsetWidth;
 			$preview.tabIndex = 0;
 			const booshStateFromKey = (key, state) => {
 				const number = parseInt(key);
@@ -157,7 +161,7 @@
 		</topbar>
 		<workspace>
 			<preview>
-				<canvas id="preveiw_canvas" width="991" height="505"></canvas>
+				<canvas id="preveiw_canvas" width="991" height="505" tabindex="0"></canvas>
 			</preview>
 			<commands>
 				<options>

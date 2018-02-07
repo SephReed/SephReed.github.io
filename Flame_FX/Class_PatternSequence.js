@@ -5,7 +5,7 @@ if (PATTERNS === undefined) {
 
 SAVE_TIMEOUT = 1000; // ms
 
-class PatternList {
+class PatternSequence {
 	constructor(objOrName) {
 		let obj;
 		if (typeof objOrName === "object") {
@@ -71,7 +71,6 @@ class PatternList {
 		this.triggerBackupWatcher();
 	}
 }
-
 
 
 
