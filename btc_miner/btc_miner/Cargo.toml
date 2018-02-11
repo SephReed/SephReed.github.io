@@ -1,7 +1,0 @@
-[package]
-name = "btc_miner"
-version = "0.1.0"
-authors = ["Seph Reed <ShadyWillowCreek@gmail.com>"]
-
-[dependencies]
-rust-crypto = "^0.2"
