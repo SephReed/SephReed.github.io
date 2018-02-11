@@ -19,7 +19,8 @@
 
 	<!-- External Dependencies -->
 	<script type="text/javascript" src="external/easyElement.js"></script>
-	<script type="text/javascript" src="external/import.js"></script>
+	<!-- <script type="text/javascript" src="external/import.js"></script> -->
+	<script type="text/javascript" src="external/hsvTool.js"></script>
 
 	<!-- Class Heirarchy -->
 	<script type="text/javascript" src="Class_FlameFX.js"></script>
@@ -35,7 +36,8 @@
 		modals = new Modals();
 
 		document.addEventListener("DOMContentLoaded", () => {
-			fx.ownPreviewDomNode(El.byID("preveiw_canvas"));
+			fx.ownDomNode(El.byTag("preview"));
+			fx.ownPreviewCanvas(El.byID("preveiw_canvas"));
 			fx.ownGasUsesDomNode(El.byTag("gas-use"));
 			PATTERN_SELECTOR.ownDomNode(El.byTag("pattern-list"));
 			modals.ownDomNode(El.byTag("modals"));
@@ -56,7 +58,6 @@
 			--outset-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 			--outset-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 		}
-
 
 		body, html {
 			height: 100vh;
@@ -163,6 +164,18 @@
 										transform: translate(-50%, 0%);
 									}
 
+										/*gas-meter::after {
+											display: block;
+											content: "";
+											position: absolute;
+											top: 0px;
+											left: 0px;
+											width: 100%;
+											height: 100%;
+											border: 1px solid white;
+											opacity: 0.5;
+										}*/
+
 					commands {
 						position: relative;
 						z-index: 1;
@@ -216,14 +229,8 @@
 		</topbar>
 		<workspace>
 			<preview>
-				<canvas id="preveiw_canvas" width="991" height="505" tabindex="0"></canvas>
-				<gas-use>
-				<!-- 	<accumulator>
-						<gas-meter-container>
-							<gas-meter></gas-meter>
-						</gas-meter-container><br>1
-					</accumulator>
-				</gas-use> -->
+				<canvas id="preveiw_canvas" width="991" height="505"></canvas>
+				<gas-use></gas-use>
 			</preview>
 			<commands>
 				<options>

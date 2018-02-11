@@ -1,9 +1,16 @@
-BOOSH_SPRITE_MS_INTERVAL = 20;
-NUM_BOOSH_SPRITE_FRAMES = 6 * 6;
-HEIGHT_OVER_WIDTH = 933 / 600;
-MAX_BOOSH_WIDTH = 120;
-PX_GROWTH_PER_MS = MAX_BOOSH_WIDTH / 10.0;
-PX_SHRINK_PER_MS = MAX_BOOSH_WIDTH / 300.0;
+const BOOSH_SPRITE_MS_INTERVAL = 20;
+const NUM_BOOSH_SPRITE_FRAMES = 6 * 6;
+const HEIGHT_OVER_WIDTH = 933 / 600;
+const MAX_BOOSH_WIDTH = 120;
+const PX_GROWTH_PER_MS = MAX_BOOSH_WIDTH / 10.0;
+const PX_SHRINK_PER_MS = MAX_BOOSH_WIDTH / 300.0;
+
+const GAS_BURN_OFF_RATIO_PER_MS = 0.004;		// fire linger
+const GAS_REALESE_PER_MS_SMALL = .2;   			// speed of empty
+const PX_PER_GAS = 3;											// size of fire
+
+const EMPTY_HUE = 0;
+const FULL_HUE = .4;
 
 
 var img = new Image();
@@ -13,12 +20,10 @@ img.addEventListener('load', () => {
 }, false);
 img.src = 'public/boosh_sprite_medium.png';
 
-
 class Accumulator {
-	constructor(size, emptySpeed, fillSpeed) {
+	constructor(size, fillSpeed) {
 		this.fillLevel = 0;
 		this.size = size;
-		this.emptySpeed = emptySpeed;
 		this.fillSpeed = fillSpeed;
 		this.lastUpdateTime = Date.now();
 	}
@@ -29,6 +34,12 @@ class Accumulator {
 
 		this.$meter = document.createElement("gas-meter");
 		$container.appendChild(this.$meter);
+	}
+
+	requestGas(requestAmount) {
+		const out = Math.min(this.fillLevel, requestAmount);
+		this.fillLevel = Math.max(0, this.fillLevel - requestAmount);
+		return out;
 	}
 
 	update(time) {
@@ -42,8 +53,12 @@ class Accumulator {
 
 	repaint() {
 		if (this.$meter) {
-			const height = (this.fillLevel/this.size) * 100;
-			this.$meter.style.height = height + "%";	
+			const ratio = (this.fillLevel/this.size);
+			this.$meter.style.height = ratio * 100 + "%";	
+
+			const hue = EMPTY_HUE + (ratio * (FULL_HUE - EMPTY_HUE));
+			const color = hsvToRgb(hue, .75, 1);
+			this.$meter.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
 		}
 	}
 }
@@ -60,6 +75,8 @@ class Boosh {
 		this.x = nozzlePoint.x;
 		this.y = nozzlePoint.y;
 		this.width = 0;
+		this.burningGasAmount = 0;
+		this.gasReleaseRate = GAS_REALESE_PER_MS_SMALL;
 
 		this.valveOpen = false;
 
@@ -68,7 +85,7 @@ class Boosh {
 		this.spriteFrame = 0;
 
 		this.isCleared = true;
-		this.accumulator = new Accumulator(100, 2, 0.1);
+		this.accumulator = new Accumulator(100, 0.04);
 	}
 
 	setValveOpen(i_valveOpen) {
@@ -85,15 +102,24 @@ class Boosh {
 
 	update(time) {
 		if (this.hasFlame() || this.valveOpen) {
-			
 			this.spriteFrame = ((time - this.startTime) / BOOSH_SPRITE_MS_INTERVAL);
 			this.spriteFrame = Math.floor(this.spriteFrame) + this.x;
 			this.spriteFrame %= NUM_BOOSH_SPRITE_FRAMES;
 
 			const dms = (time - this.lastUpdateTime);
 			if (dms > 0) {
-				this.width += this.valveOpen ? PX_GROWTH_PER_MS * dms : -PX_SHRINK_PER_MS * dms;
-				this.width = Math.max(0, Math.min(this.width, MAX_BOOSH_WIDTH));
+				if (this.valveOpen) {
+					const potentialReleaseAmount = dms * this.gasReleaseRate;
+					this.burningGasAmount += this.accumulator.requestGas(potentialReleaseAmount);
+				}
+
+				const gasLossRatio = 1 - (GAS_BURN_OFF_RATIO_PER_MS * dms);
+				this.burningGasAmount = Math.max(0, this.burningGasAmount * gasLossRatio);
+
+				this.width = this.burningGasAmount * PX_PER_GAS;
+
+				// this.width += this.valveOpen ? PX_GROWTH_PER_MS * dms : -PX_SHRINK_PER_MS * dms;
+				// this.width = Math.max(0, Math.min(this.width, MAX_BOOSH_WIDTH));
 			}
 			this.lastUpdateTime = time;
 		}
@@ -102,10 +128,10 @@ class Boosh {
 
 	clear(painter) {
 		if(this.isCleared === false) {
-			const x = this.x - (MAX_BOOSH_WIDTH / 2) - 2;
-			const height = MAX_BOOSH_WIDTH * HEIGHT_OVER_WIDTH;
-			const y = this.y - height - 2;
-			painter.clearRect(x, y, MAX_BOOSH_WIDTH + 4, height + 4);
+			const x = this.x - (this.width / 2);
+			const height = this.width * HEIGHT_OVER_WIDTH;
+			const y = this.y - height;
+			painter.clearRect(x, y, this.width, height);
 			this.isCleared = true;
 		}
 	}
@@ -133,6 +159,8 @@ class Boosh {
 
 
 
+
+
 class FlameFX {
 	constructor(nozzlePoints) {
 		this.booshes = [];
@@ -142,7 +170,8 @@ class FlameFX {
 		});
 	}
 
-	ownPreviewDomNode($preview) {
+	ownDomNode($preview) {
+		$preview.tabIndex = "0";
 		const booshStateFromKey = (key, state) => {
 			const number = parseInt(key);
 			if (isNaN(number) === false) {
@@ -151,8 +180,10 @@ class FlameFX {
 		}
 		$preview.addEventListener("keydown", (event) => booshStateFromKey(event.key, true));
 		$preview.addEventListener("keyup", (event) => booshStateFromKey(event.key, false));
+	}
 
-		const painter = $preview.getContext('2d');
+	ownPreviewCanvas($canvas) {
+		const painter = $canvas.getContext('2d');
 
 		let animationRequest = undefined;
 		const animate = () => {
