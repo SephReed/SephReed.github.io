@@ -2,47 +2,44 @@
 <html>
 <head>
 	<title>Flame FX</title>
-	<script type="text/javascript" src="Class_PatternSelector.js"></script>
+
+	<!-- Globals -->
 	<script type="text/javascript">
-		PATTERN_SELECTOR = new PatternSelector();
+		let modals; 	// modals overlay
+		let fx; 			// flame fx manager
+		const BOOSH_SETUP = [
+			{x:74, y:170},
+			{x:242, y:126},
+			{x:396, y:100},
+			{x:562, y:100},
+			{x:718, y:126},
+			{x:886, y:170},
+		];
 	</script>
 
+	<!-- External Dependencies -->
+	<script type="text/javascript" src="external/easyElement.js"></script>
+	<script type="text/javascript" src="external/import.js"></script>
 
+	<!-- Class Heirarchy -->
 	<script type="text/javascript" src="Class_FlameFX.js"></script>
+
+	<script type="text/javascript" src="Class_PatternSelector.js"></script>
+	<script type="text/javascript" src="Patterns/Class_BatchSet.js"></script>
+
+	<script type="text/javascript" src="Class_Modals.js"></script>
+	
+	<!-- Init-->
 	<script type="text/javascript">
-		const byID = (id) => document.getElementById(id);
+		fx = new FlameFX(BOOSH_SETUP);
+		modals = new Modals();
 
 		document.addEventListener("DOMContentLoaded", () => {
-			$preview = byID("preveiw_canvas");
-			$preview.tabIndex = 0;
-			const booshStateFromKey = (key, state) => {
-				const number = parseInt(key);
-				if (isNaN(number) === false) {
-					fx.setBooshState(number - 1, state);
-				}
-			}
-			$preview.addEventListener("keydown", (event) => booshStateFromKey(event.key, true));
-			$preview.addEventListener("keyup", (event) => booshStateFromKey(event.key, false));
-
-			painter = $preview.getContext('2d');
-
-			fx = new FlameFX([
-				{x:74, y:170},
-				{x:242, y:126},
-				{x:396, y:100},
-				{x:562, y:100},
-				{x:718, y:126},
-				{x:886, y:170},
-			]);
-
-			animationRequest = undefined;
-			const animate = () => {
-				fx.clear(painter);
-				fx.paint(painter);
-				animationRequest = window.requestAnimationFrame(animate);
-			}
-			animate();
+			fx.ownPreviewDomNode(byID("preveiw_canvas"));
+			PATTERN_SELECTOR.ownDomNode(byTag("pattern-list"));
+			modals.ownDomNode(byTag("modals"));
 		});
+
 	</script>
 	<style>
 		:root {
@@ -153,6 +150,28 @@
 							overflow: scroll;
 						}
 
+		modals {
+			display: block;
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;	
+			z-index: 2;		
+			pointer-events: none;
+		}
+
+			modals > * {
+				display: none;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, 50%);
+				background-color: red;
+			}
+
+
+
 	</style>
 </head>
 <body>
@@ -165,12 +184,18 @@
 			</preview>
 			<commands>
 				<options>
-					<button onClick="openAddCommandPanel()">+</button>
+					<button onclick="modals.showOrHide('pattern-chooser')">+</button>
 				</options>
 				<command-list></command-list>
 			</commands>
 		</workspace>
 	</content>
+	<modals>
+		<pattern-chooser>
+			<h1>Add new Pattern:</h1>
+			<pattern-list></pattern-list>
+		</pattern-chooser>
+	</modals>
 </body>
 
 <head>

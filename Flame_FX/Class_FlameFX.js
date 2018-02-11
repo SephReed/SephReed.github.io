@@ -30,7 +30,6 @@ class Boosh {
 	}
 
 	setValveOpen(i_valveOpen) {
-		console.log("valveOpen", i_valveOpen);
 		this.valveOpen = i_valveOpen;
 
 		if (this.hasFlame() === false && this.valveOpen) {
@@ -70,7 +69,6 @@ class Boosh {
 
 	paint(painter) {
 		if (this.hasFlame()) {
-			// console.log("painting");
 			this.isCleared = false;
 			painter.fillStyle = 'green';
 			const x = this.x - (this.width / 2);
@@ -81,8 +79,6 @@ class Boosh {
 			const imgY = ~~(this.spriteFrame / 6) * SPRITE_PX_HEIGHT;
 
 			painter.drawImage(img, imgX, imgY, SPRITE_PX_WIDTH, SPRITE_PX_HEIGHT, x, y, this.width, height);
-			// painter.drawImage(img, imgX, imgY, SPRITE_PX_WIDTH, SPRITE_PX_HEIGHT, 50, 50, 200, 200);
-			// painter.fillRect(
 		}
 	}
 }
@@ -94,6 +90,27 @@ class FlameFX {
 		for (const nozzlePoint of nozzlePoints) {
 			this.booshes.push(new Boosh(nozzlePoint));
 		}
+	}
+
+	ownPreviewDomNode($preview) {
+		const booshStateFromKey = (key, state) => {
+			const number = parseInt(key);
+			if (isNaN(number) === false) {
+				fx.setBooshState(number - 1, state);
+			}
+		}
+		$preview.addEventListener("keydown", (event) => booshStateFromKey(event.key, true));
+		$preview.addEventListener("keyup", (event) => booshStateFromKey(event.key, false));
+
+		const painter = $preview.getContext('2d');
+
+		let animationRequest = undefined;
+		const animate = () => {
+			fx.clear(painter);
+			fx.paint(painter);
+			animationRequest = window.requestAnimationFrame(animate);
+		}
+		animate();
 	}
 
 	clear(painter) {
@@ -109,7 +126,6 @@ class FlameFX {
 	}
 
 	setBooshState(booshNum, valveOpen) {
-		console.log(booshNum, valveOpen);
 		const boosh = this.booshes[booshNum];
 		if (boosh) boosh.setValveOpen(valveOpen);
 	}

@@ -9,14 +9,14 @@ class PatternSelector {
 
 	ownDomNode(domNode) {
 		this.domNode = domNode;
-		this.patterns.list.map.(this.appendPatternChoice);
+		this.patterns.list.map(this.appendPatternChoice);
 	}
 
 	appendPatternChoice(pattern) {
 
 	}
 
-	this.registerPattern(pattern) {
+	register(pattern) {
 		this.patterns.list.push(pattern);
 		this.patterns.byName[pattern.name] = pattern;
 		this.appendPatternChoice(pattern);
@@ -25,7 +25,9 @@ class PatternSelector {
 
 
 class Pattern {
-	constructor() {
-		this.data = {};
+	constructor(name, data) {
+		this.data = data || {};
 	}
 }
+
+PATTERN_SELECTOR = new PatternSelector();
