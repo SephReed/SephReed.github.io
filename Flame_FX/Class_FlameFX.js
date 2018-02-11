@@ -14,6 +14,47 @@ img.addEventListener('load', () => {
 img.src = 'public/boosh_sprite_medium.png';
 
 
+class Accumulator {
+	constructor(size, emptySpeed, fillSpeed) {
+		this.fillLevel = 0;
+		this.size = size;
+		this.emptySpeed = emptySpeed;
+		this.fillSpeed = fillSpeed;
+		this.lastUpdateTime = Date.now();
+	}
+
+	ownDomNode($accumulator) {
+		let $container = document.createElement("gas-meter-container");
+		$accumulator.appendChild($container);
+
+		this.$meter = document.createElement("gas-meter");
+		$container.appendChild(this.$meter);
+	}
+
+	update(time) {
+		if (this.fillLevel < this.size) {
+			const dt = time - this.lastUpdateTime;	
+			this.fillLevel += dt * this.fillSpeed;
+			this.fillLevel = Math.min(this.fillLevel, this.size);
+		}
+		this.lastUpdateTime = time;
+	}
+
+	repaint() {
+		if (this.$meter) {
+			const height = (this.fillLevel/this.size) * 100;
+			this.$meter.style.height = height + "%";	
+		}
+	}
+}
+
+
+
+
+
+
+
+
 class Boosh {
 	constructor(nozzlePoint) {
 		this.x = nozzlePoint.x;
@@ -27,6 +68,7 @@ class Boosh {
 		this.spriteFrame = 0;
 
 		this.isCleared = true;
+		this.accumulator = new Accumulator(100, 2, 0.1);
 	}
 
 	setValveOpen(i_valveOpen) {
@@ -55,6 +97,7 @@ class Boosh {
 			}
 			this.lastUpdateTime = time;
 		}
+		this.accumulator.update(time);
 	}
 
 	clear(painter) {
@@ -80,16 +123,23 @@ class Boosh {
 
 			painter.drawImage(img, imgX, imgY, SPRITE_PX_WIDTH, SPRITE_PX_HEIGHT, x, y, this.width, height);
 		}
+		this.accumulator.repaint();
 	}
 }
+
+
+
+
+
+
 
 class FlameFX {
 	constructor(nozzlePoints) {
 		this.booshes = [];
 		this.isBooshing = false;
-		for (const nozzlePoint of nozzlePoints) {
+		nozzlePoints.forEach((nozzlePoint, index) => {
 			this.booshes.push(new Boosh(nozzlePoint));
-		}
+		});
 	}
 
 	ownPreviewDomNode($preview) {
@@ -111,6 +161,18 @@ class FlameFX {
 			animationRequest = window.requestAnimationFrame(animate);
 		}
 		animate();
+	}
+
+	ownGasUsesDomNode($gasUse) {
+		this.booshes.forEach((boosh, index) => {
+			console.log("test");
+			const $accumulator = document.createElement("accumulator");
+			$gasUse.appendChild($accumulator);
+			boosh.accumulator.ownDomNode($accumulator);
+
+			$accumulator.appendChild(document.createElement("br"))
+			$accumulator.appendChild(document.createTextNode(index + 1));
+		})
 	}
 
 	clear(painter) {

@@ -31,9 +31,9 @@ class Modals {
 				case ".":
 					break;
 				case "#":
-					target = byID(cssQueryOrNode); break;
+					target = El.byID(cssQueryOrNode); break;
 				default: 
-					target = byTag(cssQueryOrNode); break;
+					target = El.byTag(cssQueryOrNode); break;
 			}
 		} else {
 			target = cssQueryOrNode;

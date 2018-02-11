@@ -35,9 +35,10 @@
 		modals = new Modals();
 
 		document.addEventListener("DOMContentLoaded", () => {
-			fx.ownPreviewDomNode(byID("preveiw_canvas"));
-			PATTERN_SELECTOR.ownDomNode(byTag("pattern-list"));
-			modals.ownDomNode(byTag("modals"));
+			fx.ownPreviewDomNode(El.byID("preveiw_canvas"));
+			fx.ownGasUsesDomNode(El.byTag("gas-use"));
+			PATTERN_SELECTOR.ownDomNode(El.byTag("pattern-list"));
+			modals.ownDomNode(El.byTag("modals"));
 		});
 
 	</script>
@@ -102,7 +103,8 @@
 
 					preview {
 						position: relative;
-						display: block;
+						display: flex;
+						flex-direction: column;
 						flex: 1;	
 					}
 						preview::after {
@@ -126,6 +128,40 @@
 
 							background-size: contain;
 						}
+
+						gas-use {
+							display: flex;
+							flex-direction: row;
+							flex: 1;
+							background-color: var(--dark);
+							text-align: center;
+							padding: 10px 2px 10px 2px;
+						}
+
+							accumulator {
+								display: flex;
+								position: relative;
+								bottom: 0px;
+								flex-direction: column;
+								flex: 1;
+							}
+								gas-meter-container {
+									display: inline-block;
+									position: relative;
+									text-align: center;
+									flex: 1;
+									margin: 10px 0px;
+								}
+
+									gas-meter {
+										display: inline-block;
+										position: absolute;
+										bottom: 0px;
+										width: 20%;
+										height: 50%;
+										background-color: red;
+										transform: translate(-50%, 0%);
+									}
 
 					commands {
 						position: relative;
@@ -181,6 +217,13 @@
 		<workspace>
 			<preview>
 				<canvas id="preveiw_canvas" width="991" height="505" tabindex="0"></canvas>
+				<gas-use>
+				<!-- 	<accumulator>
+						<gas-meter-container>
+							<gas-meter></gas-meter>
+						</gas-meter-container><br>1
+					</accumulator>
+				</gas-use> -->
 			</preview>
 			<commands>
 				<options>
