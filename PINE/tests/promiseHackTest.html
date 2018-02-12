@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="../PINE_Core_4.8.js"></script>
+	<script type="text/javascript">
+		
+		// Promise.prototype.syncThen = function (nextFn) {
+		// 	console.log(this);
+		// }
+
+		// var hat = new Promise(function(resolve, reject) { resolve(); }).syncThen();
+
+		var hat = new SyncPromise(function(resolve) { console.log(1); resolve(); }).syncThen(function(){ console.log(2); });
+		var cat = new SyncPromise(function(resolve) { console.log(3); resolve(); }).syncThen(function(){ console.log(4); });
+
+
+		var fat = new Promise(function(resolve) { console.log('a'); resolve(); }).then(function(){ console.log('b'); });
+		var shat = new Promise(function(resolve) { console.log('c'); resolve(); }).then(function(){ console.log('d'); });
+
+
+		var promises = [];
+		// for(let i = 0; i < 10; i++) {
+		// 	promises.push(new Promise(function(resolve) {
+		// 		setTimeout(resolve, i * 200);
+		// 	}));
+		// }
+		for(let i = 0; i < 10; i++) {
+			promises.push(new SyncPromise(function(resolve) {
+				// setTimeout(resolve, i * 200);
+				resolve();
+			}));
+		}
+		SyncPromise.all(promises).syncThen(function(){
+			console.log("promises done");
+		})
+
+
+	</script>
+</head>
+<body nopine>
+	<div id="test"></div>
+	
+</body>
+
+<style type="text/css">
+
+</style>
+</html>

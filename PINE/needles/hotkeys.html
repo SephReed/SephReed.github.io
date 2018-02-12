@@ -1,0 +1,230 @@
+<script type="text/javascript">
+
+
+var HOTKEYS = PINE.HOTKEYS = {};
+HOTKEYS.conversions = "~` !1 @2 #3 $4 %5 ^6 &7 *8 (9 )0 _- += {[ }] |\\ :; \"\' <, >. ?/";
+HOTKEYS.groups = {};
+HOTKEYS.all = [];
+HOTKEYS.holds = {};
+HOTKEYS.disableAll = false;
+HOTKEYS.disableTypables = false;
+
+
+HOTKEYS.layouts = {};
+HOTKEYS.layouts.qwerty = "'~ 1! 2@ 3# 4$ 5% 6^ 7& 8* 9( 0) -_ =+ "
+	+"qQ wW eE rR tT yY uU iI oO pP [{ ]} \\| "
+	+`aA sS dD fF gG hH jJ kK lL ;: '"`
+	+"zZ xX cC vV bB nN mM ,< .>";
+
+HOTKEYS.layouts.wonderplan = "'~ 1! 2@ 3# 4$ 5% 6^ 7& 8* 9( 0) -_ =+ "
+	+"qQ gG mM lL wW yY fF uU bB ;: [{ ]} \\| "
+	+`dD sS tT nN rR iI aA eE oO hH '" `
+	+"zZ xX cC vV jJ kK pP ,< .> /?";
+
+
+HOTKEYS.layout.currentMapping;
+HOTKEYS.setLayout = function(layout, argIsLayout) {
+	var qwerty = HOTKEYS.layouts.qwerty.replace(/\s/g, "");
+	var layout = argIsLayout : layout ? HOTKEYS.layouts[layout];
+
+	layout = layout.replace(/\s/g, "");
+
+	HOTKEYS.layout.currentMapping = {};
+	for(var c = 0; c < qwerty.length; c++) {
+		
+	}
+
+
+}
+
+HOTKEYS.eventMatches = function(hotkey, convertedKey, event) {
+	return hotkey.key == convertedKey 
+	  && hotkey.shift == event.shiftKey 
+	  && hotkey.meta == event.metaKey
+	  && hotkey.alt == event.altKey;
+}
+
+HOTKEYS.getHotkey = function(event, hotkeyList) {
+	var key = HOTKEYS.getConvertedKey(event.key);
+
+	for(var i in hotkeyList) {
+		var hotkey = hotkeyList[i];
+
+		if(HOTKEYS.eventMatches(hotkey, key, event)) {
+			return hotkey;
+		}
+	}
+}
+
+
+HOTKEYS.getConvertedKey = function(convertMe) {
+	var target = HOTKEYS.conversions.indexOf(convertMe);
+	var out = target != -1 ? HOTKEYS.conversions.charAt(convertMe) : convertMe;
+	out = out != ' ' ? out.toLowerCase() : convertMe.toLowerCase();
+	return out;
+}
+
+
+
+document.addEventListener("keydown", function(event) {
+	console.log(event);
+	var hotkey = HOTKEYS.getHotkey(event, HOTKEYS.all);
+	if(hotkey && hotkey.currentlyActive !== true) {
+		var group = hotkey.group;
+		if(group === undefined || HOTKEYS.groups[group].length) {
+			// console.log(hotkey);
+			hotkey.currentlyActive = true;
+			HOTKEYS.holds[hotkey.key] = hotkey;
+
+			if(hotkey.mode == "press")
+				hotkey.domNode.click();
+
+			else if(hotkey.mode == "hold") 
+				hotkey.domNode.FNS.switchSet(true);
+
+			else if(hotkey.mode == "latch")
+				hotkey.domNode.FNS.switchFlip();
+
+			event.preventDefault();
+		}
+	}
+
+});
+
+document.body.addEventListener("keyup", function(event) {
+	var key = HOTKEYS.getConvertedKey(event.key);
+	if(HOTKEYS.holds[key]) {
+		var hotkey = HOTKEYS.holds[key];
+		hotkey.currentlyActive = false;
+		HOTKEYS.holds[key] = undefined;
+
+		if(hotkey.mode == "hold") 
+			hotkey.domNode.FNS.switchSet(false);
+	}
+});
+
+
+
+
+PINE.createNeedle("[hotkey]", function(hotkey) {
+	hotkey.addAttArg("hotkeys", ["hotkey"], "string");
+	hotkey.addAttArg("mode", ["hotkeyMode", "keyMode", "mode"], "string", "press");
+	hotkey.addAttArg("group", ["hotkeyGroup", "keyGroup", "group"], "string");
+
+
+	//"Shift Meta B"
+	hotkey.addInitFn(function() {
+		var mod = this;
+		var keys = mod.attArg.hotkeys.split(' ');
+
+		var out = {};
+		out.domNode = mod.domNode;
+		out.meta = false;
+		out.shift = false;
+		out.alt = false;
+		out.group = mod.attArg.group;
+		out.mode = mod.attArg.mode;
+
+		for(var i = 0; i < keys.length; i++) {
+			var lowerCase = keys[i].toLowerCase();
+			var doSplice = true;
+			if(lowerCase == "shift")
+				out.shift = true;
+			else if(lowerCase == "meta")
+				out.meta = true;
+			else if(lowerCase == "alt")
+				out.alt = true;
+			else
+				doSplice = false;
+
+			if(doSplice && keys.length > 1) {
+				keys.splice(i, 1);
+				i--;
+			}
+		}
+
+		if(keys.length !== 1)
+			PINE.err("broken hotkey combo.  Non meta keys is not equal to 1", keys)
+
+		else out.key = HOTKEYS.getConvertedKey(keys[0]);
+		
+		
+		HOTKEYS.all.push(out);
+
+		// if(mod.attArg.mode == "hold")
+		// 	HOTKEYS.holds.push(out);
+	});
+});
+
+
+PINE.createNeedle("[hotkeyArea]", function(keyArea) {
+	keyArea.addAttArg("group", ["hotkeyArea"], "string");
+	keyArea.addAttArg("mode", ["hotkeyAreaFocus", "areaFocus"], "string", "click");
+
+	keyArea.addInitFn(function() {
+		var mod = this;
+		mod.currentlyActive = false;
+
+		
+		var mode = mod.attArg.mode;
+		var group = mod.attArg.group;
+		var domNode = mod.domNode;
+
+		if(HOTKEYS.groups[group] == undefined)
+			HOTKEYS.groups[group] = [];
+
+		var enterGroup = function() {
+			if(mod.currentlyActive) return;
+
+			mod.currentlyActive = true;
+			HOTKEYS.groups[group].push(domNode);
+			console.log("enter")
+		}
+		var exitGroup = function() {
+			if(mod.currentlyActive == false) return;
+
+			mod.currentlyActive = false;
+			U.removeFromArray(domNode, HOTKEYS.groups[group]);
+			console.log("exit")
+		}
+
+		if(mode.toLowerCase() == "click") {
+			domNode.addEventListener("mousedown", enterGroup);	
+			El.onBlur(domNode, exitGroup);
+			// document.body.addEventListener("mousedown", function(event) {
+			// 	if(domNode == event.target || domNode.contains(event.target)) return;	
+			// 	else exitGroup();
+			// });
+		}
+		else if(mode.toLowerCase() == "hover") {
+			domNode.addEventListener("mouseenter", enterGroup);	
+			domNode.addEventListener("mouseexit", exitGroup);
+		}
+		else if(mode.toLowerCase() == "focus") {
+			El.attr(domNode, "tabindex", "0");
+			domNode.addEventListener("focus", enterGroup);	
+			domNode.addEventListener("blur", exitGroup);	
+		}
+
+		else PINE.err("Hotkey Group Mode is neither 'click' or 'hover'", mode, mod);
+		
+		
+	})	
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>

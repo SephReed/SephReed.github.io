@@ -1,0 +1,40 @@
+<!-- <script src="../public/js/zepto.js"></script> -->
+<head>
+	<style>
+		body{font-family: arial; background-color: #222; color: #EEE } 
+		pnv {color:#F0F}
+	</style>
+	<script src="../PINE_Core_4.2.js"></script>
+	<script src="../PINE_Var.js"></script>
+	<script src="../PINE_Needles.js"></script>
+	<script src="../PINE_Includes.js"></script>
+	<script type="text/javascript">
+		LOOT = {};
+		// U.showLog["include"] = true;
+		// U.showLog["pnv"] = true;
+		// hat = "fez"
+		test_list = [];//[1, 2, 3]
+	</script>
+	<!-- <needle src="needles/overlay.html"></needle> -->
+</head>
+
+
+
+<pine>
+	<!-- <view id="viewChange" src="test_spawner.html"></view> -->
+	<!-- <include src="helloplace.html"></include> -->
+<!-- 
+	<changeSrc target="viewChange" src="helloplace.html">Say Hello</changeSrc>
+	<changeSrc target="viewChange" src="test_spawner.html">Show Spawn</changeSrc>
+ -->
+
+
+	<br>
+	<br>
+	NEXT TEST<br>
+	<div spawner="test_list">
+		<div spawn>{{test_list[i]}}</div>
+		<nospawn>no items</nospawn>
+	</div>
+</pine>
+

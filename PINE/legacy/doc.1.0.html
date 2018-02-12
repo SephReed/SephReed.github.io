@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8"/>
+
+<!-- Zepto (is Jquery but better) -->
+<script src="../public/js/zepto.js"></script>
+
+<!-- PINE -->
+<script src="PINE.js"></script>
+<script src="PINE.pnv.js"></script>
+<script src="PINE.needles.js"></script>
+
+<!-- Green Sock Animations -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenLite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/CSSPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/ScrollToPlugin.min.js"></script>
+<script src="../public/js/on_page_link.tween.js"></script>
+
+
+<!-- Pretify -->
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=html&amp;lang=js"></script>
+<link rel="stylesheet" type="text/css" href="thumbz.pine.pretify.css" />
+
+<!-- <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,500' rel='stylesheet' type='text/css'> -->
+<link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500' rel='stylesheet' type='text/css'>
+
+
+
+
+
+
+<style>
+
+	html {
+	  box-sizing: border-box;
+
+	}
+
+	*, *:before, *:after {
+	  	box-sizing: inherit;
+	  	margin: 0px;
+		padding: 0px;
+	}
+
+	html {
+		background-color: #354E2C;
+		
+		color: #FEFEFE;
+		color: #222;
+		/*background: linear-gradient(#839984, #335434);*/
+		background: linear-gradient(#909F91, #3D503E);
+		font-family: arial;
+
+	}
+
+	#content {
+		margin-left: 5%;
+		margin-right: 5%;
+		padding: 30px;
+		background-color: rgba(234, 232, 206, 0.8);
+	}
+
+	.prettyprint {
+		tab-size:4;
+	    -moz-tab-size: 4;
+	    -o-tab-size:  4;
+
+	    /*font-family: 'Source Code Pro', monospace;*/
+	    /*font-family: 'Roboto Mono', monospace;*/
+	    font-family: monospace;
+	    font-size: 12px;
+
+		color: #FAFAFA;
+		padding: 20px;
+		margin-left:  3%;
+
+		white-space: pre-wrap;       /* css-3 */
+		 white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+		 white-space: -pre-wrap;      /* Opera 4-6 */
+		 white-space: -o-pre-wrap;    /* Opera 7 */
+		 word-wrap: break-word; 
+
+		margin-bottom: 10px;
+
+		border-radius: 4px;
+		box-shadow: inset -1px -1px 10px rgba(0,0,0,0.2);
+	}
+
+	#forestBackground {
+		position: fixed;
+		height: 100%;
+		width: 100%;
+		opacity: 0.5;
+		z-index: -1;
+	}
+
+	#tree_and_hill, #forest {
+		position: absolute;
+		/*top: 0px;*/
+		height: 100%;
+		width: 100%;
+		/*background-size: 1000px auto;*/
+		/*background-size: auto 80%;*/
+		background-position: bottom left;
+		transition: all 0.01s ease;
+	}
+
+	#tree_and_hill {
+		background-image: url('../public/images/Pine_hill.png');
+		background-repeat: no-repeat;	
+		bottom: -80px;
+		background-size: auto 80%;
+	}
+
+	#forest {
+		background-image: url('../public/images/treeline.png');
+		background-repeat: repeat-x;	
+		bottom: -20px;
+		background-size: auto 14%;
+	}
+
+	#header {
+		padding: 20px;
+		text-align: center;
+	}
+
+	#pine {
+		display: inline-block;
+		font-size: 40px;
+		background-image: url('../public/images/Pine_tree.png');
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-color: #64864F;
+		line-height: 100px;
+		/*height: 100px;*/
+		/*width: 100px;*/
+		padding: 10px;
+		border-radius: 100px;
+		color: #FEFEFE;
+		text-shadow: 1px 1px #4E590A;
+		border: 2px outset rgba(0,0,0,0.2);
+	}
+
+
+	#footer {
+		text-align: center;
+		padding-top: 300px;
+		padding-bottom: 300px;
+	}
+
+	hr {
+		margin-bottom: 10px;
+	}
+
+
+	/*******************************************
+	*          SCREEN SIZE CASE BITS           *
+	*******************************************/
+
+	@media all and (max-width: 900px) {
+	  	/*.prettyprint {  margin-left: 15px;  }*/
+	}
+
+	@media all and (max-width: 400px) {
+	
+	}
+
+</style>
+</head>
+<body>
+
+<div id="forestBackground">
+	<div id="tree_and_hill"></div>
+	<div id="forest"></div>
+</div>
+
+<!-- <body>
+<div id="header"> -->
+	
+</div>
+
+
+<div id="content">
+<div id="pine">PINE</div>
+
+<a href="#quicksell">What is it and why might one use it?</a>
+
+
+<br>
+<br>
+<h1>Core</h1>
+<h2>Quick Reference Example</h2>
+
+<pine>
+	<pre class="prettyprint lang-html">
+		<include src="PineCoreQRE.html" showHtml></include>
+	</pre>
+	<div>
+		<include src="PineCoreQRE.html"></include>
+	</div>
+</pine>
+
+
+
+
+
+<h2>Special Attributes</h2>
+
+<showHtml> myTag define : nothing </showHtml>: <br>
+init : null<br>
+desc : Registers itself as the master copy for following tags to fill in. <br>
+ex :<br>
+
+<pre class="prettyprint lang-html">
+	<showHtml>
+		<!-- //streak define initializes what is means to be a streak
+		<streak define>
+			WOooOO!
+		</streak>
+
+		//following streaks get their definition from above
+		<streak></streak>
+		<streak></streak>
+		<streak></streak>
+
+		//output will be
+		WOooOO! WOooOO! WOooOO!
+ -->
+	</showHtml>
+</pre>
+
+<hr>
+
+myTag catchId = "true"|"false" <br>
+init = "true"<br>
+desc : initdecides whether {{#id}} searches within this catch, or goes outside<br>
+caviat : id's are supposed to only refer to one thing, but sometimes they don't.  They're starting to become the same thing as classes, but a little bit less broad.  This was not the intention, but a more specific naming convention than classes can be nice, so this is what's likely to happen.
+ex :
+<pre class="prettyprint lang-html">
+	<showHtml>
+		<!-- <div id="someId" value="outside">
+
+		<catchTester define catchId="false">
+			<div id="someId" value="inside">
+			I'm getting my #id's from {{#someId}} the catchTester
+		</catchTester>
+
+		<catchTester></catchTester>
+
+		//output will be
+		I'm getting my #id's from outside the catchTester -->
+	</showHtml>
+</pre>
+
+<hr>
+
+<h2>Javascript</h2>
+
+PINE.avoidReferenceIssues = (true|false) <br>
+init : false <br>
+desc : Set to true if you can't figure out how to define things in the order they appear. <br>
+ex : <br>
+This will work for all functionlity:<br>
+<!-- <sourceCode define><span>test</span></sourceCode> -->
+
+<pre class="prettyprint lang-html">
+	<showHtml>
+	<!-- 	//foo define initializes all foos, including one at bottom
+		<foo define>
+			<bar></bar>
+		</foo>
+
+		//bar define initializes all bars, including the one created below by the foo definition
+		<bar define></bar>
+
+		<foo></foo> -->
+	</showHtml>
+</pre>
+
+
+This will only work for text:<br>
+<pre class="prettyprint lang-html">
+	<showHtml>
+	<!-- 	//bar define initializes all bars, the only one is in foo define
+		<bar define></bar>
+		
+		//foo define initializes all foos, but does not take the functionality of bar with it.
+		<foo define>
+			<bar></bar>
+		</foo>
+
+		<foo></foo> -->
+	</showHtml>
+</pre>
+
+This line of text will fix the above if placed at the head:<br>
+<pre class="prettyprint lang-html">
+	<showHtml>
+		<!-- <script> PINE.avoidReferenceIssues = true </script> -->
+	</showHtml>
+</pre>
+<hr>
+
+
+
+
+
+
+<br>
+
+setsVal: <br><br>
+
+catchAlias: all data in {{these}} refers to the nearest parent catchAlias<br><br>
+
+
+
+{{var}}: equates to catchAlias.var <br><br>
+
+{{#id}}: equates to $(catch).find('#id').val() if catchId is unset or true, otherwise $('#id').val()<br><br>
+
+watch: search dom element for {{@var}}<br><br>
+
+{{@var}}, {{@#id}}: if surrounded by watch commander, thes values will change with the variable<br><br>
+
+
+
+
+
+<h1>Spawner</h1>
+<h2>Quick Reference Example</h2>
+<pre class="prettyprint lang-html">
+	<showHtml><!--
+		<script src="../public/js/zepto.js"></script>
+		<script src="PINE.js"></script>
+
+		<script>
+			PINE.logMutations();  //show all mutations
+			PINE.alertErr = true;  //really get bothered
+
+			var streak = PINE.registerNeedle("streak", null);  //register your custom tagname
+			streak.repetoir = ["WOooOO!", "AHHHHH!", "PAAARTAY!"];  //set some global data for it
+		</script>
+
+		<streak define>
+			
+			<select spawner="repetoir" id="streaker">
+			  	<option spawn value="{{here}}">{{here}}</option>
+			</select><br>
+
+			<span watch> Streaker says "{{@#streaker}}" </span>		
+			<hr>
+		</streak>
+
+		<streak></streak>
+		<streak></streak>
+
+		<style>
+			/*have a little style*/
+			body {
+				background: #FAFAFA;
+				color: #333;
+				font-family: arial;
+			}
+		</style>
+		-->
+	</showHtml>
+</pre>
+
+<h2>Special Attributes</h2>
+<h3>myTag spawner : "nameOfArray"</h3>
+init : null
+def : iterates through array, set's the scope to itself for anything with NOT DONE: {{[i]}}<br>
+ex :<br>
+<pre class="prettyprint lang-html">
+	<showHtml>
+		<!-- //bar define initializes all bars, the only one is in foo define
+		<bar define></bar>
+		
+		//foo define initializes all foos, but does not take the functionality of bar with it.
+		<foo define>
+			<bar></bar>
+		</foo>
+
+		<foo></foo> -->
+	</showHtml>
+</pre>
+
+<hr>
+
+<div id="quicksell">
+	<h1>Overview</h1>
+	<b>What PINE is:</b><br>
+	PINE is a HTML triggered functionality injector.  It allows the user to create and use special tags and attributes to make HTML objects more functional and also more indicative of what their function is.<br>
+	<br>
+	<b>Why one might use it:</b><br>
+	The best reason to use PINE is if you like its syntax.  PINE may some day become what JQuery now is (depreciated) but the syntax that JQuery introduced is still ubiquitous (see <a href="http://zeptojs.com/">Zepto</a>, <a href="https://github.com/mythz/jquip">JQuip</a>, or <a href="http://stackoverflow.com/questions/tagged/html+javascript">Stack Overflow</a>).  Another good reason is that PINE is dedicated to being open source, having no bloat, remaining open to new things, and treating people humanely.  Actually, it's just me.  I'm dedicated to those things (~Seph).<br>
+	<br>
+	<b>Why one might not:</b><br>
+	The best reason to not use PINE is if you're trying to support old or generally disfunctional browsers.  Another good reason would be if you need a lot of help with programming.  The code is pretty easy to peruse, and there will be comments to read, and these docs as well, but it's not popular enough to have a support community that you can <i>depend</i> on.<br>
+	<br>
+	<b>Why not to use AngularJS instead:</b><br>
+	AngularJS is what inspired this, but I abandoned it due to its stanky case of "<a href="https://en.wikipedia.org/wiki/Feature_creep">feature creep</a>."  It is still a great choice, though, for those who want something that is packaged with <a href="https://docs.angularjs.org/api">tons of features (all hail "ng")</a>, and is designed to work with the average GM and republican grandma in their campaign to not use the <a href="https://www.mozilla.org/en-US/firefox/all/#en-US">latest version of Firefox.</a><br>
+	<br>
+	<b>Why not to use React instead:</b><br>
+	React was made to be very fast and it is.  But it is also an <a href="https://facebook.github.io/react/#todoExample">eyesore of fragile and unimportant information</a> when it comes to desigining a GUI.  To elaborate, when designing a GUI, I think the things you see in your periphera should be indicative of what the user will see, rather than the completed functions you could have tucked away a long time ago.  Also, one should feel comfortable typing when working on a GUI, but being a few lines away from creating a compiling error tends to have the opposite effect on most people.  HTML in Javascript remains a bad idea.
+</div>
+
+
+
+</div>
+
+
+
+
+<div id="footer">
+	<div id="pine">PINE</div>
+</div>
+
+<center><a href="#content">Back to Top</a></center>
+
+
+</body>
+
+
+<script>
+
+$("showHtml").each(function() {
+
+	this.innerHTML = exitHtml(this.innerHTML);
+
+	// var decompileMe = this.innerHTML;
+
+	// decompileMe = decompileMe.replace("<!--", '');
+
+	// decompileMe = decompileMe.replace(/&/g, '&amp;');
+	// decompileMe = decompileMe.replace(/</g, '&lt;');
+	// decompileMe = decompileMe.replace(/>/g, '&gt;');
+	
+
+	// var tabs = decompileMe.match(/\t+/g);
+
+
+	// if(tabs){
+	// 	var likelyTabAmount = tabs[tabs.length - 1].length + 1;
+	// 	var minAmount = -1;
+	// 	for(var i = 0; i < tabs.length; i++) {
+	// 		var numTabs = tabs[i].length;
+	// 		if(numTabs < minAmount || i == 0) {
+	// 			minAmount = numTabs;
+	// 		}
+			
+	// 	}
+
+	// 	console.log(likelyTabAmount+" likely: min"+minAmount);
+
+	// 	var willRemove = Math.max(likelyTabAmount, minAmount);
+	// 	var regex = new RegExp("\n\t{"+willRemove+"}", "g");
+
+	// 	console.log(regex);
+
+
+
+
+	// 	decompileMe = decompileMe.replace(regex, '\n');
+	// }
+
+	// decompileMe = decompileMe.replace(/\n/g, '<br>');
+
+	// this.innerHTML = decompileMe;
+
+});
+
+$(window).scroll(function(){
+   var scroll = $(window).scrollTop();
+
+   var ratio = scroll / ($(document).height()-window.innerHeight);
+   ratio = Math.pow(ratio, 3);
+   ratio = 1 - ratio;
+   
+  
+   var value = -20*ratio +"px";
+   $("#forest").css("bottom", value);
+
+   var value = -80*ratio +"px";
+   $("#tree_and_hill").css("bottom", value);
+
+}); 
+</script>
+
+</html>

@@ -1,0 +1,66 @@
+<script>
+PINE.createNeedle("[switch]", function(swch) {
+
+	swch.addAttArg("fn", ["switch"], "string")
+	swch.addAttArg("mode", ["switchMode", "mode"], "string", "latch")
+
+	swch.addInitFn(function() {
+		var mod = this;
+		mod.state = false;
+
+		var initState = mod.domNode.classList.contains("switch_on");
+
+		mod.FNS.switchSet(initState);
+
+		// alert("hey");
+
+		mod.domNode.addEventListener("mousedown", function(event) {
+			console.log("hit")
+
+			var mode = mod.attArg.mode;
+			if(mode == "latch")
+				mod.FNS.switchFlip();
+			else if(mode == "hold")
+				mod.FNS.switchSet(true);
+		});
+
+		mod.domNode.addEventListener("mouseup", function(event) {
+			if(mod.attArg.mode == "hold")
+				mod.FNS.switchSet(false);
+		});
+	});
+
+	swch.FNS.switchSet = swch.FNS.switchFlip = function(onOff) {
+			//
+		var mod = this;
+
+		if(onOff === undefined)
+			onOff = !mod.state;
+
+		if(mod.state == onOff) return;
+
+		mod.state = onOff;
+
+		if(mod.state)
+			mod.domNode.classList.add("switch_on")
+		else
+			mod.domNode.classList.remove("switch_on")
+
+
+		var fnText = mod.attArg.fn;
+		if(fnText && fnText.length) {
+			fnText = fnText.replace("_switchState", mod.state);
+			eval(fnText);
+		}
+	}
+});
+
+</script>
+
+
+
+
+
+
+
+

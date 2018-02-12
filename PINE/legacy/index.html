@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8"/>
+
+	<script src="../public/js/zepto.js"></script>
+	<script src="PINE.js"></script>
+
+</head>
+
+
+<style>
+	.hello {
+		display: block;
+		text-align: center;
+		font-size: 40px;
+		padding-top: 100px;
+	}
+
+	html {
+		background-color: #FEFEFE;
+		color: #333;
+		font-family: arial;
+	}
+
+</style>
+
+
+<script>
+
+
+// PINE.logMutations();
+
+var handleChooser = PINE.registerNeedle("handleChooser", null);
+
+handleChooser.primaryList =  [
+		"Anonymous",
+		"Awkward",
+		"Buttery",
+		"Capitalist",
+		"Chatty",
+		"Cubersome",
+		"Despicable",
+		"Deadly",
+		"Eclectic",
+		"Ethical",
+		"Existentialist",
+		"Floating",
+		"Fresh",
+		"Graceful",
+		"Gullible",
+		"Grumpy",
+		"Hunky",
+		"Innocent",
+		"Looney",
+		"Mopey",
+		"Sneaky",
+		"Smiling",
+		"Scrupulous",
+		"Scandalous",
+		// "Sanitary",
+		"Sly",
+		"Troublesome"
+];
+
+handleChooser.secondaryList = [
+		"Aardvark",
+		"Alot",
+		"Ant",
+		"Beetle",
+		"Crake",
+		"Cheeta",
+		"Cat",
+		"Frog",
+		"Giraffe",
+		"Goat",
+		"Hippo",
+		"Hamster",
+		"Kitten",
+		"Lion",
+		"Mushroom",
+		"Nymph",
+		"Oryx",
+		"Potato Bug",
+		"Polar Bear",
+		"Pig",
+		"Rhino",
+		"Sunflower",
+		"Virus",
+		"Waterbear",
+		"Whale"
+];
+
+
+
+
+
+
+</script>
+
+
+
+
+<body>
+
+
+	<!--targets="#id .class div"-->
+
+	
+
+	<pine>
+
+	<handleChooser define corral>
+		<select spawner="primaryList" id="prim">
+		  	<option spawn value="{{here}}">{{here}}</option>
+		</select>
+
+		<select spawner="secondaryList" id="sec">
+		  	<option spawn value="{{here}}">{{here}}</option>
+		</select>
+
+		<formRandomizerButton targets="#prim #sec"></formRandomizerButton>
+		
+		<span watch class="hello">Hello, {{@#prim}} {{@#sec}}</span>		
+	</handleChooser>
+
+	<formRandomizerButton define>
+		<button>Randomize</button>
+	</formRandomizerButton>
+
+
+
+
+	Choose a Name:<br>
+	<handleChooser></handleChooser>
+
+
+	
+	</pine>
+
+
+
+
+</body>
+
+
+
+
+
+<script>
+
+
+
+
+
+PINE.registerNeedle("formRandomizerButton", function(initMe) {
+
+	var targetsString = $(initMe).attr("targets");
+	var targets = targetsString.split(' ');
+
+	var closest_corral = $(initMe).closest('[corral]');
+	initMe.corralTo = closest_corral.length > 0 ? closest_corral : document.body;
+
+	$(initMe).click(function() {
+		
+		for(var i = 0; i < targets.length; i++) {
+				//
+			var $changeUs = $(this.corralTo).find(targets[i]);
+			if($changeUs.length == 0) {
+				PINE.err("formRandomizerButton target \""+targets[i]+"\" does not exist within corral");
+				return;
+			}
+
+			$changeUs.each(function() {
+				var elementType = $(this)[0].tagName.toLowerCase();
+
+				if(elementType === "select") {
+					var choices = $(this).children();
+
+					var randIndex = Math.random() * choices.length;
+					randIndex += Math.random() * 1000;
+					randIndex = ~~(randIndex % choices.length);
+
+					var $updateMe = $(choices[randIndex]);
+					$updateMe.prop('selected', true);
+					$updateMe.change();
+				}
+			});
+		}
+	});
+
+
+});
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+</html>

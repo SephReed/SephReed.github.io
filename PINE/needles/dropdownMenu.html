@@ -1,0 +1,327 @@
+<script type="text/javascript">
+
+
+var p_MENUS = {};
+p_MENUS.displayed = [];
+p_MENUS.showers = [];
+
+
+PINE.createNeedle("[menu]", function(menu) {
+
+	menu.addAttArg("show", ["menuShow"], "string", "");
+	menu.addAttArg("items", ["menu"], "selector", undefined, ">*");
+
+	menu.addInitFn( PINE.ops.GATHER, function() {
+		var job = this;
+		var initMe = job.domNode;
+
+		var menuItems = job.items = job.attArg.items;
+		job.lastHovered = undefined;
+		initMe.PVARS.parentMenu = undefined;
+
+		for (var i = 0; i < menuItems.length; i++) {
+			(function(item) {
+				item.PVARS.parentMenu = initMe;
+
+				item.addEventListener("mouseenter", function() {
+					var lastHovered = job.lastHovered;
+					if(lastHovered && lastHovered != item){
+						if(lastHovered.FNS.menuExit){
+							lastHovered.FNS.menuExit();
+						}
+
+						lastHovered.classList.remove("hoveredMenuItem");
+					}
+					
+
+					job.lastHovered = item;
+					item.classList.add("hoveredMenuItem");
+
+					var onLeave = function() {
+						item.classList.remove("hoveredMenuItem");
+						item.removeEventListener("mouseleave", onLeave);
+					}
+					item.addEventListener("mouseleave", onLeave);
+				});
+
+				
+			})(menuItems[i]);			
+
+			
+		}
+	});
+
+
+	menu.FNS.menuEnter = function(parentMenu) {
+		var domNode = this.domNode;
+		domNode.parentMenu = parentMenu;
+
+		if(this.showAlways != true) {
+			if(domNode.classList.contains("displayedMenu") == false) {
+				domNode.classList.add("displayedMenu");
+				p_MENUS.displayed.push(domNode);	
+			}
+		}
+	}
+
+
+	menu.FNS.menuExit = function() {
+		var domNode = this.domNode;
+
+		if(this.showAlways != true) {
+			if(domNode.classList.contains("displayedMenu")) {
+				domNode.classList.remove("displayedMenu");
+				U.removeFromArray(domNode, p_MENUS.displayed);
+			}
+		}
+
+		for (var i = 0; i < this.items.length; i++) {
+			var item = this.items[i];
+			if(item.FNS == undefined)
+				PINE.err("item not yet initialized", item);
+
+			if(item.FNS.menuExit) 
+				item.FNS.menuExit();
+		}
+	}
+	
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PINE.createNeedle("[dropdownMenu]", { extend: "[menu]" }, function(dropdown) {
+
+	dropdown.addAttArg("items", ["dropdownMenu"], "selector", undefined, ">*");
+
+	dropdown.FNS.moveMenuToTarget = function(target, positioning) {
+		var job = this;
+		var domNode = job.domNode;
+		positioning = positioning || "beside";
+
+		if(!target) 
+			return PINE.err("no target specified for menuSetPosition");
+
+		if(job.lastTarget == target && job.lastPositioning == positioning)
+			return;
+
+		var boundsRight = window.innerWidth;
+		var windowOffset = El.windowOffset(target);
+
+
+		var setTop, setLeft;
+
+		if(positioning == "below") {
+			setTop = windowOffset.top + target.offsetHeight;
+			setLeft = windowOffset.left;
+
+			if(setLeft + domNode.offsetWidth > boundsRight) 
+				setLeft = windowOffset.left - (domNode.offsetWidth - target.offsetWidth);
+		}
+
+		else if(positioning == "beside"){
+			var targetRight = windowOffset.left + target.offsetWidth;
+			var targetTop = windowOffset.top;
+			setTop = targetTop;
+			setLeft = targetRight;
+
+			if(setLeft + domNode.offsetWidth > boundsRight) 
+				setLeft = windowOffset.left - domNode.offsetWidth;
+		}
+
+		job.FNS.setMenuPosition(setLeft, setTop)
+
+		job.lastTarget = target;
+		job.lastPositioning = positioning;
+	}
+
+
+	dropdown.FNS.setMenuPosition = function(left, top) {
+		this.domNode.style.top = top+"px";
+		this.domNode.style.left = left+"px";
+	}
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+PINE.createNeedle("[showMenu]", function(show) {
+
+	show.addAttArg("target", "showMenu", "id", function(domNode) {
+		var matches = El.queryChildren(domNode, "[dropdownMenu]", 1);
+		if(matches.length)
+			return matches[0];
+		else {
+			PINE.err("No target dropdownMenu set or found as immediate child for ", initMe);
+			return undefined;
+		}
+	});
+	show.addAttArg("trigger", ["showMenuTrigger", "menuTrigger", "trigger"], "string", "clickFirst");
+	show.addAttArg("positioning", ["showMenuPositioning", "menuPositioning", "showMenuPos", "menuPos"], "string", "beside");
+	show.addAttArg("secondClickExit", ["showMenuSecondClickExit", "menuSecondClickExit", "secondClickExit"], "exists");
+
+	show.addInitFn(function() {
+		if(p_MENUS.watchingOutClicks == false)
+			p_MENUS.watchOutClicks();
+
+		var job = this;
+		var initMe = job.domNode;
+		var trigger = job.attArg.trigger;
+
+		job.currentlyShowing = false;
+
+		if(trigger == "click" || trigger == "clickFirst") {
+			initMe.addEventListener("mousedown", function(event) {
+				if(job.currentlyShowing == false) {
+					initMe.FNS.menuEnter();	
+					p_MENUS.clickFirstEnabled = true;
+				} 
+				else if(job.attArg.secondClickExit) {
+					initMe.FNS.menuExit();
+					p_MENUS.clickFirstEnabled = false;
+				}
+				else return;
+				
+				event.stopPropagation();
+				event.preventDefault();
+				
+			});
+		}
+
+		if(trigger == "hover" || trigger == "clickFirst" || trigger=="rightClickFirst") {
+			initMe.addEventListener("mouseover", function(event) {
+				if(p_MENUS.clickFirstEnabled || trigger == "hover") {
+					setTimeout(initMe.FNS.menuEnter, 1);
+					event.stopPropagation();
+				}
+			});
+		}
+
+	});
+
+	
+	show.FNS.menuEnter = function() {
+		var job = this;
+		if(job.currentlyShowing)
+			return;
+
+		p_MENUS.showers.push(job.domNode);
+		job.domNode.classList.add("showingMenu");
+		job.currentlyShowing = true;
+
+		var target = job.attArg.target;
+		if(target) {
+			if(target.FNS.moveMenuToTarget)
+				target.FNS.moveMenuToTarget(job.domNode, job.attArg.positioning);
+
+			target.FNS.menuEnter(job.domNode);
+		}
+	}
+
+
+	show.FNS.menuExit = function() {
+		var job = this;
+		if(job.currentlyShowing == false)
+			return;
+
+		U.removeFromArray(job.domNode, p_MENUS.showers);
+
+		job.domNode.classList.remove("showingMenu");	
+		job.currentlyShowing = false;
+
+		if(job.attArg.target)
+			job.attArg.target.FNS.menuExit();
+	}	
+
+});
+
+
+
+
+//when clicks occur outside of all menu's, close everything
+p_MENUS.watchingOutClicks = false;
+p_MENUS.watchOutClicks = function() {
+
+	p_MENUS.watchingOutClicks = true;
+	document.addEventListener("click", function(event) {
+			//
+		var onMenu = false;
+	
+		for(var i  = 0; i < p_MENUS.showers.length && !onMenu; i++)  {
+			var checkMe = p_MENUS.showers[i];
+			onMenu = (checkMe == event.target || checkMe.contains(event.target));
+		}
+
+		for(var i  = 0; i < p_MENUS.displayed.length && !onMenu; i++)  {
+			var checkMe = p_MENUS.displayed[i];
+			onMenu = (checkMe == event.target || checkMe.contains(event.target));
+		}
+		
+		if(onMenu == false) {
+			for (var i in p_MENUS.showers)
+				p_MENUS.showers[i].FNS.menuExit();
+
+			if(p_MENUS.displayed.length || p_MENUS.showers.length)
+				PINE.err("menus all closed, but some remain displayed", p_MENUS.displayed, p_MENUS.showers);
+
+			p_MENUS.clickFirstEnabled = false;
+		}
+	});
+
+}
+
+
+
+
+
+
+</script>
+
+
+
+
+<style type="text/css">
+*[showMenu] {
+	cursor: context-menu;
+}
+*[dropdownMenu] {
+	cursor: default;
+	position: fixed;
+	z-index: 20;
+	/*top: 0px;
+	left: 0px;*/
+}
+*[dropdownMenu]:not(.displayedMenu) {
+	visibility: hidden;
+	pointer-events: none;
+	/*display: none;*/
+}
+</style>

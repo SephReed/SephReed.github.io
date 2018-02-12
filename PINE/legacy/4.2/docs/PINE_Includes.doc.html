@@ -1,0 +1,156 @@
+<div id="inc" aIndex>
+	<h1>PINE_Includes.js</h1>
+	
+	<h2 id="incQRE" aIndex="Q.R.E">Quick Reference Example</h2>
+	Source:
+	<pre><include src="PINE_Template.QRE.html" pretifyCode="html"></include></pre>
+	Output:
+	<div class="output">
+		<include src="PINE_Template.QRE.html"></include>
+	</div>
+
+
+	<funcDoc id="incObj" aIndex>
+		<h1>PINE.Include</h1>
+		INC = PINE.Include => object<br>
+		<br>
+		
+		
+		<funcDoc id="incSetUrl" aIndex>
+			<h1>Include.setUrlCachingStyle()</h1>
+			INC.setUrlCachingStyle(String cacheOp)<br>
+			<br>
+			
+			<pre pretifyCode="js">
+				PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+				PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="incSetDefault" aIndex>
+			<h1>Include.setCachingDefault()</h1>
+			INC.setUrlCachingStyle(String cacheOp)<br>
+			<br>
+			
+			<pre pretifyCode="js">
+				PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+				PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="incCacheOps" aIndex>
+			<h1>Include Caching Options</h1>
+			
+			<funcDoc id="incOpByroot" aIndex>
+				<h1>Include.BYROOT</h1>
+				INC.BYROOT => String<br>
+
+			</funcDoc>
+
+			<funcDoc id="incOpNormal" aIndex>
+				<h1>Include.NORMAL</h1>
+				INC.NORMAL => String<br>
+			</funcDoc>
+		</funcDoc>
+
+		<funcDoc id="incGet" aIndex>
+			<h1>Include.get()</h1>
+			INC.get(String url, String responseType) => new Promise => XMLHttpRequest.response<br>
+			<br>
+			
+			<pre pretifyCode="js">
+				PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+				PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+			</pre>
+		</funcDoc>
+	</funcDoc>
+
+	<funcDoc id="needleInclude" aIndex>
+		<h1>Needle &lt;Include&gt;</h1>
+		opType : PINE.ops.COMMON<br>
+		isAsync : true<br>
+		<br>
+		
+		<pre pretifyCode="html" endpine>
+			<include src="helloworld.html"></include>
+		</pre>
+
+		<funcDoc id="needleIncludeChangeSrc" aIndex>
+			<h1>&lt;Include&gt;.changeSrc()</h1>
+			&lt;Include&gt;.FNS.changeSrc => NodeFunc<br>
+			&lt;Include&gt;.FNS.changeSrc(String targetSrc)<br>
+			
+			<pre pretifyCode="js">
+				PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+				PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+			</pre>
+		</funcDoc>
+	</funcDoc>
+
+	<funcDoc id="needleView" aIndex>
+		<h1>Needle &lt;View&gt;</h1>
+		opType : PINE.ops.COMMON<br>
+		isAsync : true<br>
+		<br>
+		
+		<pre pretifyCode="html" endpine>
+			<view src="helloworld.html"></view>
+		</pre>
+
+		<funcDoc id="needleViewChangeSrc" aIndex>
+			<h1>&lt;View&gt;.changeSrc()</h1>
+			&lt;View&gt;.FNS.changeSrc => NodeFunc<br>
+			&lt;View&gt;.FNS.changeSrc(String targetSrc)<br>
+			
+			<pre pretifyCode="js">
+				PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+				PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="needleViewDropView" aIndex>
+			<h1>&lt;View&gt;.dropView()</h1>
+			&lt;View&gt;.FNS.dropView => NodeFunc<br>
+			&lt;View&gt;.FNS.dropView(String targetViewSrc)<br>
+			
+			<pre pretifyCode="js">
+				PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+				PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="needleViewDropViewsContaining" aIndex>
+			<h1>&lt;View&gt;.dropViewsContaining()</h1>
+			&lt;View&gt;.FNS.dropViewsContaining => NodeFunc<br>
+			&lt;View&gt;.FNS.dropViewsContaining(String targetViewSrc)<br>
+			
+			<pre pretifyCode="js">
+				PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+				PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+			</pre>
+		</funcDoc>
+
+		<funcDoc id="needleViewDropAllViews" aIndex>
+			<h1>&lt;View&gt;.dropAllViews()</h1>
+			&lt;View&gt;.FNS.dropAllViews => NodeFunc<br>
+			&lt;View&gt;.FNS.dropAllViews()<br>
+			
+			<pre pretifyCode="js">
+				PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+				PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+			</pre>
+		</funcDoc>
+	</funcDoc>
+
+	<funcDoc id="incEval" aIndex>
+		<h1>Utilities.evalElementScripts()</h1>
+		U.evalElementScripts(Element domNode, String url) => [object, ...] localVariables<br>
+		<br>
+		
+		<pre pretifyCode="js">
+			PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+			PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+		</pre>
+	</funcDoc>
+	
+</div>

@@ -1,0 +1,235 @@
+html {
+  box-sizing: border-box;
+
+}
+
+h1 {
+	/*color: #000;*/
+	/*color: #527428;*/
+	color: #354A3B;
+}
+
+h2 {
+	font-size: 20px;
+}
+
+/*a {  color: #127fb1;  text-decoration: none;  }*/
+a {  color: #01608c;  text-decoration: none;  }
+a:hover {  color: #127fb1; text-decoration: underline;  }
+a:visited  {  color: #01608c;  text-decoration: none;  }
+
+*, *:before, *:after {
+  	box-sizing: inherit;
+  	margin: 0px;
+	padding: 0px;
+}
+
+li{
+	margin-left: 15px;
+}
+
+html {
+	background-color: #354E2C;
+	tab-size:4;
+    -moz-tab-size: 4;
+    -o-tab-size:  4;
+	
+	color: #FEFEFE;
+	/*color: #222;*/
+	color: #444;
+	/*background: linear-gradient(#839984, #335434);*/
+	/*background: linear-gradient(#909F91, #3D503E);*/
+	/*background: linear-gradient(#909F91, #B9CCC7);*/
+	/*background: linear-gradient(#92AC87, #709063);*/
+	background: linear-gradient(#E1FFFD 50%, #6E9C5C);
+	font-family: arial;
+
+}
+
+funcdoc {
+	border-left: solid 4px white;
+	padding-left: 4px;
+	display: block;
+	margin-top: 30px;
+}
+
+funcdoc h1 {
+	font-size: 17px;
+	font-weight: bold;
+	color: #63233A;
+}
+
+docs {
+	display: block;
+}
+
+docs, header {
+	border-radius: 2px;
+	margin-left: 5%;
+	margin-right: 5%;
+	padding: 30px;
+}
+
+sidebar, docs, header {
+	background-color: rgba(234, 232, 206, 0.9);
+	/*background-color: rgba(230, 213, 190, 0.9);*/
+	box-shadow: 0px 0px 7px rgba(0,0,0,0.1)
+}
+
+header {
+	margin-left: 7%;
+	display: inline;
+}
+
+content {
+	display: block;
+}
+
+.prettyprint {
+	tab-size:4;
+    -moz-tab-size: 4;
+    -o-tab-size:  4;
+
+    /*font-family: 'Source Code Pro', monospace;
+    /*font-family: 'Roboto Mono', monospace;*/
+    font-family: monospace;
+    font-size: 12px;
+
+	color: #FAFAFA;
+	padding: 20px;
+	margin-left:  3%;
+
+	white-space: pre-wrap;       /* css-3 */
+	 white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	 white-space: -pre-wrap;      /* Opera 4-6 */
+	 white-space: -o-pre-wrap;    /* Opera 7 */
+	 word-wrap: break-word; 
+
+	margin-bottom: 10px;
+
+	border-radius: 4px;
+	box-shadow: inset -1px -1px 10px rgba(0,0,0,0.2);
+}
+
+
+pre {
+	white-space: pre-wrap; 
+	word-wrap: break-word; 
+/*}
+
+.sourceCode {*/
+	display: block; 
+	font-family: monospace;
+    font-size: 12px;
+
+    color: #EAEAEA;
+	padding: 20px;
+	margin-left:  3%;
+    
+    background-color: #2C2E30; 
+    padding: 10px;
+
+    margin-bottom: 10px;
+
+	border-radius: 4px;
+	box-shadow: inset -1px -1px 10px rgba(0,0,0,0.2);
+}
+
+
+pre tg {  color: #e69a38; font-weight: bold  }
+pre att {  color: #4EAD3C; font-weight: bold  }
+pre st {  color: #d8f57d   }
+pre vr {  color: #1dc2bc; font-weight: bold;  }
+pre com {  color: #666; font-style: italic;  }
+
+
+
+.output {
+	background-color: #FAFAFA;
+	color: #333;
+	border-radius: 4px;
+	padding: 10px;
+}
+
+
+#forestBackground {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	opacity: 0.5;
+	z-index: -1;
+}
+
+#tree_and_hill, #forest {
+	position: absolute;
+	/*top: 0px;*/
+	height: 100%;
+	width: 100%;
+	/*background-size: 1000px auto;*/
+	/*background-size: auto 80%;*/
+	background-position: bottom left;
+	transition: all 0.01s ease;
+}
+
+#tree_and_hill {
+	background-image: url('../../public/images/Pine_hill_2.png');
+	background-repeat: no-repeat;	
+	bottom: -80px;
+	background-size: auto 80%;
+}
+
+#forest {
+	background-image: url('../../public/images/treeline.png');
+	background-repeat: repeat-x;	
+	bottom: -20px;
+	background-size: auto 14%;
+}
+
+#header {
+	padding: 20px;
+	text-align: center;
+}
+
+.pineLogo {
+	display: inline-block;
+	font-size: 40px;
+	background-image: url('../../public/images/PINE_tree_2.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center center;
+	/*background-color: #64864F;*/
+	background-color: #5A894B;
+	/*background-color: #6EAC5A;*/
+	line-height: 100px;
+	/*height: 100px;*/
+	/*width: 100px;*/
+	padding: 10px;
+	border-radius: 100px;
+	color: #FEFEFE;
+	text-shadow: 1px 1px #4E590A;
+	border: 2px outset rgba(0,0,0,0.2);
+}
+
+
+#footer {
+	text-align: center;
+	padding-top: 300px;
+	padding-bottom: 300px;
+}
+
+hr {
+	margin-bottom: 10px;
+}
+
+
+/*******************************************
+*          SCREEN SIZE CASE BITS           *
+*******************************************/
+
+@media all and (max-width: 900px) {
+  	/*.prettyprint {  margin-left: 15px;  }*/
+}
+
+@media all and (max-width: 400px) {
+
+}

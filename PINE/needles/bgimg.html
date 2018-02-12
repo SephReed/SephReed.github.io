@@ -1,0 +1,91 @@
+
+
+<script>
+
+PINE.createNeedle("bgimg", function(bgimg) {
+
+
+	bgimg.addAttArg("pos", ["bgimgPos", "bgPos", "pos"], "string", "center center");
+	bgimg.addAttArg("repeat", ["bgimgRepeat", "bgRepeat", "repeat"], "string", "no-repeat");
+
+	bgimg.addInitFn(function() {
+		var instance = this;
+		var initMe = instance.domNode;
+
+		//POS
+		var pos = El.attr(initMe, "bgimgPos") || "center center";
+		initMe.style.backgroundPosition = pos;
+
+		//REPEAT
+		var repeat = instance.getArg("repeat");
+		var repeatX = (repeat.indexOf('x') != -1);
+		var repeatY = (repeat.indexOf('y') != -1);
+
+		if(repeatX && repeatY)
+			initMe.style.backgroundRepeat = "repeat";
+
+		else if(repeatX)
+			initMe.style.backgroundRepeat = "repeat-x";
+
+		else if(repeatY)
+			initMe.style.backgroundRepeat = "repeat-y";
+
+		else
+			initMe.style.backgroundRepeat = repeat;
+
+
+
+		//SIZE
+		var size = El.attr(initMe, "bgimgSize") || "auto auto";
+		initMe.style.backgroundSize = size;
+
+		//src
+		// var src = instance.getArg("src");
+		// var src = El.attr(initMe, "bgimgSrc");
+		// if(src)
+		// 	initMe.style.backgroundImage = "url('"+src+"')";
+
+		// console.log("PARENT POS");
+		// var parent = initMe.parentNode;
+		// var parentPositioning = El.getStyle(parent, "position");
+
+		// // alert(parentPositioning, "PARENT")
+		
+		// if(parentPositioning == undefined || parentPositioning == 'static')
+		// 	parent.style.position = "relative";
+				
+	})
+
+	
+});
+
+
+
+PINE.createNeedle("[bgImgSrc]", function() {
+	this.addAttArg("src", ["bgImgSrc"], "string");
+
+	this.addOp(function(state) {
+		console.log(state.domNode);
+		var style = "url('"+state.getArg("src")+"')";
+		state.domNode.style.backgroundImage = style;
+	});
+});
+
+
+
+</script>
+
+
+
+
+<style>
+	bgimg {
+		display: block;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		pointer-events: none;
+	}
+</style>

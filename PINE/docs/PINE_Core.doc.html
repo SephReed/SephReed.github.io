@@ -1,0 +1,386 @@
+
+
+<div id="Core" aIndex>
+	<h1>PINE_Core.js</h1>
+	<h2 id="coreQRE" aIndex="Q.R.E.">Quick Reference Example</h2>
+	<pine>
+		Source:
+		<pre><view src="PINE_Core.QRE.html" pretifyCode="html" pineend></view></pre>
+		Output:
+		<div class="output">
+			<view src="PINE_Core.QRE.html"></view>
+		</div>
+	</pine>
+
+
+	<h1> This page is still under construction. </h1>
+	<span> While this library has already proven itself quiet useful to me, there is still a lot of cleaning up and testing to be done.  Feel free to peruse and use, but do so at the risk of anything changing, and knowing full well that it is up to you to figure things out.  Soon enough these docs will be more complete and stable but, for now (Feb 25, 2016), it's only a few weeks old and still very much in development.
+	</span>
+
+	<div interLink="">
+	
+		<funcDoc id="corePine" aIndex>
+			<h1>PINE()</h1>
+			PINE(String keyname, String opType, function fn)<br>
+			PINE(String keyname, function fn)<br>
+			<br>
+			PINE is the main wrapper object and also the simplest versions of the main function.  <br>
+			Keynames can be [attributes] or tagnames and they are not case sensitive. <br>
+			<pre pretifyCode="js">
+				PINE("someTagName", PINE.ops.STATIC, function(initMe){})
+				PINE("[someAttribute]", function(initMe){}) //defaults to COMMON
+			</pre>
+			
+
+			<funcDoc id="coreNeedle" aIndex>
+				<h1>PINE.Needle()</h1>
+				PINE.Needle(String keyname) => Needle<br>
+				<br>
+				Either gets a needle or creates it.<br>
+				<br>
+				<pre pretifyCode="js">
+					var myNeedle = PINE.Needle("someTagName");
+					myNeedle == PINE.Needle("someTagName"); //always true
+				</pre>
+			</funcDoc>
+
+			<funcDoc id="coreCreateNeedle" aIndex>
+				<h1>PINE.createNeedle()</h1>
+				PINE.createNeedle(String keyname) => Needle<br>
+				<br>
+				Creates and returns a new needle.  If the needle already exists, an error is thrown and nothing is returned.  Use createNeedle() if you want to be certain you're avoiding other needles.<br>
+				<br>
+				<pre pretifyCode="js">
+					var myNeedle = PINE.createNeedle("someTagName");
+					PINE.createNeedle("someTagName");  //outputs error!
+				</pre>
+			</funcDoc>
+
+			<funcDoc id="coreGet" aIndex>
+				<h1>PINE.get()</h1>
+				PINE.get(String keyname) => Needle<br>
+				<br>
+				Returns the needle for the keyname.  Will be undefined if needle has not been created.<br>
+				<br>
+				<pre pretifyCode="js">
+					var gottenEarly = PINE.get("someTagName");  //undefined
+
+					var created = PINE.createNeedle("someTagName");
+					var gotten = PINE.get("someTagName");
+
+					var concept = created == gotten;  //always true 
+				</pre>
+			</funcDoc>
+
+
+			<funcDoc id="coreOps" aIndex>
+				<h1>PINE Operations</h1>
+
+				<funcDoc id="coreOpsOrder" aIndex>
+					<h1>Operations Order</h1>
+					PINE.ops.order<br>
+					<br>
+					The order of operations is PINE can be very important.  They are little more than a set of strings but each level should be dependent on the levels below.
+					<pre pretifyCode="js">
+						console.log(PINE.ops.STATIC); //output: "static"
+						console.log(PINE.ops.order); //by default: Array [ "init", "static", "common", "polish" ]
+						
+						var madeUpOp = "undos";
+						PINE.ops.order.splice(1,0, madeUpOp);
+
+						console.log(PINE.ops.order); //now: Array [ "init", "undos", "static", "common", "polish" ]
+					</pre>
+				</funcDoc>
+
+				<funcDoc id="coreOpsPreprocess" aIndex>
+					<h1>Operations Init</h1>
+					PINE.ops.INIT<br>
+					<br>
+					Init is a stage for initializing nodes.  The only precondition to the init stage is that PINE has initated the domTree to contain variables such as Node.FNS and Node.PVARS.  When setting this as the operation for a new needle, make sure that the function has no dependencies.
+					<pre pretifyCode="js">
+						var example = PINE.createNeedle("example")
+						example.count = 0;
+						example.addFunction(PINE.ops.INIT, function(initMe) {
+							var needle = this;
+							initMe.countId = this.count++;
+						});
+					</pre>
+				</funcDoc>
+
+				<funcDoc id="coreOpsStatic" aIndex>
+					<h1>Operations Static</h1>
+					PINE.ops.STATIC<br>
+					<br>
+					Static is a stage for injecting elements which take no argruments and are going to be the same every time.  This stage is never dependent on attribute parameters.
+					<pre pretifyCode="js">
+						//continued from example above
+						//addFunction can be set using args
+						PINE.Needle("example").addFunction( {
+							opType: PINE.ops.STATIC, 
+							fn: function(initMe) {
+								initMe.innerHTML = initMe.countId + initMe.innerHTML;
+							}
+						});
+					</pre>
+				</funcDoc>
+
+				<funcDoc id="coreOpsCommon" aIndex>
+					<h1>Operations Common</h1>
+					PINE.ops.COMMON<br>
+					<br>
+					Common is the most average stage.  Any needle which uses attributes as parameters should be in this stage or later.
+					<pre pretifyCode="js">
+						//continued from example above
+						//the default opType is COMMON
+						PINE.Needle("example").addFunction(function(initMe) {
+							var myName = El.attr(initMe, "name") || "I have no name";
+							initMe.innerHTML += myName;
+						});
+					</pre>
+				</funcDoc>
+			</funcDoc>
+
+			<funcDoc id="coreReady" aIndex>
+				<h1>PINE.ready()</h1>
+				PINE.ready(function onReady)<br>
+				<br>
+				When you don't want things to happen until PINE has finished running, use PINE.ready()<br>
+				<br>
+				<pre pretifyCode="js">
+					PINE.ready(function() {
+						console.log("everything is ready!")
+					});
+				</pre>
+			</funcDoc>
+
+			<funcDoc id="coreUpdateAt" aIndex>
+				<h1>PINE.updateAt()</h1>
+				PINE.updateAt(Element domNode)<br>
+				<br>
+				PINE does not use mutation observers or any automatic change finders.  It runs once at the beginning and anything added during the first run is covered.  If you add things later you must use PINE.updateAt() to tell PINE to run at that node.<br>
+				<br>
+				<pre pretifyCode="js">
+					function addSomeContent() {
+						var specialElement = document.createElement("someTagName");
+						var moddedElement = El.byId("someId");
+						moddedElement.appendChild(specialElement);
+						PINE.updateAt(moddedElement);
+					}
+					PINE.ready(addSomeContent);
+				</pre>
+			</funcDoc>
+
+			<funcDoc id="coreStopTags" aIndex>
+				<h1>PINE.stopTags</h1>
+				PINE.stopTags => array<br>
+				<br>
+				Stop tags is an array of tags at which PINE will stop applying itself.<br>
+				<br>
+				<pre pretifyCode="js">
+					console.log(PINE.stopTags) // => ["ENDPINE", "SCRIPT", "STYLE"]
+					PINE.stopTags.push("HTML")
+					console.log(PINE.stopTags) // => ["ENDPINE", "SCRIPT", "STYLE", "HTML"]
+				</pre>
+
+				<funcDoc id="coreStopAtts" aIndex>
+					<h1>PINE Stop Attributes</h1>
+					<br>
+					There are two other stop attributes in PINE.  pineend will make all nodes afterwards unreachable.  nopine will turn PINE around immedaitely<br>
+					<br>
+					<pre pretifyCode="html">
+						<!-- specialAtt runs with pineend -->
+						<div specialAtt ENDPINE>
+							<!-- otherSpecialAtt does not run-->
+							<div otherSpecialAtt></div>
+						</div>
+						<!-- specialAtt does not run-->  
+						<div specialAtt NOPINE></div>
+					</pre>
+				</funcDoc>
+			</funcDoc>
+
+			<funcDoc id="coreUtilities" aIndex>
+				<h1>PINE.Utilities</h1>
+				U = PINE.Utilities => object<br>
+				<br>
+				Utilities is a collection of functions which should probably all be built into javascript by default but still are being managed by frameworks.
+
+				<funcDoc id="coreUAjax" aIndex>
+					<h1>Utilities.Ajax</h1>
+					U.Ajax => object<br>
+					<br>
+					Ajax is a small set of common ajax functions.
+
+					<funcDoc id="coreUAjaxGet" aIndex>
+						<h1>Ajax.get()</h1>
+						U.Ajax.get(url, responseType) => Promise => XmlHTTPRequest (fulfilled)<br>
+						<br>
+						The common Ajax get.
+						<pre pretifyCode="js">
+							U.Ajax.get("place.com/pizza", "text").then(function(request) {
+								console.log(request.response);
+							});
+						</pre>
+					</funcDoc>
+				</funcDoc>
+
+				<funcDoc id="coreUColorLog" aIndex>
+					<h1>Utilities.colorLog()</h1>
+					U.colorLog(colorStyle, elements...)<br>
+					<br>
+					For most logging cases, you should just use LOG().  colorLog is basically console.log but with coloring.  The color choices are ["success", "error", "info", "light"]<br>
+
+					<pre pretifyCode="js">
+						U.colorLog("success", "something good happened in", window);  //output will be green and yellow in console
+					</pre>
+				</funcDoc>
+
+				<funcDoc id="coreUCookie" aIndex>
+					<h1>Utilities.cookie()</h1>
+					U.cookie(String cookieName) => String cookieVal
+					U.cookie(String cookieName, String value [, int days_till_expire])<br>
+					<br>
+					U.cookie either gets or sets cookies.  If day_till_expire is unset, the cookie will never expire.  <br>
+				</funcDoc>
+
+				<funcDoc id="coreUDeleteCookie" aIndex>
+					<h1>Utilities.deleteCookie()</h1>
+					U.deleteCookie(String cookieName)<br>
+					<br>
+					<pre pretifyCode="js">
+						U.cookie("hat", "fez");
+						console.log(U.cookie("hat")); // => "fez"
+
+						U.deleteCookie("hat");
+						console.log(U.cookie("hat")); // => undefined
+					</pre>
+					
+				</funcDoc>
+
+				<funcDoc id="coreUElement" aIndex>
+					<h1>Utilities.Element</h1>
+					El = PINE.Utilities.Element => object<br>
+					<br>
+					Element is a small collection of JQuery like functions which are mostly just shorter typed wrappers for built in vanilla functions.<br>
+
+					<funcDoc id="coreElById" aIndex>
+						<h1>Element.byId()</h1>
+						El.byId(String id) => Element domNode<br>
+						<br>
+						This is just a short hand version of document.getElementById()<br>
+
+						<pre pretifyCode="js">
+							var target = "someTagName";
+							El.byId(target) == document.getElementById(target); //always true
+						</pre>
+					</funcDoc>
+
+					<funcDoc id="coreElByTag" aIndex>
+						<h1>Element.byTag()</h1>
+						El.byTag(String tagName) => [Element domNode, ...]<br>
+						<br>
+						This is just a short hand version of domNode.getElementsByTagName("someTagName")<br>
+
+						<pre pretifyCode="js">
+							var domNode = El.byId("parent");
+							El.byTag(domNode, "children") == domNode.getElementsByTagName("children"); //always true
+						</pre>
+					</funcDoc>
+
+					<funcDoc id="coreElAttr" aIndex>
+						<h1>Element.attr()</h1>
+						El.attr(Element domNode, String attribute, String value)<br>
+						El.attr(Element domNode, String attribute) => String attribute_value<br>
+						<br>
+						This is just a short hand getter and setter for Element.attributes["attribute"].value that checks if the attribute exists for you.<br>
+
+						<pre pretifyCode="js">
+							var target = El.byId("someTagName");
+							El.attr(target, "myHat", "fez");
+							console.log(El.attr(target, "myHat")) // =>"fez"
+						</pre>
+					</funcDoc>
+
+					<funcDoc id="coreElFirstsOfKey" aIndex>
+						<h1>Element.firstsOfKey()</h1>
+						El.firstsOfKey(Element rootNode, String keyword [, boolean skipRoot]) => [Element match1, ...]<br>
+						<br>
+						Get's all of the first matches to a keyword within the children of root node.  If a match has more matches as children those child matches are not sought after.  If skipRoot is not set to false the root will not be returned if it matches the keyword.<br>
+
+						<pre pretifyCode="html" pineend>
+							<div id="parent">
+								<div id="child1"></div>
+								<div id="child2">
+									<div id="childOfChild"></div>								
+								</div>	
+							</div>
+
+							<script>
+								var parent = El.byId("parent");
+								console.log(El.firstsOfKey(parent, "div")); // => [child1, child2]
+								console.log(El.firstsOfKey(parent, "div", false)); // => [parent]
+							</script>
+							
+						</pre>
+					</funcDoc>
+
+				</funcDoc>
+
+				
+			</funcDoc>
+
+		</funcDoc>
+
+		
+
+
+		<funcDoc id="classNeedle" aIndex>
+			<h1>class Needle</h1>
+			PINE.class.Needle<br>
+			<br>
+			Needles are the thematic name for the the things that inject functionality into your html.  Needles have a css selector for either tags or attributes and a list of functions which they will apply to dom nodes that fit that css selector.  It would be very easy to make PINE allow needles to select id's and classes, but tags and attributes already are meant to show functionality.  ID's and classes, on the other hand, are likely to have stlying mixed into them, and it can be very difficult to tell whether a class exists to trigger functionality (the JQuery way) or to style an element.
+
+			<pre pretifyCode="js">
+				var badNeedle = PINE.class.Needle("bob");  //don't do this
+				var goodNeedle = PINE.createNeedle("burger");
+
+				var bob = PINE.get("bob"); //undefined
+				var burger = PINE.get("burger");
+
+				var concept = goodNeedle == burger;  //always true
+			</pre>
+
+
+			<funcDoc id="coreNeedleAddFunc" aIndex>
+				<h1>Needle.addFunction()</h1>
+				Needle.addFunction({ operation, fn, []}) => Needle<br>
+				- operation = PINE.ops<br>
+				- fn = function(DOM Node, Needle)<br>
+				<br>
+				Adds a function to the needle to be called on all DOM Nodes during the operation phase.  Choosing the right operation phase can be imperative but it's not hard.  The function you add to the needle should take a DOM Node and do something to enhance it.
+				<pre pretifyCode="js">
+					var test = PINE.createNeedle("test");
+					test.favoriteHat = "fez";
+
+					test.addFunction(PINE.ops.STATIC, function(initMe, needle) {
+						initMe.innerHtml = needle.favoriteHat;
+						var concept = (test == needle);  //true
+					});
+				</pre>
+			</funcDoc>
+
+		</funcDoc>
+
+		
+
+		<funcDoc id="corePinefunc" aIndex>
+			<h1>class PineFunc</h1>
+			PINE.class.PineFunc<br>
+			<br>
+			The PineFunc is a class that holds data about how a function acts.  The most important parts about a PineFunc is at what operation phase it is to occur and what it should do at when it finds a target, but there are many other things which can define a PineFunc.  Some PineFuncs stop at the first target, some move from the tips of the DOM tree to the root, and some automatically add an observer to their target so they can reapply with every change.
+		</funcDoc>
+
+
+	
+	</div>
+</div>

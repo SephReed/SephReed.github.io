@@ -1,0 +1,184 @@
+<html>
+
+<head>
+<style>
+	/*have a little style*/
+	body {
+		background: #FAFAFA;
+		color: #333;
+		font-family: arial;
+	}
+
+	[template] {
+		display: none;
+	}
+
+	pnv {
+		color: #F0F;
+	}
+</style>
+
+<script src="../public/js/zepto.js"></script>
+<!-- <script src="PINE.js"></script> -->
+<script src="PINE_Core.js"></script>
+<script src="PINE_Var.js"></script>
+<script src="PINE_Needles.js"></script>
+<script src="PINE_Template.js"></script>
+<!-- <script src="PINE.pnv.js"></script> -->
+
+<script>
+	// PINE.alertErr = true;  //really get bothered
+	// PINE.createMutateLogger = true;
+
+	var chewbacca = "GGRRRRGRGRG";
+	var test = PINE.newVar("hat");
+
+	var ena = test.val;
+
+
+	// PINE.newVar("hat", "fez", null);
+	var hello = "helloworld.html";
+
+	var nested = {};
+	nested.array = U.initArray("Bebe", 5);
+
+	// var place = "lol";
+
+	// var arrayHey = U.initArray("hey", 3);
+	// var arrayHo = U.initArray("ho", 2);
+
+	var arrayHey = ["P", "I", "N", "E", "Bad Grammar"];
+	var arrayHo = ["to", "the"];
+
+	var includeArray = ["helloworld.html", "foo.html"];
+	
+
+	// var p = "FAIL";
+
+
+	var nest = {};
+	nest.loat = "go";
+
+
+
+
+
+	PINE.createNeedle("sayHey").registerFunction({
+		step_type : PINE.ops.STATIC,
+		continuous : false,
+		fn : function(initMe, needle) {
+			initMe.innerHTML = "<b>Hey</b>";
+		}
+	});
+
+</script>
+
+</head>
+
+<body>
+<pine>
+
+
+	
+<!-- <hr>
+<h1>Test 1:</h1>
+	<tit></tit>
+
+	<tit template>
+		I am tit
+		<foo></foo>
+	</tit>
+
+<include src="foo.html"></include> -->
+	
+
+<!-- 
+
+<hr>
+<h1>Test 2:</h1>
+<bar></bar>
+<br>
+<br>
+<glo></glo>
+
+<glo template>
+	<sayHey></sayHey><br>
+	<include src="helloworld.html"></include>
+</glo>
+
+<bar template>
+	<sayHey></sayHey>
+</bar>
+
+ -->
+
+<hr>
+<h1>Test 3:</h1>
+<toe template>
+	<say test="{{hat}}" value="{{chewbacca}}"></say>
+	chewbacca says: {{chewbacca}} <br>
+	my favorite hat: {{hat}}
+	<!-- <include src="{{hello}}"></include> -->
+</toe>
+
+<toe></toe>
+
+
+<!-- 
+<hr>
+<h1>Test 4:</h1>
+
+<foo></foo>
+
+<chewy template>
+	hey
+</chewy>
+<chewy></chewy>
+
+
+
+<ul spawner="nested.array">
+	<li style="font-size:{{i}}" spawn>{{nest.loat}} {{i}} : {{nested.array[i]}}</li>
+</ul>
+ -->
+
+<!-- <div spawner="includeArray">
+	<include spawn style="left:{{i}}" src="{{includeArray[i]}}"></include>
+</div> -->
+
+
+
+
+
+<!-- 
+
+<hr>
+<h1>Test 5:</h1>
+
+<div spawner="arrayHey">
+	<div spawn spawner="arrayHo" index="p">
+		+{{i}} : ___________{{arrayHey[i]}}
+		<div spawn>
+			-{{i}} :: {{p}} :__________ {{arrayHo[p]}}
+		</div>
+	</div>
+</div>
+ -->
+
+
+
+<!-- <hr>
+<h1>Test 6:</h1>
+<include src="helloplace.html"></include> -->
+
+
+
+
+
+</pine>
+
+
+</body>
+
+
+</html>

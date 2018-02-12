@@ -1,0 +1,53 @@
+<script src="PINE_Core_4.0.js"></script>
+
+<script type="text/javascript">
+    
+    var test = U.Go(function(resolve, reject) {
+        console.log("hey")
+        setTimeout(function() {
+            resolve("woo")    
+        }, 1000);
+        
+    }).then(function(result) {
+        console.log(result);
+        return "yea";
+    }).then(function(result) {
+        console.log("1")
+        return new U.Async(function(resolve, reject) {
+            console.log("2")
+            setTimeout(function() {
+                console.log("3")
+                resolve("DONE")    
+            }, 1000);
+        });
+    }).then(function(result) {
+        console.log(result);
+        return "yup"
+    }).then( U.Go(function(resolve, reject) {
+        console.log("thenable")
+        resolve();
+    }));
+
+    var wait = U.Go(function(resolve, reject) {
+        setTimeout(function() {
+            console.log("long wait");
+            resolve("woo")    
+        }, 3000);
+    });
+
+
+    // test.then(function(result) {
+    //     console.log("yup");
+    //     return "got it";
+    // });
+
+    U.Go.all([test, wait]).then(function(result) {
+        console.log("yesss", result);
+    });
+
+    // U.allDone([test]).then(function() {
+    //     alert("yay");
+    // });
+
+
+</script>

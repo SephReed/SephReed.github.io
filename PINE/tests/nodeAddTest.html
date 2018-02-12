@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../../public/css/init.css">
+	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function(){
+			document.body.addEventListener("PINE_nodesChanged", function(event) {
+				console.log(event);
+			});
+
+		});
+
+		// PINE.createNeedle("spawner", function(spawner) {
+		// });
+
+		
+		
+	</script>
+
+	<script src="../PINE_Core_4.8.js"></script>
+
+
+	<script type="text/javascript">
+		PINE.ready(function() {
+			var addMe = document.createElement("p");
+			El.byId("test").appendChild(addMe);
+
+			PINE.updateAt(document.body);
+		});
+	</script>
+	
+
+</head>
+<body>
+
+
+	<div id="test">
+	</div>
+
+
+
+</body>
+
+
+</html>

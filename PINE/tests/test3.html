@@ -1,0 +1,44 @@
+<script src="../public/js/zepto.js"></script>
+<script src="PINE.Core.js"></script>
+<script src="PINE_prettify.js"></script>
+<script src="PINE.needles.js"></script>
+
+
+
+
+<style>
+att {  color: blue;  }
+tg {  color: red;  }
+st {  color: green;  }
+vr {  color: aqua;  }
+</style>
+
+
+<pine>
+<div pretifyCode>
+<script>
+
+var helloFunction = function(initMe, needle) {
+	var place = initMe.attributes.place;
+	if(place)
+initMe.innerHTML = "Hello "+place.value+"!";
+}
+
+var P_hello = PINE.createNeedle("hello");
+P_hello.registerFunction({
+	step_type : PINE.STATIC,  //PREPROCESS, STATIC, POPULATER, DEFINER, EVENTS
+	continuous : false,  //default
+	layering : false,  //default
+	topToBottom : true,  //default
+	fn : helloFunction  //can also be defined inline;
+});
+</script>
+
+
+<pine>
+	<hello place="world"></hello>
+	<hello place="docs"></hello>
+</pine>
+</div>
+
+</pine>
