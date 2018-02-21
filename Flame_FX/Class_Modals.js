@@ -8,7 +8,14 @@ class Modals {
 		}
 		console.log(domNode);
 		this.domNode = domNode;
-		document.body.addEventListener("mousedown", () => this.hideAll());
+		document.body.addEventListener("mousedown", (event) => {
+			for (let ptr = event.target.parentNode; ptr; ptr = ptr.parentNode) {
+				if (ptr === this.domNode) {
+					return;
+				}
+			}
+			this.hideAll()
+		});
 	}
 
 	hide(cssQueryOrNode) {

@@ -1,42 +1,48 @@
-PATTERNS = window.localStorage.getItem("PATTERNS");
-if (PATTERNS === undefined) {
-	PATTERNS = {};
+
+const Local = {};
+
+Local.getSet = (name, value) => {
+	if (value !== undefined) {
+		window.localStorage.setItem(name, value);
+	} else {
+		return window.localStorage.getItem(name); 
+	}
+};
+
+Local.project = (name, value) => {
+	return Local.getSet("project_"+name, value);
+};
+
+Local.lastOpen = (value) => {
+	return Local.getSet("lastOpen", value);
 }
 
-SAVE_TIMEOUT = 1000; // ms
+
+const SAVE_TIMEOUT = 1000; // ms
 
 class PatternSequence {
-	constructor(objOrName) {
+	constructor() {
 		let obj;
-		if (typeof objOrName === "object") {
-			obj = objOrName;
-			if (PATTERNS[obj.name] !== undefined) {
-				alert("Loading pattern with same name as previous.  Appending Number");
-				for (let i = 0; i < 100; i++) {
-					if (PATTERNS[obj.name+i] === undefined) {
-						obj.name += i;
-						break;
-					}
-				}
-			}
-		} else if (typeof objOrName === "string") {
-			obj = PATTERNS[objOrName];
-			if (obj === undefined) {
-				obj = {
-					name: name,
-					patterns: [],
-				}
+		if (Local.lastOpen !== undefined) {
+			obj = Local.project(Local.lastOpen);
+			obj = obj ? JSON.parse(obj) : undefined;
+		} 
+
+		if (obj === undefined) {
+			obj = {
+				name: "Untitled",
+				sequence: [],
 			}
 		}
 
-		for (const key in obj) {
-			this[key] = obj[key];
-		}
-
-		this.saved = true;
 		this.saveTimeout = undefined;
-		this.patterns.forEach((pattern) => {
-			pattern.onChange(() => { this.triggerBackupWatcher(); })
+		this.load(obj);
+	}
+
+	ownDomNode(ownMe) {
+		this.domNode = ownMe;
+		this.sequence.forEach((pattern) => {
+			this.domNode.appendChild(pattern.domNode);
 		})
 	}
 
@@ -44,7 +50,7 @@ class PatternSequence {
 		if (this.saveTimeout !== undefined) {
 			window.clearTimeout(this.saveTimeout);
 		}
-		this.saveTimeout = window.saveTimeout(() => {
+		this.saveTimeout = window.setTimeout(() => {
 			this.save();
 			this.saveTimeout = undefined;
 		}, SAVE_TIMEOUT)
@@ -52,22 +58,43 @@ class PatternSequence {
 		this.saved = false;
 	}
 
+	load(saveObj) {
+		for (const key in saveObj) {
+			this[key] = saveObj[key];
+		}
+
+		Local.lastOpen(this.name);
+
+		this.saved = true;
+		this.sequence.forEach((pattern) => {
+			pattern.onChange(() => { this.triggerBackupWatcher(); })
+		})
+	}
+
 	save() {
 		const out = {};
 		out.name = this.name;
-		out.patterns = this.patterns.map((pattern) => pattern.toWritable());
-		PATTERNS[out.name] = out;
-		window.localStorage.getItem("PATTERNS", PATTERNS);
+		out.sequence = this.sequence.map((pattern) => {
+			return pattern.toWritable()
+		});
+		this.saved = true;
+		Local.project(out.name, JSON.stringify(out));
 	}
 
 	insertPattern(pattern, afterMe) {
-		const target = this.patterns.indexOf(afterMe);
-		this.patterns.splice(target + 1, 0, pattern);
+		const target = this.sequence.indexOf(afterMe);
+		if (this.domNode) {
+			this.domNode.insertAfter(pattern.domNode, target.domNode);
+		}
+		this.sequence.splice(target + 1, 0, pattern);
 		this.triggerBackupWatcher();
 	}
 
 	appendPattern(pattern) {
-		this.patterns.push(pattern);
+		this.sequence.push(pattern);
+		if (this.domNode) {
+			this.domNode.appendChild(pattern.domNode);
+		}
 		this.triggerBackupWatcher();
 	}
 }

@@ -21,6 +21,7 @@
 	<script type="text/javascript" src="external/easyElement.js"></script>
 	<!-- <script type="text/javascript" src="external/import.js"></script> -->
 	<script type="text/javascript" src="external/hsvTool.js"></script>
+	<script type="text/javascript" src="Class_Modals.js"></script>
 
 	<!-- Class Heirarchy -->
 	<script type="text/javascript" src="Class_FlameFX.js"></script>
@@ -28,32 +29,41 @@
 	<script type="text/javascript" src="Class_PatternSelector.js"></script>
 	<script type="text/javascript" src="Patterns/Class_BatchSet.js"></script>
 
-	<script type="text/javascript" src="Class_Modals.js"></script>
+	<script type="text/javascript" src="Class_PatternSequence.js"></script>
+	
 	
 	<!-- Init-->
 	<script type="text/javascript">
 		fx = new FlameFX(BOOSH_SETUP);
 		modals = new Modals();
+		sequencer = new PatternSequence();
 
 		document.addEventListener("DOMContentLoaded", () => {
 			fx.ownDomNode(El.byTag("preview"));
 			fx.ownPreviewCanvas(El.byID("preveiw_canvas"));
 			fx.ownGasUsesDomNode(El.byTag("gas-use"));
+
 			PATTERN_SELECTOR.ownDomNode(El.byTag("pattern-list"));
+			sequencer.ownDomNode(El.byTag("command-list"))
+
 			modals.ownDomNode(El.byTag("modals"));
 		});
 
 	</script>
 	<style>
 		:root {
-			--foreground: #FFF;
-			--lightest: #666;
-			--lighter: #555;
-			--light: #444;
-			--background: #333;
-			--dark: #222;
-			--darker: #111;
-			--darkest: #000;
+			--fg: #FFF;
+			--fg-dark: #EEE;
+			--fg-darker: #CCC;
+			--fg-darkest: #DDD;
+
+			--bg-lightest: #666;
+			--bg-lighter: #555;
+			--bg-light: #444;
+			--bg: #333;
+			--bg-dark: #222;
+			--bg-darker: #111;
+			--bg-darkest: #000;
 
 			--outset-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 			--outset-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
@@ -73,9 +83,9 @@
 		}
 
 		body {
-			background-color: var(--background);
+			background-color: var(--bg);
 			font-family: arial;
-			color: var(--foreground);
+			color: var(--fg);
 		}
 
 			content {
@@ -90,10 +100,36 @@
 					z-index: 2;
 					display: block;
 					height: 30px;
-					background-color: var(--dark);
-					border-bottom: 3px solid var(--darker);
+					background-color: var(--bg-dark);
+					border-bottom: 3px solid var(--bg-darker);
 					box-shadow: var(--outset-2);
 				}
+
+					time-controls {
+						display: block;
+						position: absolute;
+						left: 50%;
+						transform: translate(-50%, 0%);
+					}
+
+						time-controls > * {
+							display: inline-block;
+							padding: 10px;
+							border-radius: 10px;
+							background-color: var(--bg-darkest);
+						}
+
+							time-controls svg {
+								fill: var(--fg);
+							}
+
+								time-controls svg:hover {
+									fill: var(--fg-dark);
+								}
+
+								time-controls svg:active {
+									fill: var(--fg-darker);
+								}
 
 				workspace {
 					position: relative;
@@ -116,7 +152,7 @@
 							top: 0px;
 							height: 100%;
 							width: 100%;
-							background-color: var(--dark);
+							background-color: var(--bg-dark);
 							background-size: 50px 20px;
 							background-image: url("public/grid.png");
 							opacity: 0.02;
@@ -134,7 +170,7 @@
 							display: flex;
 							flex-direction: row;
 							flex: 1;
-							background-color: var(--dark);
+							background-color: var(--bg-dark);
 							text-align: center;
 							padding: 10px 2px 10px 2px;
 						}
@@ -181,7 +217,7 @@
 						z-index: 1;
 						display: flex;
 						flex-direction: column;
-						background-color: var(--light);
+						background-color: var(--bg-light);
 						flex: 1;
 						box-shadow: var(--outset-1);
 						
@@ -189,8 +225,8 @@
 
 						options {
 							display: block;
-							background-color: var(--lighter);
-							border-bottom: solid 3px var(--lightest);
+							background-color: var(--bg-lighter);
+							border-bottom: solid 3px var(--bg-lightest);
 						}
 
 						command-list {
@@ -212,20 +248,53 @@
 
 			modals > * {
 				display: none;
+				pointer-events: all;
 				position: absolute;
+				width: 90%;
+				max-width: 600px;
 				left: 50%;
 				top: 50%;
-				transform: translate(-50%, 50%);
+				transform: translate(-50%, -50%);
 				background-color: red;
 			}
 
 
+
+	@media all and (max-width: 800px) {
+		workspace {
+			display: block;
+		}
+
+			gas-use {
+				height: 40vw;
+				max-height: 300px;
+				flex: unset;
+			}
+	}
 
 	</style>
 </head>
 <body>
 	<content>
 		<topbar>
+			<time-controls>
+				<stop>
+					<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1 1">
+						<rect width="100%" height="100%" />
+					</svg>
+				</stop>
+
+				<play-pause>
+					<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1 1">
+						<rect width="40%" height="100%" />
+						<rect x="60%" width="40%" height="100%" />
+					</svg>
+					<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1 1">
+						<polygon points="0 0  0 1  1 0.5" />
+					</svg>
+				</play-pause>
+
+			</time-controls>
 		</topbar>
 		<workspace>
 			<preview>
