@@ -3,9 +3,12 @@ const Local = {};
 
 Local.getSet = (name, value) => {
 	if (value !== undefined) {
-		window.localStorage.setItem(name, value);
+		window.localStorage.setItem(name, JSON.stringify(value));
 	} else {
-		return window.localStorage.getItem(name); 
+		const data = window.localStorage.getItem(name);
+		if (data) {
+			return JSON.parse(data);
+		}
 	}
 };
 
@@ -18,14 +21,13 @@ Local.lastOpen = (value) => {
 }
 
 
-const SAVE_TIMEOUT = 1000; // ms
+const SAVE_TIMEOUT = 200; // ms
 
 class PatternSequence {
 	constructor() {
 		let obj;
 		if (Local.lastOpen !== undefined) {
-			obj = Local.project(Local.lastOpen);
-			obj = obj ? JSON.parse(obj) : undefined;
+			obj = Local.project(Local.lastOpen());
 		} 
 
 		if (obj === undefined) {
@@ -47,10 +49,12 @@ class PatternSequence {
 	}
 
 	triggerBackupWatcher() {
+		console.log("unsaved changes")
 		if (this.saveTimeout !== undefined) {
 			window.clearTimeout(this.saveTimeout);
 		}
 		this.saveTimeout = window.setTimeout(() => {
+			console.log("saved")
 			this.save();
 			this.saveTimeout = undefined;
 		}, SAVE_TIMEOUT)
@@ -66,8 +70,11 @@ class PatternSequence {
 		Local.lastOpen(this.name);
 
 		this.saved = true;
-		this.sequence.forEach((pattern) => {
-			pattern.onChange(() => { this.triggerBackupWatcher(); })
+		this.sequence = this.sequence.map((pattern) => {
+			console.log(pattern, pattern.name);
+			const patternClass = new PATTERN_SELECTOR.patterns.byName[pattern.name](pattern);
+			patternClass.onChange(() => { this.triggerBackupWatcher(); })
+			return patternClass;
 		})
 	}
 
@@ -75,10 +82,10 @@ class PatternSequence {
 		const out = {};
 		out.name = this.name;
 		out.sequence = this.sequence.map((pattern) => {
-			return pattern.toWritable()
+			return pattern.data;
 		});
 		this.saved = true;
-		Local.project(out.name, JSON.stringify(out));
+		Local.project(out.name, out);
 	}
 
 	insertPattern(pattern, afterMe) {

@@ -10,6 +10,10 @@ class BatchSet extends Pattern {
 		const domNode = document.createElement("BatchSet");
 		this.data.setValveOpen.forEach((valveIsOpen, booshNum) => {
 			const addMe = document.createElement("input");
+			addMe.addEventListener("change", () => {
+				this.data.setValveOpen[booshNum] = addMe.checked;
+				this._emitChange();
+			})
 			addMe.type = "checkbox";
 			if (valveIsOpen) {
 				addMe.checked = true;

@@ -3,7 +3,9 @@ class SequenceReader {
 		this.domNode = domNode;
 		this.stop();
 
+
 		El.byTag(this.domNode, "play-pause").addEventListener("click", () => {
+			console.log("here")
 			this.playPause();
 		});
 
@@ -13,12 +15,21 @@ class SequenceReader {
 	}
 
 	stop() {
-		this.isPlaying = false;
+		this._setIsPlaying(false);
 		this.patternIndex = 0;
 		this.timeoutForNextPattern = undefined;
 	}
 
 	playPause() {
-		this.isPlaying = !this.isPlaying;
+		this._setIsPlaying(!this.isPlaying);
+	}
+
+	_setIsPlaying(isPlaying) {
+		this.isPlaying = isPlaying;
+		if (isPlaying) {
+			this.domNode.classList.add("is_playing");
+		} else {
+			this.domNode.classList.remove("is_playing");
+		}
 	}
 }

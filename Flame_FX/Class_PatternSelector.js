@@ -66,6 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
 class Pattern {
 	constructor(name, data) {
 		this.data = data || {};
+		this.data.name = name;
+		this.changeListeners = [];
 	}
 
 	toWritable() {
@@ -81,6 +83,14 @@ class Pattern {
 			}
 		}
 		return this._domNode;
+	}
+
+	onChange(callback) {
+		this.changeListeners.push(callback);
+	}
+
+	_emitChange() {
+		this.changeListeners.forEach((callback) => callback(this));
 	}
 }
 
